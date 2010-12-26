@@ -20,7 +20,7 @@
     <parent>
         <artifactId>metridoc-parent</artifactId>
         <groupId>edu.upennlib.metridoc</groupId>
-        <version>0.3-SNAPSHOT</version>
+        <version>0.3</version>
     </parent>
     <artifactId>metridoc-core</artifactId>
     <name>${artifactId}-${project.version}</name>
