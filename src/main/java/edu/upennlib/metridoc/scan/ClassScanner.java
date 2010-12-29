@@ -38,7 +38,6 @@ public class ClassScanner {
     private AnnotationDB annotationDB;
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassScanner.class);
 
-    
     @SuppressWarnings({"unchecked", "rawtypes"})
     public <T extends Annotation> Set<Class> getClasses(Class<T> clazz, URL[] urls) {
         

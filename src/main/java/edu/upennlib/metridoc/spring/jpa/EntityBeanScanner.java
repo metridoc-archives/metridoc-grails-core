@@ -12,9 +12,6 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-/*
- * Property of the University of Pennsylvania Libraries
- */
 
 package edu.upennlib.metridoc.spring.jpa;
 
