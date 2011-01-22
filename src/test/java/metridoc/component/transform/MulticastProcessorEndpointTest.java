@@ -19,7 +19,6 @@
 
 package metridoc.component.transform;
 
-import org.junit.Ignore;
 import org.apache.camel.Processor;
 import metridoc.component.transform.TransformProcessorEndpoint.ServiceNotFoundException;
 import org.apache.camel.CamelContext;
@@ -45,13 +44,6 @@ public class MulticastProcessorEndpointTest extends Assert {
         }
     }
 
-    @Ignore
-    @Test
-    public void classPathMulticastBeansCanBeFoundAndInstantiated() {
-        Object object = endpoint().getMulticastBean("fooBar");
-        assertTrue(object instanceof FooBar);
-    }
-    
     @Test
     public void serviceNotFoundExceptionReturnsMessageBasedOnServiceName() {
         

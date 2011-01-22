@@ -23,8 +23,17 @@ package metridoc.component.transform;
  *
  * @author tbarker
  */
-@TransformService
 public class FooBar {
+
+    @Transform(paramOrder=1)
+    public String getName(String message) {
+        return "tommy";
+    }
+
+    @Transform(paramOrder=2)
+    public int getAge(String message) {
+        return 30;
+    }
 
     @Reduce
     public Person reduce(String name, int age) {

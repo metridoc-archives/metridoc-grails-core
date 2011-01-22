@@ -12,20 +12,39 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-
-package metridoc.component.transform;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package metridoc.node;
 
 /**
  *
- * @author tbarker
+ * @author Tommy Barker
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.CONSTRUCTOR, ElementType.FIELD, ElementType.METHOD})
-public @interface Transform {
-    public int paramOrder();
+public class Node {
+
+    private String groupId;
+    private String artifactId;
+    private String version;
+
+    public String getArtifactId() {
+        return artifactId;
+    }
+
+    public void setArtifactId(String artifactId) {
+        this.artifactId = artifactId;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
 }

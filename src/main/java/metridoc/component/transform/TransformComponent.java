@@ -22,6 +22,8 @@ package metridoc.component.transform;
 import java.util.Map;
 import org.apache.camel.Endpoint;
 import org.apache.camel.impl.DefaultComponent;
+import org.apache.camel.impl.ProcessorEndpoint;
+import org.apache.camel.processor.MulticastProcessor;
 
 /**
  *
@@ -29,10 +31,24 @@ import org.apache.camel.impl.DefaultComponent;
  */
 public class TransformComponent extends DefaultComponent{
 
+    private boolean parallelProcessing = true;
+    private String executorService = "defaultExecutorService";
+    private int timeOut = 0;
+    private boolean stopOnTimeOut = true;
+    private boolean streaming = false;
+    private String aggregationStrategy;
+
     @Override
     protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
-        return new TransformProcessorEndpoint(remaining, null, null);
+
+        MulticastProcessor processor =
+                new MulticastProcessor(getCamelContext(), null, null, parallelProcessing, null, parallelProcessing,
+                parallelProcessing, 0);
+        
+        return new ProcessorEndpoint(uri, null);
     }
+
+
     
     
 

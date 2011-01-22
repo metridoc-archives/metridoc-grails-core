@@ -19,12 +19,8 @@
 
 package metridoc.impl.file;
 
-import metridoc.impl.file.FileIteratorManager;
-import metridoc.impl.file.FileHandler;
 import metridoc.FutureHandler;
-import java.io.IOException;
 import org.apache.camel.Exchange;
-import org.junit.Ignore;
 import org.junit.Assert;
 import java.util.concurrent.Future;
 import java.util.Map;

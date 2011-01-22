@@ -12,32 +12,22 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package metridoc.component.transform;
 
-import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
-import org.apache.camel.processor.MulticastProcessor;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
- * @author tbarker
+ * @author Tommy Barker
  */
-public class TransformWrapper implements Processor{
+public class TransformerUtilsTest {
 
-    private MulticastProcessor multicastProcessor;
-    
-    public static TransformWrapper create(Object object) {
-        return null;
+    @Test
+    public void testSomeMethod() {
     }
-    
-    @Override
-    public void process(Exchange exchange) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
+
 }

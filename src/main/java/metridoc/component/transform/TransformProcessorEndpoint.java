@@ -29,8 +29,6 @@ import org.apache.camel.impl.ProcessorEndpoint;
  */
 public class TransformProcessorEndpoint extends ProcessorEndpoint {
 
-    
-
     public TransformProcessorEndpoint(String endpointUri, CamelContext context, Processor processor) {
         super(endpointUri, context, processor);
     }
