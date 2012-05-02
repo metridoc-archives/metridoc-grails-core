@@ -1,0 +1,60 @@
+<!--
+
+    Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
+    Educational Community License, Version 2.0 (the "License"); you may
+    not use this file except in compliance with the License. You may
+    obtain a copy of the License at
+
+    http://www.osedu.org/licenses/ECL-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an "AS IS"
+    BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+    or implied. See the License for the specific language governing
+    permissions and limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <artifactId>metridoc-parent</artifactId>
+        <groupId>${project.groupId}</groupId>
+        <version>${project.version}</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>projectbuilder.test</artifactId>
+    <groupId>1</groupId>
+    <packaging>jar</packaging>
+    <name>TestProjectBuilder</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>metridoc-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+
+            <!-- this allows groovy source files and resources to live in the same place -->
+            <!-- this allows us to simplify the project structure, now we can use metridoc groovy to run jobs -->
+            <resource>
+                <directory>src/main/groovy</directory>
+                <filtering>true</filtering>
+                <excludes>
+                    <exclude>**/*.groovy</exclude>
+                </excludes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

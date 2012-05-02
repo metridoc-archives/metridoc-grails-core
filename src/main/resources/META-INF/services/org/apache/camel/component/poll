@@ -1,1 +1,1 @@
-class:metridoc.component.poll.PollComponent
+class=metridoc.camel.component.poll.PollComponent
