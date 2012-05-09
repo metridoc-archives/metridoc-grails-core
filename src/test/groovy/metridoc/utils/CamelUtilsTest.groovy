@@ -82,7 +82,7 @@ public class CamelUtilsTest extends CamelTestSupport {
             from("seda:inflight?concurrentConsumers=5").process(
                 new Processor() {
                     void process(Exchange exchange) {
-                        Thread.sleep(500)
+                        Thread.sleep(1000)
                         CamelUtilsTest.inflightLatch.countDown()
                     }
                 }
