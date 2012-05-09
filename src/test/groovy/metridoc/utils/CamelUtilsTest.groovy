@@ -33,7 +33,6 @@ public class CamelUtilsTest extends CamelTestSupport {
 
     static CountDownLatch sedaTestLatch = new CountDownLatch(3)
     static CountDownLatch inflightLatch = new CountDownLatch(1)
-    static CountDownLatch aggLatch = new CountDownLatch(1)
 
     /**
      * by putting the tests together, we speed everything up by using a cached instance of camel
