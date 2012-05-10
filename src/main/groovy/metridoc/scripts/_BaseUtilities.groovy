@@ -14,13 +14,9 @@
  */
 package metridoc.scripts
 
-/**
- * Created with IntelliJ IDEA.
- * User: tbarker
- * Date: 4/28/12
- * Time: 12:42 PM
- * To change this template use File | Settings | File Templates.
- */
+hasVariable = {String variableName ->
+    binding.variables.containsKey(variableName)
+}
 
 checkVariablesExist = {List<String> variables, targetName ->
     variables.each {

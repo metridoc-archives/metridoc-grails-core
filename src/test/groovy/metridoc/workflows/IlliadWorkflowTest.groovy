@@ -14,9 +14,9 @@
  */
 package metridoc.workflows
 
-import org.junit.Test
-import metridoc.workflows.IlliadWorkflow
+import metridoc.workflows.illiad._IlliadWorkflow
 import org.junit.Ignore
+import org.junit.Test
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,7 +29,7 @@ class IlliadWorkflowTest {
     @Ignore
     @Test
     void testPipelineBinding() {
-        IlliadWorkflow.execute()
+        _IlliadWorkflow.execute()
     }
 }
 

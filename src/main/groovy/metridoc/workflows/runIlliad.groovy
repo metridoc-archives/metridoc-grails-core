@@ -14,6 +14,8 @@
  */
 package metridoc.workflows
 
+import metridoc.workflows.illiad._IlliadWorkflow
+
 /**
  * script used to kickoff Illiad workflow process
  *
@@ -21,5 +23,5 @@ package metridoc.workflows
  * Date: 3/15/12
  */
 
-IlliadWorkflow.execute()
+_IlliadWorkflow.execute()
 
