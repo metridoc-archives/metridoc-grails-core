@@ -14,20 +14,17 @@
  */
 package metridoc.utils
 
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 import org.apache.camel.CamelContext
 import org.apache.camel.Consumer
 import org.apache.camel.Endpoint
 import org.apache.camel.Route
 import org.apache.camel.component.seda.SedaEndpoint
-import org.apache.camel.impl.DefaultShutdownStrategy
-import org.apache.camel.impl.ScheduledPollEndpoint
-import org.apache.camel.spi.RouteStartupOrder
 import org.apache.camel.spi.ShutdownAware
 import org.apache.camel.util.StopWatch
 import org.slf4j.LoggerFactory
-import java.util.concurrent.ExecutorService
+
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
 /**
  * Created by IntelliJ IDEA.
@@ -68,12 +65,8 @@ class CamelUtils {
 
             while (notDone) {
                 int size
-                for (Route route: camelContext.routes) {
+                for (Route route : camelContext.routes) {
                     Consumer consumer = route.consumer
-                    size = camelContext.inflightRepository.size(consumer.endpoint)
-
-                    log.debug("inflight repository found {} exchanges for consumer {}", size, consumer)
-                    if (checkIfDone(size)) break
 
                     if (consumer instanceof ShutdownAware) {
                         def shutdownAware = consumer as ShutdownAware
@@ -81,28 +74,32 @@ class CamelUtils {
                         log.debug("consumer {} has {} in memory exchanges pending", consumer, size)
                     }
 
-                    if (checkIfDone(size)) break
+                    if (checkIfNotDone(size)) break
+                    size = camelContext.inflightRepository.size(consumer.endpoint)
+
+                    log.debug("inflight repository found {} exchanges for consumer {}", size, consumer)
+                    if (checkIfNotDone(size)) break
                 }
 
                 if (size == 0) {
                     def endpoints = camelContext.endpoints
-                    for (Endpoint endpoint: endpoints) {
+                    for (Endpoint endpoint : endpoints) {
                         if (endpoint instanceof SedaEndpoint) {
-                            size = camelContext.inflightRepository.size(endpoint)
-                            log.debug("endpoint {} has {} inflight exchanges pending", endpoint, size)
-
-                            if (checkIfDone(size)) break
-
                             def seda = endpoint as SedaEndpoint
                             size = seda.exchanges.size()
                             log.debug("seda endpoint {} has {} exchanges pending", endpoint, size)
 
-                            if (checkIfDone(size)) break
+                            if (checkIfNotDone(size)) break
+
+                            size = camelContext.inflightRepository.size(endpoint)
+                            log.debug("endpoint {} has {} inflight exchanges pending", endpoint, size)
+
+                            if (checkIfNotDone(size)) break
                         }
                     }
                 }
 
-                notDone = size > 0
+                notDone = size > 0 || camelContext.inflightRepository.size()
                 nextUpdate = logProgress(stopWatch, nextUpdate, camelContext)
             }
         }
@@ -133,14 +130,14 @@ class CamelUtils {
             log.info(template(taken, "milliseconds"))
         }
 
-        if(!finished) {
+        if (!finished) {
             log.warn("the CamelContext {} is not done", camelContext)
         }
 
         return finished
     }
 
-    private static boolean checkIfDone(int size) {
+    private static boolean checkIfNotDone(int size) {
         if (size > 0) {
             Thread.sleep(300)
             return true
