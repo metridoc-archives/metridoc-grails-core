@@ -16,7 +16,7 @@ package metridoc.scripts.borrowdirect
 
 import groovy.sql.Sql
 
-borrowDirectReportDistributionTable = "report_distribution"
+borrowDirectReportDistributionTable = "bd_report_distribution"
 
 borrowDirectReportLinkSql = "select * from ${borrowDirectReportDistributionTable} order by institution_id"
 
