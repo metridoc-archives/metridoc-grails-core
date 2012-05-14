@@ -32,14 +32,13 @@ target(sendUpdateEmail: "actually sends the update email") {
 }
 
 target(validateParameters: "validates that the necessary parameters are available") {
-    def borrowDirectDataSourceIsDefined
-
+    assert borrowDirectDataSourceIsDefined()
 }
 
 borrowDirectDataSourceIsDefined = {
     def result = binding.variables.containsKey("dataSource") || binding.variables.containsKey("borrowDirectDataSource")
-    if(result) {
-        if(binding.variables.containsKey("dataSource")) {
+    if (result) {
+        if (binding.variables.containsKey("dataSource")) {
             return dataSource instanceof DataSource
         } else {
             return borrowDirectDataSource instanceof DataSource
@@ -47,11 +46,11 @@ borrowDirectDataSourceIsDefined = {
     }
 }
 
-borrowDirectDateRange = {
+borrowDirectDateRange = {Date date ->
     df = new SimpleDateFormat("yyyyMMdd/")
 
-    beg = Calendar.instance
-    end = Calendar.instance
+    beg = date.toCalendar()
+    end = date.toCalendar()
 
     Y = beg.get(Calendar.YEAR)
     M = beg.get(Calendar.MONTH)

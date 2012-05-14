@@ -14,9 +14,10 @@
  */
 package metridoc.scripts.borrowdirect
 
-import org.junit.Test
 import metridoc.dsl.JobBuilder
 import org.junit.Before
+import org.junit.Test
+
 import javax.sql.DataSource
 
 /**
@@ -40,13 +41,27 @@ class _SendUpdateEmailTest extends Script {
         binding.variables.remove("dataSource")
         assert !borrowDirectDataSourceIsDefined(): "dataSource was removed, should be false"
         borrowDirectDataSource = [] as DataSource
-        assert borrowDirectDataSourceIsDefined() : "borrowDirectDataSource was added, should be true"
+        assert borrowDirectDataSourceIsDefined(): "borrowDirectDataSource was added, should be true"
     }
 
     @Test
-    void "if the dataSource has been set, it should be a DataSource" () {
+    void "if the dataSource has been set, it should be a DataSource"() {
         dataSource = []
         assert !borrowDirectDataSourceIsDefined()
+    }
+
+    @Test
+    void "if the current date is in feb, then the range should be over january"() {
+        def date = Date.parse("yyyyMMdd", "20100215")
+        def dateRange = borrowDirectDateRange(date)
+        assert "20100101/20100131/" == dateRange
+    }
+
+    @Test
+    void "if the current date is in jan, then the range should be over december"() {
+        def date = Date.parse("yyyyMMdd", "20100105")
+        def dateRange = borrowDirectDateRange(date)
+        assert "20091201/20091231/" == dateRange
     }
 
     @Override
