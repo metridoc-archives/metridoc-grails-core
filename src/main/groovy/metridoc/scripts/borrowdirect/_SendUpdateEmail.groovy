@@ -35,7 +35,16 @@ target(BDPrintUrlsToSend: "prints the urls that will be sent without actually se
 }
 
 target(BDSendUpdateEmail: "actually sends the update email") {
-
+    //let's print them first
+    depends(BDPrintUrlsToSend)
+    getBorrowDirectEmailByUrlMap(borrowDirectSql, new Date()).each {email, url ->
+        def emailMessage = borrowDirectEmailIntro + url + borrowDirectEmailInstructions
+        ant.mail(mailhost: borrowDirectEmailHost, subject: borrowDirectEmailSubject) {
+            from(address: borrowDirectFromAddress)
+            to(address: email.toString())
+            message(mimetype: "text/html", emailMessage)
+        }
+    }
 }
 
 target(BDValidateAndPrepareParameters: "validates that the necessary parameters are available") {
