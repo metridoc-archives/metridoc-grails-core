@@ -14,39 +14,48 @@
  */
 package metridoc.scripts.borrowdirect
 
+import groovy.sql.Sql
+
 import java.text.SimpleDateFormat
 import javax.sql.DataSource
 
-/**
- * Created by IntelliJ IDEA.
- * User: tbarker
- * Date: 5/7/12
- * Time: 1:34 PM
- */
-target(printUrlsToSend: "prints the urls that will be sent without actually sending the urls, used for testing") {
+includeTargets << _SendEmailDefaultParameters
+
+
+target(BDPrintUrlsToSend: "prints the urls that will be sent without actually sending the urls, used for testing") {
 
 }
 
-target(sendUpdateEmail: "actually sends the update email") {
+target(BDSendUpdateEmail: "actually sends the update email") {
 
 }
 
-target(validateParameters: "validates that the necessary parameters are available") {
-    assert borrowDirectDataSourceIsDefined()
+target(BDValidateAndPrepareParameters: "validates that the necessary parameters are available") {
+    assert borrowDirectDataSourceIsDefined(): "dataSource needs to be defined"
+    borrowDirectSql = new Sql(borrowDirectDataSource)
 }
 
 borrowDirectDataSourceIsDefined = {
     def result = binding.variables.containsKey("dataSource") || binding.variables.containsKey("borrowDirectDataSource")
     if (result) {
-        if (binding.variables.containsKey("dataSource")) {
-            return dataSource instanceof DataSource
-        } else {
+        if (binding.variables.containsKey("borrowDirectDataSource")) {
             return borrowDirectDataSource instanceof DataSource
+        } else {
+            result = dataSource instanceof DataSource
+            if (result) {
+                borrowDirectDataSource = dataSource
+                return true
+            }
+
+            return false
         }
     }
+
+    return false
 }
 
-borrowDirectDateRange = {Date date ->
+
+computeBorrowDirectDateRange = {Date date ->
     df = new SimpleDateFormat("yyyyMMdd/")
 
     beg = date.toCalendar()
@@ -69,4 +78,16 @@ borrowDirectDateRange = {Date date ->
     def endDate = df.format(end.time)
 
     return '' + startDate + endDate
+}
+
+getBorrowDirectEmailByUrlMap = {Sql sql, date ->
+    def emailList = getBorrowDirectReportLinks(sql)
+    def dateRange = computeBorrowDirectDateRange(date)
+    def result = [:]
+
+    emailList.each {key, value ->
+        result[key] = "${borrowDirectBaseUrl}/${dateRange}${value}"
+    }
+
+    return result
 }
