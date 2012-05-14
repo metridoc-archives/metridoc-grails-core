@@ -24,9 +24,7 @@ import javax.sql.DataSource
 includeTargets << _SendEmailDefaultParameters
 JobBuilder.isJob(this)
 
-
-
-target(BDPrintUrlsToSend: "prints the urls that will be sent without actually sending the urls, used for testing") {
+target(BDPrintUrlsToSend: "prints the urls that will be sent without actually sending the urls, used for testing and logging") {
     depends(BDValidateAndPrepareParameters)
     getBorrowDirectEmailByUrlMap(borrowDirectSql, new Date()).each {email, url ->
         def message = "sending ${url} to ${email}"
@@ -35,7 +33,7 @@ target(BDPrintUrlsToSend: "prints the urls that will be sent without actually se
 }
 
 target(BDSendUpdateEmail: "actually sends the update email") {
-    //let's print them first
+
     Grape.grab(group: "org.apache.ant", module: "ant-javamail", version: "1.8.2", classLoader: this.class.classLoader.rootLoader)
     depends(BDPrintUrlsToSend)
     getBorrowDirectEmailByUrlMap(borrowDirectSql, new Date()).each {email, url ->
@@ -45,6 +43,7 @@ target(BDSendUpdateEmail: "actually sends the update email") {
             to(address: email.toString())
             message(mimetype: "text/html", emailMessage)
         }
+        ant.echo(message: "mail has been sent to ${email}")
     }
 }
 
