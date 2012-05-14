@@ -14,16 +14,24 @@
  */
 package metridoc.scripts.borrowdirect
 
+import groovy.grape.Grape
 import groovy.sql.Sql
+import metridoc.dsl.JobBuilder
 
 import java.text.SimpleDateFormat
 import javax.sql.DataSource
 
 includeTargets << _SendEmailDefaultParameters
+JobBuilder.isJob(this)
 
+Grape.grab(group: "org.apache.ant", module: "ant-javamail", version: "1.8.2", classLoader: this.class.classLoader.rootLoader)
 
 target(BDPrintUrlsToSend: "prints the urls that will be sent without actually sending the urls, used for testing") {
-
+    depends(BDValidateAndPrepareParameters)
+    getBorrowDirectEmailByUrlMap(borrowDirectSql, new Date()).each {email, url ->
+        def message = "sending ${url} to ${email}"
+        ant.echo(message: message)
+    }
 }
 
 target(BDSendUpdateEmail: "actually sends the update email") {
@@ -31,6 +39,15 @@ target(BDSendUpdateEmail: "actually sends the update email") {
 }
 
 target(BDValidateAndPrepareParameters: "validates that the necessary parameters are available") {
+    try {
+        if (!borrowDirectDataSourceIsDefined()) {
+            loadProperties("borrowDirectConfig")
+            borrowDirectDataSource = dataSource(borrowDirectConfig.dataSource)
+        }
+    } catch (Exception ex) {
+        ex.printStackTrace()
+        ant.echo(message: "Could not load borrowDirectConfig, may not be able to define a dataSource")
+    }
     assert borrowDirectDataSourceIsDefined(): "dataSource needs to be defined"
     borrowDirectSql = new Sql(borrowDirectDataSource)
 }
