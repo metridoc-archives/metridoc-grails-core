@@ -39,8 +39,9 @@ borrowDirectEmailSubject = "Borrow Direct Transactions Download Link"
 borrowDirectEmailHost = "sd.library.upenn.int"
 borrowDirectFromAddress = 'pcoll@pobox.upenn.edu'
 borrowDirectEmailIntro = "A data file of all Borrow Direct transactions for your institution is available from " +
-            "the Penn Libraries' Data Farm at the following URL. <BR><BR> "
+    "the Penn Libraries' Data Farm at the following URL. <BR><BR> "
 borrowDirectEmailInstructions = "<BR><BR>Click on the URL or cut and paste it into your browser to retrieve the file. " +
-            " If you're unable to complete the download or see a problem with the data file, please contact " +
+    " If you're unable to complete the download or see a problem with the data file, please contact " +
     "${borrowDirectFromAddress}. This service is provided by Penn's MetriDoc management information platform. "
 
+borrowDirectConfigFile = "borrowDirectConfig"

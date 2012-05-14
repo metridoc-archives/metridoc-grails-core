@@ -143,5 +143,6 @@ class _SendUpdateEmailTest extends Script {
     Object run() {
         JobBuilder.isJob(this)
         includeTargets << _SendUpdateEmail
+        borrowDirectConfigFile = false
     }
 }
