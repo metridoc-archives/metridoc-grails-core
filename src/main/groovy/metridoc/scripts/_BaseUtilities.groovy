@@ -24,13 +24,6 @@ checkVariablesExist = {List<String> variables, targetName ->
     }
 }
 
-runTarget = {LinkedHashMap args, Closure target ->
-    def delegate = new HashWithFailOnMissingEntry(args)
-
-    target.delegate = delegate
-    target
-}
-
 class HashWithFailOnMissingEntry extends HashMap {
 
     HashWithFailOnMissingEntry() {
