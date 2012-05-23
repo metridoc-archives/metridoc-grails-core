@@ -38,6 +38,7 @@ target(runIlliadWorkflow: "runs the entire workflow for illiad") {
         updateIlliadSchemas,
         clearingIlliadTables,
         migrateData,
+        doUpdateBorrowing,
         doUpdateLending,
         doUpdateDemographics
     )
