@@ -16,8 +16,9 @@ package metridoc.workflows
 
 import groovy.sql.Sql
 import groovy.util.logging.Slf4j
-import javax.sql.DataSource
 import metridoc.utils.SystemUtils
+
+import javax.sql.DataSource
 
 /**
  * The basic workflow loads an ezproxy file into a a loading table, which then gets normalized into an
@@ -80,12 +81,30 @@ class EzproxyWorkflow extends Workflow {
         pipeline = ["updateSchema", "disableKeysOnMaster", "loadAndNormalize", "enableKeysOnMaster"]
     }
 
+    boolean shouldRun() {
+        def workingDirectory = new File(getLoadFileIntoTable().workingDirectory)
+        def result = false
+        if (workingDirectory.exists()) {
+            workingDirectory.eachFile {
+                if (it.isFile()) {
+                    result = true
+                }
+            }
+        }
+
+        return result
+    }
+
     void disableKeysOnMaster() {
-        getSql().execute("alter table ${masterTable} disable keys" as String)
+        if (shouldRun()) {
+            getSql().execute("alter table ${masterTable} disable keys" as String)
+        }
     }
 
     void enableKeysOnMaster() {
-        getSql().execute("alter table ${masterTable} enable keys" as String)
+        if (shouldRun()) {
+            getSql().execute("alter table ${masterTable} enable keys" as String)
+        }
     }
 
     synchronized SqlNormalizer getSqlNormalizer() {
@@ -150,25 +169,27 @@ class EzproxyWorkflow extends Workflow {
 
     void loadAndNormalize() {
 
-        def workingDirectory = getLoadFileIntoTable().workingDirectory
-        def directory = new File(workingDirectory)
-        (1..maxFiles).each {
-            def continueProcessing = {
-                def result = false
-                directory.listFiles().each {
-                    if (it.isFile()) {
-                        result = true
+        if (shouldRun()) {
+            def workingDirectory = getLoadFileIntoTable().workingDirectory
+            def directory = new File(workingDirectory)
+            (1..maxFiles).each {
+                def continueProcessing = {
+                    def result = false
+                    directory.listFiles().each {
+                        if (it.isFile()) {
+                            result = true
+                        }
                     }
-                }
 
-                return result
-            }
-            if (continueProcessing()) {
-                loadFromFile()
-                normalize()
-                normalizeUrlReferences()
-                String truncate = "truncate ${loadFileIntoTable.loadingTable}"
-                getSql().execute(truncate)
+                    return result
+                }
+                if (continueProcessing()) {
+                    loadFromFile()
+                    normalize()
+                    normalizeUrlReferences()
+                    String truncate = "truncate ${loadFileIntoTable.loadingTable}"
+                    getSql().execute(truncate)
+                }
             }
         }
     }
