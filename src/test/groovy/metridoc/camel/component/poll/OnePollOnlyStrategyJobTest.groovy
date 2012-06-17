@@ -14,13 +14,14 @@
  */
 package metridoc.camel.component.poll
 
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
 import metridoc.dsl.JobBuilder
 import metridoc.test.BaseTest
 import org.apache.camel.Exchange
 import org.junit.Before
 import org.junit.Test
+
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,8 +38,8 @@ class OnePollOnlyStrategyJobTest extends BaseTest {
     def void setup() {
         baseDir = "target/test-classes/testFiles/metridoc/camel/component/poll/onePollOnlyTest"
 
-        if(!new File("${baseDir}/file1").exists()) {
-            baseDir = "plugins/metridoc-camel-plugin/${baseDir}"
+        if (!new File("${baseDir}/file1").exists()) {
+            baseDir = "metridoc-core/${baseDir}"
         }
     }
 

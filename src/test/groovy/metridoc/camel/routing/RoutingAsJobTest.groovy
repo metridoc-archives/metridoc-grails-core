@@ -66,7 +66,7 @@ class RoutingAsJobTest extends BaseTest {
             return getEndpointPath(testDir)
         }
 
-        testDir = "plugins/metridoc-camel-plugin/${testDir}"
+        testDir = "metridoc-core/${testDir}"
         file = new File(testDir)
         assert file.exists()
         return getEndpointPath(testDir)

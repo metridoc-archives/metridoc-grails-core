@@ -15,7 +15,6 @@
 package metridoc.camel.routing
 
 import com.sun.net.httpserver.HttpServer
-import java.util.concurrent.TimeUnit
 import metridoc.dsl.JobBuilder
 import org.apache.camel.Exchange
 import org.apache.camel.LoggingLevel
@@ -24,6 +23,8 @@ import org.apache.camel.component.file.GenericFile
 import org.apache.camel.component.mock.MockEndpoint
 import org.junit.Before
 import org.junit.Test
+
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,7 +52,7 @@ class RoutingTest {
     def void setup() {
         baseDir = "target/test-classes/testFiles/metridoc/camel/component/poll/jobBuilderTest"
         if (!new File("${baseDir}/file1").exists()) {
-            baseDir = "plugins/metridoc-camel-plugin/${baseDir}"
+            baseDir = "metridoc-core/${baseDir}"
             assert new File("${baseDir}/file1").exists()
         }
     }
@@ -79,7 +80,7 @@ class RoutingTest {
                 runRoute {
                     def baseDir = "target/test-classes/testFiles/metridoc/camel/component/poll/jobBuilderTest"
                     if (!new File("${baseDir}/file1").exists()) {
-                        baseDir = "plugins/metridoc-camel-plugin/${baseDir}"
+                        baseDir = "metridoc-core/${baseDir}"
                     }
                     mock.expectedMessageCount(1)
                     from("file://${baseDir}?noop=true&initialDelay=0").threads(4).aggregateBody(4, 2000).to("mock:endFull")

@@ -19,9 +19,8 @@ import metridoc.utils.Assert
 import metridoc.utils.CollectionUtils.Maps
 import metridoc.utils.StringUtils
 import org.apache.camel.component.file.GenericFileEndpoint
+import org.apache.camel.impl.ScheduledPollConsumer
 import org.apache.camel.support.ServiceSupport
-import org.apache.camel.util.ServiceHelper
-import org.apache.camel.util.URISupport
 import org.apache.camel.*
 
 /**
@@ -53,9 +52,6 @@ class PollConsumer extends ServiceSupport implements Consumer, SuspendableServic
     }
 
     private void processMessages() {
-        def consumerTemplate = getConsumerTemplate()
-        def maxMessages = endpoint.maxMessages
-        def Long wait = endpoint.wait
 
         def endpointToConsume
         def formattedUri
@@ -65,36 +61,32 @@ class PollConsumer extends ServiceSupport implements Consumer, SuspendableServic
             endpointToConsume = resolveEndpoint(formattedUri)
         } else {
             endpointToConsume = endpoint.wrappedEndpoint
-            formattedUri = endpointToConsume.getEndpointUri()
         }
 
-        int received = 0
-
-        for (i in (1..maxMessages)) {
-
-            Exchange exchange = consumerTemplate.receive(endpointToConsume, wait)
-            if (exchange == null) {
-                //try one more time since all ScheduledPollConsumers are forced to complete 1 poll after first try
-                log.debug("polling for exchang was null, checking if something happened after first poll")
-                exchange = consumerTemplate.receiveNoWait(endpointToConsume)
+        def exception
+        def delegationProcessor = [
+            process: {Exchange exchange ->
+                if (!exception) {
+                    getProcessor().process(exchange)
+                    if (exchange.exception) {
+                        exception = exchange.exception
+                    }
+                } else {
+                    log.warn("because of a previous exception, ${exchange} cannot be processed")
+                }
             }
+        ] as Processor
 
-            if (exchange) {
-                log.debug("Exchange {} was polled with PollConsumer", exchange)
-                processor.process exchange
-                received++
-            } else {
-                //exchange is null, assume there is nothing to consume
-                break;
-            }
-
-            if (exchange.exception) {
-                throw exchange.exception
-            }
+        def consumer = endpointToConsume.createConsumer(delegationProcessor)
+        if (consumer instanceof ScheduledPollConsumer) {
+            consumer.run()
+        } else {
+            consumer.start()
         }
 
-        log.info("Received {} items from uri {}", received, URISupport.sanitizeUri(formattedUri))
-        ServiceHelper.stopService(consumerTemplate)
+        if (exception) {
+            throw exception
+        }
     }
 
     @Override
@@ -138,6 +130,7 @@ class PollConsumer extends ServiceSupport implements Consumer, SuspendableServic
             resolvedEndpoint.consumerProperties = Maps.createHashMap()
             resolvedEndpoint.consumerProperties["initialDelay"] = 0
             resolvedEndpoint.maxMessagesPerPoll = endpoint.maxMessages
+            resolvedEndpoint.consumerProperties["delay"] = Integer.MAX_VALUE
         }
 
         return resolvedEndpoint
@@ -166,3 +159,4 @@ class PollConsumer extends ServiceSupport implements Consumer, SuspendableServic
         return newUrl
     }
 }
+
