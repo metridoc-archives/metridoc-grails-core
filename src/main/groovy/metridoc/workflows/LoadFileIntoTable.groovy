@@ -14,11 +14,8 @@
  */
 package metridoc.workflows
 
-import java.sql.BatchUpdateException
-import java.sql.SQLException
-import java.util.concurrent.atomic.AtomicInteger
-import javax.sql.DataSource
 import metridoc.camel.builder.ManagedRouteBuilder
+import metridoc.camel.builder.ScheduledPollEndpointWrapper
 import metridoc.camel.context.MetridocCamelContext
 import metridoc.plugins.impl.iterators.DelimitedLineIterator
 import metridoc.plugins.impl.iterators.IteratorFactory
@@ -40,7 +37,11 @@ import org.apache.camel.component.file.GenericFileEndpoint
 import org.apache.camel.component.file.GenericFileFilter
 import org.apache.camel.model.ProcessorDefinition
 import org.apache.camel.model.language.ConstantExpression
-import metridoc.camel.builder.ScheduledPollEndpointWrapper
+
+import java.sql.BatchUpdateException
+import java.sql.SQLException
+import java.util.concurrent.atomic.AtomicInteger
+import javax.sql.DataSource
 
 /**
  * Created by IntelliJ IDEA.
@@ -92,9 +93,11 @@ class LoadFileIntoTable extends ManagedRouteBuilder {
     private int currentUpdate = updateAt
     private int currentSize = 0
     private String currentFile
+    private processedFiles = []
     private Long startTime
     Endpoint endpoint
     private AtomicInteger lineCounter = new AtomicInteger(0)
+
 
     Validator getValidator() {
         if (validator) {
@@ -350,7 +353,11 @@ class LoadFileIntoTable extends ManagedRouteBuilder {
         } catch (AssertionError error) {
             log.error("rolling back loading table and validation table due to line mismatch")
             getSqlPlus().execute("truncate ${loadingTable}" as String)
-            getSqlPlus().execute("delete from ${validationErrorTable} where file_name = '${currentFile}'" as String)
+
+            processedFiles.each {processedFile ->
+                getSqlPlus().execute("delete from ${validationErrorTable} where file_name = '${processedFile}'" as String)
+            }
+
             throw error
         }
 
@@ -377,6 +384,7 @@ class LoadFileIntoTable extends ManagedRouteBuilder {
             log.info "processing file {}", fileName
             fileList.add(fileName)
             currentFile = fileName
+            processedFiles.add(fileName)
         }
 
         currentDefinition = splitContents.call(currentDefinition)
