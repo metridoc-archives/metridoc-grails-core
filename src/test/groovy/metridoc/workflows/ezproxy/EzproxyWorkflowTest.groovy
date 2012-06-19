@@ -38,7 +38,7 @@ class EzproxyWorkflowTest {
         def schemaUpdate = workflow.getSchemaUpdate()
 
         assert !schemaUpdate.runLiquibase
-        assert dataSource == schemaUpdate.dataSource
+        assert dataSource == schemaUpdate.liquibaseDataSource
     }
 
 

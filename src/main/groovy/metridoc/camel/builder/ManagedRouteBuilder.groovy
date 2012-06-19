@@ -20,10 +20,10 @@ import org.apache.camel.Endpoint
 import org.apache.camel.Exchange
 import org.apache.camel.Processor
 import org.apache.camel.builder.RouteBuilder
+import org.apache.camel.impl.DefaultConsumer
 import org.apache.camel.impl.ScheduledPollConsumer
 import org.apache.camel.impl.ScheduledPollEndpoint
 import org.apache.camel.model.RouteDefinition
-import org.apache.camel.impl.DefaultConsumer
 
 /**
  * Created by IntelliJ IDEA.
@@ -113,7 +113,7 @@ class ScheduledPollEndpointWrapper {
                 processor.process(exchange)
 
                 def exception = exchange.exception
-                if(exception) {
+                if (exception) {
                     routeBuilder.handleException(exception, exchange)
                 }
             }
@@ -124,7 +124,7 @@ class ScheduledPollEndpointWrapper {
     }
 }
 
-class ScheduledPollConsumerWrapper extends DefaultConsumer{
+class ScheduledPollConsumerWrapper extends DefaultConsumer {
 
     ScheduledPollConsumer wrappedConsumer
 
