@@ -71,18 +71,5 @@ class GroovyRouteBuilderTest extends BaseTest{
         } catch (Exception ex) {
         }
     }
-
-    @Test
-    def void testUsePolling() {
-        def builder = new GroovyRouteBuilder()
-        assert builder.usePolling("seda:foo?usePolling=true")
-        assert !builder.usePolling("seda:foo?usePolling=false")
-        assert !builder.usePolling("seda:foo")
-        builder.usePolling = true
-        assert builder.usePolling("seda:foo")
-        assert builder.usePolling("seda:foo")
-        builder.usePolling = false
-        assert !builder.usePolling("seda:foo")
-    }
 }
 

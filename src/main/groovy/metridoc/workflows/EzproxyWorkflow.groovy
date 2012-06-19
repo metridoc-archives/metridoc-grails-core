@@ -17,8 +17,10 @@ package metridoc.workflows
 import groovy.sql.Sql
 import groovy.util.logging.Slf4j
 import metridoc.utils.SystemUtils
+import metridoc.scripts._UpdateSchema
 
 import javax.sql.DataSource
+import metridoc.dsl.JobBuilder
 
 /**
  * The basic workflow loads an ezproxy file into a a loading table, which then gets normalized into an
@@ -51,7 +53,7 @@ class EzproxyWorkflow extends Workflow {
     /**
      * service to update a schema
      */
-    SchemaUpdate schemaUpdate
+    def schemaUpdate
     /**
      * service to normalize a loading / staging table into a normalized structure.  See the ezproxy
      * <a href= "http://metridoc.googlecode.com/svn/trunk/documentation/ezproxy/current/ezproxy_model.pdf">schema</a>
@@ -143,20 +145,24 @@ class EzproxyWorkflow extends Workflow {
         loadFileIntoTable = new LoadFileIntoTable(loadFileToTableConfig)
     }
 
-    synchronized SchemaUpdate getSchemaUpdate() {
+    synchronized getSchemaUpdate() {
         if (schemaUpdate) {
             return schemaUpdate
         }
 
+        Binding binding = new Binding()
+
         if (!schemaUpdateConfig.containsKey("dataSource")) {
-            schemaUpdateConfig.dataSource = dataSource
+            schemaUpdateConfig.liquibaseDataSource = dataSource
         }
 
         if (!schemaUpdateConfig.containsKey("schema")) {
-            schemaUpdateConfig.schema = "schemas/ezproxy/ezproxySchema.xml"
+            schemaUpdateConfig.liquibaseFile = "schemas/ezproxy/ezproxySchema.xml"
         }
 
-        schemaUpdate = new SchemaUpdate(schemaUpdateConfig)
+        binding.variables.putAll(schemaUpdateConfig)
+        schemaUpdate = new _UpdateSchema(binding)
+        return schemaUpdate
     }
 
     void updateSchema() {

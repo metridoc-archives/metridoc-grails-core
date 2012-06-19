@@ -14,9 +14,12 @@
  */
 package metridoc.scripts
 
-import org.junit.Test
-import metridoc.dsl.JobBuilder
 import groovy.sql.Sql
+import metridoc.dsl.JobBuilder
+import org.junit.Before
+import org.junit.Test
+import java.sql.SQLException
+import org.junit.After
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,20 +30,43 @@ import groovy.sql.Sql
  */
 class _UpdateSchemaTest extends Script {
 
+
+    @Before
+    void setup() {
+        run()
+    }
+
+    @After
+    void cleanUp() {
+        runLiquibase = true
+    }
+
     @Override
     Object run() {
         JobBuilder.isJob(this)
         liquibaseFile = "testFiles/metridoc/scripts/foo.xml"
         dataSource = embeddedDataSource()
-        new Sql(dataSource).execute("drop table foo if exists")
+        sql = new Sql(dataSource)
+        sql.execute("drop table foo if exists")
         includeTargets << _UpdateSchema
 
-        executeTargets(["updateSchema"])
     }
 
     @Test
     void "test liquibase schema update"() {
-        this.run()
+        executeTargets(["updateSchema"])
+        assert 0 == sql.firstRow("select count(*) as total from foo").total
+    }
+
+    @Test
+    void "schema does not run if runLiquibase is false" () {
+        runLiquibase = false
+        executeTargets(["updateSchema"])
+        try {
+            sql.firstRow("select count(*) as total from foo").total
+            assert false : "exception should have occurred"
+        } catch (SQLException exception) {
+        }
     }
 }
 

@@ -26,7 +26,7 @@ import metridoc.plugins.schema.MetridocLiquibase
  */
 
 @Slf4j
-class SchemaUpdate {
+class SchemaUpdate extends Script{
 
     boolean runLiquibase = true
     String projectName

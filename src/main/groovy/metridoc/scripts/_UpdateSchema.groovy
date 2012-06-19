@@ -26,11 +26,18 @@ import metridoc.dsl.JobBuilder
 JobBuilder.isJob(this)
 
 target(updateSchema:"updates the schema for the target dataSource") {
-    if(binding.variables.liquibaseDataSource) {
-        log.info "updating schema based on liquibaseDataSource variable"
-        liquibase(schema:liquibaseFile, dataSource:liquibaseDataSource)
+
+    def runLiquibase = binding.variables.containsKey("runLiquibase") ? binding.variables.runLiquibase : true
+
+    if (runLiquibase) {
+        if(binding.variables.liquibaseDataSource) {
+            message("schema", "updating schema based on liquibaseDataSource variable")
+            liquibase(schema:liquibaseFile, dataSource:liquibaseDataSource)
+        } else {
+            message("schema", "updating schema based on dataSource variable")
+            liquibase(schema:liquibaseFile, dataSource:dataSource)
+        }
     } else {
-        log.info "updating schema based on dataSource variable"
-        liquibase(schema:liquibaseFile, dataSource:dataSource)
+        message("schema", "no schemas were updated since runLiquibase is false")
     }
 }

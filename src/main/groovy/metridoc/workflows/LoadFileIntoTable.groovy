@@ -19,7 +19,6 @@ import java.sql.SQLException
 import java.util.concurrent.atomic.AtomicInteger
 import javax.sql.DataSource
 import metridoc.camel.builder.ManagedRouteBuilder
-import metridoc.camel.component.poll.PollEndpoint
 import metridoc.camel.context.MetridocCamelContext
 import metridoc.plugins.impl.iterators.DelimitedLineIterator
 import metridoc.plugins.impl.iterators.IteratorFactory
@@ -41,6 +40,7 @@ import org.apache.camel.component.file.GenericFileEndpoint
 import org.apache.camel.component.file.GenericFileFilter
 import org.apache.camel.model.ProcessorDefinition
 import org.apache.camel.model.language.ConstantExpression
+import metridoc.camel.builder.ScheduledPollEndpointWrapper
 
 /**
  * Created by IntelliJ IDEA.
@@ -145,7 +145,7 @@ class LoadFileIntoTable extends ManagedRouteBuilder {
             wrappedEndpoint.noop = noop
         }
 
-        endpoint = new PollEndpoint(wrappedEndpoint: wrappedEndpoint, maxMessages: maxNumberOfFiles, camelContext: camelContext, wait: waitForLocalFilePoll)
+        endpoint = new ScheduledPollEndpointWrapper(scheduledPollEndpoint: wrappedEndpoint)
     }
 
     IteratorCreator getIteratorCreator() {
@@ -173,7 +173,7 @@ class LoadFileIntoTable extends ManagedRouteBuilder {
         if (workingDirectoryUri) {
             return workingDirectoryUri
         }
-        workingDirectoryUri = "file://${getWorkingDirectory()}"
+        workingDirectoryUri = "file://${getWorkingDirectory()}?maxMessagesPerPoll=${maxNumberOfFiles}"
     }
 
     String getWorkingDirectory() {

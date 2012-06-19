@@ -15,11 +15,15 @@
 package metridoc.camel.builder
 
 import metridoc.plugins.PluginDB
-import org.apache.camel.CamelContext
+import org.apache.camel.Consumer
+import org.apache.camel.Endpoint
 import org.apache.camel.Exchange
+import org.apache.camel.Processor
 import org.apache.camel.builder.RouteBuilder
+import org.apache.camel.impl.ScheduledPollConsumer
+import org.apache.camel.impl.ScheduledPollEndpoint
 import org.apache.camel.model.RouteDefinition
-import org.apache.camel.spi.BrowsableEndpoint
+import org.apache.camel.impl.DefaultConsumer
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,13 +40,15 @@ abstract class ManagedRouteBuilder extends RouteBuilder implements ExceptionHand
 
     @Override
     RouteDefinition from(String uri) {
-        def newUri = uri
+        def formattedUri = uri.replaceAll("maxMessages=", "maxMessagesPerPoll=")
+        def endpoint = getContext().getEndpoint(formattedUri)
 
-        if (usePolling(uri)) {
-            newUri = "poll:${newUri}"
+        if (endpoint instanceof ScheduledPollEndpoint) {
+            def wrappedEndpoint = new ScheduledPollEndpointWrapper(scheduledPollEndpoint: endpoint, routeBuilder: this)
+            return from(wrappedEndpoint as Endpoint)
         }
 
-        super.from newUri
+        super.from(formattedUri)
     }
 
     @Override
@@ -75,72 +81,7 @@ abstract class ManagedRouteBuilder extends RouteBuilder implements ExceptionHand
         return routeException
     }
 
-
-
     abstract void doConfigure()
-
-    /**
-     *
-     * @param camelContext {@link CamelContext that ran this route
-     */
-    void waitTillDone() {
-        def routeCollection = this.routeCollection
-        def routes = routeCollection.routes
-        def camelContext = routeCollection.camelContext
-        def inflight = camelContext.inflightRepository
-        def boolean activityDetected = true
-
-        //best effort to continue until everything is finished
-        while (activityDetected) {
-            if (routes.size() == 0) {
-                activityDetected = false
-            }
-
-            routes.each {route ->
-                def fromDefinitions = route.inputs
-                fromDefinitions.each {from ->
-                    def uri = from.uri
-                    def endpoint = camelContext.getEndpoint(uri)
-                    def size = inflight.size(endpoint)
-
-                    if (size == 0) {
-                        activityDetected = false
-                    }
-
-                    if (endpoint instanceof BrowsableEndpoint && !activityDetected) {
-                        size = endpoint.exchanges.size()
-                        if (size == 0) {
-                            activityDetected = false
-                        }
-                    }
-                }
-            }
-
-            if (activityDetected) {
-                Thread.sleep(100)
-            }
-        }
-
-    }
-
-    protected boolean usePolling(String uri) {
-
-        def m = uri =~ /usePolling=(true|false)/
-        def boolean usePollingInUri
-
-        //uri based
-        if (m.find()) {
-            return Boolean.valueOf(m[0][1])
-        }
-
-        //global
-        if (usePolling != null) {
-            return usePolling
-        }
-
-        //defaults
-        return !(uri.startsWith("seda") || uri.startsWith("direct"))
-    }
 
     @Override
     void handleException(Throwable throwable, Exchange exchange) {
@@ -157,4 +98,42 @@ abstract class ManagedRouteBuilder extends RouteBuilder implements ExceptionHand
         }
     }
 
+}
+
+class ScheduledPollEndpointWrapper {
+    ManagedRouteBuilder routeBuilder
+
+    @Delegate
+    ScheduledPollEndpoint scheduledPollEndpoint
+
+    Consumer createConsumer(Processor processor) throws Exception {
+
+        def delegationProcessor = [
+            process: {Exchange exchange ->
+                processor.process(exchange)
+
+                def exception = exchange.exception
+                if(exception) {
+                    routeBuilder.handleException(exception, exchange)
+                }
+            }
+        ] as Processor
+
+        def consumerToWrap = scheduledPollEndpoint.createConsumer(delegationProcessor) as ScheduledPollConsumer
+        return new ScheduledPollConsumerWrapper(scheduledPollEndpoint, processor, consumerToWrap)
+    }
+}
+
+class ScheduledPollConsumerWrapper extends DefaultConsumer{
+
+    ScheduledPollConsumer wrappedConsumer
+
+    ScheduledPollConsumerWrapper(Endpoint endpoint, Processor processor, Consumer wrappedConsumer) {
+        super(endpoint, processor)
+        this.wrappedConsumer = wrappedConsumer
+    }
+
+    void doStart() throws Exception {
+        wrappedConsumer.run()
+    }
 }

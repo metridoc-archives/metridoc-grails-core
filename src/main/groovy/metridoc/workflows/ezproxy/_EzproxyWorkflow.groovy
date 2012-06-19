@@ -12,22 +12,15 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package metridoc.camel.component.poll
+package metridoc.workflows.ezproxy
 
-import org.apache.camel.Endpoint
-import org.apache.camel.impl.DefaultComponent
+import metridoc.scripts.*
 
-/**
- * Created by IntelliJ IDEA.
- * User: tbarker
- * Date: 4/22/11
- * Time: 10:12 AM
- * To change this template use File | Settings | File Templates.
- */
-class PollComponent extends DefaultComponent{
+includeTargets << EzproxyDefaultProperties << _FileToTableWorkflow
 
-    @Override
-    protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) {
-        return new metridoc.camel.component.poll.PollEndpoint(camelContext: getCamelContext(), endpointUri: uri)
-    }
-}
+
+
+
+
+
+

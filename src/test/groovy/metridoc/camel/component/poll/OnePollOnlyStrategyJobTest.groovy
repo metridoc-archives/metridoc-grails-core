@@ -53,7 +53,7 @@ class OnePollOnlyStrategyJobTest extends BaseTest {
 
                 runRoute {
 
-                    from("file:${owner.baseDir}?pollStrategy=#onePollOnly&initialDelay=0&noop=true&maxMessagesPerPoll=1").process {Exchange exchange ->
+                    from("file:${owner.baseDir}?maxMessagesPerPoll=1").process {Exchange exchange ->
                         assert latch.count > 0
                         latch.countDown()
                     }
