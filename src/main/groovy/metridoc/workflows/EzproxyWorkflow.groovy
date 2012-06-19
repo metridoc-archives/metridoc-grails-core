@@ -16,11 +16,11 @@ package metridoc.workflows
 
 import groovy.sql.Sql
 import groovy.util.logging.Slf4j
-import metridoc.utils.SystemUtils
+import metridoc.dsl.JobBuilder
 import metridoc.scripts._UpdateSchema
+import metridoc.utils.SystemUtils
 
 import javax.sql.DataSource
-import metridoc.dsl.JobBuilder
 
 /**
  * The basic workflow loads an ezproxy file into a a loading table, which then gets normalized into an
@@ -35,7 +35,7 @@ import metridoc.dsl.JobBuilder
  *
  */
 @Slf4j
-class EzproxyWorkflow extends Workflow {
+class EzproxyWorkflow extends Script {
     /**
      * Location of the database that contains the ezproxy <a href= "http://metridoc.googlecode.com/svn/trunk/documentation/ezproxy/current/ezproxy_model.pdf">schema</a>.
      */
@@ -69,6 +69,7 @@ class EzproxyWorkflow extends Workflow {
     Sql sql
     Map urlsToSearch = EzproxyWorkflowDefaults.URLS_TO_SEARCH
     String masterTable = "ez_master"
+    def pipeline = ["updateSchemaTarget", "disableKeysOnMasterTarget", "loadAndNormalizeTarget", "enableKeysOnMasterTarget"]
 
     Sql getSql() {
         if (sql) {
@@ -76,11 +77,6 @@ class EzproxyWorkflow extends Workflow {
         }
 
         sql = new Sql(dataSource)
-    }
-
-    @Override
-    protected void configureWorkflow() {
-        pipeline = ["updateSchema", "disableKeysOnMaster", "loadAndNormalize", "enableKeysOnMaster"]
     }
 
     boolean shouldRun() {
@@ -228,6 +224,28 @@ class EzproxyWorkflow extends Workflow {
             log.info("resolving ${table} with sql: ${newLine}${sqlText}")
             getSql().execute(sqlText)
         }
+    }
+
+    @Override
+    Object run() {
+        JobBuilder.isJob(this)
+        target(updateSchemaTarget: "udpates the schema") {
+            updateSchema()
+        }
+
+        target(disableKeysOnMasterTarget: "disables keys on master") {
+            disableKeysOnMaster()
+        }
+
+        target(loadAndNormalizeTarget: "loads and normalizes data") {
+            loadAndNormalize()
+        }
+
+        target(enableKeysOnMasterTarget: "enables keys on master") {
+            enableKeysOnMaster()
+        }
+
+        depends(pipeline)
     }
 }
 
