@@ -31,8 +31,6 @@ import metridoc.workflows.validation.impl.HashSqlValidator
 import org.apache.camel.CamelContext
 import org.apache.camel.Endpoint
 import org.apache.camel.Exchange
-import org.apache.camel.component.file.GenericFile
-import org.apache.camel.component.file.GenericFileFilter
 import org.apache.camel.model.ProcessorDefinition
 
 import java.sql.BatchUpdateException
@@ -77,7 +75,6 @@ class LoadFileIntoTable extends ManagedRouteBuilder {
     MessageTransformer transformer
     Map validatorMap
     Validator validator
-    int delimitTill = 0
     private int currentUpdate = updateAt
     private int currentSize = 0
     private String currentFile
@@ -85,6 +82,13 @@ class LoadFileIntoTable extends ManagedRouteBuilder {
     private Long startTime
     Endpoint endpoint
     private AtomicInteger lineCounter = new AtomicInteger(0)
+
+    LoadFileIntoTable() {
+    }
+
+    LoadFileIntoTable(Binding binding) {
+
+    }
 
     Validator getValidator() {
         if (validator) {
@@ -279,10 +283,6 @@ class LoadFileIntoTable extends ManagedRouteBuilder {
         }
     }
 
-    /*
-            TODO: consider using a poll enrich call to handle this instead?  This is just a mess
-     */
-
     void run() {
         lineCounter = new AtomicInteger(0)
         deleteCamelDirectory()
@@ -368,26 +368,6 @@ class LoadFileIntoTable extends ManagedRouteBuilder {
             log.info("processed {} operations since start [operations per second: {}, currentFile: {}] ", currentSize, operationsPerSecond, fileName)
             currentUpdate += updateAt
         }
-    }
-}
-
-class FileFilter implements GenericFileFilter {
-    String fileNameFilter
-    Closure fileFilter
-
-    boolean accept(GenericFile file) {
-        boolean nameOk = true
-        boolean fileOk = true
-
-        if (fileNameFilter != null) {
-            nameOk = file.fileNameOnly =~ fileNameFilter
-        }
-
-        if (fileFilter != null) {
-            fileOk = fileFilter.call(file)
-        }
-
-        return nameOk && fileOk
     }
 }
 

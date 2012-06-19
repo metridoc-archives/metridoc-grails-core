@@ -23,27 +23,24 @@ package metridoc.workflows
  * For now this only extends {@link Script}.  Down the road extra functionality will be added to deal with
  * asynchronous modules and other niceties a scripting framework needs
  */
-class Workflow {
-    Binding binding = new Binding()
+class Workflow extends Script {
     List pipeline = []
 
-    protected void configureWorkflow() {
-
-    }
+    protected void configureWorkflow() {}
 
     def run() {
         configureWorkflow()
         pipeline.each {
-            if(it instanceof String) {
+            if (it instanceof String) {
                 this."${it}"()
             }
 
-            else if(it instanceof Script || it instanceof Workflow) {
+            else if (it instanceof Script || it instanceof Workflow) {
                 it.binding = binding
                 it.run()
             }
 
-            else if(it instanceof Closure){
+            else if (it instanceof Closure) {
                 it.call()
             }
 
