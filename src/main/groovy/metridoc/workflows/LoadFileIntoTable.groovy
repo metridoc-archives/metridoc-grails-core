@@ -15,7 +15,6 @@
 package metridoc.workflows
 
 import metridoc.camel.builder.ManagedRouteBuilder
-import metridoc.camel.builder.ScheduledPollEndpointWrapper
 import metridoc.camel.context.MetridocCamelContext
 import metridoc.plugins.impl.iterators.DelimitedLineIterator
 import metridoc.plugins.impl.iterators.IteratorFactory
@@ -33,10 +32,8 @@ import org.apache.camel.CamelContext
 import org.apache.camel.Endpoint
 import org.apache.camel.Exchange
 import org.apache.camel.component.file.GenericFile
-import org.apache.camel.component.file.GenericFileEndpoint
 import org.apache.camel.component.file.GenericFileFilter
 import org.apache.camel.model.ProcessorDefinition
-import org.apache.camel.model.language.ConstantExpression
 
 import java.sql.BatchUpdateException
 import java.sql.SQLException
@@ -52,15 +49,11 @@ import javax.sql.DataSource
  */
 class LoadFileIntoTable extends ManagedRouteBuilder {
     public static final String DEFAULT_WORKING_DIRECTORY = "${SystemUtils.METRIDOC_HOME}${SystemUtils.FILE_SEPARATOR}files"
-    public static final String DEFAULT_ROUTE_ID = "loadFileIntoTable"
     String routeId = "loadFileIntoTable"
     String delimiter
     String workingDirectory
     CamelContext camelContext
     IteratorCreator iteratorCreator
-    String fileNameFilter
-    Closure fileFilter
-    Endpoint fromEndpoint
     /**
      * the uri used as a camel endpoint
      */
@@ -76,13 +69,8 @@ class LoadFileIntoTable extends ManagedRouteBuilder {
     String projectName
     Integer previewLines = Integer.MAX_VALUE
     int previewOffset = 0
-    long waitForLocalFilePoll = 3000L
     int updateAt = 10000
-    int currentEndOfLine
     boolean deleteLoadingFileWhenDone = true
-    String moveLoadingFileWhenDone
-    String moveLoadingFileOnError
-    boolean noop = false
     ValidationErrorHandler validationErrorHandler
     private List<String> fileList = []
     Map transformationMap
@@ -97,7 +85,6 @@ class LoadFileIntoTable extends ManagedRouteBuilder {
     private Long startTime
     Endpoint endpoint
     private AtomicInteger lineCounter = new AtomicInteger(0)
-
 
     Validator getValidator() {
         if (validator) {
@@ -122,33 +109,6 @@ class LoadFileIntoTable extends ManagedRouteBuilder {
         }
 
         validationErrorHandler = new FileIngestorValidationErrorHandler(dataSource: getDataSource())
-    }
-
-    Endpoint getNewEndpoint() {
-        endpoint = null
-        return getEndpoint()
-    }
-
-    Endpoint getEndpoint() {
-
-        if (endpoint) {
-            return endpoint
-        }
-
-        def camelContext = getCamelContext()
-        Endpoint wrappedEndpoint = camelContext.getEndpoint(getWorkingDirectoryUri())
-
-        if (wrappedEndpoint instanceof GenericFileEndpoint) {
-            wrappedEndpoint.filter = new FileFilter(fileFilter: fileFilter, fileNameFilter: fileNameFilter)
-            wrappedEndpoint.delete = deleteLoadingFileWhenDone
-            if (moveLoadingFileWhenDone) {
-                wrappedEndpoint.move = new ConstantExpression(moveLoadingFileWhenDone)
-            }
-            wrappedEndpoint.moveFailed = moveLoadingFileOnError
-            wrappedEndpoint.noop = noop
-        }
-
-        endpoint = new ScheduledPollEndpointWrapper(scheduledPollEndpoint: wrappedEndpoint)
     }
 
     IteratorCreator getIteratorCreator() {
@@ -176,7 +136,7 @@ class LoadFileIntoTable extends ManagedRouteBuilder {
         if (workingDirectoryUri) {
             return workingDirectoryUri
         }
-        workingDirectoryUri = "file://${getWorkingDirectory()}?maxMessagesPerPoll=${maxNumberOfFiles}"
+        workingDirectoryUri = "file://${getWorkingDirectory()}?maxMessagesPerPoll=${maxNumberOfFiles}&delete=true"
     }
 
     String getWorkingDirectory() {
@@ -329,11 +289,6 @@ class LoadFileIntoTable extends ManagedRouteBuilder {
         def camelContext = getCamelContext()
         camelContext.addRoutes(this)
         CamelUtils.waitTillDone(camelContext)
-        camelContext.stopRoute(routeId)
-        camelContext.removeEndpoints(getEndpoint().getEndpointUri())
-        if (this.routeException) {
-            throw routeException
-        }
         this.currentSize = 0
         this.currentUpdate = updateAt
         this.startTime = null
@@ -379,7 +334,7 @@ class LoadFileIntoTable extends ManagedRouteBuilder {
     @Override
     void doConfigure() {
         log.info("adding load file to loading table route")
-        ProcessorDefinition currentDefinition = from(getNewEndpoint()).routeId(routeId).process {
+        ProcessorDefinition currentDefinition = from(getWorkingDirectoryUri()).routeId(routeId).process {
             def fileName = it.in.getHeader(Exchange.FILE_NAME_ONLY, String.class)
             log.info "processing file {}", fileName
             fileList.add(fileName)
