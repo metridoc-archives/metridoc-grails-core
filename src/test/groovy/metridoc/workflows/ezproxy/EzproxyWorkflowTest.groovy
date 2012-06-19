@@ -14,6 +14,7 @@
  */
 package metridoc.workflows.ezproxy
 
+import groovy.sql.Sql
 import metridoc.utils.DataSourceUtils
 import metridoc.workflows.EzproxyWorkflow
 import org.junit.Test
@@ -41,5 +42,16 @@ class EzproxyWorkflowTest {
         assert dataSource == schemaUpdate.liquibaseDataSource
     }
 
+    @Test
+    void testUpdatingTheSchema() {
+        def dataSource = DataSourceUtils.embeddedDataSource()
 
+        new EzproxyWorkflow(
+            dataSource: dataSource,
+            pipeline: ["updateSchema"]
+        ).run()
+
+        def sql = new Sql(dataSource)
+        sql.firstRow("select count(*) from ezproxy_loading")
+    }
 }

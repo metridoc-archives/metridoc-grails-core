@@ -69,7 +69,7 @@ class EzproxyWorkflow extends Script {
     Sql sql
     Map urlsToSearch = EzproxyWorkflowDefaults.URLS_TO_SEARCH
     String masterTable = "ez_master"
-    def pipeline = ["updateSchemaTarget", "disableKeysOnMasterTarget", "loadAndNormalizeTarget", "enableKeysOnMasterTarget"]
+    def pipeline = ["updateSchema", "disableKeysOnMasterTarget", "loadAndNormalizeTarget", "enableKeysOnMasterTarget"]
 
     Sql getSql() {
         if (sql) {
@@ -163,6 +163,7 @@ class EzproxyWorkflow extends Script {
 
     void updateSchema() {
         getSchemaUpdate().run()
+        getSchemaUpdate().updateSchema()
     }
 
     void loadFromFile() {
@@ -229,9 +230,9 @@ class EzproxyWorkflow extends Script {
     @Override
     Object run() {
         JobBuilder.isJob(this)
-        target(updateSchemaTarget: "udpates the schema") {
-            updateSchema()
-        }
+        includeTargets << _UpdateSchema
+        liquibaseDataSource = dataSource
+        liquibaseFile = "schemas/ezproxy/ezproxySchema.xml"
 
         target(disableKeysOnMasterTarget: "disables keys on master") {
             disableKeysOnMaster()
@@ -245,7 +246,11 @@ class EzproxyWorkflow extends Script {
             enableKeysOnMaster()
         }
 
-        depends(pipeline)
+        target(runEzproxy: "runs the ezproxy pipeline") {
+            depends(pipeline)
+        }
+
+        executeTargets(["runEzproxy"])
     }
 }
 
