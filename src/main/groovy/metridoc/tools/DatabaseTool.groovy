@@ -14,8 +14,10 @@
  */
 package metridoc.tools
 
-import javax.sql.DataSource
 import metridoc.plugins.sql.SqlPlus
+import org.codehaus.gant.GantBinding
+
+import javax.sql.DataSource
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,18 +33,20 @@ class DatabaseTool {
 
     DatabaseTool() {}
 
+    DatabaseTool(GantBinding binding) {
+        this.binding = binding
+    }
+
     SqlPlus getSql() {
         def defaultDataSource = getDefaultDataSource()
-        if(defaultDataSource) {
+        if (defaultDataSource) {
             return new SqlPlus(defaultDataSource)
         }
 
         return null
     }
 
-    DatabaseTool(Binding binding) {
-        this.binding = binding
-    }
+
 
     DataSource getDefaultDataSource() {
 
@@ -67,7 +71,7 @@ class DatabaseTool {
 
         def defaultDataSource = getDefaultDataSource()
 
-        if(defaultDataSource) {
+        if (defaultDataSource) {
             return getDatabaseType(defaultDataSource)
         } else {
             return null

@@ -17,6 +17,7 @@ package metridoc.workflows
 import groovy.sql.Sql
 import groovy.util.logging.Slf4j
 import metridoc.dsl.JobBuilder
+import metridoc.scripts._TableKeyOperations
 import metridoc.scripts._UpdateSchema
 import metridoc.utils.SystemUtils
 
@@ -141,31 +142,6 @@ class EzproxyWorkflow extends Script {
         loadFileIntoTable = new LoadFileIntoTable(loadFileToTableConfig)
     }
 
-    synchronized getSchemaUpdate() {
-        if (schemaUpdate) {
-            return schemaUpdate
-        }
-
-        Binding binding = new Binding()
-
-        if (!schemaUpdateConfig.containsKey("dataSource")) {
-            schemaUpdateConfig.liquibaseDataSource = dataSource
-        }
-
-        if (!schemaUpdateConfig.containsKey("schema")) {
-            schemaUpdateConfig.liquibaseFile = "schemas/ezproxy/ezproxySchema.xml"
-        }
-
-        binding.variables.putAll(schemaUpdateConfig)
-        schemaUpdate = new _UpdateSchema(binding)
-        return schemaUpdate
-    }
-
-    void updateSchema() {
-        getSchemaUpdate().run()
-        getSchemaUpdate().updateSchema()
-    }
-
     void loadFromFile() {
         getLoadFileIntoTable().run()
     }
@@ -227,10 +203,14 @@ class EzproxyWorkflow extends Script {
         }
     }
 
-    @Override
-    Object run() {
+
+    def loadGantScriptsAndTargets() {
         JobBuilder.isJob(this)
+
+        binding.dataSource = dataSource
         includeTargets << _UpdateSchema
+        includeTargets << _TableKeyOperations
+
         liquibaseDataSource = dataSource
         liquibaseFile = "schemas/ezproxy/ezproxySchema.xml"
 
@@ -249,6 +229,11 @@ class EzproxyWorkflow extends Script {
         target(runEzproxy: "runs the ezproxy pipeline") {
             depends(pipeline)
         }
+    }
+
+    @Override
+    Object run() {
+        loadGantScriptsAndTargets()
 
         executeTargets(["runEzproxy"])
     }

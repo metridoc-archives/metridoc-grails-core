@@ -17,6 +17,7 @@ package metridoc.dsl
 import gant.ext.GantActivator
 import metridoc.plugins.PluginDB
 import org.apache.tools.ant.Project
+import org.codehaus.gant.GantBinding
 import org.slf4j.LoggerFactory
 
 /**
@@ -74,9 +75,13 @@ class JobBuilder {
             Might not be possible since the activator needs to happen first in order to setup logging and avoid
             the slf4j message
          */
-        GantActivator.activateGant(job)
+        def gantIsAlreadyLoaded = job.binding instanceof GantBinding
+        if (!gantIsAlreadyLoaded) {
+            GantActivator.activateGant(job)
 
-        LoggerFactory.getLogger(JobBuilder.class).debug("gant activated")
+            LoggerFactory.getLogger(JobBuilder.class).debug("gant activated")
+        }
+
         //TODO:add functionality when the plugin is a script as opposed to a mixin
         PluginDB.getInstance().getPlugins("job").each {Class plugin ->
             job.metaClass.mixin(plugin)

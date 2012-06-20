@@ -14,11 +14,14 @@
  */
 package metridoc.tools
 
-import javax.sql.DataSource
+import metridoc.dsl.JobBuilder
+import org.codehaus.gant.GantBinding
+import org.junit.Before
+import org.junit.Test
+
 import java.sql.Connection
 import java.sql.DatabaseMetaData
-import org.junit.Test
-import org.junit.Before
+import javax.sql.DataSource
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,7 +31,7 @@ import org.junit.Before
  */
 class DatabaseToolTest {
 
-    def binding = new Binding()
+    def binding = new GantBinding()
     def tool = new DatabaseTool(binding)
     def fooUrl = "jdbc:foo:bar"
 
@@ -62,6 +65,13 @@ class DatabaseToolTest {
     @Test(expected = AssertionError)
     void "if the url is invalid, like jdbc_blah, then an assertion error is thrown"() {
         tool.getDatabaseType("jdbc_blah")
+    }
+
+    @Test
+    void "make sure it can be included as a tool"() {
+        def script = new DatabaseToolScript()
+        script.run()
+        assert script.databaseTool
     }
 
     def fooDataSource = [
@@ -99,4 +109,13 @@ class DatabaseToolTest {
             fooUrl
         }
     ] as DatabaseMetaData
+}
+
+class DatabaseToolScript extends Script {
+
+    @Override
+    Object run() {
+        JobBuilder.isJob(this)
+        includeTool << DatabaseTool
+    }
 }

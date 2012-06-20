@@ -27,6 +27,9 @@ import org.junit.Test
  */
 class EzproxyWorkflowTest {
 
+    def dataSource = DataSourceUtils.embeddedDataSource()
+    def sql = new Sql(dataSource)
+
     @Test
     void testGetLoadFileIntoTableDefaults() {
         def dataSource = DataSourceUtils.embeddedDataSource()
@@ -53,5 +56,24 @@ class EzproxyWorkflowTest {
 
         def sql = new Sql(dataSource)
         sql.firstRow("select count(*) from ezproxy_loading")
+    }
+
+    @Test
+    void testEnablingKeys() {
+        def workflow = new EzproxyWorkflow(
+            dataSource: dataSource,
+            pipeline: ["enableTableKeys"]
+        )
+        workflow.loadGantScriptsAndTargets()
+
+        def enableKeysRan = false
+        workflow.keyOperationTables.add "foo"
+        workflow.doEnableKeys.put("h2") {
+            enableKeysRan = true
+        }
+
+        workflow.run()
+
+        assert enableKeysRan
     }
 }
