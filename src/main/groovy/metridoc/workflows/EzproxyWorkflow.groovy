@@ -70,7 +70,7 @@ class EzproxyWorkflow extends Script {
     Sql sql
     Map urlsToSearch = EzproxyWorkflowDefaults.URLS_TO_SEARCH
     String masterTable = "ez_master"
-    def pipeline = ["updateSchema", "disableKeysOnMasterTarget", "loadAndNormalizeTarget", "enableKeysOnMasterTarget"]
+    def pipeline = ["updateSchema", "loadAndNormalizeTarget"]
 
     Sql getSql() {
         if (sql) {
@@ -163,14 +163,21 @@ class EzproxyWorkflow extends Script {
                     return result
                 }
                 if (continueProcessing()) {
+                    log.info("loading from file")
                     loadFromFile()
+                    log.info("normalizing data")
                     normalize()
+                    log.info("normalizing url references")
                     normalizeUrlReferences()
+                    log.info("truncating loading file")
                     String truncate = "truncate ${loadFileIntoTable.loadingTable}"
                     getSql().execute(truncate)
+                    log.info("finished loading 1 file")
                 }
             }
         }
+
+        log.info("finished loading all files")
     }
 
     void normalize() {

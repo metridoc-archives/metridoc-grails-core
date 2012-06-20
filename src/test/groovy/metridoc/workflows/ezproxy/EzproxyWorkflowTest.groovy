@@ -31,21 +31,6 @@ class EzproxyWorkflowTest {
     def sql = new Sql(dataSource)
 
     @Test
-    void testGetLoadFileIntoTableDefaults() {
-        def dataSource = DataSourceUtils.embeddedDataSource()
-        def workflow = new EzproxyWorkflow(
-            dataSource: dataSource,
-            schemaUpdateConfig: [
-                runLiquibase: false
-            ]
-        )
-        def schemaUpdate = workflow.getSchemaUpdate()
-
-        assert !schemaUpdate.runLiquibase
-        assert dataSource == schemaUpdate.liquibaseDataSource
-    }
-
-    @Test
     void testUpdatingTheSchema() {
         def dataSource = DataSourceUtils.embeddedDataSource()
 
