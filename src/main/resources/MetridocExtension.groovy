@@ -14,8 +14,8 @@
  */
 
 import metridoc.console.RunJob
-import metridoc.plugins.PropertyPlugin
 import metridoc.plugins.RunnerPlugin
+import metridoc.plugins._PropertyPlugin
 import metridoc.plugins.camel.CamelExtensionPlugin
 import metridoc.plugins.camel.CamelPlugin
 import metridoc.plugins.datasource.DataSourcePlugin
@@ -27,19 +27,13 @@ import metridoc.plugins.impl.iterators.XlsIterator
 import metridoc.plugins.schema.SchemaPlugin
 import metridoc.plugins.sql.IdPlugin
 import metridoc.plugins.sql.UrlPlugin
+import metridoc.plugins.sushi.SushiPlugin
 import metridoc.sql.DefaultBulkSqlCalls
 import metridoc.utils.ClassUtils
-import metridoc.plugins.sushi.SushiPlugin
-import metridoc.plugins.table.impl.CSVFileWrapper
-import metridoc.plugins.table.impl.JSONFileWrapper
-import metridoc.plugins.table.impl.JSONHttpWrapper
-import metridoc.plugins.table.impl.MockDatasource
-import metridoc.plugins.table.impl.MySQLWrapper
-import metridoc.plugins.table.impl.SQLStatementDatasource
-import metridoc.plugins.table.impl.XLSFileWrapper
+import metridoc.plugins.table.impl.*
 
 plugins = [
-    PropertyPlugin.class,
+    _PropertyPlugin.class,
     RunnerPlugin.class,
     DataSourcePlugin.class,
     SchemaPlugin.class,
@@ -65,7 +59,7 @@ try {
 try {
     ClassUtils.defaultClassLoader.loadClass("org.apache.http.client.HttpClient")
     plugins.add(SushiPlugin)
-} catch(Exception ex){}
+} catch (Exception ex) {}
 
 try {
     ClassUtils.defaultClassLoader.loadClass("org.apache.poi.ss.usermodel.Workbook")

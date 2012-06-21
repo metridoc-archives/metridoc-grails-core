@@ -84,7 +84,11 @@ class JobBuilder {
 
         //TODO:add functionality when the plugin is a script as opposed to a mixin
         PluginDB.getInstance().getPlugins("job").each {Class plugin ->
-            job.metaClass.mixin(plugin)
+            if (Script.isAssignableFrom(plugin)) {
+                job.includeTargets << plugin
+            } else {
+                job.metaClass.mixin(plugin)
+            }
         }
     }
 

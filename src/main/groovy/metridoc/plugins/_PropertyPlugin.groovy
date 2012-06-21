@@ -14,38 +14,40 @@
  */
 package metridoc.plugins
 
-import groovy.util.logging.Slf4j
 import metridoc.utils.PropertyUtils
 
-/**
- * Plugin to load properties from the classpath ro file system. For more details please see
- * <a href="http://code.google.com/p/metridoc/wiki/PropertyPlugin" target="_blank">http://code.google.com/p/metridoc/wiki/PropertyPlugin</a>
- */
-@Plugin(category = "job")
-@Slf4j
-class PropertyPlugin {
+loadProperties = {Object[] params ->
+    assert params.size() > 0: "there must be at least one parameter in loadProperties"
+    def firstValueIsBoolean = params[0] instanceof Boolean
+    def badArgs = firstValueIsBoolean && params.size() < 2
+    assert !badArgs: "loadProperties must have either a list of files, or a boolean with a list of files"
 
-    def static loadProperties(Script script, String... propertyFiles) {
-        def util = new PropertyUtils()
-        def binding = script.getBinding()
-        util.loadProperties(binding, propertyFiles)
+    if (firstValueIsBoolean) {
+        doLoadProperties(params[0], params[1..params.size() - 1])
+    } else {
+        doLoadProperties(params)
     }
+}
 
-    def static loadProperties(Script script, boolean ignoreFileNotFound, String... propertyFiles) {
-        try {
-            loadProperties(script, propertyFiles)
-        } catch (FileNotFoundException ex) {
-            if (ignoreFileNotFound) {
-                log.warn("Could not find file(s) ${propertyFiles}")
-            } else {
-                throw ex
-            }
+def doLoadProperties(String... propertyFiles) {
+    def util = new PropertyUtils()
+    util.loadProperties(binding, propertyFiles)
+}
+
+def doLoadProperties(boolean ignoreFileNotFound, String... propertyFiles) {
+    try {
+        loadProperties(propertyFiles)
+    } catch (FileNotFoundException ex) {
+        if (ignoreFileNotFound) {
+            binding.message("property-tool", "Could not find file(s) ${propertyFiles}")
+        } else {
+            throw ex
         }
     }
+}
 
-    static ConfigObject config(Script script, Closure closure) {
-        return new ConfigSlurper().parse(new WrappedClosureScript(script.binding, closure))
-    }
+config = {Closure closure ->
+    return new ConfigSlurper().parse(new WrappedClosureScript(binding, closure))
 }
 
 class WrappedClosureScript extends Script {

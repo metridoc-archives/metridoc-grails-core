@@ -14,7 +14,8 @@
  */
 package metridoc.plugins
 
-import org.junit.Test;
+import metridoc.dsl.JobBuilder
+import org.junit.Test
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,6 +27,28 @@ import org.junit.Test;
 public class PropertyPluginTest {
 
     @Test
+    void "error is thrown if loadProperties does not have parameters"() {
+        def script = new BadPropertyPluginTest()
+        try {
+            script.run()
+            throw new RuntimeException("exception should have occurred")
+        } catch (AssertionError error) {
+        }
+    }
+
+    @Test
+    void "error should occur if the first value is a boolean and there are no other values"() {
+        def script = new BadPropertyPluginTest()
+
+        try {
+            script.firstValue = true
+            script.run()
+            throw new RuntimeException("exception should have occurred")
+        } catch (AssertionError error) {
+        }
+    }
+
+    @Test
     void testConfigCreation() {
         def script = new PropertyPluginTestScript()
         script.run()
@@ -35,19 +58,34 @@ public class PropertyPluginTest {
 }
 
 
+class BadPropertyPluginTest extends Script {
+
+    @Override
+    Object run() {
+        JobBuilder.isJob(this)
+        if (binding.variables.firstValue) {
+            loadProperties(firstValue)
+        } else {
+            loadProperties()
+        }
+    }
+}
+
 class PropertyPluginTestScript extends Script {
     @Override
     Object run() {
-        use(PropertyPlugin) {
-            bar = "foobar"
-            blam = "bam"
-            config = this.config {
-                bar {
-                    blam = "bam"
-                }
-                foo {
-                    bar = bar.blam
-                }
+
+        JobBuilder.isJob(this)
+
+        bar = "foobar"
+        blam = "bam"
+
+        config = config {
+            bar {
+                blam = "bam"
+            }
+            foo {
+                bar = bar.blam
             }
         }
     }
