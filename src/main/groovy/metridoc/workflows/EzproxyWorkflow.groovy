@@ -242,7 +242,8 @@ class EzproxyWorkflow extends Script {
     Object run() {
         loadGantScriptsAndTargets()
 
-        executeTargets(["runEzproxy"])
+        runEzproxy()
+        message("ezproxy", "finished running the ezproxy workflow")
     }
 }
 

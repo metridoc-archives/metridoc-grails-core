@@ -14,13 +14,12 @@
  */
 package metridoc.camel.context
 
-import metridoc.utils.CamelUtils
 import org.apache.camel.impl.DefaultCamelContext
 import org.apache.camel.impl.DefaultCamelContextNameStrategy
+import org.apache.camel.impl.SimpleRegistry
 import org.apache.camel.spi.Registry
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.apache.camel.impl.SimpleRegistry
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,7 +35,7 @@ class MetridocCamelContext extends DefaultCamelContext {
 
 
     static MetridocCamelContext instance() {
-        if(defaultInstance) {
+        if (defaultInstance) {
             return defaultInstance
         }
 
@@ -61,12 +60,16 @@ class MetridocCamelContext extends DefaultCamelContext {
                 log.info("calling shutdown hook to stop camel")
                 if (this.status.stopped) {
                     log.debug("camel has already stopped, no need to stop it")
-
                 } else {
-                    CamelUtils.waitTillDone(this)
-                    this.stop()
+                    try {
+                        this.stop()
+                    } catch (Exception e) {
+                        log.error("Could not properly stop the camel context", e)
+                    }
                 }
             }
+
+            log.info("camel context has shutdown")
         }
     }
 }
