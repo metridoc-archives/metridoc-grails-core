@@ -15,6 +15,7 @@
 package metridoc.plugins
 
 import metridoc.dsl.Job
+import metridoc.dsl.JobBuilder
 import metridoc.dsl.JobsHelper
 
 /**
@@ -27,9 +28,7 @@ class RunnerPlugin {
     def static runJob(Script self, Script script) {
         self.binding.variables.putAll(script.binding.variables)
         script.binding = self.binding
-        PluginDB.getInstance().getPlugins("job").each {Class plugin ->
-            script.metaClass.mixin(plugin)
-        }
+        JobBuilder.addPlugins(script)
         script.services = script.binding
         script.run()
     }

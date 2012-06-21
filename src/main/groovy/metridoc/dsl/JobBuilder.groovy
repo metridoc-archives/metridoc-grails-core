@@ -82,7 +82,10 @@ class JobBuilder {
             LoggerFactory.getLogger(JobBuilder.class).debug("gant activated")
         }
 
-        //TODO:add functionality when the plugin is a script as opposed to a mixin
+        addPlugins(job)
+    }
+
+    def static addPlugins(Script job) {
         PluginDB.getInstance().getPlugins("job").each {Class plugin ->
             if (Script.isAssignableFrom(plugin)) {
                 job.includeTargets << plugin
