@@ -23,9 +23,9 @@ loadProperties = {Object[] params ->
     assert !badArgs: "loadProperties must have either a list of files, or a boolean with a list of files"
 
     if (firstValueIsBoolean) {
-        doLoadProperties(params[0], params[1..params.size() - 1])
+        doLoadProperties(params[0], params[1..params.size() - 1] as String[])
     } else {
-        doLoadProperties(params)
+        doLoadProperties(params as String[])
     }
 }
 
