@@ -20,6 +20,7 @@ import org.apache.camel.Endpoint
 import org.apache.camel.Exchange
 import org.apache.camel.Processor
 import org.apache.camel.builder.RouteBuilder
+import org.apache.camel.component.file.remote.RemoteFileConsumer
 import org.apache.camel.impl.DefaultConsumer
 import org.apache.camel.impl.ScheduledPollConsumer
 import org.apache.camel.impl.ScheduledPollEndpoint
@@ -135,5 +136,14 @@ class ScheduledPollConsumerWrapper extends DefaultConsumer {
 
     void doStart() throws Exception {
         wrappedConsumer.run()
+        try {
+            if (wrappedConsumer instanceof RemoteFileConsumer) {
+                wrappedConsumer.disconnect()
+            }
+        } catch (ClassNotFoundException e) {
+            //do nothing
+        } catch (Exception e1) {
+            log.warn("Could not close connection to ${getEndpoint().getEndpointUri()}", e1)
+        }
     }
 }
