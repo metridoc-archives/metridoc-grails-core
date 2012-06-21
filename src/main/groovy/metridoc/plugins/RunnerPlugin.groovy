@@ -17,6 +17,7 @@ package metridoc.plugins
 import metridoc.dsl.Job
 import metridoc.dsl.JobBuilder
 import metridoc.dsl.JobsHelper
+import org.codehaus.gant.GantBinding
 
 /**
  *
@@ -26,6 +27,10 @@ import metridoc.dsl.JobsHelper
 @Plugin(category = "job")
 class RunnerPlugin {
     def static runJob(Script self, Script script) {
+
+        if (!(self.binding instanceof GantBinding)) {
+            JobBuilder.isJob(self)
+        }
         self.binding.variables.putAll(script.binding.variables)
         script.binding = self.binding
         JobBuilder.addPlugins(script)

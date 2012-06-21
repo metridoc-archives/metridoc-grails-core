@@ -59,7 +59,7 @@ class PluginDB {
 
     void addPlugin(Class clazz) {
         Plugin plugin = clazz.getAnnotation(Plugin.class)
-        Assert.notNull(plugin || Script.isAssignableFrom(clazz), "The class ${clazz} is not a plugin")
+        Assert.isTrue(plugin || Script.isAssignableFrom(clazz), "The class ${clazz} is not a plugin")
         def category = plugin ? plugin.category() : "job"
         def notThere = !plugins.containsKey(category)
 
