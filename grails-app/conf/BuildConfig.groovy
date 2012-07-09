@@ -73,6 +73,5 @@ grails.project.dependency.resolution = {
         build ":tomcat:$grailsVersion"
         build ":release:2.0.3"
         build ":svn:1.0.2"
-        build ":rest-client-builder:1.0.2"
     }
 }
