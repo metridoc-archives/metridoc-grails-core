@@ -1,0 +1,36 @@
+*Purpose*:
+
+The @create-report@ command creates a new Grails executable script that can be run with the @grails@ command from a terminal window.
+
+*Examples*:
+
+The command:
+@grails create-report foo@ creates basic files for report foo such as:
+
+@grails-app/conf/metridoc/FooConfig.groovy@ (empty)
+
+@grails-app/conf/FooResources.groovy@
+
+@grails-app/views/reports/foo/reports/_foo.gsp@ (empty)
+
+@grails-app/controllers/metridoc/foo/FooController.groovy@
+
+@grails-app/services/metridoc/foo/FooService.groovy@
+
+@grails-app/schemas/foo/fooSchema.xml@
+
+@grails-app/schemas/foo/foo.changelog-01.xml@
+
+@scripts/RunFoo.groovy@ (empty)
+
+*Description*:
+
+The command will generate basic files for user-defined report, depended on which user can further develop their customized report.
+
+Usage:
+
+@grails create-report \[name\] @
+
+Fired Events:
+
+

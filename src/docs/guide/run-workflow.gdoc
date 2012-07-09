@@ -1,0 +1,18 @@
+*Purpose*:
+
+The @run workflow@ command creates ...
+
+*Examples*:
+
+The command:
+@grails run workflow@ basically do :
+
+*Description*:
+
+
+
+Usage:
+
+
+
+Fired Events:

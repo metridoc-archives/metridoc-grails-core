@@ -1,0 +1,36 @@
+*Purpose*:
+
+The @compile@ command cleans the @src/templates/conf@ directory and build new fileset in it.
+
+*Examples*:
+
+The command:
+@grails compile@ cleans directory @/src/templates/conf@
+
+copies new files into the cleaned directory includes:
+
+    @/grails-app/conf/BootStrap.groovy@
+
+    @/grails-app/conf/Config.groovy@
+
+    @/grails-app/conf/BuildConfig.groovy@
+
+    @/grails-app/conf/DataSource.groovy@
+
+    @/grails-app/conf/UrlMappings.groovy@
+
+    @/grails-app/conf/spring/resources.groovy@
+
+copies the whole directory @/grails-app/conf/schemas@ to @/test/unit/schemas@
+
+*Description*:
+
+
+
+Usage:
+
+
+
+Fired Events:
+
+
