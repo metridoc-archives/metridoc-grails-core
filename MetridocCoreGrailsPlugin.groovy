@@ -18,14 +18,8 @@ class MetridocCoreGrailsPlugin {
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.0.4 > *"
     // the other plugins this plugin depends on
-    def dependsOn = [
-        hibernate: "2.0.4",
-        jquery: "1.7.1",
-        "jquery-ui": "1.8.15",
-        resources: "1.1.6",
-        shiro: "1.1.3",
-        webxml: "1.4.1",
-    ]
+    def dependsOn = [:]
+
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
         "grails-app/views/error.gsp",
