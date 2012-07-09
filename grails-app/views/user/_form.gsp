@@ -29,9 +29,15 @@
 <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'passwordHash', 'error')} ">
 	<label for="passwordHash">
 		<g:message code="shiroUser.passwordHash.label" default="Password Hash" />
-		
 	</label>
 	<g:textField name="passwordHash" value="${shiroUserInstance?.passwordHash}"/>
+</div>
+
+<div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field:'emailAddress','error')} ">
+    <label for="emailAddress">
+        <g:message code="shiroUser.emailAddress.label" default="Email"/>
+    </label>
+    <g:textField name="emailAddress" value="${shiroUserInstance?.emailAddress}"/>
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'permissions', 'error')} ">
@@ -39,7 +45,7 @@
 		<g:message code="shiroUser.permissions.label" default="Permissions" />
 		
 	</label>
-	
+	<g:textField name="permissions" value="${shiroUserInstance?.permissions}"/>
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'roles', 'error')} ">

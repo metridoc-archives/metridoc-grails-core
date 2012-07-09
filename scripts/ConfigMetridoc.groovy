@@ -33,55 +33,22 @@ includeTargets << grailsScript("_GrailsArgParsing")
 
 target(main: "Config metridoc-reports plugin") {
     depends(parseArguments)
-
     def copyFileFromMap = new HashMap<File, String>();
-    def ifOverWriteMap = new HashMap<File, String>();
 
-    def bootStrapFile = new File("${basedir}/grails-app/conf/BootStrap.groovy")
-    copyFileFromMap.put(bootStrapFile,"${metridocCorePluginDir}/src/templates/conf/BootStrap.groovy")
-    ifOverWriteMap.put(bootStrapFile,'n')
-    def configFile = new File("${basedir}/grails-app/conf/Config.groovy")
-    copyFileFromMap.put(configFile, "${metridocCorePluginDir}/src/templates/conf/Config.groovy")
-    ifOverWriteMap.put(configFile, 'n')
-    def buildConfigFile = new File("${basedir}/grails-app/conf/BuildConfig.groovy")
-    copyFileFromMap.put(buildConfigFile, "${metridocCorePluginDir}/src/templates/conf/BuildConfig.groovy")
-    ifOverWriteMap.put(buildConfigFile, 'n')
-    def dataSourceFile = new File("${basedir}/grails-app/conf/DataSource.groovy")
-    copyFileFromMap.put(dataSourceFile,"${metridocCorePluginDir}/src/templates/conf/DataSource.groovy")
-    ifOverWriteMap.put(dataSourceFile,'n')
-    def urlMappingFile = new File("${basedir}/grails-app/conf/UrlMappings.groovy")
-    copyFileFromMap.put(urlMappingFile, "${metridocCorePluginDir}/src/templates/conf/UrlMappings.groovy")
-    ifOverWriteMap.put(urlMappingFile, 'n')
-    def resourcesFile = new File("${basedir}/grails-app/conf/spring/resources.groovy")
-    copyFileFromMap.put(resourcesFile, "${metridocCorePluginDir}/src/templates/conf/spring/resources.groovy")
-    ifOverWriteMap.put(resourcesFile, 'n')
-    def layoutsFile = new File("${basedir}/grails-app/views/layouts/main.gsp")
-    copyFileFromMap.put(layoutsFile, "${metridocCorePluginDir}/grails-app/views/layouts/main.gsp")
-    ifOverWriteMap.put(layoutsFile, 'n')
-    def indexFile = new File("${basedir}/grails-app/views/index.gsp")
-    copyFileFromMap.put(indexFile, "${metridocCorePluginDir}/grails-app/views/index.gsp")
-    ifOverWriteMap.put(indexFile, 'n')
-    def mainCssFile = new File("${basedir}/web-app/css/main.css")
-    copyFileFromMap.put(mainCssFile, "${metridocCorePluginDir}/web-app/css/main.css")
-    ifOverWriteMap.put(mainCssFile, 'n')
-    def mobileCssFile = new File("${basedir}/web-app/css/mobile.css")
-    copyFileFromMap.put(mobileCssFile, "${metridocCorePluginDir}/web-app/css/mobile.css")
-    ifOverWriteMap.put(mobileCssFile, 'n')
-    def errorCssFile = new File("${basedir}/web-app/css/errors.css")
-    copyFileFromMap.put(errorCssFile, "${metridocCorePluginDir}/web-app/css/errors.css")
-    ifOverWriteMap.put(errorCssFile, 'n')
-    def appFile = new File("${basedir}/web-app/js/application.js")
-    copyFileFromMap.put(appFile, "${metridocCorePluginDir}/web-app/js/application.js")
-    ifOverWriteMap.put(appFile, 'n')
+    mapFile(copyFileFromMap, "${basedir}/grails-app/conf/BootStrap.groovy", "${metridocCorePluginDir}/src/templates/conf/BootStrap.groovy")
+    mapFile(copyFileFromMap, "${basedir}/grails-app/conf/Config.groovy", "${metridocCorePluginDir}/src/templates/conf/Config.groovy")
+    mapFile(copyFileFromMap, "${basedir}/grails-app/conf/DataSource.groovy", "${metridocCorePluginDir}/src/templates/conf/DataSource.groovy")
+    mapFile(copyFileFromMap, "${basedir}/grails-app/conf/UrlMappings.groovy", "${metridocCorePluginDir}/src/templates/conf/UrlMappings.groovy")
+    mapFile(copyFileFromMap, "${basedir}/grails-app/conf/spring/resources.groovy", "${metridocCorePluginDir}/src/templates/conf/spring/resources.groovy")
 
     copyFileFromMap.each {toFile, fromFile ->
         def splitName = toFile.name.split("/")
         def name = splitName[splitName.size()-1]
         if ((!argsMap['o'])&&(toFile.exists())) {
-            ant.input(addproperty: "ifOverWrite${name}", validargs:"y,n", message: "${toFile} already exists, do you want overwrite them?[y->yes,n->no]:")
+            ant.input(addproperty: "ifOverWrite${name}", validargs:"y,n", message: "${toFile} already exists, do you want overwrite it?[y->yes,n->no]:")
         }
         if ((argsMap['o'])||(ant.project.getProperty("ifOverWrite${name}") != 'n')) {
-            println "Config ${name}"
+            println "copying ${fromFile} to ${toFile}"
             ant.mkdir(dir: toFile.getCanonicalPath().replace("/${name}",""))
             ant.copy(file: "${fromFile}",
                     tofile: "${toFile.getCanonicalPath()}")
@@ -89,7 +56,10 @@ target(main: "Config metridoc-reports plugin") {
             println "Ignored ${name}"
         }
     }
+}
 
+void mapFile(HashMap<File, String> fileMap, String toFile, String fromFile){
+    fileMap.put(new File("${toFile}"), fromFile)
 }
 
 setDefaultTarget(main)

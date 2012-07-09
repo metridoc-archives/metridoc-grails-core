@@ -36,16 +36,18 @@ class UserController {
     }
 
     def save() {
-        log.info( params )
         def preConfiguredPassword = params.get('passwordHash')
         def password = preConfiguredPassword ? preConfiguredPassword : DEFAULT_PASSWORD
 
         if (DEFAULT_PASSWORD == password) {
             log.warn "Creating a user with default password '${DEFAULT_PASSWORD}'.  Change this immediatelly"
         }
-        log.info params.get('passwordHash')
-        def shiroUserInstance = new ShiroUser(username: params.get('username'), passwordHash: new Sha256Hash(params.get('passwordHash').toHex()))
-        shiroUserInstance.addToPermissions("${params.get('permission')}")
+        def shiroUserInstance = new ShiroUser(username: params.get('username'), passwordHash: new Sha256Hash(params.get('passwordHash')).toHex(), emailAddress: params.get('emailAddress'))
+        def permissions = params.get('permissions').toString().split(',')
+        permissions.each {
+            shiroUserInstance.addToPermissions("${it}")
+        }
+
         if (!shiroUserInstance.save(flush: true)) {
             render(view: "/user/create", model: [shiroUserInstance: shiroUserInstance])
             return
@@ -97,6 +99,7 @@ class UserController {
         }
 
         shiroUserInstance.properties = params
+        shiroUserInstance.properties.put('permissions',params.get('permissions').toString().replace('[','').replace(']','').split(','))
 
         if (!shiroUserInstance.save(flush: true)) {
             render(view: "/user/edit", model: [shiroUserInstance: shiroUserInstance])
