@@ -18,7 +18,7 @@ eventCompileStart = {
     println "Building new src/templates/conf dir"
     ant.copy(todir:"${basedir}/src/templates/conf") {
         fileset(dir:"${basedir}/grails-app/conf") {
-            include(name:"BootStrap.groovy")
+            include(name:"MetridocBootStrap.groovy")
             include(name:"Config.groovy")
             include(name:"BuildConfig.groovy")
             include(name:"DataSource.groovy")

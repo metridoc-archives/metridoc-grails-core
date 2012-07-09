@@ -37,8 +37,8 @@ target(main: "Config metridoc-reports plugin") {
     def copyFileFromMap = new HashMap<File, String>();
     def ifOverWriteMap = new HashMap<File, String>();
 
-    def bootStrapFile = new File("${basedir}/grails-app/conf/BootStrap.groovy")
-    copyFileFromMap.put(bootStrapFile,"${metridocReportsPluginDir}/src/templates/conf/BootStrap.groovy")
+    def bootStrapFile = new File("${basedir}/grails-app/conf/MetridocBootStrap.groovy")
+    copyFileFromMap.put(bootStrapFile,"${metridocReportsPluginDir}/src/templates/conf/MetridocBootStrap.groovy")
     ifOverWriteMap.put(bootStrapFile,'n')
     def configFile = new File("${basedir}/grails-app/conf/Config.groovy")
     copyFileFromMap.put(configFile, "${metridocReportsPluginDir}/src/templates/conf/Config.groovy")
