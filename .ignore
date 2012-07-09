@@ -1,0 +1,4 @@
+.idea
+target
+grails-metridoc-core*
+plugin.xml

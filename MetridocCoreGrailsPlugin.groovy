@@ -14,7 +14,7 @@
  */
 class MetridocCoreGrailsPlugin {
     // the plugin version
-    def version = "0.50"
+    def version = "0.50-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.0.4 > *"
     // the other plugins this plugin depends on
