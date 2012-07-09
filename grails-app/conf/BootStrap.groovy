@@ -39,7 +39,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils
 * or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
-class MetridocBootStrap {
+class BootStrap {
 
     def grailsApplication
     final static DEFAULT_PASSWORD = "password"
