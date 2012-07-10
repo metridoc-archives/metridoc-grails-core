@@ -14,6 +14,14 @@
  */
 package metridoc.targets
 
+getLocalDrivers = {
+
+}
+
+target(loadDrivers: "loads any drivers that are under <grails.home>/drivers into the root loader") {
+
+}
+
 target(configureDataSources: "finds all variables in the config that start with dataSource and creates dataSources from them") {
     assert binding.hasVariable("config"): "config has not been set yet"
     config.each {key, value ->
