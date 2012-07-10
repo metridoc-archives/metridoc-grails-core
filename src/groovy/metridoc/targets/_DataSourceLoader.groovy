@@ -14,12 +14,20 @@
  */
 package metridoc.targets
 
+import org.apache.commons.lang.SystemUtils
+
 getLocalDrivers = {
 
 }
 
 target(loadDrivers: "loads any drivers that are under <grails.home>/drivers into the root loader") {
-
+    //TODO: should make this reletive to the grailsWorkDir variable
+    def driversDir = new File("${SystemUtils.USER_HOME}/.grails/drivers")
+    if(driversDir.exists()) {
+        driversDir.eachFile {
+            rootLoader.addURL(it.toURI().toURL())
+        }
+    }
 }
 
 target(configureDataSources: "finds all variables in the config that start with dataSource and creates dataSources from them") {
