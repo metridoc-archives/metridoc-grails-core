@@ -35,7 +35,6 @@ target(main: "Config metridoc-reports plugin") {
     depends(parseArguments)
     def copyFileFromMap = new HashMap<File, String>();
 
-    mapFile(copyFileFromMap, "${basedir}/grails-app/conf/BootStrap.groovy", "${metridocCorePluginDir}/src/templates/conf/BootStrap.groovy")
     mapFile(copyFileFromMap, "${basedir}/grails-app/conf/Config.groovy", "${metridocCorePluginDir}/src/templates/conf/Config.groovy")
     mapFile(copyFileFromMap, "${basedir}/grails-app/conf/DataSource.groovy", "${metridocCorePluginDir}/src/templates/conf/DataSource.groovy")
     mapFile(copyFileFromMap, "${basedir}/grails-app/conf/UrlMappings.groovy", "${metridocCorePluginDir}/src/templates/conf/UrlMappings.groovy")
