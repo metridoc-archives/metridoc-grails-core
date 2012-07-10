@@ -18,6 +18,7 @@ import gant.ext.GantActivator
 import groovy.util.logging.Slf4j
 import metridoc.targets._CamelRouting
 import metridoc.targets._PropertiesLoader
+import metridoc.targets._DataSourceLoader
 import metridoc.tools.BulkSql
 import org.codehaus.gant.GantBinding
 import org.slf4j.LoggerFactory
@@ -73,6 +74,7 @@ class JobBuilder {
 
     def static addPlugins(Script job) {
         job.includeTargets << _PropertiesLoader
+        job.includeTargets << _DataSourceLoader
         job.includeTargets << _CamelRouting
         job.includeTool << BulkSql
     }
