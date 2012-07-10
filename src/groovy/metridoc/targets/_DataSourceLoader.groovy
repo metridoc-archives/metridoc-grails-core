@@ -16,17 +16,25 @@ package metridoc.targets
 
 import org.apache.commons.lang.SystemUtils
 
-getLocalDrivers = {
+getDatabaseDrivers = {
+    result = []
+    driverDirectory.eachFile {
+        if(it.name.endsWith(".jar")) {
+            result.add(it.toURI().toURL())
+        }
+    }
 
+    return result
 }
+
+
+driverDirectory = new File("${SystemUtils.USER_HOME}/.grails/drivers")
+
 
 target(loadDrivers: "loads any drivers that are under <grails.home>/drivers into the root loader") {
     //TODO: should make this reletive to the grailsWorkDir variable
-    def driversDir = new File("${SystemUtils.USER_HOME}/.grails/drivers")
-    if(driversDir.exists()) {
-        driversDir.eachFile {
-            rootLoader.addURL(it.toURI().toURL())
-        }
+    getDatabaseDrivers().each {
+        rootLoader.addURL(it)
     }
 }
 
