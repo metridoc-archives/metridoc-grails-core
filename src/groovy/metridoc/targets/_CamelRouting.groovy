@@ -21,6 +21,7 @@ import metridoc.utils.CamelUtils
 import org.apache.camel.builder.RouteBuilder
 import org.apache.camel.component.file.GenericFile
 import org.apache.camel.component.file.GenericFileFilter
+import metridoc.camel.SqlPlusComponent
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,6 +34,7 @@ if (!binding.hasVariable("camelContext")) {
     registry = new MetridocSimpleRegistry(binding)
     camelContext = new MetridocCamelContext(registry)
     template = camelContext.createProducerTemplate()
+    camelContext.addComponent("sqlplus", new SqlPlusComponent(camelContext))
     camelContext.start()
 }
 

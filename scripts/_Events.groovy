@@ -13,21 +13,26 @@
  * permissions and limitations under the License.
  */
 eventCompileStart = {
-    println "Deleting src/templates/conf dir "
-    ant.delete(dir:"${basedir}/src/templates/conf")
-    println "Building new src/templates/conf dir"
-    ant.copy(todir:"${basedir}/src/templates/conf") {
-        fileset(dir:"${basedir}/grails-app/conf") {
-            include(name:"BootStrap.groovy")
-            include(name:"Config.groovy")
-            include(name:"BuildConfig.groovy")
-            include(name:"DataSource.groovy")
-            include(name: "UrlMappings.groovy")
+    def baseDirText = basedir as String
+    def pluginDirText = metridocCorePluginDir as String
+    def isMetridocCorePlugin = (baseDirText == pluginDirText)
+    if (isMetridocCorePlugin) {
+        println "Deleting src/templates/conf dir "
+        ant.delete(dir:"${basedir}/src/templates/conf")
+        println "Building new src/templates/conf dir"
+        ant.copy(todir:"${basedir}/src/templates/conf") {
+            fileset(dir:"${basedir}/grails-app/conf") {
+                include(name:"BootStrap.groovy")
+                include(name:"Config.groovy")
+                include(name:"BuildConfig.groovy")
+                include(name:"DataSource.groovy")
+                include(name: "UrlMappings.groovy")
+            }
         }
-    }
-    ant.copy(todir: "${basedir}/src/templates/conf/spring"){
-        fileset(dir:"${basedir}/grails-app/conf/spring") {
-            include(name:"resources.groovy")
+        ant.copy(todir: "${basedir}/src/templates/conf/spring"){
+            fileset(dir:"${basedir}/grails-app/conf/spring") {
+                include(name:"resources.groovy")
+            }
         }
     }
 }
