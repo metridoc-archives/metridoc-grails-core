@@ -29,6 +29,17 @@ class _DataSourceLoaderTest {
         loader.config.dataSource_bar.username = "bar"
         loader.config.dataSource_bar.password = "fooPassword"
         loader.config.dataSource_bar.driverClassName = "foo.Driver"
+        loader.grailsConsole = [
+            info: {String message ->
+                //do nothing, just a mock
+            }
+        ]
+
+        loader.rootLoader = [
+            addURL: {
+                //do nothing, just a mock
+            }
+        ]
     }
 
     @Test

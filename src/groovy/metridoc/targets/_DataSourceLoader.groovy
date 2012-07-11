@@ -35,11 +35,13 @@ driverDirectory = new File("${SystemUtils.USER_HOME}/.grails/drivers")
 target(loadDrivers: "loads any drivers that are under <grails.home>/drivers into the root loader") {
     //TODO: should make this relative to the grailsWorkDir variable
     getDatabaseDrivers().each {
+        grailsConsole.info "loading driver $it"
         rootLoader.addURL(it)
     }
 }
 
 target(configureDataSources: "finds all variables in the config that start with dataSource and creates dataSources from them") {
+    depends(loadDrivers)
     assert binding.hasVariable("config"): "config has not been set yet"
     config.each {key, value ->
         if (key.startsWith("dataSource")) {
