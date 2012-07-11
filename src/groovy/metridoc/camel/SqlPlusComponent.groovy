@@ -18,6 +18,7 @@ import org.apache.camel.Endpoint
 import org.apache.camel.impl.DefaultComponent
 
 import javax.sql.DataSource
+import org.apache.camel.CamelContext
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,6 +35,13 @@ class SqlPlusComponent extends DefaultComponent {
     static final String FETCH_SIZE_MIN = "min";
     static final int DEFAULT_FETCH_SIZE = 10;
     static final int DEFAULT_BATCH_SIZE = 50;
+
+    SqlPlusComponent() {
+    }
+
+    SqlPlusComponent(CamelContext context) {
+        super(context)
+    }
 
     @Override
     protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) {
