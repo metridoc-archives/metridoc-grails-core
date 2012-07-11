@@ -3,6 +3,7 @@ package metridoc.targets
 import metridoc.dsl.JobBuilder
 import org.junit.Before
 import org.junit.Test
+import org.apache.commons.lang.SystemUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -84,5 +85,15 @@ class _DataSourceLoaderTest {
         loader.configureDataSources()
         assert 2 == createDataSourceTimesCalled
         assert 0 == dataSourceListByUserName.size()
+    }
+
+    @Test
+    void "test loading drivers form grails directory" () {
+        def driversDir = new File("${SystemUtils.USER_HOME}/.grails/drivers")
+        def hasDrivers = driversDir.exists() && driversDir.isDirectory() && driversDir.listFiles().length > 0
+
+        if(hasDrivers) {
+            assert loader.getDatabaseDrivers().size() > 0
+        }
     }
 }
