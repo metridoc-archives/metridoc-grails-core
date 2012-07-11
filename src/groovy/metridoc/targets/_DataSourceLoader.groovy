@@ -46,7 +46,7 @@ target(configureDataSources: "finds all variables in the config that start with 
     config.each {key, value ->
         if (key.startsWith("dataSource")) {
             def params = extractDataSourceParameters(key)
-            config."$key" = createDataSource(params)
+            this."$key" = createDataSource(params)
         }
     }
 }

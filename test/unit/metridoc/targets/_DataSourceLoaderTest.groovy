@@ -80,11 +80,14 @@ class _DataSourceLoaderTest {
             createDataSourceTimesCalled++
             assert 4 == args.size()
             assert dataSourceListByUserName.remove(args.username)
+            return args
         }
 
         loader.configureDataSources()
         assert 2 == createDataSourceTimesCalled
         assert 0 == dataSourceListByUserName.size()
+        assert loader.dataSource
+        assert loader.dataSource_bar
     }
 
     @Test
