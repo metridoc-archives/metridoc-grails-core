@@ -25,4 +25,5 @@ public interface IteratorCreator<T, U> {
     public static final String ITERATOR_CREATOR_PARAMETERS = "MetridocIteratorCreatorParameters"
 
     Iterator<U> create(T file, Map headers)
+    Iterator<U> create(T body)
 }

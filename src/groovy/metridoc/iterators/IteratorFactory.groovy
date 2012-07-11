@@ -52,4 +52,8 @@ class IteratorFactory implements IteratorCreator<GenericFile, List> {
         def iteratorCreator = chooseIterator(file)
         iteratorCreator.create(file, headers)
     }
+
+    Iterator<List> create(GenericFile file) {
+        create(file, [:])
+    }
 }

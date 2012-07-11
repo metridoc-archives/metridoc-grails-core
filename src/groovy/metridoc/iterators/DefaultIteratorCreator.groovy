@@ -33,5 +33,10 @@ abstract class DefaultIteratorCreator<T, U> extends DefaultIterator<U> implement
         doCreate(body)
     }
 
+    Iterator<U> create(T body) {
+        this.parameters = [:]
+        doCreate(body)
+    }
+
     abstract Iterator<U> doCreate(T file)
 }
