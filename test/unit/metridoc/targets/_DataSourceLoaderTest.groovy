@@ -1,7 +1,8 @@
 package metridoc.targets
 
-import org.junit.Test
 import metridoc.dsl.JobBuilder
+import org.junit.Before
+import org.junit.Test
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,11 +12,17 @@ import metridoc.dsl.JobBuilder
  */
 class _DataSourceLoaderTest {
 
-    @Test
-    void "test loading drivers"() {
-        def loader = new _DataSourceLoader()
+    def loader
+
+    @Before
+    void "setup script"() {
+        loader = new _DataSourceLoader()
         JobBuilder.isJob(loader)
         loader.run()
+    }
+
+    @Test
+    void "test loading drivers"() {
         loader.getDatabaseDrivers = {
             [new URL("http:foo"), new URL("http:bar")]
         }
@@ -29,5 +36,22 @@ class _DataSourceLoaderTest {
 
         loader.loadDrivers()
         assert 2 == urlCount
+    }
+
+    @Test
+    void "test extracting data source parameters"() {
+        loader.config = new ConfigObject()
+        loader.config.dataSource.username = "foo"
+        loader.config.dataSource.password = "fooPassword"
+        loader.config.dataSource.driverClassName = "foo.Driver"
+
+        def params = loader.extractDataSourceParameters("dataSource")
+        assert params
+        assert 3 == params.size()
+        assert "foo" == params.username
+        assert "fooPassword" == params.password
+        assert "foo.Driver" == params.driverClassName
+
+        assert !loader.extractDataSourceParameters("dataSource_bar")
     }
 }

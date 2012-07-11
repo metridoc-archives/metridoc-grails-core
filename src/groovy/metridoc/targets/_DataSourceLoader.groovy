@@ -14,12 +14,13 @@
  */
 package metridoc.targets
 
+import org.apache.commons.dbcp.BasicDataSource
 import org.apache.commons.lang.SystemUtils
 
 getDatabaseDrivers = {
     result = []
     driverDirectory.eachFile {
-        if(it.name.endsWith(".jar")) {
+        if (it.name.endsWith(".jar")) {
             result.add(it.toURI().toURL())
         }
     }
@@ -41,8 +42,27 @@ target(loadDrivers: "loads any drivers that are under <grails.home>/drivers into
 target(configureDataSources: "finds all variables in the config that start with dataSource and creates dataSources from them") {
     assert binding.hasVariable("config"): "config has not been set yet"
     config.each {key, value ->
-
+        if (key.startsWith("dataSource")) {
+            def params = extractDataSourceParameters(key)
+            config."$key" = createDataSource(params)
+        }
     }
 }
 
+extractDataSourceParameters = {
+    def result = [:]
 
+    if (config."$it") {
+        result.username = config."$it".username
+        result.password = config."$it".password
+        result.driverClassName = config."$it".driverClassName
+    }
+
+    return result
+}
+
+createDataSource = {LinkedHashMap args ->
+    return new BasicDataSource(args)
+}
+
+runLiquibase = {LinkedHashMap}
