@@ -30,8 +30,4 @@ eventCompileStart = {
             include(name:"resources.groovy")
         }
     }
-
-    ant.copy(todir: "${basedir}2.10.0") {
-        fileset(dir:"${basedir}/grails-app/conf/schemas")
-    }
 }
