@@ -19,9 +19,11 @@ import org.apache.commons.lang.SystemUtils
 
 getDatabaseDrivers = {
     result = []
-    driverDirectory.eachFile {
-        if (it.name.endsWith(".jar")) {
-            result.add(it.toURI().toURL())
+    if (driverDirectory.exists() && driverDirectory.isDirectory()) {
+        driverDirectory.eachFile {
+            if (it.name.endsWith(".jar")) {
+                result.add(it.toURI().toURL())
+            }
         }
     }
 
