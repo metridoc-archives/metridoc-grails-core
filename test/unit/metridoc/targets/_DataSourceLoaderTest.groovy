@@ -19,6 +19,16 @@ class _DataSourceLoaderTest {
         loader = new _DataSourceLoader()
         JobBuilder.isJob(loader)
         loader.run()
+
+        loader.config = new ConfigObject()
+
+        loader.config.dataSource.username = "foo"
+        loader.config.dataSource.password = "fooPassword"
+        loader.config.dataSource.driverClassName = "foo.Driver"
+
+        loader.config.dataSource_bar.username = "bar"
+        loader.config.dataSource_bar.password = "fooPassword"
+        loader.config.dataSource_bar.driverClassName = "foo.Driver"
     }
 
     @Test
@@ -40,10 +50,7 @@ class _DataSourceLoaderTest {
 
     @Test
     void "test extracting data source parameters"() {
-        loader.config = new ConfigObject()
-        loader.config.dataSource.username = "foo"
-        loader.config.dataSource.password = "fooPassword"
-        loader.config.dataSource.driverClassName = "foo.Driver"
+
 
         def params = loader.extractDataSourceParameters("dataSource")
         assert params
@@ -52,6 +59,21 @@ class _DataSourceLoaderTest {
         assert "fooPassword" == params.password
         assert "foo.Driver" == params.driverClassName
 
-        assert !loader.extractDataSourceParameters("dataSource_bar")
+        assert !loader.extractDataSourceParameters("dataSource_foobar")
+    }
+
+    @Test
+    void "test configuring a data Source through the target"() {
+        int createDataSourceTimesCalled = 0
+        def dataSourceListByUserName = ["foo", "bar"] as Set
+        loader.createDataSource = {LinkedHashMap args ->
+            createDataSourceTimesCalled++
+            assert 3 == args.size()
+            assert dataSourceListByUserName.remove(args.username)
+        }
+
+        loader.configureDataSources()
+        assert 2 == createDataSourceTimesCalled
+        assert 0 == dataSourceListByUserName.size()
     }
 }
