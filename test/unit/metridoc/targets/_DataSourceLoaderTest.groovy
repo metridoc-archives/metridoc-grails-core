@@ -52,7 +52,7 @@ class _DataSourceLoaderTest {
     void "test extracting data source parameters"() {
         def params = loader.extractDataSourceParameters("dataSource")
         assert params
-        assert 3 == params.size()
+        assert 4 == params.size()
         assert "foo" == params.username
         assert "fooPassword" == params.password
         assert "foo.Driver" == params.driverClassName
@@ -66,7 +66,7 @@ class _DataSourceLoaderTest {
         def dataSourceListByUserName = ["foo", "bar"] as Set
         loader.createDataSource = {LinkedHashMap args ->
             createDataSourceTimesCalled++
-            assert 3 == args.size()
+            assert 4 == args.size()
             assert dataSourceListByUserName.remove(args.username)
         }
 

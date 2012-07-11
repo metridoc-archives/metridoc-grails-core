@@ -33,7 +33,7 @@ driverDirectory = new File("${SystemUtils.USER_HOME}/.grails/drivers")
 
 
 target(loadDrivers: "loads any drivers that are under <grails.home>/drivers into the root loader") {
-    //TODO: should make this reletive to the grailsWorkDir variable
+    //TODO: should make this relative to the grailsWorkDir variable
     getDatabaseDrivers().each {
         rootLoader.addURL(it)
     }
@@ -56,6 +56,7 @@ extractDataSourceParameters = {
         result.username = config."$it".username
         result.password = config."$it".password
         result.driverClassName = config."$it".driverClassName
+        result.url = config."$it".url
     }
 
     return result
