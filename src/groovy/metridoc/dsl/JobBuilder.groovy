@@ -22,6 +22,7 @@ import metridoc.targets._DataSourceLoader
 import metridoc.tools.BulkSql
 import org.codehaus.gant.GantBinding
 import org.slf4j.LoggerFactory
+import metridoc.targets._SchemaLoader
 
 /**
  * Primary interface to run jobs.  Useful for embedding metridoc into standard java apps as well.  For
@@ -77,6 +78,7 @@ class JobBuilder {
         job.includeTargets << _DataSourceLoader
         job.includeTargets << _CamelRouting
         job.includeTool << BulkSql
+        job.includeTargets << _SchemaLoader
     }
 
     def static job() {

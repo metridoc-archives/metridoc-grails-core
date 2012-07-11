@@ -50,8 +50,6 @@ class _DataSourceLoaderTest {
 
     @Test
     void "test extracting data source parameters"() {
-
-
         def params = loader.extractDataSourceParameters("dataSource")
         assert params
         assert 3 == params.size()
