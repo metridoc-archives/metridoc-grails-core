@@ -67,5 +67,3 @@ extractDataSourceParameters = {
 createDataSource = {LinkedHashMap args ->
     return new BasicDataSource(args)
 }
-
-runLiquibase = {LinkedHashMap}
