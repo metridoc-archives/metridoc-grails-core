@@ -51,26 +51,26 @@
             %{--TODO: is there some way we can generalize this repeated code, this is a mess--}%
             <g:if test="${params.action}==index">
                 <g:if test="${pluginName}">
-                    <g:render template="${templateDir}/${params.controller}"/>
+                    <g:render template="${templateDir}/${params.controller}" plugin="${pluginName}"/>
                 </g:if>
                 <g:else>
-                    <g:render template="${templateDir}/${params.controller}" plugin="${pluginName}"/>
+                    <g:render template="${templateDir}/${params.controller}"/>
                 </g:else>
             </g:if>
             <g:elseif test="${params.action}">
                 <g:if test="${pluginName}">
-                    <g:render template="${templateDir}/${params.action}"/>
+                    <g:render template="${templateDir}/${params.action}" plugin="${pluginName}"/>
                 </g:if>
                 <g:else>
-                    <g:render template="${templateDir}/${params.action}" plugin="${pluginName}"/>
+                    <g:render template="${templateDir}/${params.action}"/>
                 </g:else>
             </g:elseif>
             <g:else>
                 <g:if test="${pluginName}">
-                    <g:render template="${templateDir}/${params.controller}"/>
+                    <g:render template="${templateDir}/${params.controller}" plugin="${pluginName}"/>
                 </g:if>
                 <g:else>
-                    <g:render template="${templateDir}/${params.controller}" plugin="${pluginName}"/>
+                    <g:render template="${templateDir}/${params.controller}"/>
                 </g:else>
             </g:else>
         </div>
