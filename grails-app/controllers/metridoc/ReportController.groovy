@@ -40,6 +40,7 @@ abstract class ReportController {
         model.descriptionExists = descriptionTemplateExists()
         model.descriptionTemplate = getDescriptionTemplateLocation()
         model.templateDir = getTemplateDir()
+        model.pluginName = pluginName()
 
         log.info("rendering report ${model.reportName} with model: ${model}")
         render(view: '/reports/index', model: model)
@@ -67,6 +68,31 @@ abstract class ReportController {
     }
 
     def getTemplateDir() {
+        return "/reports/${controllerNameWithoutController()}"
+    }
+
+    def getDescriptionTemplateLocation() {
+
+        return "${getTemplateDir()}/description"
+    }
+
+    def pluginName() {
+        def pluginManager = applicationContext.pluginManager
+        def name = controllerNameWithoutController()
+        def pluginName = "metridoc${name.capitalize()}"
+        def names = [] as Set
+        pluginManager.allPlugins.each {
+            names.add(it.name)
+        }
+
+        if (names.contains(pluginName)) {
+            return pluginName
+        }
+
+        return null
+    }
+
+    def controllerNameWithoutController() {
         def simpleClassName = this.getClass().getSimpleName()
         def name = StringUtils.uncapitalise(simpleClassName)
         def nameWithNoController = name
@@ -76,11 +102,6 @@ abstract class ReportController {
             nameWithNoController = name.substring(0, index)
         }
 
-        return "/reports/${nameWithNoController}"
-    }
-
-    def getDescriptionTemplateLocation() {
-
-        return "${getTemplateDir()}/description"
+        return nameWithNoController
     }
 }
