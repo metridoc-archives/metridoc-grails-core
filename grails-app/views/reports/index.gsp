@@ -48,14 +48,30 @@
                     </g:else>
                 </div>
             </g:if>
+            %{--TODO: is there some way we can generalize this repeated code, this is a mess--}%
             <g:if test="${params.action}==index">
-                <g:render template="${templateDir}/${params.controller}"/>
+                <g:if test="${pluginName}">
+                    <g:render template="${templateDir}/${params.controller}"/>
+                </g:if>
+                <g:else>
+                    <g:render template="${templateDir}/${params.controller}" plugin="${pluginName}"/>
+                </g:else>
             </g:if>
             <g:elseif test="${params.action}">
-                <g:render template="${templateDir}/${params.action}"/>
+                <g:if test="${pluginName}">
+                    <g:render template="${templateDir}/${params.action}"/>
+                </g:if>
+                <g:else>
+                    <g:render template="${templateDir}/${params.action}" plugin="${pluginName}"/>
+                </g:else>
             </g:elseif>
             <g:else>
-                <g:render template="${templateDir}/${params.controller}"/>
+                <g:if test="${pluginName}">
+                    <g:render template="${templateDir}/${params.controller}"/>
+                </g:if>
+                <g:else>
+                    <g:render template="${templateDir}/${params.controller}" plugin="${pluginName}"/>
+                </g:else>
             </g:else>
         </div>
     </body>
