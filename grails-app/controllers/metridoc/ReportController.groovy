@@ -85,7 +85,7 @@ abstract class ReportController {
             names.add(it.name)
         }
 
-        if (names.contains(pluginName)) {
+        if (names.contains(pluginName as String)) {
             return pluginName
         }
 
