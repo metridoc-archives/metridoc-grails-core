@@ -44,18 +44,21 @@ import metridoc.dsl.JobBuilder
 // }
 
 def rootLoader = Thread.currentThread().contextClassLoader.rootLoader
-def loader = new _DataSourceLoader()
 
-JobBuilder.isJob(loader)
-loader.rootLoader = rootLoader
-loader.grailsConsole = [
-    info: {String message ->
-        println message
-    }
-]
-loader.run()
-println "loading database drivers"
-loader.loadDrivers()
+if (rootLoader) {
+    def loader = new _DataSourceLoader()
+
+    JobBuilder.isJob(loader)
+    loader.rootLoader = rootLoader
+    loader.grailsConsole = [
+        info: {String message ->
+            println message
+        }
+    ]
+    loader.run()
+    println "loading database drivers"
+    loader.loadDrivers()
+}
 
 
 grails.converters.default.pretty.print = true
