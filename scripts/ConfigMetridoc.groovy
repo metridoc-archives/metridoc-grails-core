@@ -57,6 +57,25 @@ target(main: "Config metridoc-reports plugin") {
             grailsConsole.info("Ignored ${name}")
         }
     }
+
+    def rmFileMap = new HashSet<String>();
+    rmFileMap.add("${basedir}/grails-app/views/layouts/main.gsp")
+    rmFileMap.add("${basedir}/grails-app/views/error.gsp")
+    rmFileMap.add("${basedir}/grails-app/views/index.gsp")
+    rmFileMap.add("${basedir}/web-app/css/errors.css")
+    rmFileMap.add("${basedir}/web-app/css/main.css")
+    rmFileMap.add("${basedir}/web-app/css/mobile.css")
+    rmFileMap.add("${basedir}/web-app/js/application.js")
+
+    rmFileMap.each {filePath->
+        if (argsMap['o']||isFileRemove(filePath)){
+            ant.delete(file: filePath)
+            grailsConsole.info("Deleted ${filePath}")
+        }else{
+            grailsConsole.info("Ignored ${filePath}")
+        }
+
+    }
 }
 /**
  * put toFile and fromFile into a HashMap whose keys are files to copy, and values are files copied from
@@ -74,14 +93,29 @@ void mapFile(HashMap<String, String> fileMap, String toFile, String fromFile){
  */
 isFileOverwrite = {filePath->
     File file = new File(filePath)
-    String ifOverwrite  = 'n'
+    String ifOverwrite  = 'y'
     if (file.exists()){
-        String question = filePath+" already exists, do you want overwrite it?"
+        String question = filePath+" already exists, can it be overwritten?"
         String[] validArgs = ['y','n']
         GrailsConsole grailsConsole = new GrailsConsole()
         ifOverwrite = grailsConsole.userInput(question, validArgs)
     }
     if ('n'.equals(ifOverwrite)){
+        return false
+    }
+    return true
+}
+
+isFileRemove = {filePath->
+    File file = new File(filePath)
+    String ifFileRemove = 'y'
+    if (file.exists()){
+        String question = filePath + "already exists by default, can it be deleted?"
+        String[] validArgs = ['y','n']
+        GrailsConsole grailsConsole = new GrailsConsole()
+        ifFileRemove = grailsConsole.userInput(question, validArgs)
+    }
+    if ('n'.equals(ifFileRemove)){
         return false
     }
     return true
