@@ -61,7 +61,6 @@
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.liquibase/liquibase-core/jars/liquibase-core-2.0.1.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-core/bundles/camel-core-2.10.0.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-test/bundles/camel-test-2.10.0.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-ftp/jars/camel-ftp-2.10.0.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.shiro/shiro-spring/bundles/shiro-spring-1.1.0.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.opensymphony.quartz/quartz/jars/quartz-1.6.1.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.shiro/shiro-quartz/bundles/shiro-quartz-1.1.0.jar!/" />

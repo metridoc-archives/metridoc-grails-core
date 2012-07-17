@@ -20,6 +20,7 @@ class ManageReportsController extends ReportController {
 
     def manageReportsService
     def static reportName = "Report Manager"
+    def static final adminOnly = true
 
     @Override
     def getModel() {
