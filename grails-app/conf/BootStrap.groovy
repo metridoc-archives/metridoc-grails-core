@@ -13,17 +13,11 @@
  * permissions and limitations under the License.
  */
 
-import grails.util.Environment
 import metridoc.admin.ReportsConfiguration
-import metridoc.liquibase.MetridocLiquibase
 import metridoc.reports.ShiroRole
 import metridoc.reports.ShiroUser
-import metridoc.utils.ClassUtils
-import org.apache.commons.lang.StringUtils
 import org.apache.shiro.crypto.hash.Sha256Hash
 import org.codehaus.groovy.grails.commons.GrailsClass
-import org.springframework.core.io.ClassPathResource
-import org.springframework.web.context.support.WebApplicationContextUtils
 
 /*
 * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
@@ -45,35 +39,6 @@ class BootStrap {
     final static DEFAULT_PASSWORD = "password"
 
     def init = { servletContext ->
-
-        def applicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext)
-        grailsApplication.controllerClasses.each {controllerClass ->
-
-            def reportName = ClassUtils.getStaticVariable(controllerClass, "reportName", controllerClass.name)
-            def referenceName = StringUtils.uncapitalise(controllerClass.getName())
-
-            def schemaPath = "schemas/${referenceName}/${referenceName}Schema.xml"
-            def hasSchemas = new ClassPathResource(schemaPath).exists()
-
-            if (hasSchemas) {
-
-                log.info "INFO: loading schema for project ${referenceName}"
-
-                def dataSource = applicationContext."dataSource_${referenceName}"
-
-                if (dataSource) {
-                    log.info "INFO: will migrate ${reportName} for environment ${Environment.current} for url ${dataSource.connection.metaData.URL}"
-                    def liquibase = new MetridocLiquibase(
-                        dataSource: dataSource,
-                        schema: schemaPath
-                    )
-                    liquibase.runMigration()
-                    log.info "finished migrating ${reportName}"
-                } else {
-                    log.warn "the schema ${schemaPath} exists, but could not find a corresponding dataSource"
-                }
-            }
-        }
 
         try {
             ShiroUser.withTransaction {

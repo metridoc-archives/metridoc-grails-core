@@ -37,7 +37,7 @@
     <shiro:isLoggedIn>
         <div id="application-list" role="navigation">
             <g:if test="${applicationContext.controllerHelperService.applications.size()}">
-                <h2>Available Applications:</h2>
+                <h2>Available Applications</h2>
                 <ul>
                     <g:each var="c" in="${applicationContext.controllerHelperService.applications}">
                         <li class="application"><g:link controller="${c.value}">${c.key}</g:link></li>

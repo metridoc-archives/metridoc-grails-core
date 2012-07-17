@@ -57,7 +57,7 @@ class MetridocCamelContext extends DefaultCamelContext {
 
         addShutdownHook {
             if (stopAtShutdown) {
-                log.info("calling shutdown hook to stop camel")
+                log.debug("calling shutdown hook to stop camel")
                 if (this.status.stopped) {
                     log.debug("camel has already stopped, no need to stop it")
                 } else {
@@ -69,7 +69,7 @@ class MetridocCamelContext extends DefaultCamelContext {
                 }
             }
 
-            log.info("camel context has shutdown")
+            log.debug("camel context has shutdown")
         }
     }
 }
