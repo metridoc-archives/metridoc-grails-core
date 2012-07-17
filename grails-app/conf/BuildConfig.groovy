@@ -71,6 +71,7 @@ grails.project.dependency.resolution = {
         runtime ":jquery-ui:1.8.15"
         runtime ":webxml:1.4.1"
         build ":tomcat:$grailsVersion"
+        build ":rest-client-builder:1.0.2"
         build ":release:2.0.3"
         build ":svn:1.0.2"
     }
