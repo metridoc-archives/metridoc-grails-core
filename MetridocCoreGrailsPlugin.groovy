@@ -18,7 +18,7 @@ class MetridocCoreGrailsPlugin {
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.0.4 > *"
     // the other plugins this plugin depends on
-    def loadAfter = ["rest-client-builder", "release"]
+    def loadAfter = ["rest-client-builder", "release", "hibernate"]
 
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
