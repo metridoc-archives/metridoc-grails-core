@@ -21,18 +21,7 @@ import java.sql.SQLException
 
 class DatabaseMigrationTests {
 
-    def dataSource_illiad
     def dataSource_admin
-
-    @Test
-    void "test that illiad tables exist"() {
-        def sql = new Sql(dataSource_illiad)
-        //table exists
-        assert tableExists(sql, "ill_borrowing")
-
-        //table does not exist
-        assert !tableExists(sql, "table_does_not_exist")
-    }
 
     @Test
     void "test that admin tables exist"() {
