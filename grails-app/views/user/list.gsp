@@ -16,52 +16,45 @@
 -->
 
 <%@ page import="metridoc.reports.ShiroUser" %>
-<!doctype html>
-<html>
-	<head>
-		<meta name="layout" content="main">
-		<g:set var="entityName" value="${message(code: 'shiroUser.label', default: 'ShiroUser')}" />
-		<title><g:message code="default.list.label" args="[entityName]" /></title>
-	</head>
-	<body>
-		<a href="#list-shiroUser" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-		<div id="list-shiroUser" class="content scaffold-list" role="main">
-			<h1>User List</h1>
-			<g:if test="${flash.message}">
-			<div class="message" role="status">${flash.message}</div>
-			</g:if>
-			<table>
-				<thead>
-					<tr>
-					
-						<g:sortableColumn property="username" title="${message(code: 'shiroUser.username.label', default: 'Username')}" />
-					
+<%@ page contentType="text/html;charset=UTF-8" %>
+<g:render template="/reports/defaultReport" plugin="metridoc-core">
+    <g:set var="entityName" value="${message(code: 'shiroUser.label', default: 'ShiroUser')}"/>
+    <div id="list-shiroUser" class="content scaffold-list" role="main">
 
-					</tr>
-				</thead>
-				<tbody>
-				<g:each in="${shiroUserInstanceList}" status="i" var="shiroUserInstance">
-					<tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
-					
-						<td><g:link action="show" id="${shiroUserInstance.id}">${fieldValue(bean: shiroUserInstance, field: "username")}</g:link></td>
-					
+        <g:if test="${flash.message}">
+            <div class="message" role="status">${flash.message}</div>
+        </g:if>
+        <table>
+            <thead>
+                <tr>
 
-					</tr>
-				</g:each>
+                    <g:sortableColumn property="username"
+                                      title="${message(code: 'shiroUser.username.label', default: 'Username')}"/>
+
+                </tr>
+            </thead>
+            <tbody>
+                <g:each in="${shiroUserInstanceList}" status="i" var="shiroUserInstance">
+                    <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
+
+                        <td><g:link action="show"
+                                    id="${shiroUserInstance.id}">${fieldValue(bean: shiroUserInstance, field: "username")}</g:link></td>
+
+                    </tr>
+                </g:each>
             </tbody>
-			</table>
+        </table>
 
-			<div class="pagination">
-				<g:paginate total="${shiroUserInstanceTotal}" />
-			</div>
+        <div class="pagination">
+            <g:paginate total="${shiroUserInstanceTotal}"/>
+        </div>
 
-            <div id="newUserButton">
-                <span class="buttons">
-                    <g:link controller="user" action="create">
-                        New User
-                    </g:link>
-                </span>
-            </div>
-		</div>
-	</body>
-</html>
+        <div id="newUserButton">
+            <span class="buttons">
+                <g:link controller="user" action="create">
+                    New User
+                </g:link>
+            </span>
+        </div>
+    </div>
+</g:render>

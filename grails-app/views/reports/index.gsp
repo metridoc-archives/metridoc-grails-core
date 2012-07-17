@@ -14,13 +14,6 @@
     permissions and limitations under the License.
 
 -->
-<%--
-  Created by IntelliJ IDEA.
-  User: tbarker
-  Date: 6/13/12
-  Time: 4:07 PM
-  To change this template use File | Settings | File Templates.
---%>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>

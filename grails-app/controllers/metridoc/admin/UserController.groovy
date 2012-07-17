@@ -12,18 +12,20 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package metridoc.user
+package metridoc.admin
 
-import org.springframework.dao.DataIntegrityViolationException
+import metridoc.admin.AdminController
 import metridoc.reports.ShiroUser
 import org.apache.shiro.crypto.hash.Sha256Hash
+import org.springframework.dao.DataIntegrityViolationException
 
-class UserController {
+class UserController extends AdminController {
     final static DEFAULT_PASSWORD = "password"
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    def static final reportName = "Manage Users"
 
-    def index() {
-        redirect(action: "list", params: params)
+    def indexAction() {
+        return "list"
     }
 
     def list() {

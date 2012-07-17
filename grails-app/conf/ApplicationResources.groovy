@@ -39,6 +39,8 @@ modules = {
         resource url: 'admin/js/admin.js'
     }
 
+
+
     overrides {
         'jquery-theme' {
             resource id: 'theme', url: '/jquery-ui/forrest-dialog/css/custom-theme/jquery-ui-1.8.20.custom.css'

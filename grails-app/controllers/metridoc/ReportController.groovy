@@ -34,20 +34,34 @@ abstract class ReportController {
 
     def index() {
 
-        def model = getModel()
-        model.reportName = ClassUtils.getStaticVariable(
-            this.getClass(),
-            "reportName",
-            this.getClass().getName()
-        )
+        if (indexAction()) {
+            redirect(action: indexAction(), params: params)
+        } else {
+            def model = getModel()
+            model.reportName = ClassUtils.getStaticVariable(
 
-        model.descriptionExists = descriptionTemplateExists()
-        model.descriptionTemplate = getDescriptionTemplateLocation()
-        model.templateDir = getTemplateDir()
-        model.pluginName = pluginName()
+                this.getClass(),
+                "reportName",
+                this.getClass().getName()
+            )
 
-        log.info("rendering report ${model.reportName} with model: ${model}")
-        render(view: '/reports/index', model: model)
+            model.descriptionExists = descriptionTemplateExists()
+            model.descriptionTemplate = getDescriptionTemplateLocation()
+            model.templateDir = getTemplateDir()
+            model.pluginName = pluginName()
+
+            log.info("rendering report ${model.reportName} with model: ${model}")
+
+
+
+            render(view: '/reports/index', model: model)
+        }
+
+
+    }
+
+    def indexAction() {
+        return null
     }
 
     def getModel() {
