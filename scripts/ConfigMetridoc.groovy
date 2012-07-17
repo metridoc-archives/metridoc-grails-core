@@ -105,7 +105,11 @@ isFileOverwrite = {filePath->
     }
     return true
 }
-
+/**
+ * check if given file already exists, if exists, ask user whether remove the existing one.
+ * @param filePath path of the file being checked
+ * @return true if the file can be overwrote, false if user choose keep the existing one.
+ */
 isFileRemove = {filePath->
     File file = new File(filePath)
     String ifFileRemove = 'y'

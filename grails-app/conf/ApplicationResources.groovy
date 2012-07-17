@@ -28,11 +28,6 @@
 * permissions and limitations under the License.
 */
 modules = {
-    jenkins {
-        dependsOn 'jquery-ui'
-        resource url: 'jenkins/css/jenkins.css'
-        resource url: 'jenkins/js/jenkins.js'
-    }
 
     application {
         resource url: 'js/application.js'
