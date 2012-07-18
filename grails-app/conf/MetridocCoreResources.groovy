@@ -23,7 +23,7 @@ modules = {
         resource url: [plugin: "metridocCore", dir: 'js', file: 'application.js']
         resource url: [plugin: "metridocCore", dir: 'css', file: 'mobile.css']
         resource url: [plugin: "metridocCore", dir: 'css', file: 'main.css']
-        resource url: [plugin: "metridocCore", dir: 'images', file: 'MDlogo_small.png']
+        resource url: [plugin: "metridocCore", dir: 'images', file: 'favicon.ico']
     }
 
     admin {
