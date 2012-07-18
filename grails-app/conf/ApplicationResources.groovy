@@ -30,7 +30,7 @@
 modules = {
 
     application {
-        resource url: 'js/application.js'
+        resource url: [plugin: "metridocCore", dir: 'js', file:'application.js']
     }
 
     admin {
@@ -43,7 +43,8 @@ modules = {
 
     overrides {
         'jquery-theme' {
-            resource id: 'theme', url: '/jquery-ui/forrest-dialog/css/custom-theme/jquery-ui-1.8.20.custom.css'
+            resource id: 'theme',
+                url: [plugin: "metridocCore", dir: '/jquery-ui/forrest-dialog/css/custom-theme', file: 'jquery-ui-1.8.20.custom.css']
         }
     }
 }

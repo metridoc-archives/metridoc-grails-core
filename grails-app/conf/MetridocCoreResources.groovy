@@ -15,7 +15,7 @@
 modules = {
     user {
         dependsOn 'jquery-ui'
-        resource url: 'user/css/user.css'
-        resource url: 'user/js/user.js'
+        resource url: [plugin:"metridocCore", dir:'user/css', file:'user.css']
+        resource url: [plugin:"metridocCore", dir:'user/js', file:'user.js']
     }
 }

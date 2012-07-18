@@ -153,6 +153,7 @@ environments {
         grails.logging.jul.usebridge = true
         grails.gsp.reload.enable = true
         grails.resources.processing.enabled = true
+        grails.resources.debug = true
     }
     production {
         grails.logging.jul.usebridge = false
