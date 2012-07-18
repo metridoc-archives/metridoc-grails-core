@@ -19,8 +19,8 @@ import groovy.text.SimpleTemplateEngine
 import grails.build.logging.GrailsConsole
 
 includeTargets << grailsScript("_GrailsInit")
-includeTargets << new File("scripts/ConfigMetridoc.groovy")
-includeTargets << new File("scripts/_FileTemplateContent.groovy")
+includeTargets << new File("${metridocCorePluginDir}/scripts/ConfigMetridoc.groovy")
+includeTargets << new File("${metridocCorePluginDir}/scripts/_FileTemplateContent.groovy")
 
 target(main: "create default fileset for user customised report") {
     grailsConsole = new GrailsConsole()

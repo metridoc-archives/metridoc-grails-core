@@ -36,9 +36,10 @@ import org.codehaus.groovy.grails.commons.GrailsClass
 class BootStrap {
 
     def grailsApplication
-    final static DEFAULT_PASSWORD = "password"
+
 
     def init = { servletContext ->
+
 
         try {
             ShiroUser.withTransaction {
@@ -82,9 +83,9 @@ class BootStrap {
 
                 anonymousRole = new ShiroRole(name: "ROLE_ANONYMOUS")
                 anonymousUser = new ShiroUser(
-                    username: "anonymous",
-                    passwordHash: new Sha256Hash("password").toHex(),
-                    vetted: true,
+                        username: "anonymous",
+                        passwordHash: new Sha256Hash("password").toHex(),
+                        vetted: true,
                 )
                 anonymousUser.addToRoles(anonymousRole)
 
@@ -104,6 +105,7 @@ class BootStrap {
         } catch (Exception e) {
             e.printStackTrace()
         }
+        //HERE was UserAuth
 
         addReportConfiguration()
     }

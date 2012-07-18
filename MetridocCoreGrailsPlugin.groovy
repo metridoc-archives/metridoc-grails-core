@@ -61,6 +61,10 @@ class MetridocCoreGrailsPlugin {
             schema = "schemas/admin/adminSchema.xml"
             dataSource = ref("dataSource_admin")
         }
+//
+//        userAuth(UserAuth){
+//
+//        }
     }
 
     def doWithDynamicMethods = { ctx ->
