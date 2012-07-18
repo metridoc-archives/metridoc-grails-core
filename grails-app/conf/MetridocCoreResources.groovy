@@ -15,7 +15,32 @@
 modules = {
     user {
         dependsOn 'jquery-ui'
-        resource url: [plugin:"metridocCore", dir:'user/css', file:'user.css']
-        resource url: [plugin:"metridocCore", dir:'user/js', file:'user.js']
+        resource url: [plugin: "metridocCore", dir: 'user/css', file: 'user.css']
+        resource url: [plugin: "metridocCore", dir: 'user/js', file: 'user.js']
+    }
+
+    application {
+        resource url: [plugin: "metridocCore", dir: 'js', file: 'application.js']
+        resource url: [plugin: "metridocCore", dir: 'css', file: 'mobile.css']
+        resource url: [plugin: "metridocCore", dir: 'css', file: 'main.css']
+    }
+
+    admin {
+        dependsOn 'jquery-ui'
+        resource url: 'admin/css/admin.css'
+        resource url: 'admin/js/admin.js'
+    }
+
+    overrides {
+        'jquery-theme' {
+            resource id: 'theme',
+                url: [plugin: "metridocCore", dir: '/jquery-ui/forrest-dialog/css/custom-theme', file: 'jquery-ui-1.8.20.custom.css']
+        }
+    }
+
+    manageReports {
+        dependsOn 'jquery-ui'
+        resource url: [plugin:"metridocCore", dir: 'manageReports/css', file: 'manageReports.css']
+        resource url: [plugin:"metridocCore", dir: 'manageReports/js', file: 'manageReports.js']
     }
 }
