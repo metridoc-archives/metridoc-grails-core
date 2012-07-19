@@ -12,10 +12,9 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-import org.codehaus.gant.GantBuilder
+
 import grails.build.logging.GrailsConsole
 
-import static grails.build.logging.GrailsConsole.*
 
 /*
 * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
@@ -39,7 +38,6 @@ target(main: "Config metridoc-reports plugin") {
     depends(parseArguments)
     def copyFileFromMap = new HashMap<String, String>();
     GrailsConsole grailsConsole = new GrailsConsole()
-    mapFile(copyFileFromMap, "${basedir}/grails-app/conf/BootStrap.groovy", "${metridocCorePluginDir}/src/templates/conf/BootStrap.groovy")
     mapFile(copyFileFromMap, "${basedir}/grails-app/conf/Config.groovy", "${metridocCorePluginDir}/src/templates/conf/Config.groovy")
     mapFile(copyFileFromMap, "${basedir}/grails-app/conf/DataSource.groovy", "${metridocCorePluginDir}/src/templates/conf/DataSource.groovy")
     mapFile(copyFileFromMap, "${basedir}/grails-app/conf/UrlMappings.groovy", "${metridocCorePluginDir}/src/templates/conf/UrlMappings.groovy")
@@ -114,7 +112,7 @@ isFileRemove = {filePath->
     File file = new File(filePath)
     String ifFileRemove = 'y'
     if (file.exists()){
-        String question = filePath + "already exists by default, can it be deleted?"
+        String question = filePath + " already exists by default, can it be deleted?"
         String[] validArgs = ['y','n']
         GrailsConsole grailsConsole = new GrailsConsole()
         ifFileRemove = grailsConsole.userInput(question, validArgs)

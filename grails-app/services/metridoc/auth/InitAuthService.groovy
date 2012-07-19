@@ -1,9 +1,9 @@
-package metridoc.user.auth
+package metridoc.auth
 
 import metridoc.reports.ShiroUser
-import org.apache.shiro.crypto.hash.Sha256Hash
 import metridoc.reports.ShiroRole
-import javax.annotation.PostConstruct
+import org.apache.shiro.crypto.hash.Sha256Hash
+import org.apache.commons.lang.exception.ExceptionUtils
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,20 +12,23 @@ import javax.annotation.PostConstruct
  * Time: 5:33 PM
  * To change this template use File | Settings | File Templates.
  */
-class UserAuth {
+class InitAuthService {
 
     def grailsApplication
     final static DEFAULT_PASSWORD = "password"
 
-    @PostConstruct
-    def init(){
+    def init() {
+        initAdminUser()
+        initAnonymousUser()
+    }
+
+    def initAdminUser() {
         try {
             ShiroUser.withTransaction {
 
                 def adminUser = ShiroUser.find {
                     username == "admin"
                 }
-
                 log.info "admin user is ${adminUser}"
 
                 if (!adminUser) {
@@ -40,25 +43,30 @@ class UserAuth {
                     adminUser.addToPermissions("*:*")
                     adminUser.save()
                 }
+            }
+        } catch (Exception e) {
+            log.info ExceptionUtils.getStackTrace(e)
+            e.printStackTrace()
+        }
+    }
 
+    def initAnonymousUser() {
+        try {
+            ShiroUser.withTransaction {
                 def anonymousUser = ShiroUser.find() {
                     username == "anonymous"
                 }
-
                 def anonymousRole = ShiroRole.find() {
                     name == "ROLE_ANONYMOUS"
                 }
-
                 if (anonymousRole) {
                     anonymousRole.delete(flush: true)
                 }
-
-                println "anonymous user is: ${anonymousUser}"
+                log.info "anonymous user is: ${anonymousUser}"
                 if (anonymousUser) {
-                    println "deleting anonymous user"
+                    log.info "deleting anonymous user"
                     anonymousUser.delete(flush: true)
                 }
-
                 anonymousRole = new ShiroRole(name: "ROLE_ANONYMOUS")
                 anonymousUser = new ShiroUser(
                         username: "anonymous",
@@ -75,12 +83,12 @@ class UserAuth {
                     anonymousRole.save()
                 }
 
-
                 grailsApplication.config.metridoc.anonymous.applications.each {
                     makeApplicationAnonymous(it)
                 }
             }
         } catch (Exception e) {
+            log.info ExceptionUtils.getStackTrace(e)
             e.printStackTrace()
         }
     }

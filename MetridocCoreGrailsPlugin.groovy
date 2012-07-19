@@ -1,4 +1,6 @@
 import metridoc.schema.SchemaRunner
+import metridoc.auth.InitAuthService
+import metridoc.auth.InitAuthService
 
 /*
 * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
@@ -61,10 +63,6 @@ class MetridocCoreGrailsPlugin {
             schema = "schemas/admin/adminSchema.xml"
             dataSource = ref("dataSource_admin")
         }
-//
-//        userAuth(UserAuth){
-//
-//        }
     }
 
     def doWithDynamicMethods = { ctx ->
