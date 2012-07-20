@@ -15,21 +15,30 @@
 modules = {
     user {
         dependsOn 'jquery-ui'
-        resource url: [plugin: "metridocCore", dir: 'user/css', file: 'user.css']
-        resource url: [plugin: "metridocCore", dir: 'user/js', file: 'user.js']
+        resource id: 'css',
+                url: [plugin: "metridocCore", dir: 'user/css', file: 'user.css']
+        resource id: 'js',
+                url: [plugin: "metridocCore", dir: 'user/js', file: 'user.js']
     }
 
     application {
-        resource url: [plugin: "metridocCore", dir: 'js', file: 'application.js']
-        resource url: [plugin: "metridocCore", dir: 'css', file: 'mobile.css']
-        resource url: [plugin: "metridocCore", dir: 'css', file: 'main.css']
-        resource url: [plugin: "metridocCore", dir: 'images', file: 'favicon.ico']
+        resource id: 'appJs',
+                url: [plugin: "metridocCore", dir: 'js', file: 'application.js']
+        resource id: 'mobileCss',
+                url: [plugin: "metridocCore", dir: 'css', file: 'mobile.css']
+        resource id: 'mainCss',
+                url: [plugin: "metridocCore", dir: 'css', file: 'main.css']
+        resource id: 'faviconIco',
+                url: [plugin: "metridocCore", dir: 'images', file: 'favicon.ico']
+
     }
 
     admin {
         dependsOn 'jquery-ui'
-        resource url: 'admin/css/admin.css'
-        resource url: 'admin/js/admin.js'
+        resource id: 'adminCss',
+                url: [plugin: "metridocCore", dir: 'admin/css',file:'admin.css']
+        resource id: 'adminJs',
+                url: [plugin: "metridocCore", dir:'admin/js',file:'admin.js']
     }
 
     overrides {
@@ -41,7 +50,9 @@ modules = {
 
     manageReports {
         dependsOn 'jquery-ui'
-        resource url: [plugin:"metridocCore", dir: 'manageReports/css', file: 'manageReports.css']
-        resource url: [plugin:"metridocCore", dir: 'manageReports/js', file: 'manageReports.js']
+        resource id: 'manageReportsCss',
+                url: [plugin:"metridocCore", dir: 'manageReports/css', file: 'manageReports.css']
+        resource id: 'manageReportsJs',
+                url: [plugin:"metridocCore", dir: 'manageReports/js', file: 'manageReports.js']
     }
 }

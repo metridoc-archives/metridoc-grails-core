@@ -33,21 +33,21 @@ target(main: "create default fileset for user customised report") {
         rName.append(name.substring(1))
         simpleEngine = new groovy.text.SimpleTemplateEngine()
         xmlEngine = new groovy.text.XmlTemplateEngine()
-        fileFullName  = ""
+        fileFullName = ""
+        depends(createResourceFile, createSchemaFile)
         depends(createConfigFile, createRunScript)
         depends(createGSPFile, createStyleFile)
-        depends(createResourceFile, createSchemaFile)
         depends(createControllerFile, createServiceFile)
-    }else {
+    } else {
         grailsConsole.info("WARN: no report name specified in script 'create-report [reportName]'")
     }
 
 }
 
 /*grails-app/conf/metridoc/FooConfig.groovy (empty)*/
-target(createConfigFile:"create config file for the new report"){
+target(createConfigFile: "create config file for the new report") {
 
-    fileFullName =  "${basedir}/grails-app/conf/metridoc/${rName}Config.groovy"
+    fileFullName = "${basedir}/grails-app/conf/metridoc/${rName}Config.groovy"
     if (argsMap['o'] || isFileOverwrite(fileFullName)) {
         ant.mkdir(dir: "${basedir}/grails-app/conf/metridoc")
         ant.touch(file: fileFullName)
@@ -59,16 +59,16 @@ target(createConfigFile:"create config file for the new report"){
 
 /*grails-app/views/reports/foo/_foo.gsp(empty)
    *grails-app/views/reports/foo/_description.gsp(empty) */
-target(createGSPFile:"create .gsp file for the new report"){
+target(createGSPFile: "create .gsp file for the new report") {
     ant.mkdir(dir: "${basedir}/grails-app/views/reports/${name}")
-    fileFullName =  "${basedir}/grails-app/views/reports/${name}/_${name}.gsp"
+    fileFullName = "${basedir}/grails-app/views/reports/${name}/_${name}.gsp"
     if (argsMap['o'] || isFileOverwrite(fileFullName)) {
         ant.touch(file: fileFullName)
         grailsConsole.info("Created ${fileFullName}")
     } else {
         grailsConsole.info("Ignored ${fileFullName}")
     }
-    fileFullName =  "${basedir}/grails-app/views/reports/${name}/_description.gsp"
+    fileFullName = "${basedir}/grails-app/views/reports/${name}/_description.gsp"
     if (argsMap['o'] || isFileOverwrite(fileFullName)) {
         ant.touch(file: fileFullName)
         grailsConsole.info("Created ${fileFullName}")
@@ -79,8 +79,8 @@ target(createGSPFile:"create .gsp file for the new report"){
 
 /*web-app/foo/css/foo.css(empty)
 *web-app/foo/js/foo.js(empty) */
-target(createStyleFile:"create .css .js file for the new report"){
-    fileFullName =  "${basedir}/web-app/${name}/css/${name}.css"
+target(createStyleFile: "create .css .js file for the new report") {
+    fileFullName = "${basedir}/web-app/${name}/css/${name}.css"
     if (argsMap['o'] || isFileOverwrite(fileFullName)) {
         ant.mkdir(dir: "${basedir}/web-app/${name}/css")
         ant.touch(file: fileFullName)
@@ -100,9 +100,9 @@ target(createStyleFile:"create .css .js file for the new report"){
 }
 
 /*scripts/RunFoo.groovy(empty)*/
-target(createRunScript:"create script to run new report"){
+target(createRunScript: "create script to run new report") {
 
-    fileFullName =  "${basedir}/scripts/Run${rName}.groovy"
+    fileFullName = "${basedir}/scripts/Run${rName}.groovy"
     if (argsMap['o'] || isFileOverwrite(fileFullName)) {
         ant.mkdir(dir: "${basedir}/scripts")
         ant.touch(file: fileFullName)
@@ -112,25 +112,9 @@ target(createRunScript:"create script to run new report"){
     }
 }
 
-/*grails-app/conf/FooResources.groovy*/
-target(createResourceFile:"create Resource file for the new report"){
-    def binding = [lowcaseName: "${name}", upcaseName: "${rName}"]
-    fileFullName = "${basedir}/grails-app/conf/${rName}Resources.groovy"
-    if (argsMap['o'] || isFileOverwrite(fileFullName)) {
-        ant.mkdir(dir: "${basedir}/grails-app/conf")
-        ant.touch(file: fileFullName)
-        def textInResources = defineResources()
-        def templateInResource = simpleEngine.createTemplate(textInResources).make(binding)
-        new File(fileFullName).write(templateInResource.toString())
-        grailsConsole.info("Created ${fileFullName}")
-    } else {
-        grailsConsole.info("Ignored ${fileFullName}")
-    }
-
-}
 
 /*grails-app/controllers/metridoc/foo/FooController.groovy*/
-target(createControllerFile:"create default controller file for the new report"){
+target(createControllerFile: "create default controller file for the new report") {
     def binding = [lowcaseName: "${name}", upcaseName: "${rName}"]
     fileFullName = "${basedir}/grails-app/controllers/metridoc/${name}/${rName}Controller.groovy"
     if (argsMap['o'] || isFileOverwrite(fileFullName)) {
@@ -146,9 +130,9 @@ target(createControllerFile:"create default controller file for the new report")
 }
 
 /*grails-app/services/metridoc/foo/FooService.groovy*/
-target(createServiceFile: "Create default service file for the new report"){
+target(createServiceFile: "Create default service file for the new report") {
     def binding = [lowcaseName: "${name}", upcaseName: "${rName}"]
-    fileFullName =  "${basedir}/grails-app/services/metridoc/${name}/${rName}Service.groovy"
+    fileFullName = "${basedir}/grails-app/services/metridoc/${name}/${rName}Service.groovy"
     if (argsMap['o'] || isFileOverwrite(fileFullName)) {
         ant.mkdir(dir: "${basedir}/grails-app/services/metridoc/${name}")
         ant.touch(file: fileFullName)
@@ -165,7 +149,7 @@ target(createServiceFile: "Create default service file for the new report"){
 *grails-app/conf/schemas/foo/foo.changelog-01.xml
 *grails-app/conf/schemas/foo/fooSchema.xml
 */
-target(createSchemaFile: "create default schema files for the new report"){
+target(createSchemaFile: "create default schema files for the new report") {
     def binding = [lowcaseName: "${name}", upcaseName: "${rName}"]
     ant.mkdir(dir: "${basedir}/grails-app/conf/schemas/${name}")
     fileFullName = "${basedir}/grails-app/conf/schemas/${name}/${name}.changelog-01.xml"
@@ -179,7 +163,7 @@ target(createSchemaFile: "create default schema files for the new report"){
         grailsConsole.info("Ignored ${fileFullName}")
     }
 
-    fileFullName =  "${basedir}/grails-app/conf/schemas/${name}/${name}Schema.xml"
+    fileFullName = "${basedir}/grails-app/conf/schemas/${name}/${name}Schema.xml"
     if (argsMap['o'] || isFileOverwrite(fileFullName)) {
         ant.touch(file: fileFullName)
         def textSchema = defineSchema()
@@ -190,6 +174,46 @@ target(createSchemaFile: "create default schema files for the new report"){
         grailsConsole.info("Ignored ${fileFullName}")
     }
 
+}
+
+
+/*grails-app/conf/FooResources.groovy*/
+target(createResourceFile: "create Resource file for the new report") {
+
+    fileFullName = "${basedir}/grails-app/conf/${rName}Resources.groovy"
+    if (argsMap['o'] || isFileOverwrite(fileFullName)) {
+        ant.mkdir(dir: "${basedir}/grails-app/conf")
+        ant.touch(file: fileFullName)
+        def binding = [lowcaseName: "${name}", upcaseName: "${rName}"]
+        def textInResources = defineAppResources()
+        def pluginName = getPluginName()
+        if (pluginName.size()) {
+            binding = [lowcaseName: "${name}", upcaseName: "${rName}", pluginName: "${pluginName}"]
+            textInResources = definePluginResources()
+        }
+        def templateInResource = simpleEngine.createTemplate(textInResources).make(binding)
+        new File(fileFullName).write(templateInResource.toString())
+        grailsConsole.info("Created ${fileFullName}")
+    } else {
+        grailsConsole.info("Ignored ${fileFullName}")
+    }
+
+}
+/**
+ * Check if there is a plugin descriptor file under current project directory
+ * @return plugin name if plugin descriptor exists, empty string if there is no plugin descriptor
+ */
+getPluginName = {
+    def projBaseDir = new File("${basedir}")
+    def pluginName = ""
+    projBaseDir.eachFile{aFile->
+        if(aFile.name.toString().endsWith("GrailsPlugin.groovy")){
+            pluginName = aFile.name.charAt(0).toLowerCase().toString()
+            pluginName += aFile.name.toString().substring(1)
+            pluginName = pluginName.replace("GrailsPlugin.groovy", "")
+        }
+    }
+    return pluginName
 }
 
 setDefaultTarget(main)

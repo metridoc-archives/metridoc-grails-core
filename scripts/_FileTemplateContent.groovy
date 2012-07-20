@@ -1,19 +1,35 @@
-includeTargets << grailsScript("_GrailsInit")
+//includeTargets << grailsScript("_GrailsInit")
+//
+//target(main: "The description of the script goes here!") {
+//
+//}
 
-target(main: "The description of the script goes here!") {
-
-}
-
-defineResources = {
+defineAppResources = {
     return '''
 modules = {
     \${lowcaseName} {
         dependsOn 'jquery-ui'
-        resource url: '\${lowcaseName}/css/\${lowcaseName}.css'
-        resource url: '\${lowcaseName}/js/\${lowcaseName}.js'
+        resource id: 'css',
+                url: [dir:'\${lowcaseName}/css', file:'\${lowcaseName}.css']
+        resource id:'js',
+                url: [dir:'\${lowcaseName}/js',file:'\${lowcaseName}.js']
     }
 }'''
 }
+
+definePluginResources = {
+    return '''
+modules = {
+    \${lowcaseName} {
+        dependsOn 'jquery-ui'
+        resource id: 'css',
+                url: [plugin:"\${pluginName}",dir:'\${lowcaseName}/css', file:'\${lowcaseName}.css']
+        resource id:'js',
+                url: [plugin:"\${pluginName}",dir:'\${lowcaseName}/js',file:'\${lowcaseName}.js']
+    }
+}'''
+}
+
 
 defineController = {
     return '''
@@ -49,4 +65,4 @@ defineSchema = {
 </databaseChangeLog>'''
 }
 
-setDefaultTarget(main)
+//setDefaultTarget(main)
