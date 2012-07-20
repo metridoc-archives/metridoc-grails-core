@@ -17,6 +17,7 @@ package metridoc.core
 import org.codehaus.groovy.grails.commons.GrailsClass
 import org.junit.Before
 import org.junit.Test
+import metridoc.ReportController
 
 /**
  * Created by IntelliJ IDEA.
@@ -75,6 +76,6 @@ class ControllerHelperServiceTest {
     }
 }
 
-class Foo {
+class Foo extends ReportController{
 
 }

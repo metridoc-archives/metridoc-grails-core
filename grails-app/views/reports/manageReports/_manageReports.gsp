@@ -34,13 +34,28 @@
                 <td>${report.name}</td>
 
                 <td class="centeredRadioCell">
-                    <input type="radio" name="${report}" value="anonymous" checked="${report.isAnonymous}"/>
+                    <g:if test="${report.isAdmin}">
+                        <input type="radio" name="${report}" value="admin" checked="true"/>
+                    </g:if>
+                    <g:else>
+                        <input type="radio" name="${report}" value="admin"/>
+                    </g:else>
                 </td>
                 <td class="centeredRadioCell">
-                    <input type="radio" name="${report}" value="default" checked="${report.isDefault}"/>
+                    <g:if test="${report.isAnonymous}">
+                        <input type="radio" name="${report}" value="anonymous" checked="true"/>
+                    </g:if>
+                    <g:else>
+                        <input type="radio" name="${report}" value="anonymous"/>
+                    </g:else>
                 </td>
                 <td class="centeredRadioCell">
-                    <input type="radio" name="${report}" value="admin" checked="${report.isAdmin}"/>
+                    <g:if test="${report.isDefault}">
+                        <input type="radio" name="${report}" value="default" checked="true"/>
+                    </g:if>
+                    <g:else>
+                        <input type="radio" name="${report}" value="default"/>
+                    </g:else>
                 </td>
             </tr>
         </g:each>
