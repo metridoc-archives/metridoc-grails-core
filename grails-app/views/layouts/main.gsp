@@ -35,7 +35,8 @@
         <div id="doc4">
             <div id="metridocBanner" role="banner">
                 <a id="metridocLogo" href="http://metridoc.googlecode.com">
-                    <img src="${resource(plugin: 'metridocCore', dir: 'images', file: 'MDlogo_small.png')}" alt="MetriDoc"/>
+                    <img src="${resource(plugin: 'metridocCore', dir: 'images', file: 'MDlogo_small.png')}"
+                         alt="MetriDoc"/>
                 </a>
 
                 <% if (SecurityUtils.subject.principal == "anonymous" || !SecurityUtils.subject.isAuthenticated()) { %>

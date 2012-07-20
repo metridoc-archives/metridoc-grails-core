@@ -14,35 +14,35 @@
     permissions and limitations under the License.
 
 -->
-<div class="md-application-content">
-    <div class="description">
-        Change the security setting of reports by declaring them as anonymous, admin or neither.
-        Apps that are not administrative or anonymous will use the default security
-    </div>
 
-    <strong>
-        Reports Grid
-    </strong>
-    <hr/>
 
-    <div class="reportBody">
-        <table class="basicReportTable">
+<strong>
+    Reports Grid
+</strong>
+<hr/>
+
+<div class="reportBody">
+    <table class="basicReportTable">
+        <tr>
+            <th>Report Name</th>
+            <th class="centeredTableHeader">Admin</th>
+            <th class="centeredTableHeader">Anonymous</th>
+            <th class="centeredTableHeader">Default</th>
+        </tr>
+        <g:each in="${reports}" var="report">
             <tr>
-                <th>Report Name</th>
-                <th class="centeredTableHeader">Admin</th>
-                <th class="centeredTableHeader">Anonymous</th>
+                <td>${report.name}</td>
+
+                <td class="centeredRadioCell">
+                    <input type="radio" name="${report}" value="anonymous" checked="${report.isAnonymous}"/>
+                </td>
+                <td class="centeredRadioCell">
+                    <input type="radio" name="${report}" value="default" checked="${report.isDefault}"/>
+                </td>
+                <td class="centeredRadioCell">
+                    <input type="radio" name="${report}" value="admin" checked="${report.isAdmin}"/>
+                </td>
             </tr>
-            <g:each in="${reports}" var="report">
-                <tr>
-                    <td>${report}</td>
-                    <td class="centeredRadioCell">
-                        <input type="radio" name="${report}" value="admin"/>
-                    </td>
-                    <td class="centeredRadioCell">
-                        <input type="radio" name="${report}" value="anonymous"/>
-                    </td>
-                </tr>
-            </g:each>
-        </table>
-    </div>
+        </g:each>
+    </table>
 </div>

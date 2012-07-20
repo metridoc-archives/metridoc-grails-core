@@ -14,8 +14,11 @@
  */
 package metridoc.core
 
+import metridoc.ReportController
+import metridoc.admin.AdminController
 import metridoc.utils.ClassUtils
 import org.apache.shiro.SecurityUtils
+import org.codehaus.groovy.grails.commons.GrailsClass
 
 /**
  * Helps to view available applications a user might have access to
@@ -24,16 +27,60 @@ class ControllerHelperService {
     def grailsApplication
     public static final String CONTROLLER = " Controller"
 
-    def getApplications() {
+    def filterApplications(Closure filter) {
         TreeMap result = [:]
-
         wrappedControllerClasses.each {
-            if (isPermitted(it.getName())) {
+            def passesFilter = filter(it)
+            if (isPermitted(it) && passesFilter) {
                 def formattedNaturalName = formatNaturalName(it.naturalName)
                 def reportName = ClassUtils.getStaticVariable(it.clazz, "reportName", formattedNaturalName)
                 result.put(reportName, it.getName())
             }
         }
+
+        return result
+    }
+
+    def isPermitted(GrailsClass grailsClass) {
+        def isAdminApp = AdminController.isAssignableFrom(grailsClass.getClazz())
+        def permissionToken = isAdminApp ? "admin" : grailsClass.getName()
+        isPermitted(permissionToken)
+    }
+
+    def getReports() {
+        return filterApplications {
+            def isAdminApp = AdminController.isAssignableFrom(it.getClazz())
+            return ReportController.isAssignableFrom(it.getClazz()) && !isAdminApp
+        }
+    }
+
+    def getAdministrativeApps() {
+        return filterApplications {
+            return AdminController.isAssignableFrom(it.getClazz())
+        }
+    }
+
+    def getReportsByScope() {
+        def result = []
+        getAdministrativeApps().keySet().each {
+            result.add (
+                [
+                    name:it,
+                    isAdmin: true,
+                    isAnonymous: false,
+                    isDefault: false
+                ]
+            )
+        }
+
+        return result
+    }
+
+    def getApplications() {
+        TreeMap result = [:]
+
+        result.putAll(administrativeApps)
+        result.putAll(reports)
 
         return result
     }

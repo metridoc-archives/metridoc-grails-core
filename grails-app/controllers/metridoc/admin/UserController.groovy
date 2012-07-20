@@ -14,7 +14,6 @@
  */
 package metridoc.admin
 
-import metridoc.admin.AdminController
 import metridoc.reports.ShiroUser
 import org.apache.shiro.crypto.hash.Sha256Hash
 import org.springframework.dao.DataIntegrityViolationException
