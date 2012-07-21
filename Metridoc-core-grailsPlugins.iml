@@ -62,7 +62,6 @@
     <orderEntry type="module-library" exported="">
       <library name="Grails User Library (Metridoc-core-grailsPlugins)">
         <CLASSES>
-          <root url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/shiro-1.1.3/lib" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/javax.activation/activation/jars/activation-1.1.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/javax.mail/mail/jars/mail-1.4.5.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.codehaus.gant/gant_groovy1.8/jars/gant_groovy1.8-1.9.7.jar!/" />
@@ -74,15 +73,17 @@
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.poi/poi/jars/poi-3.8-beta3.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/mysql/mysql-connector-java/jars/mysql-connector-java-5.1.20.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-groovy/bundles/camel-groovy-2.10.0.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/commons-net/commons-net/jars/commons-net-3.1.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/com.jcraft/jsch/jars/jsch-0.1.48.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-ftp/bundles/camel-ftp-2.10.0.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.liquibase/liquibase-core/jars/liquibase-core-2.0.1.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-core/bundles/camel-core-2.10.0.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.shiro/shiro-spring/jars/shiro-spring-1.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.shiro/shiro-quartz/jars/shiro-quartz-1.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.shiro/shiro-ehcache/jars/shiro-ehcache-1.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.shiro/shiro-web/jars/shiro-web-1.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.shiro/shiro-core/jars/shiro-core-1.1.0.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-test/bundles/camel-test-2.10.0.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.shiro/shiro-spring/bundles/shiro-spring-1.1.0.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.opensymphony.quartz/quartz/jars/quartz-1.6.1.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.shiro/shiro-quartz/bundles/shiro-quartz-1.1.0.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.shiro/shiro-ehcache/bundles/shiro-ehcache-1.1.0.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.shiro/shiro-web/bundles/shiro-web-1.1.0.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.shiro/shiro-core/bundles/shiro-core-1.1.0.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/xml-resolver/xml-resolver/jars/xml-resolver-1.2.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/xerces/xercesImpl/jars/xercesImpl-2.8.1.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/net.sourceforge.nekohtml/nekohtml/jars/nekohtml-1.9.9.jar!/" />
@@ -116,14 +117,10 @@
           <root url="jar://$USER_HOME$/.grails/ivy-cache/classworlds/classworlds/jars/classworlds-1.1-alpha-2.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/ant/ant/jars/ant-1.6.5.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.maven/maven-ant-tasks/jars/maven-ant-tasks-2.1.0.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/commons-net/commons-net/jars/commons-net-3.1.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/com.jcraft/jsch/jars/jsch-0.1.48.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-ftp/bundles/camel-ftp-2.10.0.jar!/" />
+          <root url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/shiro-1.1.3/lib" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/Dropbox/APIs/shiro/shiro-core-1.1.0-sources.jar!/" />
-        </SOURCES>
+        <SOURCES />
         <jarDirectory url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/shiro-1.1.3/lib" recursive="false" />
       </library>
     </orderEntry>
