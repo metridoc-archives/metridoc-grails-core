@@ -30,6 +30,7 @@
 class UrlMappings {
 
     static mappings = {
+        println "\n\ngrailsApplication is: ${grailsApplication}\n\n"
         "/data/$action?/$projectName?/$filePath**?"(controller: "data")
 
         "/$controller/$action?/$id?" {

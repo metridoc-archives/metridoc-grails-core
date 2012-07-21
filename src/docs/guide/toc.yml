@@ -1,18 +1,6 @@
 introduction:
   title: Introduction
-counter:
-  title: Counter
-  CounterController: Counter Controller
-jenkins:
-  title: Jenkins
-  JenkinsController: Jenkins Controller
-illiad:
-  title: Illiad
-  IlliadController: Illiad Controller
-create-report:
-  title: create report
-compile:
-  title: compile
-run-workflow:
-  title: run workflow
+gettingStarted:
+  title: Getting Started
+  requiredSoftware: Required Software
 
