@@ -1,4 +1,4 @@
 .idea
-target
+classes
 grails-metridoc-core*
 plugin.xml
