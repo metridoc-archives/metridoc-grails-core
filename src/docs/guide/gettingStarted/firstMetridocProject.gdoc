@@ -1,0 +1,11 @@
+Although it is possible to create a project from scratch, there is a basic project already available.  To use the
+base project you must have subversion installed.  Move to a directory where you would like to install the metridoc
+workspace.  Run the following commands to install and run the base Metridoc project
+
+{code}
+    svn export http://metridoc.googlecode.com/svn/trunk/startup/metridoc
+    cd metridoc
+    grails run-app
+{code}
+
+If all goes well, you should see this page

@@ -1,6 +1,7 @@
 * [Java 6 or above|http://www.oracle.com/technetwork/java/javase/downloads/index.html]
 * [Grails 2.0.4|http://dist.springframework.org.s3.amazonaws.com/release/GRAILS/grails-2.0.4.zip]
 * [Mysql|http://www.mysql.com/]
+* Subversion
 
 {note}
 Package managers generally have grails.  For instance, if you are using a mac, try [MacPorts|http://www.macports.org/]
