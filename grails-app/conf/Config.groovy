@@ -17,21 +17,6 @@ import metridoc.targets._DataSourceLoader
 import org.springframework.util.ClassUtils
 import metridoc.dsl.JobBuilder
 
-/*
-* Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
-* Educational Community License, Version 2.0 (the "License"); you may
-* not use this file except in compliance with the License. You may
-* obtain a copy of the License at
-*
-* http://www.osedu.org/licenses/ECL-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an "AS IS"
-* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
-* or implied. See the License for the specific language governing
-* permissions and limitations under the License.
-*/
-// locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
 
 // grails.config.locations = [ "classpath:${appName}-config.properties",
@@ -75,6 +60,7 @@ grails.config.locations = []
 def enableAuthentication = System.getProperty("metridoc.authenticate.enable")
 metridoc.authenticate.enable = enableAuthentication ? Boolean.valueOf(enableAuthentication) : true
 
+//TODO: need to reference controllers instead of an application list, this is stupid... or maybe just 1 MetridocConfig.groovy file?
 metridoc.all.applications.each {applicationName ->
 
     try {
