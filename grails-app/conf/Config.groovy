@@ -184,9 +184,10 @@ log4j = {
         info 'stdout', 'file'
     }
 }
-//set authors in documentation
+
+//change the document parameters if creating a user manual for a plugin
 grails.doc.authors = "Thomas Barker, Weizhuo Wu"
 
 grails.doc.subtitle = " "
 
-grails.doc.title = "MetridocReports"
+grails.doc.title = "Metridoc User Manual"
