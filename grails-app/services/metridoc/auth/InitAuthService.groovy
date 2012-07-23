@@ -75,7 +75,7 @@ class InitAuthService {
                 if (!anonymousPermissionFound) {
                     anonymousUser.addToPermissions(ANONYMOUS)
                 }
-
+                anonymousUser.save()
             }
         } catch (Exception e) {
             log.error "Exception occurred trying to ", e
