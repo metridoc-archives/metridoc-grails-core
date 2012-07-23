@@ -3,9 +3,11 @@ base project you must have subversion installed.  Move to a directory where you 
 workspace.  Run the following commands to install and run the base Metridoc project
 
 {code}
-    svn export http://metridoc.googlecode.com/svn/trunk/startup/metridoc
-    cd metridoc
-    grails run-app
+svn export http://metridoc.googlecode.com/svn/trunk/startup/metridoc
+cd metridoc
+grails run-app
 {code}
 
-If all goes well, you should see this page
+If all goes well, you should see this page:
+
+!http://metridoc.googlecode.com/svn/trunk/metridoc-core/src/docs/images/MetriDocHome.png!

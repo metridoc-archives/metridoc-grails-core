@@ -2,9 +2,15 @@
 * [Grails 2.0.4|http://dist.springframework.org.s3.amazonaws.com/release/GRAILS/grails-2.0.4.zip]
 * [Mysql|http://www.mysql.com/]
 * Subversion
+* Text editor or IDE (IntelliJ, Eclipse or NetBeans)
 
 {note}
 Package managers generally have grails.  For instance, if you are using a mac, try [MacPorts|http://www.macports.org/]
 and do @sudo port install grails@.  For Ubuntu you can follow the instructions on the bottom of the Grails download
 [page|http://grails.org/Download/]
+{note}
+{note}
+MetriDoc is developed in IntelliJ, and to a lesser extent Eclipse and vim.  Although IntelliJ is not free, it
+is a very good IDE for Grails.  Education licenses for IntelliJ are very cheap.  You can find details for setting up
+Grails in various IDE / Text editor environments [here|http://grails.org/doc/latest/guide/gettingStarted.html#ide]
 {note}

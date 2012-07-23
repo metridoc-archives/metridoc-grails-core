@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
     <head>
-        <title>MetridocReports 0.50-SNAPSHOT</title>
+        <title>MetriDoc User Manual 0.50-SNAPSHOT</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
         <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
@@ -52,7 +52,7 @@ function addJsClass(el) {
                         <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                         <div class="project">
-                            <h1>MetridocReports - Reference Documentation</h1>
+                            <h1>MetriDoc User Manual - Reference Documentation</h1>
                             <p><strong>Authors:</strong> Thomas Barker, Weizhuo Wu</p>
                             <p><strong>Version:</strong> 0.50-SNAPSHOT</p>
                             
@@ -68,7 +68,9 @@ function addJsClass(el) {
                             
                             <div class="toc-item" style="margin-left:10px"><a href="#requiredSoftware"><strong>2.1</strong><span>Required Software</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:10px"><a href="#firstMetridocProject"><strong>2.2</strong><span>First Metridoc Project</span></a></div>
+                            <div class="toc-item" style="margin-left:10px"><a href="#requiredExperience"><strong>2.2</strong><span>Required Experience</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:10px"><a href="#firstMetridocProject"><strong>2.3</strong><span>First Metridoc Project</span></a></div>
                             
                             <div style="clear:both" ></div>
                         </div>
@@ -94,19 +96,37 @@ to enhance the user experience as well as encourage community plugins.
 <li><a href="http://dist.springframework.org.s3.amazonaws.com/release/GRAILS/grails-2.0.4.zip" target="blank">Grails 2.0.4</a></li>
 <li><a href="http://www.mysql.com/" target="blank">Mysql</a></li>
 <li>Subversion</li>
+<li>Text editor or IDE (IntelliJ, Eclipse or NetBeans)</li>
 </ul><p class="paragraph"/><blockquote class="note">
 Package managers generally have grails.  For instance, if you are using a mac, try <a href="http://www.macports.org/" target="blank">MacPorts</a>
 and do <code>sudo port install grails</code>.  For Ubuntu you can follow the instructions on the bottom of the Grails download
 <a href="http://grails.org/Download/" target="blank">page</a>
 </blockquote>
+<blockquote class="note">
+MetriDoc is developed in IntelliJ, and to a lesser extent Eclipse and vim.  Although IntelliJ is not free, it
+is a very good IDE for Grails.  Education licenses for IntelliJ are very cheap.  You can find details for setting up
+Grails in various IDE / Text editor environments <a href="http://grails.org/doc/latest/guide/gettingStarted.html#ide" target="blank">here</a>
+</blockquote>
 
 
-<h2 id="firstMetridocProject">2.2 First Metridoc Project</h2>
+<h2 id="requiredExperience">2.2 Required Experience</h2>
+MetriDoc uses the web framework <a href="http://www.grails.org" target="blank">Grails</a>.  Grails is similar to the web framework ruby on rails framework,
+but sits on top of the Groovy language.  Anyone with Java web experience, or experience in rapid development
+environments such as Rails or Django should pick up Grails quickly.<p class="paragraph"/>Here are some Grails resources:
+<ul class="star">
+<li><a href="http://www.grails.org" target="blank">Grails Website</a></li>
+<li><a href="http://grails.org/doc/latest/" target="blank">Grails User Manual</a></li>
+<li><a href="http://grails.org/Tutorials" target="blank">Tutorials</a></li>
+<li><a href="http://www.manning.com/gsmith/" target="blank">Grails in Action</a></li>
+</ul><p class="paragraph"/>
+
+
+<h2 id="firstMetridocProject">2.3 First Metridoc Project</h2>
 Although it is possible to create a project from scratch, there is a basic project already available.  To use the
 base project you must have subversion installed.  Move to a directory where you would like to install the metridoc
 workspace.  Run the following commands to install and run the base Metridoc project<p class="paragraph"/><div class="code"><pre>svn export http://metridoc.googlecode.com/svn/trunk/startup/metridoc
-    cd metridoc
-    grails run&#45;app</pre></div><p class="paragraph"/>If all goes well, you should see this page
+cd metridoc
+grails run&#45;app</pre></div><p class="paragraph"/>If all goes well, you should see this page:<p class="paragraph"/><img border="0" class="center" src="http://metridoc.googlecode.com/svn/trunk/metridoc-core/src/docs/images/MetriDocHome.png"></img>
 
                     </div>
                 </td>
