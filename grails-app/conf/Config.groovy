@@ -190,4 +190,4 @@ grails.doc.authors = "Thomas Barker, Weizhuo Wu"
 
 grails.doc.subtitle = " "
 
-grails.doc.title = "Metridoc User Manual"
+grails.doc.title = "MetriDoc User Manual"
