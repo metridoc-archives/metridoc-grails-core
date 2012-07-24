@@ -56,7 +56,10 @@ class ControllerHelperService {
 
     def getAdministrativeApps() {
         return filterApplications {
-            return AdminController.isAssignableFrom(it.getClazz())
+            def isLegacyAdmin = AdminController.isAssignableFrom(it.getClazz())
+            def isAdmin = ClassUtils.getStaticVariable(it.clazz, "adminOnly", false)
+
+            return isLegacyAdmin || isAdmin
         }
     }
 

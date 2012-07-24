@@ -14,13 +14,13 @@
  */
 package metridoc.admin
 
-class ManageReportsController extends AdminController {
+class ManageReportsController {
 
     def homeService
     def static reportName = "Report Manager"
+    def static adminOnly = true
 
-    @Override
-    def getModel() {
+    def index() {
         [
             reports: homeService.reportsByScope
         ]

@@ -3,7 +3,7 @@
         <g:if test="${pluginName}">
             <g:render template="${descriptionTemplate}" plugin="${pluginName}"/>
         </g:if>
-            <g:else>
+        <g:else>
             <g:render template="${descriptionTemplate}"/>
         </g:else>
     </div>
