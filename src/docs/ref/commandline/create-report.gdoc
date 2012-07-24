@@ -1,0 +1,12 @@
+h1. create-report
+
+h2. Usage
+{code}
+create-report <report name>
+{code}
+
+h2. Description
+
+Creates files for creating a basic report.  This includes a controller, service, gsp files, javascript and css.  All
+files are named based on the passed report name
+
