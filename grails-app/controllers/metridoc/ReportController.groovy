@@ -73,27 +73,19 @@ abstract class ReportController {
         def template = grailsAttributes.getTemplateUri(templateLocation, request)
         def resource = grailsAttributes.pagesTemplateEngine.getResourceForUri(template)
 
-        //TODO: remove duplicate code here
         if (!resource.exists()) {
             log.info "description not found at ${templateLocation}"
             templateLocation = "${WEBINF_VIEW_LOCATION}${templateLocation}"
+
+            if (pluginName()){
+                def pluginManager = applicationContext.pluginManager
+                def pluginContext = pluginManager.getPluginPath(pluginName())
+                def pluginViewLocation = PLUGIN_VIEW_LOCATION.call(pluginContext)
+                templateLocation = "${pluginViewLocation}${getDescriptionTemplateLocation()}"
+            }
+
             template = grailsAttributes.getTemplateUri(templateLocation, request)
             resource = grailsAttributes.pagesTemplateEngine.getResourceForUri(template)
-        }
-
-        if (!resource.exists() && pluginName()) {
-            log.info "description not found at ${templateLocation}"
-            def pluginManager = applicationContext.pluginManager
-            def pluginContext = pluginManager.getPluginPath(pluginName())
-            def pluginViewLocation = PLUGIN_VIEW_LOCATION.call(pluginContext)
-
-            templateLocation = "${pluginViewLocation}${getDescriptionTemplateLocation()}"
-            template = grailsAttributes.getTemplateUri(templateLocation, request)
-            resource = grailsAttributes.pagesTemplateEngine.getResourceForUri(template)
-        }
-
-        if (!resource.exists()) {
-            log.info "description not found at ${templateLocation}"
         }
 
         log.info("checking if template location [${resource}] exists, resource exists? ${resource.exists()}")

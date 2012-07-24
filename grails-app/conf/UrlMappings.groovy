@@ -16,6 +16,8 @@
 class UrlMappings {
 
     static mappings = {
+        "/"(controller: "home", action: "index")
+
         "/data/$action?/$projectName?/$filePath**?"(controller: "data")
 
         "/$controller/$action?/$id?" {
@@ -24,7 +26,6 @@ class UrlMappings {
             }
         }
 
-        "/"(view: "/index")
         "500"(view: '/error')
     }
 }

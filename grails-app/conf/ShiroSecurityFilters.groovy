@@ -39,8 +39,7 @@ class ShiroSecurityFilters {
                 }
 
                 // Ignore direct views (e.g. the default main index page).
-                if (!controllerName) return true
-
+                if (controllerName.contains("home")) return true
                 // Access control by convention.
                 accessControl()
             }

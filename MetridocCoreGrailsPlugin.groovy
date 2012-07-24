@@ -1,6 +1,4 @@
 import metridoc.schema.SchemaRunner
-import metridoc.auth.InitAuthService
-import metridoc.auth.InitAuthService
 
 /*
 * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
@@ -30,7 +28,6 @@ class MetridocCoreGrailsPlugin {
         "scripts/_Events.groovy"
     ]
 
-    // TODO Fill in these fields
     def title = "Metridoc Core Plugin" // Headline display name of the plugin
     def author = "Thomas Barker"
     def authorEmail = "tbarker@pobox.upenn.edu"
@@ -50,7 +47,7 @@ class MetridocCoreGrailsPlugin {
     def scm = [ url: "https:metridoc.googlecode.com/svn/trunk/metridoc-core" ]
 
     def doWithWebDescriptor = { xml ->
-        // TODO Implement additions to web.xml (optional), this event occurs before
+        // Implement additions to web.xml (optional), this event occurs before
     }
 
     def doWithSpring = {
@@ -66,25 +63,25 @@ class MetridocCoreGrailsPlugin {
     }
 
     def doWithDynamicMethods = { ctx ->
-        // TODO Implement registering dynamic methods to classes (optional)
+        //Implement registering dynamic methods to classes (optional)
     }
 
     def doWithApplicationContext = { applicationContext ->
-        // TODO Implement post initialization spring config (optional)
+        // Implement post initialization spring config (optional)
     }
 
     def onChange = { event ->
-        // TODO Implement code that is executed when any artefact that this plugin is
+        // Implement code that is executed when any artefact that this plugin is
         // watching is modified and reloaded. The event contains: event.source,
         // event.application, event.manager, event.ctx, and event.plugin.
     }
 
     def onConfigChange = { event ->
-        // TODO Implement code that is executed when the project configuration changes.
+        // Implement code that is executed when the project configuration changes.
         // The event is the same as for 'onChange'.
     }
 
     def onShutdown = { event ->
-        // TODO Implement code that is executed when the application shuts down (optional)
+        // Implement code that is executed when the application shuts down (optional)
     }
 }

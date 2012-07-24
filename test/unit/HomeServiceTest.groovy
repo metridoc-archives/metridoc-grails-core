@@ -12,7 +12,6 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package metridoc.core
 
 import org.codehaus.groovy.grails.commons.GrailsClass
 import org.junit.Before
@@ -25,18 +24,18 @@ import metridoc.ReportController
  * Date: 6/27/12
  * Time: 1:31 PM
  */
-class ControllerHelperServiceTest {
+class HomeServiceTest {
 
     @Delegate
-    ControllerHelperService controllerHelperService = new ControllerHelperService()
+    HomeService homeService = new HomeService()
 
     @Before
     void "add mocking behavior"() {
-        controllerHelperService.metaClass.isPermitted = {String name ->
+        homeService.metaClass.isPermitted = {String name ->
             this.isPermitted(name)
         }
 
-        controllerHelperService.metaClass.getWrappedControllerClasses = {
+        homeService.metaClass.getWrappedControllerClasses = {
             this.getControllerClasses()
         }
     }

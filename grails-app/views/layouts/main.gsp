@@ -50,7 +50,7 @@
                 <ul>
                     <li>
                         <strong>
-                            <a href="/<g:meta name="app.name"/>">Home</a>
+                            <a href="/<g:meta name="app.name"/>/home">Home</a>
                         </strong>
                     </li>
                     <% if ("admin" == SecurityUtils.subject.principal) { %>
