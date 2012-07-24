@@ -5,7 +5,7 @@
 * Text editor or IDE (IntelliJ, Eclipse or NetBeans)
 
 {note}
-Package managers generally have grails.  For instance, if you are using a mac, try [MacPorts|http://www.macports.org/]
+Many package managers have grails.  For instance, if you are using a mac, try [MacPorts|http://www.macports.org/]
 and do @sudo port install grails@.  For Ubuntu you can follow the instructions on the bottom of the Grails download
 [page|http://grails.org/Download/]
 {note}

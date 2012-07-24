@@ -70,7 +70,9 @@ function addJsClass(el) {
                             
                             <div class="toc-item" style="margin-left:10px"><a href="#requiredExperience"><strong>2.2</strong><span>Required Experience</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:10px"><a href="#firstMetridocProject"><strong>2.3</strong><span>First Metridoc Project</span></a></div>
+                            <div class="toc-item" style="margin-left:10px"><a href="#firstMetridocProject"><strong>2.3</strong><span>First MetriDoc Project</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:10px"><a href="#developingMetridoc"><strong>2.4</strong><span>Developing MetriDoc</span></a></div>
                             
                             <div style="clear:both" ></div>
                         </div>
@@ -98,7 +100,7 @@ to enhance the user experience as well as encourage community plugins.
 <li>Subversion</li>
 <li>Text editor or IDE (IntelliJ, Eclipse or NetBeans)</li>
 </ul><p class="paragraph"/><blockquote class="note">
-Package managers generally have grails.  For instance, if you are using a mac, try <a href="http://www.macports.org/" target="blank">MacPorts</a>
+Many package managers have grails.  For instance, if you are using a mac, try <a href="http://www.macports.org/" target="blank">MacPorts</a>
 and do <code>sudo port install grails</code>.  For Ubuntu you can follow the instructions on the bottom of the Grails download
 <a href="http://grails.org/Download/" target="blank">page</a>
 </blockquote>
@@ -121,12 +123,21 @@ environments such as Rails or Django should pick up Grails quickly.<p class="par
 </ul><p class="paragraph"/>
 
 
-<h2 id="firstMetridocProject">2.3 First Metridoc Project</h2>
+<h2 id="firstMetridocProject">2.3 First MetriDoc Project</h2>
 Although it is possible to create a project from scratch, there is a basic project already available.  To use the
 base project you must have subversion installed.  Move to a directory where you would like to install the metridoc
 workspace.  Run the following commands to install and run the base Metridoc project<p class="paragraph"/><div class="code"><pre>svn export http://metridoc.googlecode.com/svn/trunk/startup/metridoc
 cd metridoc
-grails run&#45;app</pre></div><p class="paragraph"/>If all goes well, you should see this page:<p class="paragraph"/><img border="0" class="center" src="http://metridoc.googlecode.com/svn/trunk/metridoc-core/src/docs/images/MetriDocHome.png"></img>
+grails run&#45;app</pre></div><p class="paragraph"/>If all goes well, you should see this page:<p class="paragraph"/><img border="0" class="center" src="http://metridoc.googlecode.com/svn/trunk/metridoc-core/src/docs/images/MetriDocHome.png"></img><p class="paragraph"/><blockquote class="note">
+The plugin may fail saying that there is a corrupt cache.  If this happens, run
+<code>grails --refresh-dependencies compile</code> and try <code>grails run-app</code> again
+</blockquote>
+
+
+<h2 id="developingMetridoc">2.4 Developing MetriDoc</h2>
+If you are developing metridoc you will need to checkout MetriDoc trunk using subversion by running the command:<p class="paragraph"/><div class="code"><pre>svn co https://metridoc.googlecode.com/svn/trunk</pre></div><p class="paragraph"/>Many IDEs have version control support.  If you are using IntelliJ you can do <code>VCS -&#62; Checkout from Version Control -&#62; Subversion</code>.
+Add the repository https://metridoc.googlecode.com/svn/trunk and follow the instructions.  By doing this, IntelliJ
+will create a project structure for all the metridoc modules
 
                     </div>
                 </td>
@@ -155,15 +166,6 @@ grails run&#45;app</pre></div><p class="paragraph"/>If all goes well, you should
                     
                     <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">controllers</h1><div class="menu-sub">
                         
-                        
-                        <div class="menu-item"><a href="../ref/controllers/CounterController.html">CounterController</a>
-                        </div>
-                        
-                        <div class="menu-item"><a href="../ref/controllers/IlliadController.html">IlliadController</a>
-                        </div>
-                        
-                        <div class="menu-item"><a href="../ref/controllers/JenkinsController.html">JenkinsController</a>
-                        </div>
                         
                         </div>
                     </div>

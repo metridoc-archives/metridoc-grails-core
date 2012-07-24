@@ -11,3 +11,8 @@ grails run-app
 If all goes well, you should see this page:
 
 !http://metridoc.googlecode.com/svn/trunk/metridoc-core/src/docs/images/MetriDocHome.png!
+
+{note}
+The plugin may fail saying that there is a corrupt cache.  If this happens, run
+@grails --refresh-dependencies compile@ and try @grails run-app@ again
+{note}
