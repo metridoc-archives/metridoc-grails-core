@@ -31,16 +31,6 @@
     <body>
         <div class="md-application-content">
 
-            <g:if test="${descriptionExists}">
-                <div class="description">
-                    <g:if test="${pluginName}">
-                        <g:render template="${descriptionTemplate}" plugin="${pluginName}"/>
-                    </g:if>
-                    <g:else>
-                        <g:render template="${descriptionTemplate}"/>
-                    </g:else>
-                </div>
-            </g:if>
             %{--TODO: is there some way we can generalize this repeated code, this is a mess--}%
             <g:if test="${params.action == 'index'}">
                 <g:if test="${pluginName}">
