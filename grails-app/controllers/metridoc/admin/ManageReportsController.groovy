@@ -16,13 +16,13 @@ package metridoc.admin
 
 class ManageReportsController {
 
-    def controlerHelperService
+    def controllerHelperService
     def static reportName = "Report Manager"
     def static adminOnly = true
 
     def index() {
         [
-            reports: controlerHelperService.reportsByScope
+            reports: controllerHelperService.reportsByScope
         ]
     }
 }
