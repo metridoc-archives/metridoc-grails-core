@@ -49,26 +49,38 @@ class ControllerHelperService {
 
     def getReports() {
         return filterApplications {
-            def isAdminApp = AdminController.isAssignableFrom(it.getClazz())
-            return ReportController.isAssignableFrom(it.getClazz()) && !isAdminApp
+            return isReport(it.clazz) && !isAdmin(it.clazz)
         }
+    }
+
+    def isReport(Class clazz) {
+        def hasReportName = ClassUtils.getStaticVariable(clazz, "reportName")
+        def hasAdminOnly = ClassUtils.getStaticVariable(clazz, "adminOnly")
+        def hasIsReport = ClassUtils.getStaticVariable(clazz, "isReport")
+        def isLegacyReport = ReportController.isAssignableFrom(clazz)
+
+        return hasReportName || hasAdminOnly || hasIsReport || isLegacyReport
+    }
+
+    def isAdmin(Class clazz) {
+        def isLegacyAdmin = AdminController.isAssignableFrom(clazz)
+        def isAdmin = ClassUtils.getStaticVariable(clazz, "adminOnly", false)
+
+        return isLegacyAdmin || isAdmin
     }
 
     def getAdministrativeApps() {
         return filterApplications {
-            def isLegacyAdmin = AdminController.isAssignableFrom(it.getClazz())
-            def isAdmin = ClassUtils.getStaticVariable(it.clazz, "adminOnly", false)
-
-            return isLegacyAdmin || isAdmin
+            return isAdmin(it.clazz)
         }
     }
 
     def getReportsByScope() {
         def result = []
         getAdministrativeApps().keySet().each {
-            result.add (
+            result.add(
                 [
-                    name:it,
+                    name: it,
                     isAdmin: true,
                     isAnonymous: false,
                     isDefault: false

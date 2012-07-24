@@ -1,10 +1,10 @@
 
 
 class HomeController {
-    def homeService
+    def controllerHelperService
 
     def index() {
-        render(view: 'index', model: [applications:homeService.applications, reports: homeService.reports, administrativeApps:homeService.administrativeApps])
+        render(view: 'index', model: [applications:controllerHelperService.applications, reports: controllerHelperService.reports, administrativeApps:controllerHelperService.administrativeApps])
     }
 
 }

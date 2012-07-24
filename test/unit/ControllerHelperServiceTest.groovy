@@ -17,6 +17,7 @@ import org.codehaus.groovy.grails.commons.GrailsClass
 import org.junit.Before
 import org.junit.Test
 import metridoc.ReportController
+import metridoc.core.ControllerHelperService
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,18 +25,18 @@ import metridoc.ReportController
  * Date: 6/27/12
  * Time: 1:31 PM
  */
-class HomeServiceTest {
+class ControllerHelperServiceTest {
 
     @Delegate
-    HomeService homeService = new HomeService()
+    ControllerHelperService controllerHelperService = new ControllerHelperService()
 
     @Before
     void "add mocking behavior"() {
-        homeService.metaClass.isPermitted = {String name ->
+        controllerHelperService.metaClass.isPermitted = {String name ->
             this.isPermitted(name)
         }
 
-        homeService.metaClass.getWrappedControllerClasses = {
+        controllerHelperService.metaClass.getWrappedControllerClasses = {
             this.getControllerClasses()
         }
     }
