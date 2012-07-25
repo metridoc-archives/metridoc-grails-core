@@ -15,47 +15,36 @@
 
 -->
 
-<%@ page contentType="text/html;charset=UTF-8" %>
-<html>
-    <head>
-        <g:if test="${params.layout}">
-            <meta name="layout" content="${params.layout}"/>
-        </g:if>
-        <g:else>
-            <meta name="layout" content="main"/>
-        </g:else>
 
-        <r:require module="${params.controller}"/>
-    </head>
-
+<md:report>
     <body>
-        <div class="md-application-content">
+    <div class="md-application-content">
 
-            %{--TODO: is there some way we can generalize this repeated code, this is a mess--}%
-            <g:if test="${params.action == 'index'}">
-                <g:if test="${pluginName}">
-                    <g:render template="${templateDir}/${params.controller}" plugin="${pluginName}"/>
-                </g:if>
-                <g:else>
-                    <g:render template="${templateDir}/${params.controller}"/>
-                </g:else>
+        %{--TODO: is there some way we can generalize this repeated code, this is a mess--}%
+        <g:if test="${params.action == 'index'}">
+            <g:if test="${pluginName}">
+                <g:render template="${templateDir}/${params.controller}" plugin="${pluginName}"/>
             </g:if>
-            <g:elseif test="${params.action}">
-                <g:if test="${pluginName}">
-                    <g:render template="${templateDir}/${params.action}" plugin="${pluginName}"/>
-                </g:if>
-                <g:else>
-                    <g:render template="${templateDir}/${params.action}"/>
-                </g:else>
-            </g:elseif>
             <g:else>
-                <g:if test="${pluginName}">
-                    <g:render template="${templateDir}/${params.controller}" plugin="${pluginName}"/>
-                </g:if>
-                <g:else>
-                    <g:render template="${templateDir}/${params.controller}"/>
-                </g:else>
+                <g:render template="${templateDir}/${params.controller}"/>
             </g:else>
-        </div>
+        </g:if>
+        <g:elseif test="${params.action}">
+            <g:if test="${pluginName}">
+                <g:render template="${templateDir}/${params.action}" plugin="${pluginName}"/>
+            </g:if>
+            <g:else>
+                <g:render template="${templateDir}/${params.action}"/>
+            </g:else>
+        </g:elseif>
+        <g:else>
+            <g:if test="${pluginName}">
+                <g:render template="${templateDir}/${params.controller}" plugin="${pluginName}"/>
+            </g:if>
+            <g:else>
+                <g:render template="${templateDir}/${params.controller}"/>
+            </g:else>
+        </g:else>
+    </div>
     </body>
-</html>
+</md:report>
