@@ -2,7 +2,7 @@ h1. config-metridoc
 
 h2. Usage
 {code}
-config-metridoc [-o]
+grails config-metridoc [-o]
 {code}
 
 * o - puts the command in non interactive mode, overriding and deleting files without asking permission from the user

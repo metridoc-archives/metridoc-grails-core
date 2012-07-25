@@ -2,7 +2,7 @@ h1. create-report
 
 h2. Usage
 {code}
-create-report <report name>
+grails create-report <report name>
 {code}
 
 h2. Description

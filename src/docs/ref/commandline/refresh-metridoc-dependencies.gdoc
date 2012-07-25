@@ -2,7 +2,7 @@ h1. refresh-metridoc-dependencies
 
 h2. Usage
 {code}
-refresh-metridoc-dependencies
+grails refresh-metridoc-dependencies
 {code}
 
 h2. Description
@@ -11,4 +11,6 @@ Many times in development you may have an application referencing a snapshot tha
 ok job of refreshing snapshots, but when it is not reliable run this script to blow away all
 cached plugin dependencies.  By doing this, grails will be forced to re-download all dependencies.  If you are in the
 Grails shell, you will have to exit and re-enter the shell.
+
+Running this script can cause issues
 
