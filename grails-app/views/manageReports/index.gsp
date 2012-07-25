@@ -13,43 +13,32 @@
     </div>
     <md:header>Reports Grid</md:header>
     <div class="reportBody">
-        <table class="basicReportTable">
-            <tr>
-                <th>Report Name</th>
-                <th class="centeredTableHeader">Admin</th>
-                <th class="centeredTableHeader">Anonymous</th>
-                <th class="centeredTableHeader">Default</th>
-            </tr>
-            <g:each in="${reports}" var="report">
+        <g:form action="updateReportSecurity" name="updateSecurityReportForm">
+            <table class="basicReportTable">
                 <tr>
-                    <td>${report.name}</td>
-
-                    <td class="centeredRadioCell">
-                        <g:if test="${report.isAdmin}">
-                            <input type="radio" name="${report}" value="admin" checked="true"/>
-                        </g:if>
-                        <g:else>
-                            <input type="radio" name="${report}" value="admin"/>
-                        </g:else>
-                    </td>
-                    <td class="centeredRadioCell">
-                        <g:if test="${report.isAnonymous}">
-                            <input type="radio" name="${report}" value="anonymous" checked="true"/>
-                        </g:if>
-                        <g:else>
-                            <input type="radio" name="${report}" value="anonymous"/>
-                        </g:else>
-                    </td>
-                    <td class="centeredRadioCell">
-                        <g:if test="${report.isDefault}">
-                            <input type="radio" name="${report}" value="default" checked="true"/>
-                        </g:if>
-                        <g:else>
-                            <input type="radio" name="${report}" value="default"/>
-                        </g:else>
-                    </td>
+                    <th>Report Name</th>
+                    <th class="centeredTableHeader">Admin</th>
+                    <th class="centeredTableHeader">Anonymous</th>
+                    <th class="centeredTableHeader">Default</th>
                 </tr>
-            </g:each>
-        </table>
+                <g:each in="${reports}" var="report">
+                    <tr>
+                        <td>${report.name}</td>
+                        <tmpl:radioItem reportName="${report}" typeTest="${report.isAdmin}" type="admin"/>
+                        <tmpl:radioItem reportName="${report}" typeTest="${report.isAnonymous}" type="anonymous"/>
+                        <tmpl:radioItem reportName="${report}" typeTest="${report.isDefault}" type="default"/>
+                    </tr>
+                </g:each>
+            </table>
+
+            <div id="submitButton">
+                <span class="buttons">
+                    <a id="updateReportSecurity" href="#">Update Security</a>
+                </span>
+                <span class="buttons">
+                    <a id="refreshReportSecurity" href="#">Cancel</a>
+                </span>
+            </div>
+        </g:form>
     </div>
 </md:report>

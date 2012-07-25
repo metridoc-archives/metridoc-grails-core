@@ -12,10 +12,17 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-/**
- * Created with IntelliJ IDEA.
- * User: tbarker
- * Date: 6/26/12
- * Time: 2:08 PM
- * To change this template use File | Settings | File Templates.
- */
+
+$("td.centeredRadioCell > input").change(function() {
+    $('#submitButton').fadeIn()
+})
+
+$('#updateReportSecurity').click(function () {
+        $('#updateSecurityReportForm').submit()
+    }
+);
+
+$('#refreshReportSecurity').click(function () {
+        location.reload()
+    }
+);

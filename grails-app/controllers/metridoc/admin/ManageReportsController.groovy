@@ -25,4 +25,8 @@ class ManageReportsController {
             reports: controllerHelperService.reportsByScope
         ]
     }
+
+    def updateReportSecurity() {
+
+    }
 }

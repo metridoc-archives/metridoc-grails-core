@@ -15,3 +15,7 @@
 .basicReportTable table tr td {
     text-align: center;
 }
+
+#submitButton {
+    display: none;
+}
