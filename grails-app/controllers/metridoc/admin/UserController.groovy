@@ -18,14 +18,14 @@ import metridoc.reports.ShiroUser
 import org.apache.shiro.crypto.hash.Sha256Hash
 import org.springframework.dao.DataIntegrityViolationException
 
-class UserController {
+class UserController extends AdminController {
     final static DEFAULT_PASSWORD = "password"
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
     def static final reportName = "Manage Users"
-    def static adminOnly = true
+    static final adminOnly = true
 
-    def index(){
-        redirect(action: 'list', params: params)
+    def indexAction() {
+        return "list"
     }
 
     def list() {
@@ -114,7 +114,7 @@ class UserController {
 
     def delete() {
         def shiroUserInstance = ShiroUser.get(params.id)
-       if (!shiroUserInstance) {
+        if (!shiroUserInstance) {
 			flash.message = message(code: 'default.not.found.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), params.id])
             redirect(action: "list")
             return

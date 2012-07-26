@@ -24,7 +24,6 @@ class ShiroUser {
     String username
     String passwordHash
     String emailAddress
-    Boolean vetted
 
     static mapping = {
         datasource 'admin'
@@ -34,6 +33,5 @@ class ShiroUser {
     static constraints = {
         username(nullable: false, blank: false)
         emailAddress(email: true, nullable: true)
-        vetted(nullable: true)
     }
 }

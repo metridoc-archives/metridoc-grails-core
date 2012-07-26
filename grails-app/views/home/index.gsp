@@ -15,6 +15,7 @@
 
 -->
 <!doctype html>
+
 <html>
     <head>
         <meta name="layout" content="main"/>
@@ -36,30 +37,30 @@
 
             <shiro:isLoggedIn>
                 <div id="application-list" role="navigation">
-                    <g:if test="${applications.size()}">
+                    <g:if test="${hasLinks}">
                         <div class="yui3-g">
                             <div class="yui3-u-1-2">
                                 <h2>Available Applications</h2>
                                 <ul>
-                                    <g:if test="${reports}">
-                                        <g:each var="c" in="${reports}">
-                                            <li class="application"><g:link controller="${c.value}">${c.key}</g:link></li>
+                                    <g:if test="${reportLinks}">
+                                        <g:each var="c" in="${reportLinks}">
+                                            <li class="application"><g:link
+                                                    controller="${c.controllerName}">${c.reportName}</g:link></li>
                                         </g:each>
                                     </g:if>
                                     <g:else>
-                                        <li class = "application">No reports available</li>
+                                        <li class="application">No reports available</li>
                                     </g:else>
                                 </ul>
                             </div>
 
-                            <g:if test="${administrativeApps}">
+                            <g:if test="${adminLinks}">
                                 <div class="yui3-u-1-2">
                                     <h2>Administration</h2>
                                     <ul>
-                                        <g:each var="c"
-                                                in="${administrativeApps}">
+                                        <g:each var="c" in="${adminLinks}">
                                             <li class="application"><g:link
-                                                    controller="${c.value}">${c.key}</g:link></li>
+                                                    controller="${c.controllerName}">${c.reportName}</g:link></li>
                                         </g:each>
                                     </ul>
                                 </div>
@@ -69,7 +70,8 @@
                     </g:if>
                     <g:else>
                         <p>
-                            Please <g:link controller="auth" action="index">login</g:link> to view available applications.
+                            Please <g:link controller="auth"
+                                           action="index">login</g:link> to view available applications.
                         </p>
                     </g:else>
                 </div>

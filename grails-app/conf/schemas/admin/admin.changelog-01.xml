@@ -49,4 +49,23 @@
             <column name="version" type="bigint"/>
         </createTable>
     </changeSet>
+    <changeSet id="admin-03" author="Tommy Barker">
+        <addColumn tableName="reports_configuration">
+            <column name="display_name" type="varchar(500)"/>
+        </addColumn>
+        <sql>update reports_configuration set display_name=name</sql>
+        <addNotNullConstraint tableName="reports_configuration" columnName="display_name"
+                              columnDataType="varchar(500)"/>
+    </changeSet>
+    <changeSet id="admin-04" author="Tommy Barker">
+        <dropColumn tableName="reports_configuration" columnName="admin"/>
+        <dropColumn tableName="reports_configuration" columnName="anonymous"/>
+        <addColumn tableName="reports_configuration">
+            <column name="role" type="varchar(500)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="admin-05" author="Tommy Barker">
+        <sql>update reports_configuration set role=&apos;ROLE_ADMIN&apos;</sql>
+        <addNotNullConstraint tableName="reports_configuration" columnName="role" columnDataType="varchar(500)"/>
+    </changeSet>
 </databaseChangeLog>

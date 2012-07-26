@@ -1,7 +1,7 @@
 package metridoc.auth
 
+import metridoc.reports.ShiroRole
 import metridoc.reports.ShiroUser
-import org.apache.commons.lang.exception.ExceptionUtils
 import org.apache.shiro.crypto.hash.Sha256Hash
 
 /**
@@ -16,69 +16,96 @@ class InitAuthService {
     def grailsApplication
     final static DEFAULT_PASSWORD = "password"
     final static ANONYMOUS = "anonymous"
+    final static ADMIN = "admin"
+    final static REPORT_USER = "report_user"
+    final static ROLE = "ROLE_"
+    final static DEFAULT_ROLES = [ANONYMOUS, ADMIN, REPORT_USER]
 
     def init() {
+        initDefaultRoles()
         initAdminUser()
         initAnonymousUser()
     }
 
     def initAdminUser() {
-        try {
-            ShiroUser.withTransaction {
+        ShiroUser.withTransaction {
 
-                def adminUser = ShiroUser.find {
-                    username == "admin"
-                }
-
-
-                if (!adminUser) {
-
-                    def preConfiguredPassword = grailsApplication.config.metridoc.admin.password
-                    def password = preConfiguredPassword ? preConfiguredPassword : DEFAULT_PASSWORD
-
-                    if (DEFAULT_PASSWORD == password) {
-                        log.warn "Could not find user admin, creating a default one with password '${DEFAULT_PASSWORD}'.  Change this immediatelly"
-                    }
-                    adminUser = new ShiroUser(username: 'admin', passwordHash: new Sha256Hash(password).toHex())
-                    adminUser.addToPermissions("*:*")
-                    adminUser.save()
-                } else {
-                    log.info "admin user exists, the default admin does not need to be created"
-                }
+            def adminUser = ShiroUser.find {
+                username == "admin"
             }
-        } catch (Exception e) {
-            log.error "Exception occurred trying to ", e
+
+
+            if (!adminUser) {
+
+                def preConfiguredPassword = grailsApplication.config.metridoc.admin.password
+                def password = preConfiguredPassword ? preConfiguredPassword : DEFAULT_PASSWORD
+
+                if (DEFAULT_PASSWORD == password) {
+                    log.warn "Could not find user admin, creating a default one with password '${DEFAULT_PASSWORD}'.  Change this immediatelly"
+                }
+                adminUser = new ShiroUser(username: 'admin', passwordHash: new Sha256Hash(password).toHex())
+
+                def adminRole = ShiroRole.find {
+                    name == createRoleName(ADMIN)
+                }
+                adminUser.addToRoles(adminRole)
+                adminUser.save()
+            } else {
+                log.info "admin user exists, the default admin does not need to be created"
+            }
         }
     }
 
     def initAnonymousUser() {
-        try {
-            ShiroUser.withTransaction {
-                def anonymousUser = ShiroUser.find() {
-                    username == ANONYMOUS
+        ShiroUser.withTransaction {
+            def anonymousUser = ShiroUser.find() {
+                username == ANONYMOUS
+            }
+
+            if (anonymousUser) {
+                log.info "anonymous user found, don't need to create a default one"
+
+            } else {
+                anonymousUser = new ShiroUser(
+                    username: "anonymous",
+                    passwordHash: new Sha256Hash("password").toHex(),
+                )
+
+            }
+
+            def hasRoles = anonymousUser.roles
+
+            if (!hasRoles) {
+                def anonymousRole = ShiroRole.find {
+                    name == createRoleName(ANONYMOUS)
                 }
-
-                if (anonymousUser) {
-                    log.info "anonymous user found, don't need to create a default one"
-
-                } else {
-                    anonymousUser = new ShiroUser(
-                        username: "anonymous",
-                        passwordHash: new Sha256Hash("password").toHex(),
-                        vetted: true,
-                    )
-                    anonymousUser.addToPermissions("anonymous")
-                }
-
-                def anonymousPermissionFound = anonymousUser.permissions.contains(ANONYMOUS)
-
-                if (!anonymousPermissionFound) {
-                    anonymousUser.addToPermissions(ANONYMOUS)
-                }
+                anonymousUser.addToRoles(anonymousRole)
                 anonymousUser.save()
             }
-        } catch (Exception e) {
-            log.error "Exception occurred trying to ", e
         }
+    }
+
+    def initDefaultRoles() {
+        DEFAULT_ROLES.each {shortRoleName ->
+            def roleExists = ShiroRole.find {
+                name == createRoleName(shortRoleName)
+            }
+
+            if (!roleExists) {
+                createRole(shortRoleName).save()
+            }
+        }
+    }
+
+    static createRole(String type) {
+        def role = new ShiroRole(
+            name: createRoleName(type)
+        )
+
+        role.addToPermissions(type)
+    }
+
+    static createRoleName(String type) {
+        ROLE + type.toUpperCase()
     }
 }

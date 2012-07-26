@@ -7,6 +7,11 @@
 --%>
 
 <md:report>
+    <g:if test="${flash.message}">
+        <div id="flashMessage">
+            ${flash.message}
+        </div>
+    </g:if>
     <div class="description">
         Change the security setting of reports by declaring them as anonymous, admin or neither.
         Apps that are not administrative or anonymous will use the default security
@@ -17,16 +22,14 @@
             <table class="basicReportTable">
                 <tr>
                     <th>Report Name</th>
-                    <th class="centeredTableHeader">Admin</th>
-                    <th class="centeredTableHeader">Anonymous</th>
-                    <th class="centeredTableHeader">Default</th>
+                    <th class="centeredTableHeader">Role</th>
                 </tr>
                 <g:each in="${reports}" var="report">
                     <tr>
-                        <td>${report.name}</td>
-                        <tmpl:radioItem reportName="${report}" typeTest="${report.isAdmin}" type="admin"/>
-                        <tmpl:radioItem reportName="${report}" typeTest="${report.isAnonymous}" type="anonymous"/>
-                        <tmpl:radioItem reportName="${report}" typeTest="${report.isDefault}" type="default"/>
+                        <td>${report.displayName}</td>
+                        <td class="centeredContent">
+                            <input  type="text" value="${report.role}" name="role_${report.name}"/>
+                        </td>
                     </tr>
                 </g:each>
             </table>

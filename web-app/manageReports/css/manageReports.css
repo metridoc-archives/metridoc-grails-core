@@ -19,3 +19,7 @@
 #submitButton {
     display: none;
 }
+
+#flashMessage {
+    text-align: center;
+}

@@ -16,17 +16,22 @@ package metridoc.admin
 
 class ManageReportsController {
 
-    def controllerHelperService
+    def grailsApplication
     def static reportName = "Report Manager"
     def static adminOnly = true
+    def manageReportsService
 
     def index() {
         [
-            reports: controllerHelperService.reportsByScope
+            reports: ReportsConfiguration.list()
         ]
     }
 
     def updateReportSecurity() {
 
+        manageReportsService.updateRoles(params)
+
+        flash.message = "Report Security Updated"
+        chain(action: "index")
     }
 }

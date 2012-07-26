@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-$("td.centeredRadioCell > input").change(function() {
+$("td.centeredContent > input").change(function() {
     $('#submitButton').fadeIn()
 })
 
@@ -26,3 +26,10 @@ $('#refreshReportSecurity').click(function () {
         location.reload()
     }
 );
+
+$(function () {
+    $("#flashMessage").dialog({
+        autoOpen:true,
+        resizable:false
+    });
+});

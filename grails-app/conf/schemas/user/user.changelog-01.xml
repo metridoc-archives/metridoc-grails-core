@@ -86,4 +86,9 @@
             <column name="email_address" type="varchar(50)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="shiro-05" author="Tommy Barker" dbms="mysql,h2">
+        <comment>Decided we didn't need the vetted column anymore</comment>
+        <dropColumn tableName="shiro_user" columnName="vetted"/>
+    </changeSet>
 </databaseChangeLog>

@@ -17,13 +17,17 @@ package metridoc.admin
 class ReportsConfiguration {
 
     String name
-    Boolean admin
-    Boolean anonymous
+    String displayName
+    /**
+     * only allow 1 role per report configuration... just making this easier so I can get it done,
+     * maybe change this later?
+     */
+    String role
 
     static constraints = {
-        admin(nullable: false)
-        anonymous(nullable: false)
         name(nullable: false, unique: true, blank: false)
+        displayName(nullable: false)
+        role(nullable: false, blank: false, matches: /ROLE_.+/)
     }
 
     static mapping = {
