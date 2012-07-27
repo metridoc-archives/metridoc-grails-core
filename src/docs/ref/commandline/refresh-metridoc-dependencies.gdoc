@@ -12,5 +12,3 @@ ok job of refreshing snapshots, but when it is not reliable run this script to b
 cached plugin dependencies.  By doing this, grails will be forced to re-download all dependencies.  If you are in the
 Grails shell, you will have to exit and re-enter the shell.
 
-Running this script can cause issues
-
