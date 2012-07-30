@@ -8,5 +8,5 @@ import metridoc.ReportController
  * Date: 7/17/12
  * Time: 12:13 PM
  */
-abstract class AdminController{
+abstract class AdminController extends ReportController{
 }
