@@ -307,6 +307,11 @@ img {
     text-indent: 25px;
 }
 
+#list-shiroUser table {
+    margin-top: 30px;
+    /*padding-top: 1000px;*/
+}
+
 .nav a.home {
     background-image: url(../images/skin/house.png);
 }
@@ -603,9 +608,6 @@ th:hover, tr:hover {
     margin: 0;
     padding: 0.3em 0.2em;
     text-align: center;
-    -moz-box-shadow: 0 0 3px 1px #AAAAAA;
-    -webkit-box-shadow: 0 0 3px 1px #AAAAAA;
-    box-shadow: 0 0 3px 1px #AAAAAA;
     background-color: #EFEFEF;
 }
 

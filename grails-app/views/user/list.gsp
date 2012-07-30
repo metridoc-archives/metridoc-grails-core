@@ -17,8 +17,15 @@
 
 <%@ page import="metridoc.reports.ShiroUser" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
-<g:render template="/reports/defaultReport" plugin="metridoc-core">
-    <g:set var="entityName" value="${message(code: 'shiroUser.label', default: 'ShiroUser')}"/>
+<md:report>
+
+    <div class="nav" role="navigation">
+        <ul>
+            <li><g:link class="home" controller="home" action="index">Home</g:link></li>
+            <li><g:link class="create" action="create">Create User</g:link></li>
+        </ul>
+    </div>
+    %{--<g:set var="entityName" value="${message(code: 'shiroUser.label', default: 'ShiroUser')}"/>--}%
     <div id="list-shiroUser" class="content scaffold-list" role="main">
 
         <g:if test="${flash.message}">
@@ -29,7 +36,7 @@
                 <tr>
 
                     <g:sortableColumn property="username"
-                                      title="${message(code: 'shiroUser.username.label', default: 'Username')}"/>
+                                      title="Users"/>
 
                 </tr>
             </thead>
@@ -45,16 +52,12 @@
             </tbody>
         </table>
 
-        <div class="pagination">
-            <g:paginate total="${shiroUserInstanceTotal}"/>
-        </div>
+        <g:if test="${showPagination}">
+            <div class="pagination">
+                <g:paginate total="${shiroUserInstanceTotal}"/>
+            </div>
+        </g:if>
 
-        <div id="newUserButton">
-            <span class="buttons">
-                <g:link controller="user" action="create">
-                    New User
-                </g:link>
-            </span>
-        </div>
+
     </div>
-</g:render>
+</md:report>

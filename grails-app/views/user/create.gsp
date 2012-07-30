@@ -15,11 +15,12 @@
 
 -->
 <%@ page import="metridoc.reports.ShiroUser" %>
-<g:render template="/reports/defaultReport" plugin="metridoc-core">
+<md:report>
 
 
     <div class="nav" role="navigation">
         <ul>
+            <li><g:link class="home" controller="home" action="index">Home</g:link></li>
             <li><g:link class="list" action="list">User List</g:link></li>
         </ul>
     </div>
@@ -48,5 +49,5 @@
         </g:form>
     </div>
 
-</g:render>
+</md:report>
 
