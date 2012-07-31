@@ -24,14 +24,9 @@ class ManageReportsController {
     def static adminOnly = true
     def manageReportsService
 
-    def intro = "Change the security setting of reports by declaring them as anonymous, admin or neither." +
-            " Apps that are not administrative or anonymous will use the default security"
     def updatedMsg = "Report Security Updated";
-    static messages = [] as Set
 
     def index() {
-        messages << intro
-        flash.messages = messages
 
         def controllersInCore = [] as List<String>;
         grailsApplication.controllerClasses.each {
@@ -57,7 +52,7 @@ class ManageReportsController {
 
     def updateReportSecurity() {
         manageReportsService.updateRoles(params as Map)
-        messages << updatedMsg
+        flash.message = updatedMsg
         chain(action: "index")
     }
 

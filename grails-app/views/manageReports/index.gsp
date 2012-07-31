@@ -9,10 +9,8 @@
 <md:report>
 
     <div class="description">
-        <g:if test="${flash.messages}">
-            <g:each in="${flash.messages}" var="msg">
-                <div class="message" role="status">${msg}</div>
-            </g:each>
+        <g:if test="${flash.message}">
+            <div class="message">${flash.message}</div>
         </g:if>
     </div>
     <md:header>Reports Grid</md:header>
