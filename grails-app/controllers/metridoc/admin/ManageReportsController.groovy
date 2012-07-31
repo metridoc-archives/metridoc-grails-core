@@ -14,6 +14,9 @@
  */
 package metridoc.admin
 
+import org.apache.commons.lang.StringUtils
+import metridoc.reports.ShiroRole
+
 class ManageReportsController {
 
     def grailsApplication
@@ -21,17 +24,42 @@ class ManageReportsController {
     def static adminOnly = true
     def manageReportsService
 
+    def intro = "Change the security setting of reports by declaring them as anonymous, admin or neither." +
+            " Apps that are not administrative or anonymous will use the default security"
+    def updatedMsg = "Report Security Updated";
+    static messages = [] as Set
+
     def index() {
+        messages << intro
+        flash.messages = messages
+
+        def controllersInCore = [] as List<String>;
+        grailsApplication.controllerClasses.each {
+            def clazz = it.clazz
+            def artifactName = StringUtils.uncapitalize(it.name)
+            controllersInCore << artifactName
+        }
+        def reportsInCore = [] as List
+        ReportsConfiguration.list().each {report ->
+            if (controllersInCore.contains(StringUtils.uncapitalize(report.name))) {
+                reportsInCore << report
+            }
+        }
+        def roleList = [] as List
+        ShiroRole.list().each {
+            roleList << it.name
+        }
         [
-            reports: ReportsConfiguration.list()
+                reports: reportsInCore,
+                roles: roleList
         ]
     }
 
     def updateReportSecurity() {
-
-        manageReportsService.updateRoles(params)
-
-        flash.message = "Report Security Updated"
+        manageReportsService.updateRoles(params as Map)
+        messages << updatedMsg
         chain(action: "index")
     }
+
+
 }

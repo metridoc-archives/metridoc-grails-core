@@ -7,14 +7,13 @@
 --%>
 
 <md:report>
-    <g:if test="${flash.message}">
-        <div id="flashMessage">
-            ${flash.message}
-        </div>
-    </g:if>
+
     <div class="description">
-        Change the security setting of reports by declaring them as anonymous, admin or neither.
-        Apps that are not administrative or anonymous will use the default security
+        <g:if test="${flash.messages}">
+            <g:each in="${flash.messages}" var="msg">
+                <div class="message" role="status">${msg}</div>
+            </g:each>
+        </g:if>
     </div>
     <md:header>Reports Grid</md:header>
     <div class="reportBody">
@@ -27,8 +26,17 @@
                 <g:each in="${reports}" var="report">
                     <tr>
                         <td>${report.displayName}</td>
+
                         <td class="centeredContent">
-                            <input  type="text" value="${report.role}" name="role_${report.name}"/>
+
+                            <select name="role_${report.name}">
+                                <option value="${report.role}">${report.role}</option>
+                                <g:each in="${roles}" var="role">
+                                    <g:if test="${role != report.role}">
+                                        <option value="${role}">${role}</option>
+                                    </g:if>
+                                </g:each>
+                            </select>
                         </td>
                     </tr>
                 </g:each>

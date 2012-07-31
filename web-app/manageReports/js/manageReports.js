@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-$("td.centeredContent > input").change(function() {
+$("td.centeredContent > select").change(function() {
     $('#submitButton').fadeIn()
 })
 
