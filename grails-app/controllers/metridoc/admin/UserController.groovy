@@ -19,8 +19,7 @@ import org.apache.shiro.crypto.hash.Sha256Hash
 import org.springframework.dao.DataIntegrityViolationException
 
 class UserController {
-    final static DEFAULT_PASSWORD = "password"
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST", list: "GET", index: "GET"]
+    static allowedMethods = [save: "POST", update: "POST", delete: "DELETE", list: "GET", index: "GET"]
     def static final reportName = "Manage Users"
     static final adminOnly = true
 
@@ -46,13 +45,9 @@ class UserController {
     }
 
     def save() {
-        def preConfiguredPassword = params.get('passwordHash')
-        def password = preConfiguredPassword ? preConfiguredPassword : DEFAULT_PASSWORD
+        def password = params.get('password')
 
-        if (DEFAULT_PASSWORD == password) {
-            log.warn "Creating a user with default password '${DEFAULT_PASSWORD}'.  Change this immediatelly"
-        }
-        def shiroUserInstance = new ShiroUser(username: params.get('username'), passwordHash: new Sha256Hash(params.get('passwordHash')).toHex(), emailAddress: params.get('emailAddress'))
+        def shiroUserInstance = new ShiroUser(username: params.get('username'), passwordHash: new Sha256Hash(password).toHex(), emailAddress: params.get('emailAddress'))
         def permissions = params.get('permissions').toString().split(',')
         permissions.each {
             shiroUserInstance.addToPermissions("${it}")

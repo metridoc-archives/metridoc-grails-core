@@ -12,6 +12,11 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+
+.inCellActions {
+    float: right;
+}
+
 body, input, select, textarea {
     font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Arial Unicode MS', Helvetica, sans-serif;
 }
@@ -696,11 +701,11 @@ th:hover, tr:hover {
     text-indent: 25px;
 }
 
-.buttons .delete {
+.buttons .delete{
     background-image: url(../images/skin/database_delete.png);
 }
 
-.buttons .edit {
+.buttons .edit{
     background-image: url(../images/skin/database_edit.png);
 }
 

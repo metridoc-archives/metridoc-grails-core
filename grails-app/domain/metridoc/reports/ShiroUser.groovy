@@ -23,7 +23,10 @@ package metridoc.reports
 class ShiroUser {
     String username
     String passwordHash
+    String password
+    String confirm
     String emailAddress
+    static transients = ['password', 'confirm']
 
     static mapping = {
         datasource 'admin'
@@ -33,5 +36,10 @@ class ShiroUser {
     static constraints = {
         username(nullable: false, blank: false)
         emailAddress(email: true, nullable: true)
+        password blank: false, size: 5..15, matches: /[\S]+/, validator: { val, obj ->
+            if (obj.password != obj.confirm)
+                return 'user.password.dontmatch'
+        }
+
     }
 }

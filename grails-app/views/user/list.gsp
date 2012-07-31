@@ -25,7 +25,7 @@
             <li><g:link class="create" action="create">Create User</g:link></li>
         </ul>
     </div>
-    %{--<g:set var="entityName" value="${message(code: 'shiroUser.label', default: 'ShiroUser')}"/>--}%
+%{--<g:set var="entityName" value="${message(code: 'shiroUser.label', default: 'ShiroUser')}"/>--}%
     <div id="list-shiroUser" class="content scaffold-list" role="main">
 
         <g:if test="${flash.message}">
@@ -44,8 +44,23 @@
                 <g:each in="${shiroUserInstanceList}" status="i" var="shiroUserInstance">
                     <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
 
-                        <td><g:link action="show"
-                                    id="${shiroUserInstance.id}">${fieldValue(bean: shiroUserInstance, field: "username")}</g:link></td>
+                        <td>
+                            <g:link action="show"
+                                    id="${shiroUserInstance.id}">${fieldValue(bean: shiroUserInstance, field: "username")}
+                            </g:link>
+                            %{--<span class="nav">--}%
+                            %{--<a class="delete" href="#"/>--}%
+                            %{--</span>--}%
+                            <span class="inCellActions">
+                                <a href="edit/${shiroUserInstance.id}">
+                                    <r:img uri="/images/skin/database_edit.png"/>
+                                </a>
+                                <a class="delete" href="#" onclick="deleteUser(${shiroUserInstance.id})">
+                                    <r:img uri="/images/skin/database_delete.png"/>
+                                </a>
+                                <g:form name="mdForm_${shiroUserInstance.id}" method="delete" action="delete" id="${shiroUserInstance.id}"/>
+                            </span>
+                        </td>
 
                     </tr>
                 </g:each>
@@ -57,7 +72,6 @@
                 <g:paginate total="${shiroUserInstanceTotal}"/>
             </div>
         </g:if>
-
 
     </div>
 </md:report>

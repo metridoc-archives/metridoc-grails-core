@@ -20,32 +20,32 @@
 
 <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'username', 'error')} required">
 	<label for="username">
-		<g:message code="shiroUser.username.label" default="Username" />
+		User Name
 		<span class="required-indicator">*</span>
 	</label>
 	<g:textField name="username" required="" value="${shiroUserInstance?.username}"/>
 </div>
 
-<div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'passwordHash', 'error')} ">
-	<label for="passwordHash">
-		<g:message code="shiroUser.passwordHash.label" default="Password Hash" />
+<div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'password', 'error')} ">
+	<label for="password">
+		Password
+        <span class="required-indicator">*</span>
 	</label>
-	<g:textField name="passwordHash" value="${shiroUserInstance?.passwordHash}"/>
+	<g:passwordField name="password" required="" />
+</div>
+
+<div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'password', 'error')} ">
+	<label for="password">
+		<g:message code="shiroUser.passwordHash.label" default="Confirm Password" />
+	</label>
+	<g:passwordField name="confirm" required="" />
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field:'emailAddress','error')} ">
     <label for="emailAddress">
         <g:message code="shiroUser.emailAddress.label" default="Email"/>
     </label>
-    <g:textField name="emailAddress" value="${shiroUserInstance?.emailAddress}"/>
-</div>
-
-<div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'permissions', 'error')} ">
-	<label for="permissions">
-		<g:message code="shiroUser.permissions.label" default="Permissions" />
-		
-	</label>
-	<g:textField name="permissions" value="${shiroUserInstance?.permissions}"/>
+    <g:textField name="emailAddress" required="" value="${shiroUserInstance?.emailAddress}"/>
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'roles', 'error')} ">
@@ -53,6 +53,6 @@
 		<g:message code="shiroUser.roles.label" default="Roles" />
 		
 	</label>
-	<g:select name="roles" from="${metridoc.reports.ShiroRole.list()}" multiple="multiple" optionKey="id" size="5" value="${shiroUserInstance?.roles*.id}" class="many-to-many"/>
+	<g:select name="roles" from="${metridoc.reports.ShiroRole.list()}" multiple="multiple" optionKey="name" size="5" value="${shiroUserInstance?.roles*.id}" class="many-to-many"/>
 </div>
 

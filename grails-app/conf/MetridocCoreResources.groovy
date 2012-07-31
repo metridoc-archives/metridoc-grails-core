@@ -55,4 +55,6 @@ modules = {
         resource id: 'manageReportsJs',
                 url: [plugin:"metridocCore", dir: 'manageReports/js', file: 'manageReports.js']
     }
+
+
 }
