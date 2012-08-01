@@ -15,7 +15,6 @@
 
 import grails.build.logging.GrailsConsole
 
-
 /*
 * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
 * Educational Community License, Version 2.0 (the "License"); you may
@@ -45,13 +44,13 @@ target(main: "Config metridoc-reports plugin") {
 
     copyFileFromMap.each {toFile, fromFile ->
         def splitName = toFile.split("/")
-        def name = splitName[splitName.size()-1]
-        if (argsMap['o']||isFileOverwrite(toFile)){
-            ant.mkdir(dir: toFile.replace("/${name}",""))
+        def name = splitName[splitName.size() - 1]
+        if (argsMap['o'] || isFileOverwrite(toFile)) {
+            ant.mkdir(dir: toFile.replace("/${name}", ""))
             ant.copy(file: "${fromFile}",
                     tofile: "${toFile}")
             grailsConsole.info("copied ${fromFile} to ${toFile}")
-        }else{
+        } else {
             grailsConsole.info("Ignored ${name}")
         }
     }
@@ -65,11 +64,16 @@ target(main: "Config metridoc-reports plugin") {
     rmFileMap.add("${basedir}/web-app/css/mobile.css")
     rmFileMap.add("${basedir}/web-app/js/application.js")
 
-    rmFileMap.each {filePath->
-        if (argsMap['o']||isFileRemove(filePath)){
+    rmFileMap.each {filePath ->
+        if (argsMap['o']) {
+            File file = new File(filePath)
+            if (file.exists()) {
+                ant.delete(file: filePath)
+                grailsConsole.info("Deleted ${filePath}")
+            }
+        } else if (isFileRemove(filePath)) {
             ant.delete(file: filePath)
-            grailsConsole.info("Deleted ${filePath}")
-        }else{
+        } else {
             grailsConsole.info("Ignored ${filePath}")
         }
 
@@ -81,7 +85,7 @@ target(main: "Config metridoc-reports plugin") {
  * @param toFile filename to which we copy
  * @param fromFile filename from which we copy
  */
-void mapFile(HashMap<String, String> fileMap, String toFile, String fromFile){
+void mapFile(HashMap<String, String> fileMap, String toFile, String fromFile) {
     fileMap.put(toFile, fromFile)
 }
 /**
@@ -89,16 +93,16 @@ void mapFile(HashMap<String, String> fileMap, String toFile, String fromFile){
  * @param filePath path of the file being checked
  * @return true if the file can be overwrote, false if user choose not to overwrite the existing file
  */
-isFileOverwrite = {filePath->
+isFileOverwrite = {filePath ->
     File file = new File(filePath)
-    String ifOverwrite  = 'y'
-    if (file.exists()){
-        String question = filePath+" already exists, can it be overwritten?"
-        String[] validArgs = ['y','n']
+    String ifOverwrite = 'y'
+    if (file.exists()) {
+        String question = filePath + " already exists, can it be overwritten?"
+        String[] validArgs = ['y', 'n']
         GrailsConsole grailsConsole = new GrailsConsole()
         ifOverwrite = grailsConsole.userInput(question, validArgs)
     }
-    if ('n'.equals(ifOverwrite)){
+    if ('n'.equals(ifOverwrite)) {
         return false
     }
     return true
@@ -108,17 +112,18 @@ isFileOverwrite = {filePath->
  * @param filePath path of the file being checked
  * @return true if the file can be overwrote, false if user choose keep the existing one.
  */
-isFileRemove = {filePath->
+isFileRemove = {filePath ->
     File file = new File(filePath)
     String ifFileRemove = 'y'
-    if (file.exists()){
+    if (file.exists()) {
         String question = filePath + " already exists by default, can it be deleted?"
-        String[] validArgs = ['y','n']
+        String[] validArgs = ['y', 'n']
         GrailsConsole grailsConsole = new GrailsConsole()
         ifFileRemove = grailsConsole.userInput(question, validArgs)
-    }
-    if ('n'.equals(ifFileRemove)){
-        return false
+        if ('n'.equals(ifFileRemove)) {
+            return false
+        }
+        grailsConsole.info("Deleted ${filePath}")
     }
     return true
 }
