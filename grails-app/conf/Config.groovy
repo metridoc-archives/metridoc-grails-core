@@ -48,32 +48,10 @@ if (rootLoader) {
 
 grails.converters.default.pretty.print = true
 metridoc.home = "${userHome}/.metridoc"
-metridoc.all.applications = ["global", "illiad", "counter", "ezproxy", "admin", "shiro"]
-
-//add all applications that should have anonymous logins, maybe you are putting metridoc behind a firewall or need a
-//quick test?
-metridoc.anonymous.applications = []
 
 grails.dbconsole.enabled = true
 grails.dbconsole.urlRoot = '/admin/dbconsole'
 grails.config.locations = []
-def enableAuthentication = System.getProperty("metridoc.authenticate.enable")
-metridoc.authenticate.enable = enableAuthentication ? Boolean.valueOf(enableAuthentication) : true
-
-//TODO: need to reference controllers instead of an application list, this is stupid... or maybe just 1 MetridocConfig.groovy file?
-metridoc.all.applications.each {applicationName ->
-
-    try {
-        def className = "metridoc.${applicationName.capitalize()}Config"
-        def clazz = ClassUtils.forName(className)
-        println "INFO: adding config ${className}"
-        grails.config.locations << clazz
-    } catch (Exception ex) {
-
-    }
-
-    grails.config.locations << "file:${metridoc.home}/${applicationName}/${applicationName.capitalize()}Config.groovy"
-}
 
 if (new File("${metridoc.home}/MetridocConfig.groovy").exists()) {
     log.info "found MetridocConfig.groovy, will add to configuration"
