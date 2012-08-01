@@ -48,9 +48,6 @@
                             <g:link action="show"
                                     id="${shiroUserInstance.id}">${fieldValue(bean: shiroUserInstance, field: "username")}
                             </g:link>
-                            %{--<span class="nav">--}%
-                            %{--<a class="delete" href="#"/>--}%
-                            %{--</span>--}%
                             <span class="inCellActions">
                                 <a href="edit/${shiroUserInstance.id}">
                                     <r:img uri="/images/skin/database_edit.png"/>
