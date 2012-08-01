@@ -13,31 +13,69 @@
  * permissions and limitations under the License.
  */
 
-#labels {
-    margin: auto;
-    width: 20%;
-    padding: 40px;
-    padding-left: 150px;
-}
+/*#labels {*/
+    /*margin: auto;*/
+    /*width: 20%;*/
+    /*padding: 40px;*/
+    /*padding-left: 150px;*/
+/*}*/
 
-#labels div {
-    padding-bottom: 25px;
-}
+/*#labels div {*/
+    /*padding-bottom: 25px;*/
+/*}*/
 
-#inputs {
-    margin: auto;
-    padding: 40px;
-    padding-left: 50px;
-}
+/*#inputs {*/
+    /*margin: auto;*/
+    /*padding: 40px;*/
+    /*padding-left: 50px;*/
+/*}*/
 
-#inputs div {
-    padding-bottom: 10px;
-}
-.buttons{
-    padding-left: 150px;
+/*#inputs div {*/
+    /*padding-bottom: 10px;*/
+/*}*/
+/*.buttons{*/
+    /*padding-left: 150px;*/
+    /*padding-bottom: 50px;*/
+/*}*/
+
+/*#flashMessage {*/
+    /*text-align: center;*/
+/*}*/
+
+
+form {
+    padding-top: 80px;
     padding-bottom: 50px;
+    padding-left: 30px;
 }
 
-#flashMessage {
-    text-align: center;
+
+form div{
+    padding-bottom: 20px;
 }
+
+label{
+    float: left;
+    width: 300px;
+    text-align: right;
+    padding-right: 40px;
+}
+
+input{
+    width: 180px;
+    margin-bottom: 10px;
+}
+
+.buttons{
+    padding-top: 30px;
+    padding-left: 160px;
+}
+
+button{
+    padding-top: 20px;
+    margin-left: 120px;
+    margin-top: 15px;
+    width: 30px;
+}
+
+

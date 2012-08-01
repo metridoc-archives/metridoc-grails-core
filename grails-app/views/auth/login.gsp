@@ -33,40 +33,31 @@
     <div class="message">${flash.message}</div>
 </g:if>
 <div>
-    <g:form action="signIn">
-        <input type="hidden" name="targetUri" value="${targetUri}"/>
+<g:form action="signIn">
+    <input type="hidden" name="targetUri" value="${targetUri}"/>
+
+%{--<div class="yui3-g">--}%
+    <div>
+        <label for="username">User Name :</label>
+        <input type="text" name="username" value="${username}"/>
+    </div>
+
+    <div>
+        <label for="password">Password :</label>
+        <input type="password" name="password" value=""/>
+    </div>
+
+    <div>
+        <label for="rememberMe">Remember Me? :</label>
+        <g:checkBox name="rememberMe" value="${rememberMe}"/>
+    </div>
 
 
-        <div class="yui3-g">
-            <div class="yui3-u-1-2" id="labels">
-                <div>User Name:</div>
+    <div class="buttons">
+        <input type="submit" value="Sign in" id="button"/>
+    </div>
 
-                <div>Password:</div>
-
-                <div>Remember Me?:</div>
-            </div>
-
-            <div class="yui3-u-1-2" id="inputs">
-                <div>
-                    <input type="text" name="username" value="${username}"/>
-                </div>
-
-                <div>
-                    <input type="password" name="password" value=""/>
-                </div>
-
-                <div>
-                    <g:checkBox name="rememberMe" value="${rememberMe}"/>
-                </div>
-            </div>
-        </div>
-
-        <div class="buttons">
-            <input type="submit" value="Sign in" id="button" class="buttons"/>
-            %{--<g:submitButton name="sighIn" class="sava" value="Sign in"/>--}%
-        </div>
-
-    </g:form>
+</g:form>
 </div>
 </body>
 </html>
