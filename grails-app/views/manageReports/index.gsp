@@ -21,9 +21,11 @@
                     <th>Report Name</th>
                     <th class="centeredTableHeader">Role</th>
                 </tr>
-                <g:each in="${reports}" var="report">
+                <g:each in="${reports.keySet()}" var="report">
                     <tr>
-                        <td>${report.displayName}</td>
+                        <td>
+                            <g:link controller="${reports.get(report)}">${report.displayName}</g:link>
+                        </td>
 
                         <td class="centeredContent">
 

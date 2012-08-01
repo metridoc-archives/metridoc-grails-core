@@ -28,23 +28,24 @@ class ManageReportsController {
 
     def index() {
 
-        def controllersInCore = [] as List<String>;
+        def controllersInCore = new HashMap()
         grailsApplication.controllerClasses.each {
             def clazz = it.clazz
             def artifactName = StringUtils.uncapitalize(it.name)
-            controllersInCore << artifactName
+            controllersInCore.put(artifactName,it.name)
         }
-        def reportsInCore = [] as List
+        def reportsInCore = new HashMap()
         ReportsConfiguration.list().each {report ->
-            if (controllersInCore.contains(StringUtils.uncapitalize(report.name))) {
-                reportsInCore << report
+            if (controllersInCore.containsKey(StringUtils.uncapitalize(report.name))) {
+                  reportsInCore.put(report, controllersInCore.get(StringUtils.uncapitalize(report.name)))
             }
         }
         def roleList = [] as List
         ShiroRole.list().each {
             roleList << it.name
         }
-        [
+
+        return [
                 reports: reportsInCore,
                 roles: roleList
         ]
