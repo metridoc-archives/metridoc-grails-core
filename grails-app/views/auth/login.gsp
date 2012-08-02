@@ -21,7 +21,6 @@
     <meta name="layout" content="main"/>
     <title>Login</title>
     <r:require module="login"/>
-    <link href="/auth/css/login.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.5.1/build/cssgrids/grids-min.css">
 </head>
 
@@ -30,31 +29,32 @@
     <div class="message">${flash.message}</div>
 </g:if>
 <div>
-<g:form action="signIn">
-    <input type="hidden" name="targetUri" value="${targetUri}"/>
+    <g:form action="signIn">
+        <input type="hidden" name="targetUri" value="${targetUri}"/>
 
-    <div>
-        <label for="username">User Name :</label>
-        <input type="text" name="username" value="${username}" class="userInput"/>
-    </div>
+        <div>
+            <label for="username">User Name :</label>
+            <input type="text" name="username" value="${username}" class="userInput"/>
+        </div>
 
-    <div>
-        <label for="password">Password :</label>
-        <input type="password" name="password" value="" class="userInput"/>
-    </div>
+        <div>
+            <label for="password">Password :</label>
+            <input type="password" name="password" value="" class="userInput"/>
+        </div>
 
-    <div>
-        <label for="rememberMe">Remember Me? :</label>
-        <g:checkBox name="rememberMe" value="${rememberMe}"/>
-    </div>
+        <div>
+            <span>
+                <label for="rememberMe">Remember Me? :</label>
+                <g:checkBox name="rememberMe" value="${rememberMe}"/>
+            </span>
 
+            <span class="buttons">
+                <label for="submit"></label>
+                <input type="submit" value="Sign in" id="button" name="submit"/>
+            </span>
+        </div>
 
-    <div class="buttons">
-        <label for="submit"></label>
-        <input type="submit" value="Sign in" id="button" name="submit"/>
-    </div>
-
-</g:form>
+    </g:form>
 </div>
 </body>
 </html>
