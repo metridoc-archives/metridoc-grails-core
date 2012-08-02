@@ -56,5 +56,9 @@ modules = {
                 url: [plugin:"metridocCore", dir: 'manageReports/js', file: 'manageReports.js']
     }
 
-
+    login {
+        dependsOn: 'jquery-ui'
+        resource id: 'loginCss',
+            url: [plugin:"metridocCore", dir:'auth/css', file: 'login.css']
+    }
 }
