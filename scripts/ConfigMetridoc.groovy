@@ -64,19 +64,22 @@ target(main: "Config metridoc-reports plugin") {
     rmFileMap.add("${basedir}/web-app/css/mobile.css")
     rmFileMap.add("${basedir}/web-app/js/application.js")
 
-    rmFileMap.each {filePath ->
-        if (argsMap['o']) {
-            File file = new File(filePath)
-            if (file.exists()) {
+    if(argsMap['o']){
+        rmFileMap.each{filePath->
+            if ((new File(filePath)).exists()){
                 ant.delete(file: filePath)
                 grailsConsole.info("Deleted ${filePath}")
             }
-        } else if (isFileRemove(filePath)) {
-            ant.delete(file: filePath)
-        } else {
-            grailsConsole.info("Ignored ${filePath}")
         }
+    }else{
+        rmFileMap.each {filePath->
+            if (isFileRemove(filePath)){
+                ant.delete(file: filePath)
+            }else{
+                grailsConsole.info("Ignored ${filePath}")
+            }
 
+        }
     }
 }
 /**
