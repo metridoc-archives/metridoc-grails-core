@@ -39,12 +39,12 @@
 %{--<div class="yui3-g">--}%
     <div>
         <label for="username">User Name :</label>
-        <input type="text" name="username" value="${username}"/>
+        <input type="text" name="username" value="${username}" class="userInput"/>
     </div>
 
     <div>
         <label for="password">Password :</label>
-        <input type="password" name="password" value=""/>
+        <input type="password" name="password" value="" class="userInput"/>
     </div>
 
     <div>
@@ -54,7 +54,8 @@
 
 
     <div class="buttons">
-        <input type="submit" value="Sign in" id="button"/>
+        <label for="submit"></label>
+        <input type="submit" value="Sign in" id="button" name="submit"/>
     </div>
 
 </g:form>

@@ -61,21 +61,22 @@ label{
     padding-right: 40px;
 }
 
-input{
+.userInput{
     width: 180px;
     margin-bottom: 10px;
 }
 
 .buttons{
-    padding-top: 30px;
     padding-left: 160px;
+    float: right;
 }
 
 button{
     padding-top: 20px;
+
     margin-left: 120px;
     margin-top: 15px;
-    width: 30px;
+
 }
 
 
