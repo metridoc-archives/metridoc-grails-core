@@ -51,14 +51,16 @@ form {
 
 
 form div{
-    padding-bottom: 15px;
+    padding-bottom: 10px;
 }
 
 label{
     float: left;
     width: 300px;
     text-align: right;
-    padding-right: 15px;
+    padding-right: 8px;
+    position: relative;
+    top: 5px;
 }
 
 .userInput{
@@ -67,12 +69,12 @@ label{
 }
 
 .buttons{
-    padding-left: 100px;
+    padding-left: 90px;
 }
 
 button{
     padding-top: 20px;
-    margin-left: 10px;
+    margin-left: 5px;
     margin-top: 15px;
 
 }
