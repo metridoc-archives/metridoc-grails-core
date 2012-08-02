@@ -15,17 +15,13 @@
 
 -->
 
-%{--TODO: weizhuo - please convert authentication to the new way using yui--}%
-%{--TODO: weizhuo - also make the button look better--}%
-%{--TODO: weizhuo - add reasonable spacing between each line like it is in the old way--}%
-
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="layout" content="main"/>
     <title>Login</title>
     <r:require module="login"/>
-    %{--<link href="/metridoc-core/auth/css/login.css" rel="stylesheet" type="text/css">--}%
+    <link href="/auth/css/login.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.5.1/build/cssgrids/grids-min.css">
 </head>
 
@@ -37,7 +33,6 @@
 <g:form action="signIn">
     <input type="hidden" name="targetUri" value="${targetUri}"/>
 
-%{--<div class="yui3-g">--}%
     <div>
         <label for="username">User Name :</label>
         <input type="text" name="username" value="${username}" class="userInput"/>
