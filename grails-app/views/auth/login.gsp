@@ -24,7 +24,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="layout" content="main"/>
     <title>Login</title>
-    <link href="/metridoc-core/auth/css/login.css" rel="stylesheet" type="text/css">
+    <r:require module="login"/>
+    %{--<link href="/metridoc-core/auth/css/login.css" rel="stylesheet" type="text/css">--}%
     <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.5.1/build/cssgrids/grids-min.css">
 </head>
 
