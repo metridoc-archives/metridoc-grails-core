@@ -104,7 +104,7 @@ body {
 
 .md-application-content div.description {
     padding: 30px;
-    padding-top: 20px;
+    padding-top: 0px;
 }
 
 #metridocNavigation {
