@@ -17,16 +17,16 @@
 <%@ page import="metridoc.reports.ShiroUser" %>
 <md:report>
 
-
+    <g:set var="entityName" value="${'User'}"/>
     <div class="nav" role="navigation">
         <ul>
-            <li><g:link class="home" controller="home" action="index">Home</g:link></li>
-            <li><g:link class="list" action="list">User List</g:link></li>
+            <li><g:link class="home" controller="home" action="index"><g:message code="default.home.label" default="Home"/></g:link></li>
+            <li><g:link class="list" action="list"><g:message code="default.list.label" args="['User']" default="User List"/></g:link></li>
         </ul>
     </div>
 
     <div id="create-shiroUser" class="content scaffold-create" role="main">
-        <h1>Create User</h1>
+        <h1><g:message code="default.create.label" args="['User']" default="Create User"/></h1>
         <g:if test="${flash.message}">
             <div class="message" role="status">${flash.message}</div>
         </g:if>
@@ -38,6 +38,7 @@
                 </g:eachError>
             </ul>
         </g:hasErrors>
+
         <g:form action="save">
             <fieldset class="form">
                 <g:render template="form"/>
@@ -47,6 +48,7 @@
                                 value="${message(code: 'default.button.create.label', default: 'Create')}"/>
             </fieldset>
         </g:form>
+
     </div>
 
 </md:report>

@@ -16,29 +16,19 @@
 -->
 
 <%@ page import="metridoc.reports.ShiroUser" %>
-<!doctype html>
-<html>
-<head>
-    <meta name="layout" content="main">
-    <g:set var="entityName" value="${message(code: 'shiroUser.label', default: 'ShiroUser')}"/>
-    <title><g:message code="default.show.label" args="[entityName]"/></title>
-</head>
 
-<body>
-<a href="#show-shiroUser" class="skip" tabindex="-1"><g:message code="default.link.skip.label"
-                                                                default="Skip to content&hellip;"/></a>
+<md:report>
 
 <div class="nav" role="navigation">
     <ul>
-        <li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
-        <li><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]"/></g:link></li>
-        <li><g:link class="create" action="create"><g:message code="default.new.label"
-                                                              args="[entityName]"/></g:link></li>
+        <li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label" default="Home"/></a></li>
+        <li><g:link class="list" action="list"><g:message code="default.list.label" args="['User']" default="User List"/></g:link></li>
+        <li><g:link class="create" action="create"><g:message code="default.create.label" args="['User']" default="Create List"/></g:link></li>
     </ul>
 </div>
 
 <div id="show-shiroUser" class="content scaffold-show" role="main">
-    <h1><g:message code="default.show.label" args="[entityName]"/></h1>
+    <h1><g:message code="default.show.label" args="['User']" default="Show User"/></h1>
     <g:if test="${flash.message}">
         <div class="message" role="status">${flash.message}</div>
     </g:if>
@@ -55,22 +45,11 @@
             </li>
         </g:if>
 
-        <g:if test="${shiroUserInstance?.passwordHash}">
-            <li class="fieldcontain">
-                <span id="passwordHash-label" class="property-label"><g:message code="shiroUser.passwordHash.label"
-                                                                                default="Password Hash"/></span>
-
-                <span class="property-value" aria-labelledby="passwordHash-label"><g:fieldValue
-                        bean="${shiroUserInstance}" field="passwordHash"/></span>
-
-            </li>
-        </g:if>
-
         <g:if test="${shiroUserInstance?.emailAddress}">
             <li class="fieldcontain">
                 <span id="emailAddress-label" class="property-label"><g:message code="shiroUser.emailAddress.label"
                                                                                 default="emailAddress"/></span>
-                <span class="property-label" aria-labelledby="emailAddress-label"><g:fieldValue field="emailAddress"
+                <span class="property-value" aria-labelledby="emailAddress-label"><g:fieldValue field="emailAddress"
                                                                                                 bean="${shiroUserInstance}"/></span>
             </li>
         </g:if>
@@ -94,7 +73,7 @@
                 <g:each in="${shiroUserInstance.roles}" var="r">
                     <span class="property-value" aria-labelledby="roles-label"><g:link controller="shiroRole"
                                                                                        action="show"
-                                                                                       id="${r.id}">${r?.encodeAsHTML()}</g:link></span>
+                                                                                       id="${r.id}">${r.name}</g:link></span>
                 </g:each>
 
             </li>
@@ -112,5 +91,5 @@
         </fieldset>
     </g:form>
 </div>
-</body>
-</html>
+
+</md:report>

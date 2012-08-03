@@ -21,8 +21,8 @@
 
     <div class="nav" role="navigation">
         <ul>
-            <li><g:link class="home" controller="home" action="index">Home</g:link></li>
-            <li><g:link class="create" action="create">Create User</g:link></li>
+            <li><g:link class="home" controller="home" action="index"><g:message code="default.home.label" default="Home"/></g:link></li>
+            <li><g:link class="create" action="create"><g:message code="default.create.label" args="['User']" default="Create User"/></g:link></li>
         </ul>
     </div>
 %{--<g:set var="entityName" value="${message(code: 'shiroUser.label', default: 'ShiroUser')}"/>--}%

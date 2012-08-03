@@ -20,7 +20,7 @@
 
 <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'username', 'error')} required">
 	<label for="username">
-		User Name
+		<g:message code="shiroUser.username.label" default="User Name"/>
 		<span class="required-indicator">*</span>
 	</label>
 	<g:textField name="username" required="" value="${shiroUserInstance?.username}"/>
@@ -28,7 +28,7 @@
 
 <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'password', 'error')} ">
 	<label for="password">
-		Password
+		<g:message code="shiroUser.passwordHash.label" default="Password"/>
         <span class="required-indicator">*</span>
 	</label>
 	<g:passwordField name="password" required="" />
@@ -51,8 +51,7 @@
 <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'roles', 'error')} ">
 	<label for="roles">
 		<g:message code="shiroUser.roles.label" default="Roles" />
-		
 	</label>
-	<g:select name="roles" from="${metridoc.reports.ShiroRole.list()}" multiple="multiple" optionKey="name" size="5" value="${shiroUserInstance?.roles*.id}" class="many-to-many"/>
+	<g:select name="roles" from="${metridoc.reports.ShiroRole.list()}" multiple="multiple" optionKey="name" size="5" value="${shiroUserInstance?.roles*.id}" class="many-to-many" optionValue="name"/>
 </div>
 
