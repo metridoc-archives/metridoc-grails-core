@@ -17,6 +17,7 @@ package metridoc.admin
 import metridoc.reports.ShiroUser
 import org.apache.shiro.crypto.hash.Sha256Hash
 import org.springframework.dao.DataIntegrityViolationException
+import org.apache.shiro.SecurityUtils
 
 class UserController {
     static allowedMethods = [save: "POST", update: "POST", delete: "DELETE", list: "GET", index: "GET"]
@@ -32,11 +33,11 @@ class UserController {
         params.max = max
         def userCount = ShiroUser.count()
         def showPagination = userCount > max
-
         [
-            shiroUserInstanceList: ShiroUser.list(params),
-            shiroUserInstanceTotal: userCount,
-            showPagination: showPagination
+                currentUserName: SecurityUtils.getSubject().getPrincipal(),
+                shiroUserInstanceList: ShiroUser.list(params),
+                shiroUserInstanceTotal: userCount,
+                showPagination: showPagination
         ]
     }
 
@@ -46,6 +47,12 @@ class UserController {
 
     def save() {
         def password = params.get('password')
+        def pwConfirm = params.get('confirm')
+        if (password != pwConfirm) {
+            flash.message = message(code: 'user.password.dontmatch', default: 'Passwords not match')
+            render(view: "/user/create")
+            return
+        }
 
         def shiroUserInstance = new ShiroUser(username: params.get('username'), passwordHash: new Sha256Hash(password).toHex(), emailAddress: params.get('emailAddress'))
         def permissions = params.get('permissions').toString().split(',')
@@ -58,14 +65,14 @@ class UserController {
             return
         }
 
-		flash.message = message(code: 'default.created.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), shiroUserInstance.id])
+        flash.message = message(code: 'default.created.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), shiroUserInstance.id])
         redirect(action: "show", id: shiroUserInstance.id)
     }
 
     def show() {
         def shiroUserInstance = ShiroUser.get(params.id)
         if (!shiroUserInstance) {
-			flash.message = message(code: 'default.not.found.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), params.id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), params.id])
             redirect(action: "list")
             return
         }
@@ -96,40 +103,40 @@ class UserController {
             def version = params.version.toLong()
             if (shiroUserInstance.version > version) {
                 shiroUserInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                          [message(code: 'shiroUser.label', default: 'ShiroUser')] as Object[],
-                          "Another user has updated this ShiroUser while you were editing")
+                        [message(code: 'shiroUser.label', default: 'ShiroUser')] as Object[],
+                        "Another user has updated this ShiroUser while you were editing")
                 render(view: "/user/edit", model: [shiroUserInstance: shiroUserInstance])
                 return
             }
         }
 
         shiroUserInstance.properties = params
-        shiroUserInstance.properties.put('permissions',params.get('permissions').toString().replace('[','').replace(']','').split(','))
+        shiroUserInstance.properties.put('permissions', params.get('permissions').toString().replace('[', '').replace(']', '').split(','))
 
         if (!shiroUserInstance.save(flush: true)) {
             render(view: "/user/edit", model: [shiroUserInstance: shiroUserInstance])
             return
         }
 
-		flash.message = message(code: 'default.updated.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), shiroUserInstance.id])
+        flash.message = message(code: 'default.updated.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), shiroUserInstance.id])
         redirect(action: "show", id: shiroUserInstance.id)
     }
 
     def delete() {
         def shiroUserInstance = ShiroUser.get(params.id)
         if (!shiroUserInstance) {
-			flash.message = message(code: 'default.not.found.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), params.id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), params.id])
             redirect(action: "list")
             return
         }
 
         try {
             shiroUserInstance.delete(flush: true)
-			flash.message = message(code: 'default.deleted.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), params.id])
+            flash.message = message(code: 'default.deleted.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), params.id])
             redirect(action: "list")
         }
         catch (DataIntegrityViolationException e) {
-			flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), params.id])
+            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), params.id])
             redirect(action: "show", id: params.id)
         }
     }

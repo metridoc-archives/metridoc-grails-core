@@ -21,8 +21,10 @@
 
     <div class="nav" role="navigation">
         <ul>
-            <li><g:link class="home" controller="home" action="index"><g:message code="default.home.label" default="Home"/></g:link></li>
-            <li><g:link class="create" action="create"><g:message code="default.create.label" args="['User']" default="Create User"/></g:link></li>
+            <li><g:link class="home" controller="home" action="index"><g:message code="default.home.label"
+                                                                                 default="Home"/></g:link></li>
+            <li><g:link class="create" action="create"><g:message code="default.create.label" args="['User']"
+                                                                  default="Create User"/></g:link></li>
         </ul>
     </div>
 %{--<g:set var="entityName" value="${message(code: 'shiroUser.label', default: 'ShiroUser')}"/>--}%
@@ -33,34 +35,41 @@
         </g:if>
         <table>
             <thead>
-                <tr>
+            <tr>
 
-                    <g:sortableColumn property="username"
-                                      title="Users"/>
+                <g:sortableColumn property="username"
+                                  title="Users"/>
 
-                </tr>
+            </tr>
             </thead>
             <tbody>
-                <g:each in="${shiroUserInstanceList}" status="i" var="shiroUserInstance">
-                    <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
+            <g:each in="${shiroUserInstanceList}" status="i" var="shiroUserInstance">
+                <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
 
-                        <td>
-                            <g:link action="show"
-                                    id="${shiroUserInstance.id}">${fieldValue(bean: shiroUserInstance, field: "username")}
-                            </g:link>
+                    <td>
+                        <g:link action="show"
+                                id="${shiroUserInstance.id}">${fieldValue(bean: shiroUserInstance, field: "username")}
+                        </g:link>
+                        <g:if test="${shiroUserInstance.username != 'anonymous'}">
                             <span class="inCellActions">
+
                                 <a href="edit/${shiroUserInstance.id}">
                                     <r:img uri="/images/skin/database_edit.png"/>
                                 </a>
-                                <a class="delete" href="#" onclick="deleteUser(${shiroUserInstance.id})">
-                                    <r:img uri="/images/skin/database_delete.png"/>
-                                </a>
-                                <g:form name="mdForm_${shiroUserInstance.id}" method="delete" action="delete" id="${shiroUserInstance.id}"/>
-                            </span>
-                        </td>
+                                <g:if test="${shiroUserInstance.username != currentUserName}">
+                                    <a class="delete" href="#" onclick="deleteUser(${shiroUserInstance.id})">
+                                        <r:img uri="/images/skin/database_delete.png"/>
+                                    </a>
+                                </g:if>
+                                <g:form name="mdForm_${shiroUserInstance.id}" method="delete" action="delete"
+                                        id="${shiroUserInstance.id}"/>
 
-                    </tr>
-                </g:each>
+                            </span>
+                        </g:if>
+                    </td>
+
+                </tr>
+            </g:each>
             </tbody>
         </table>
 
