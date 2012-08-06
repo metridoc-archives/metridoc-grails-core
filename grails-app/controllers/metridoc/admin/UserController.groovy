@@ -47,6 +47,8 @@ class UserController {
 
     def save() {
         def password = params.get('password')
+        //TODO: get rid of this when you are done testing
+        log.info params
         def pwConfirm = params.get('confirm')
         if (password != pwConfirm) {
             flash.message = message(code: 'user.password.dontmatch', default: 'Passwords not match')
@@ -55,10 +57,7 @@ class UserController {
         }
 
         def shiroUserInstance = new ShiroUser(username: params.get('username'), passwordHash: new Sha256Hash(password).toHex(), emailAddress: params.get('emailAddress'))
-        def permissions = params.get('permissions').toString().split(',')
-        permissions.each {
-            shiroUserInstance.addToPermissions("${it}")
-        }
+
 
         if (!shiroUserInstance.save(flush: true)) {
             render(view: "/user/create", model: [shiroUserInstance: shiroUserInstance])
