@@ -9,18 +9,17 @@ class UserService {
     def addRolesToUser(userInstance, roles) {
 
         def rolesToAdd = [ROLE_ANONYMOUS] as Set //there by default
-        if(roles) {
+        if (roles) {
             rolesToAdd.addAll roles
+        }
+
+        if (userInstance.roles == null) {
+            userInstance.roles = []
         }
 
         rolesToAdd.each {
             def role = ShiroRole.findByName(it)
-            def instanceRoles = userInstance.roles
-            if(instanceRoles == null) {
-                userInstance.roles = [] as Set
-                instanceRoles = userInstance.roles
-            }
-            instanceRoles.add(role)
+            userInstance.roles.add(role)
         }
     }
 }

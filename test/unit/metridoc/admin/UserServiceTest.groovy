@@ -4,6 +4,7 @@ import grails.test.mixin.Mock
 import metridoc.reports.ShiroRole
 import metridoc.reports.ShiroUser
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 
 /**
@@ -19,14 +20,19 @@ class UserServiceTest {
 
     @Before
     void setupMockData() {
-        new ShiroRole(name: "ROLE_FOO").save()
-        new ShiroRole(name: UserService.ROLE_ANONYMOUS).save()
+        def anonymous = new ShiroRole(name: UserService.ROLE_ANONYMOUS)
+        anonymous.id = 1
+        anonymous.save(flush: true)
+        def foo = new ShiroRole(name: "ROLE_FOO")
+        foo.id = 2
+        foo.save(flush: true)
     }
 
     @Test
     void testAddingRoles() {
         def user = new ShiroUser()
         userService.addRolesToUser(user, ["ROLE_FOO"])
+        user.save()
         assert 2 == user.roles.size()
         user.roles.each {
             assert "ROLE_FOO" == it.name || "ROLE_ANONYMOUS" == it.name
