@@ -21,6 +21,14 @@ modules = {
                 url: [plugin: "metridocCore", dir: 'user/js', file: 'user.js']
     }
 
+    role{
+        dependsOn 'jquery-ui'
+        resource id: 'css',
+                url: [plugin: "metridocCore", dir: 'role/css', file: 'role.css']
+        resource id: 'js',
+                url: [plugin: "metridocCore", dir: 'role/js', file: 'role.js']
+    }
+
     application {
         resource id: 'appJs',
                 url: [plugin: "metridocCore", dir: 'js', file: 'application.js']

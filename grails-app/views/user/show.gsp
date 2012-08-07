@@ -21,12 +21,11 @@
 
     <div class="nav" role="navigation">
         <ul>
-            <li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label" default="Home"/></a>
-            </li>
-            <li><g:link class="list" action="list"><g:message code="default.list.label" args="['User']"
-                                                              default="User List"/></g:link></li>
-            <li><g:link class="create" action="create"><g:message code="default.create.label" args="['User']"
-                                                                  default="Create List"/></g:link></li>
+            <li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label" default="Home"/></a></li>
+            <li><g:link class="list" controller="user" action="list"><g:message code="default.list.label" args="['User']" default="User List"/></g:link></li>
+            <li><g:link class="create" controller="user" action="create"><g:message code="default.create.label" args="['User']" default="Create User"/></g:link></li>
+            <li><g:link class="list" controller="role" action="list"><g:message code="default.list.label" args="['Role']" default="Role List"/></g:link></li>
+            <li><g:link class="create" controller="role" action="create"><g:message code="default.create.label" args="['Role']" default="Create Role"/></g:link></li>
         </ul>
     </div>
 
