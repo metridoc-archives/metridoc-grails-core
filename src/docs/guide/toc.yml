@@ -6,4 +6,14 @@ gettingStarted:
   requiredExperience: Required Experience
   firstMetridocProject: First MetriDoc Project
   developingMetridoc: Developing MetriDoc
-
+configuration:
+  title: Configuration
+  settingUpDataSources: Setting Up Data Sources
+metridocPlugins:
+  title: Metridoc Plugins
+  overridingPluginArtifacts: Overriding Plugin Artifacts
+  writingYourOwnPlugin: Writing Your Own Plugin
+metridocSecurity:
+  title: Metridoc Security
+  securityBasics: Security Basics
+  securityConfiguration: Security Configuration
