@@ -13,6 +13,15 @@
  * permissions and limitations under the License.
  */
 modules = {
+
+    changePassword {
+         dependsOn 'jquery-ui'
+         resource id:'css',
+                 url: [plugin: "metridoCore", dir: 'changePassword/css', file: 'changePassword.css']
+         resource id:'js',
+                 url: [plugin: "metridocCore", dir: 'changePassword/js', file: 'changePassword.js']
+    }
+
     user {
         dependsOn 'jquery-ui'
         resource id: 'css',
