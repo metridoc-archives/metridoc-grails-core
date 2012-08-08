@@ -42,7 +42,9 @@
                 <% if (SecurityUtils.subject.principal == "anonymous" || !SecurityUtils.subject.isAuthenticated()) { %>
                 <a id="metridocLoginLink" href="/<g:meta name="app.name"/>/auth">login</a>
                 <% } else { %>
-                <a id="metridocLoginLink" href="/<g:meta name="app.name"/>/auth/signOut">logout</a>
+                    <span id="metridocLoginLink">
+                        <a href="/<g:meta name="app.name"/>/changePassword">${SecurityUtils.subject.principal}</a> (<a href="/<g:meta name="app.name"/>/auth/signOut">logout</a>)
+                    </span>
                 <% } %>
             </div>
 
