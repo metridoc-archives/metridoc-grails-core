@@ -5,4 +5,9 @@
     <meta name="layout" content="main"/>
 </g:else>
 
-<r:require module="${params.controller}"/>
+<md:logMsg>params</md:logMsg>
+
+<g:if test="${params.hasModule}">
+    <r:require module="${params.module}"/>
+</g:if>
+

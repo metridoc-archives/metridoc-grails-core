@@ -16,37 +16,38 @@ modules = {
     user {
         dependsOn 'jquery-ui'
         resource id: 'css',
-                url: [plugin: "metridocCore", dir: 'user/css', file: 'user.css']
+            url: [plugin: "metridocCore", dir: 'user/css', file: 'user.css']
         resource id: 'js',
-                url: [plugin: "metridocCore", dir: 'user/js', file: 'user.js']
+            url: [plugin: "metridocCore", dir: 'user/js', file: 'user.js']
     }
 
-    role{
+    role {
         dependsOn 'jquery-ui'
         resource id: 'css',
-                url: [plugin: "metridocCore", dir: 'role/css', file: 'role.css']
+            url: [plugin: "metridocCore", dir: 'role/css', file: 'role.css']
         resource id: 'js',
-                url: [plugin: "metridocCore", dir: 'role/js', file: 'role.js']
+            url: [plugin: "metridocCore", dir: 'role/js', file: 'role.js']
     }
 
     application {
+        dependsOn 'jquery'
         resource id: 'appJs',
-                url: [plugin: "metridocCore", dir: 'js', file: 'application.js']
+            url: [plugin: "metridocCore", dir: 'js', file: 'application.js']
         resource id: 'mobileCss',
-                url: [plugin: "metridocCore", dir: 'css', file: 'mobile.css']
+            url: [plugin: "metridocCore", dir: 'css', file: 'mobile.css']
         resource id: 'mainCss',
-                url: [plugin: "metridocCore", dir: 'css', file: 'main.css']
+            url: [plugin: "metridocCore", dir: 'css', file: 'main.css']
         resource id: 'faviconIco',
-                url: [plugin: "metridocCore", dir: 'images', file: 'favicon.ico']
+            url: [plugin: "metridocCore", dir: 'images', file: 'favicon.ico']
 
     }
 
     admin {
         dependsOn 'jquery-ui'
         resource id: 'adminCss',
-                url: [plugin: "metridocCore", dir: 'admin/css',file:'admin.css']
+            url: [plugin: "metridocCore", dir: 'admin/css', file: 'admin.css']
         resource id: 'adminJs',
-                url: [plugin: "metridocCore", dir:'admin/js',file:'admin.js']
+            url: [plugin: "metridocCore", dir: 'admin/js', file: 'admin.js']
     }
 
     overrides {
@@ -59,14 +60,14 @@ modules = {
     manageReports {
         dependsOn 'jquery-ui'
         resource id: 'manageReportsCss',
-                url: [plugin:"metridocCore", dir: 'manageReports/css', file: 'manageReports.css']
+            url: [plugin: "metridocCore", dir: 'manageReports/css', file: 'manageReports.css']
         resource id: 'manageReportsJs',
-                url: [plugin:"metridocCore", dir: 'manageReports/js', file: 'manageReports.js']
+            url: [plugin: "metridocCore", dir: 'manageReports/js', file: 'manageReports.js']
     }
 
     login {
         dependsOn: 'jquery-ui'
         resource id: 'loginCss',
-            url: [plugin:"metridocCore", dir:'auth/css', file: 'login.css']
+            url: [plugin: "metridocCore", dir: 'auth/css', file: 'login.css']
     }
 }

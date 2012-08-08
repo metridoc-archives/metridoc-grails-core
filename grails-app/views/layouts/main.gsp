@@ -53,13 +53,6 @@
                             <a href="/<g:meta name="app.name"/>/home">Home</a>
                         </strong>
                     </li>
-                    <% if ("admin" == SecurityUtils.subject.principal) { %>
-                    <li>
-                        <strong>
-                            <a href="/<g:meta name="app.name"/>/admin">Settings</a>
-                        </strong>
-                    </li>
-                    <% } %>
                 </ul>
             </div>
             <g:layoutBody/>

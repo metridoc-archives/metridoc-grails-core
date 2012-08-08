@@ -28,9 +28,13 @@ $('#runJenkins').click(function () {
 )
 
 $(function () {
-    $("#dialog").dialog({
-        autoOpen:false,
-        width:600,
-        resizable:false
-    });
+
+    var dialog = $("#dialog")
+    if (dialog.length) {
+        dialog.dialog({
+            autoOpen:false,
+            width:600,
+            resizable:false
+        });
+    }
 });
