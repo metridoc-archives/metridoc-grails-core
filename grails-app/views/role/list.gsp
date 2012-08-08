@@ -23,9 +23,15 @@
             <li><g:link class="home" controller="home" action="index">
                 <g:message code="default.home.label" default="Home"/>
             </g:link></li>
-            <li><g:link class="create" controller="role" action="create"><g:message code="default.create.label" args="['Role']" default="Create Role"/></g:link></li>
-            <li><g:link class="list" controller="user" action="list"><g:message code="default.list.label" args="['User']" default="User List"/></g:link></li>
-            <li><g:link class="create" controller="user" action="create"><g:message code="default.create.label" args="['User']" default="Create User"/></g:link></li>
+            <li><g:link class="create" controller="role" action="create">
+                <g:message code="default.create.label" args="['Role']" default="Create Role"/>
+            </g:link></li>
+            <li><g:link class="list" controller="user" action="list">
+                <g:message code="default.list.label" args="['User']" default="User List"/>
+            </g:link></li>
+            <li><g:link class="create" controller="user" action="create">
+                <g:message code="default.create.label" args="['User']" default="Create User"/>
+            </g:link></li>
         </ul>
     </div>
 
@@ -37,8 +43,7 @@
         <table>
             <thead>
             <tr>
-                <g:sortableColumn property="name"
-                                  title="Roles"/>
+                <g:sortableColumn property="name" title="Roles"/>
             </tr>
             </thead>
             <tbody>
@@ -50,17 +55,9 @@
                                 id="${shiroRoleInstance.id}">${fieldValue(bean: shiroRoleInstance, field: "name")}
                         </g:link>
                         <span class="inCellActions">
-
                             <a href="edit/${shiroRoleInstance.id}">
                                 <r:img uri="/images/skin/database_edit.png"/>
                             </a>
-
-                            <a class="delete" href="#" onclick="deleteRole(${shiroRoleInstance.id})">
-                                <r:img uri="/images/skin/database_delete.png"/>
-                            </a>
-
-                            <g:form name="mdForm_${shiroRoleInstance.id}" method="delete" action="delete"
-                                    id="${shiroRoleInstance.id}"/>
                         </span>
                     </td>
                 </tr>

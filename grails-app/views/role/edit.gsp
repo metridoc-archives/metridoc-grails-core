@@ -19,11 +19,21 @@
 
     <div class="nav" role="navigation">
         <ul>
-            <li><g:link class="home" controller="home" action="index"><g:message code="default.home.label" default="Home"/></g:link></li>
-            <li><g:link class="list" controller="role" action="list"><g:message code="default.list.label" args="['Role']" default="Role List"/></g:link></li>
-            <li><g:link class="create" controller="role" action="create"><g:message code="default.create.label" args="['Role']" default="Create Role"/></g:link></li>
-            <li><g:link class="list" controller="user" action="list"><g:message code="default.list.label" args="['User']" default="User List"/></g:link></li>
-            <li><g:link class="create" controller="user" action="create"><g:message code="default.create.label" args="['User']" default="Create User"/></g:link></li>
+            <li><g:link class="home" controller="home" action="index">
+                <g:message code="default.home.label" default="Home"/>
+            </g:link></li>
+            <li><g:link class="list" controller="role" action="list">
+                <g:message code="default.list.label" args="['Role']" default="Role List"/>
+            </g:link></li>
+            <li><g:link class="create" controller="role" action="create">
+                <g:message code="default.create.label" args="['Role']" default="Create Role"/>
+            </g:link></li>
+            <li><g:link class="list" controller="user" action="list">
+                <g:message code="default.list.label" args="['User']" default="User List"/>
+            </g:link></li>
+            <li><g:link class="create" controller="user" action="create">
+                <g:message code="default.create.label" args="['User']" default="Create User"/>
+            </g:link></li>
         </ul>
     </div>
 
@@ -53,9 +63,6 @@
             <fieldset class="buttons">
                 <g:actionSubmit class="save" action="update"
                                 value="${message(code: 'default.button.update.label', default: 'Update')}"/>
-                <g:actionSubmit class="delete" action="delete"
-                                value="${message(code: 'default.button.delete.label', default: 'Delete')}" formnovalidate=""
-                                onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/>
             </fieldset>
 
         </g:form>

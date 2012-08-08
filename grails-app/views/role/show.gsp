@@ -21,11 +21,20 @@
 
     <div class="nav" role="navigation">
         <ul>
-            <li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label" default="Home"/></a></li>
-            <li><g:link class="list" controller="role" action="list"><g:message code="default.list.label" args="['Role']" default="Role List"/></g:link></li>
-            <li><g:link class="create" controller="role" action="create"><g:message code="default.create.label" args="['Role']" default="Create Role"/></g:link></li>
-            <li><g:link class="list" controller="user" action="list"><g:message code="default.list.label" args="['User']" default="User List"/></g:link></li>
-            <li><g:link class="create" controller="user" action="create"><g:message code="default.create.label" args="['User']" default="Create User"/></g:link></li>
+            <li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label" default="Home"/></a>
+            </li>
+            <li><g:link class="list" controller="role" action="list">
+                <g:message code="default.list.label" args="['Role']" default="Role List"/>
+            </g:link></li>
+            <li><g:link class="create" controller="role" action="create">
+                <g:message code="default.create.label" args="['Role']" default="Create Role"/>
+            </g:link></li>
+            <li><g:link class="list" controller="user" action="list">
+                <g:message code="default.list.label" args="['User']" default="User List"/>
+            </g:link></li>
+            <li><g:link class="create" controller="user" action="create">
+                <g:message code="default.create.label" args="['User']" default="Create User"/>
+            </g:link></li>
         </ul>
     </div>
 
@@ -38,31 +47,25 @@
 
             <g:if test="${shiroRoleInstance?.name}">
                 <li class="fieldcontain">
-                    <span id="username-label" class="property-label"><g:message code="shiroRole.username.label"
-                                                                                default="Rolename"/></span>
+                    <span id="username-label" class="property-label">
+                        <g:message code="shiroRole.username.label" default="Rolename"/>
+                    </span>
 
-                    <span class="property-value" aria-labelledby="username-label"><g:fieldValue
-                            bean="${shiroRoleInstance}"
-                            field="name"/></span>
+                    <span class="property-value" aria-labelledby="username-label">
+                        <g:fieldValue bean="${shiroRoleInstance}" field="name"/>
+                    </span>
 
                 </li>
             </g:if>
 
         </ol>
-        <g:form>
-            <fieldset class="buttons">
-                <g:hiddenField name="id" value="${shiroRoleInstance?.id}"/>
 
-                    <g:link class="edit" action="edit" id="${shiroRoleInstance?.id}">
-                        <g:message code="default.button.edit.label" default="Edit"/>
-                    </g:link>
+        <fieldset class="buttons">
+            <g:link class="edit" action="edit" id="${shiroRoleInstance?.id}">
+                <g:message code="default.button.edit.label" default="Edit"/>
+            </g:link>
+        </fieldset>
 
-                    <g:actionSubmit class="delete" action="delete"
-                                        value="${message(code: 'default.button.delete.label', default: 'Delete')}"
-                                        onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/>
-
-            </fieldset>
-        </g:form>
     </div>
 
 </md:report>
