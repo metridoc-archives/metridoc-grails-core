@@ -1,0 +1,58 @@
+#metridocNavigation {
+    float: left;
+    width: 100%;
+    background: -webkit-gradient(linear, left top, left bottom, from(#7BC360), to(#32651F));
+    background: -moz-linear-gradient(top, #7BC360, #32651F);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#7BC360', endColorstr = '#32651F');
+}
+
+#metridocNavigation ul {
+    margin: 0;
+    padding: 0;
+}
+
+#metridocNavigation ul li {
+    list-style-type: none;
+    display: inline;
+}
+
+#metridocNavigation ul li a {
+    display: block;
+    float: left;
+    padding: 5px 10px;
+    color: #E5E9E2;
+    text-decoration: none;
+    border-right: 1px solid #fff;
+}
+
+#metridocNavigation a:hover {
+    color: #b81900;
+}
+
+#metridocNavigation ul li:first-child{margin-left: 0;}
+
+/*style the sub menu*/
+#metridocNavigation ul li ul {
+    position: absolute;
+    visibility:hidden;
+    margin:0;
+    padding:0;
+    width: 158px;
+}
+
+#metridocNavigation ul li ul li {
+    display:block;
+    float: none;
+    width: 158px;
+    text-align: center;
+}
+
+#metridocNavigation ul li ul li a:link, #metridocNavigation ul li ul li a:visited {
+    background-color: #E5E9E2;
+    color: #48802C;
+    width: 158px;
+}
+
+#metridocNavigation ul li ul li a:hover {
+    color: #b81900;
+}

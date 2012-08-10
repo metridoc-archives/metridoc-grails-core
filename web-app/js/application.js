@@ -13,13 +13,13 @@
  * permissions and limitations under the License.
  */
 if (typeof jQuery !== 'undefined') {
-	(function($) {
-		$('#spinner').ajaxStart(function() {
-			$(this).fadeIn();
-		}).ajaxStop(function() {
-			$(this).fadeOut();
-		});
-	})(jQuery);
+    (function ($) {
+        $('#spinner').ajaxStart(function () {
+            $(this).fadeIn();
+        }).ajaxStop(function () {
+                $(this).fadeOut();
+            });
+    })(jQuery);
 }
 
 $('#runJenkins').click(function () {
@@ -28,7 +28,6 @@ $('#runJenkins').click(function () {
 )
 
 $(function () {
-
     var dialog = $("#dialog")
     if (dialog.length) {
         dialog.dialog({
@@ -37,4 +36,29 @@ $(function () {
             resizable:false
         });
     }
+});
+
+
+$(document).ready(function () {
+
+    $('#metridocNavigation > ul > li').bind('mouseover', openSubMenu);
+    $('#metridocNavigation >ul > li').bind('mouseout', closeSubMenu);
+
+    function openSubMenu() {
+        var offset = $(this).children('strong').offset();
+        var height = $(this).outerHeight(true);
+        var width = $(this).outerWidth(true);
+        $(this).find('ul').css({
+            visibility: 'visible',
+            position: 'absolute',
+            top:(offset.top + height) + "px",
+            marginLeft:(offset.left + width) + "px"
+        });
+    };
+
+    function closeSubMenu() {
+        $(this).find('ul').css('visibility', 'hidden');
+    }
+
+    ;
 });

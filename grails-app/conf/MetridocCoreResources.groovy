@@ -46,6 +46,8 @@ modules = {
             url: [plugin: "metridocCore", dir: 'css', file: 'mobile.css']
         resource id: 'mainCss',
             url: [plugin: "metridocCore", dir: 'css', file: 'main.css']
+        resource id: 'navBarCss',
+            url: [plugin: "metridocCore", dir: 'css', file: 'navBar.css']
         resource id: 'faviconIco',
             url: [plugin: "metridocCore", dir: 'images', file: 'favicon.ico']
 

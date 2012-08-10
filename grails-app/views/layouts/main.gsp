@@ -21,50 +21,66 @@
 <!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
 <!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"><!--<![endif]-->
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>MetriDoc</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <r:require module="application"/>
-        <g:layoutHead/>
-        <r:layoutResources/>
-    </head>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>MetriDoc</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <r:require module="application"/>
+    <g:layoutHead/>
+    <r:layoutResources/>
+</head>
 
-    <body>
-        <div id="doc4">
-            <div id="metridocBanner" role="banner">
-                <a id="metridocLogo" href="http://metridoc.googlecode.com">
-                    <img src="${resource(plugin: 'metridocCore', dir: 'images', file: 'MDlogo_small.png')}"
-                         alt="MetriDoc"/>
-                </a>
+<body>
+<div id="doc4">
+    <div id="metridocBanner" role="banner">
+        <a id="metridocLogo" href="http://metridoc.googlecode.com">
+            <img src="${resource(plugin: 'metridocCore', dir: 'images', file: 'MDlogo_small.png')}"
+                 alt="MetriDoc"/>
+        </a>
 
-                <% if (SecurityUtils.subject.principal == "anonymous" || !SecurityUtils.subject.isAuthenticated()) { %>
-                <a id="metridocLoginLink" href="/<g:meta name="app.name"/>/auth">login</a>
-                <% } else { %>
-                    <span id="metridocLoginLink">
-                        <a href="/<g:meta name="app.name"/>/changePassword">${SecurityUtils.subject.principal}</a> (<a href="/<g:meta name="app.name"/>/auth/signOut">logout</a>)
-                    </span>
+        <% if (SecurityUtils.subject.principal == "anonymous" || !SecurityUtils.subject.isAuthenticated()) { %>
+        <a id="metridocLoginLink" href="/<g:meta name="app.name"/>/auth">login</a>
+        <% } else { %>
+        <span id="metridocLoginLink">
+            <a href="/<g:meta name="app.name"/>/changePassword">${SecurityUtils.subject.principal}</a> (<a
+                href="/<g:meta name="app.name"/>/auth/signOut">logout</a>)
+        </span>
+        <% } %>
+
+    </div>
+
+    <div id="metridocNavigation">
+        <ul>
+            <li>
+                <strong>
+                    <a href="/<g:meta name="app.name"/>/home">Home</a>
+                </strong>
+            </li>
+
+            <g:if env="development">
+                <% if (SecurityUtils.subject.principal != "anonymous" && SecurityUtils.subject.isAuthenticated()) { %>
+                <li>
+                    <strong>
+                        <a href="#">My Account</a>
+                    </strong>
+                    <ul>
+                        <li><g:link controller="changePassword" action="edit">Change Password</g:link></li>
+                    </ul>
+                </li>
                 <% } %>
-            </div>
+            </g:if>
 
-            <div id="metridocNavigation">
-                <ul>
-                    <li>
-                        <strong>
-                            <a href="/<g:meta name="app.name"/>/home">Home</a>
-                        </strong>
-                    </li>
-                </ul>
-            </div>
-            <g:layoutBody/>
-            <div class="footer" role="contentinfo"></div>
+        </ul>
+    </div>
+    <g:layoutBody/>
+    <div class="footer" role="contentinfo"></div>
 
-            <div id="spinner" class="spinner" style="display:none;">
-                <g:message code="spinner.alt" default="Loading&hellip;"/>
-            </div>
+    <div id="spinner" class="spinner" style="display:none;">
+        <g:message code="spinner.alt" default="Loading&hellip;"/>
+    </div>
 
-            <r:layoutResources/>
-        </div>
-    </body>
+    <r:layoutResources/>
+</div>
+</body>
 </html>
