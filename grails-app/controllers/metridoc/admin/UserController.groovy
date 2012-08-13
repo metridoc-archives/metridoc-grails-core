@@ -21,7 +21,7 @@ import org.apache.shiro.crypto.hash.Sha256Hash
 import org.springframework.dao.DataIntegrityViolationException
 
 class UserController {
-    static allowedMethods = [save: "POST", update: "POST", delete: "DELETE", list: "GET", index: "GET"]
+    static allowedMethods = [save: "POST", update: "POST", delete: ['DELETE',"POST"], list: "GET", index: "GET"]
     def static final reportName = "Manage Users"
     static final adminOnly = true
     def userService
@@ -159,6 +159,7 @@ class UserController {
     }
 
     def delete() {
+
         def shiroUserInstance = ShiroUser.get(params.id)
         if (!shiroUserInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), params.id])
@@ -167,7 +168,6 @@ class UserController {
         }
         String username = shiroUserInstance.username
         try {
-
             shiroUserInstance.delete(flush: true)
             flash.message = message(code: 'default.deleted.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), username])
             redirect(action: "list")
