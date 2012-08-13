@@ -14,10 +14,11 @@
  */
 package metridoc.admin
 
+import metridoc.reports.ShiroRole
 import metridoc.reports.ShiroUser
+import org.apache.shiro.SecurityUtils
 import org.apache.shiro.crypto.hash.Sha256Hash
 import org.springframework.dao.DataIntegrityViolationException
-import org.apache.shiro.SecurityUtils
 
 class UserController {
     static allowedMethods = [save: "POST", update: "POST", delete: "DELETE", list: "GET", index: "GET"]
@@ -35,10 +36,10 @@ class UserController {
         def userCount = ShiroUser.count()
         def showPagination = userCount > max
         [
-                currentUserName: SecurityUtils.getSubject().getPrincipal(),
-                shiroUserInstanceList: ShiroUser.list(params),
-                shiroUserInstanceTotal: userCount,
-                showPagination: showPagination
+            currentUserName: SecurityUtils.getSubject().getPrincipal(),
+            shiroUserInstanceList: ShiroUser.list(params),
+            shiroUserInstanceTotal: userCount,
+            showPagination: showPagination
         ]
     }
 
@@ -76,8 +77,8 @@ class UserController {
         }
 
         [
-                currentUserName: SecurityUtils.getSubject().getPrincipal(),
-                shiroUserInstance: shiroUserInstance
+            currentUserName: SecurityUtils.getSubject().getPrincipal(),
+            shiroUserInstance: shiroUserInstance
         ]
     }
 
@@ -90,8 +91,8 @@ class UserController {
         }
 
         [
-                currentUserName: SecurityUtils.getSubject().getPrincipal(),
-                shiroUserInstance: shiroUserInstance
+            currentUserName: SecurityUtils.getSubject().getPrincipal(),
+            shiroUserInstance: shiroUserInstance
         ]
     }
 
@@ -107,17 +108,48 @@ class UserController {
             def version = params.version.toLong()
             if (shiroUserInstance.version > version) {
                 shiroUserInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                        [message(code: 'shiroUser.label', default: 'ShiroUser')] as Object[],
-                        "Another user has updated this ShiroUser while you were editing")
+                    [message(code: 'shiroUser.label', default: 'ShiroUser')] as Object[],
+                    "Another user has updated this ShiroUser while you were editing")
                 render(view: "/user/edit", model: [shiroUserInstance: shiroUserInstance])
                 return
             }
         }
 
-        shiroUserInstance.properties = params
+        shiroUserInstance.with {
+            emailAddress = params.emailAddress
+            password = params.password
+            confirm = params.confirm
+            roles = []
+
+            def addRole = {roleName ->
+                log.debug("adding role ${roleName} for user ${shiroUserInstance}")
+                def role = ShiroRole.find {
+                    name == roleName
+                }
+                roles.add(role)
+            }
+
+
+            def isAString = params.roles instanceof String
+
+            if (isAString) {
+                params.roles = [params.roles]
+            }
+
+            params.roles.each {roleName ->
+                addRole(roleName)
+            }
+        }
+
         shiroUserInstance.properties.put('permissions', params.get('permissions').toString().replace('[', '').replace(']', '').split(','))
 
         if (!shiroUserInstance.save(flush: true)) {
+            if (shiroUserInstance.errors) {
+                log.error("There were errors trying to update ${shiroUserInstance}")
+                shiroUserInstance.errors.each {error ->
+                    log.error("Error ${error} occurred trying to update user ${shiroUserInstance}")
+                }
+            }
             render(view: "/user/edit", model: [shiroUserInstance: shiroUserInstance])
             return
         }
