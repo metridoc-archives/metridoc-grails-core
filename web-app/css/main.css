@@ -371,6 +371,11 @@ fieldset.embedded legend {
     box-shadow: 0 0 0.25em #b2d1ff;
 }
 
+#homeMsg{
+   z-index: 1;
+    margin: 0em 6em 0em 0em;
+}
+
 .errors {
     background: #fff3f3;
     border: 1px solid #ffaaaa;

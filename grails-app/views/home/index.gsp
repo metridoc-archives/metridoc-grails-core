@@ -17,65 +17,67 @@
 <!doctype html>
 
 <html>
-    <head>
-        <meta name="layout" content="main"/>
-        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.5.1/build/cssgrids/grids-min.css">
-    </head>
+<head>
+    <meta name="layout" content="main"/>
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.5.1/build/cssgrids/grids-min.css">
+</head>
 
-    <body>
+<body>
 
-        <div id="page-body" role="main" style="padding: 50px; padding-left: 0px">
+<div id="page-body" role="main" style="padding: 50px; padding-left: 0px">
+    <g:if test="${flash.message}">
+        <div class="message" role="status" id="homeMsg">${flash.message}</div>
+    </g:if>
+    <h1>Welcome to MetriDoc</h1>
 
-            <h1>Welcome to MetriDoc</h1>
+    <p>
+        MetriDoc is an extendable platform to view and maintain library statistics and reports.
+        <shiro:isNotLoggedIn>
+            You must <g:link controller="auth" action="index">login</g:link> to view available applications.
+        </shiro:isNotLoggedIn>
+    </p>
 
-            <p>
-                MetriDoc is an extendable platform to view and maintain library statistics and reports.
-                <shiro:isNotLoggedIn>
-                    You must <g:link controller="auth" action="index">login</g:link> to view available applications.
-                </shiro:isNotLoggedIn>
-            </p>
-
-            <shiro:isLoggedIn>
-                <div id="application-list" role="navigation">
-                    <g:if test="${hasLinks}">
-                        <div class="yui3-g">
-                            <div class="yui3-u-1-2">
-                                <h2>Available Applications</h2>
-                                <ul>
-                                    <g:if test="${reportLinks}">
-                                        <g:each var="c" in="${reportLinks}">
-                                            <li class="application"><g:link
-                                                    controller="${c.controllerName}">${c.reportName}</g:link></li>
-                                        </g:each>
-                                    </g:if>
-                                    <g:else>
-                                        <li class="application">No reports available</li>
-                                    </g:else>
-                                </ul>
-                            </div>
-
-                            <g:if test="${adminLinks}">
-                                <div class="yui3-u-1-2">
-                                    <h2>Administration</h2>
-                                    <ul>
-                                        <g:each var="c" in="${adminLinks}">
-                                            <li class="application"><g:link
-                                                    controller="${c.controllerName}">${c.reportName}</g:link></li>
-                                        </g:each>
-                                    </ul>
-                                </div>
+    <shiro:isLoggedIn>
+        <div id="application-list" role="navigation">
+            <g:if test="${hasLinks}">
+                <div class="yui3-g">
+                    <div class="yui3-u-1-2">
+                        <h2>Available Applications</h2>
+                        <ul>
+                            <g:if test="${reportLinks}">
+                                <g:each var="c" in="${reportLinks}">
+                                    <li class="application"><g:link
+                                            controller="${c.controllerName}">${c.reportName}</g:link></li>
+                                </g:each>
                             </g:if>
-                        </div>
+                            <g:else>
+                                <li class="application">No reports available</li>
+                            </g:else>
+                        </ul>
+                    </div>
 
+                    <g:if test="${adminLinks}">
+                        <div class="yui3-u-1-2">
+                            <h2>Administration</h2>
+                            <ul>
+                                <g:each var="c" in="${adminLinks}">
+                                    <li class="application"><g:link
+                                            controller="${c.controllerName}">${c.reportName}</g:link></li>
+                                </g:each>
+                            </ul>
+                        </div>
                     </g:if>
-                    <g:else>
-                        <p>
-                            Please <g:link controller="auth"
-                                           action="index">login</g:link> to view available applications.
-                        </p>
-                    </g:else>
                 </div>
-            </shiro:isLoggedIn>
+
+            </g:if>
+            <g:else>
+                <p>
+                    Please <g:link controller="auth"
+                                   action="index">login</g:link> to view available applications.
+                </p>
+            </g:else>
         </div>
-    </body>
+    </shiro:isLoggedIn>
+</div>
+</body>
 </html>

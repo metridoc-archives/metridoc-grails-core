@@ -89,7 +89,10 @@ class UserController {
             return
         }
 
-        [shiroUserInstance: shiroUserInstance]
+        [
+                currentUserName: SecurityUtils.getSubject().getPrincipal(),
+                shiroUserInstance: shiroUserInstance
+        ]
     }
 
     def update() {

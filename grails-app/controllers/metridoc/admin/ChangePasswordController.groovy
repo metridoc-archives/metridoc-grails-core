@@ -51,12 +51,13 @@ class ChangePasswordController {
 
         shiroUserInstance.setPasswordHash(new Sha256Hash(password).toHex())
         if (!shiroUserInstance.save(flush: true)) {
+            flash.message = message(code: 'update.failed.message', default: 'update failed.')
             render(view: "/changePassword/edit", model: [shiroUserInstance: shiroUserInstance])
             return
         }
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'shiroUser.label', default: 'User'), shiroUserInstance.username])
-        render(view: '/changePassword/edit', model: [shiroUserInstance: shiroUserInstance])
+        flash.message = message(code: 'default.updated.message', args: [message(code: 'shiroUser.label', default: 'User'), SecurityUtils.getSubject().principal])
+        redirect(controller: 'home', action: 'index', params: flash.message)
     }
 
 }
