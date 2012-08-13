@@ -63,7 +63,7 @@ class UserController {
             return
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), shiroUserInstance.id])
+        flash.message = message(code: 'default.created.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), shiroUserInstance.username])
         redirect(action: "show", id: shiroUserInstance.id)
     }
 
@@ -122,7 +122,7 @@ class UserController {
             return
         }
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), shiroUserInstance.id])
+        flash.message = message(code: 'default.updated.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), shiroUserInstance.username])
         redirect(action: "show", id: shiroUserInstance.id)
     }
 
@@ -133,14 +133,15 @@ class UserController {
             redirect(action: "list")
             return
         }
-
+        String username = shiroUserInstance.username
         try {
+
             shiroUserInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), params.id])
+            flash.message = message(code: 'default.deleted.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), username])
             redirect(action: "list")
         }
         catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), params.id])
+            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), username])
             redirect(action: "show", id: params.id)
         }
     }
