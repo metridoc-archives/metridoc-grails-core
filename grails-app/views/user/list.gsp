@@ -56,11 +56,11 @@
                             <span class="inCellActions">
 
                                 <a href="edit/${shiroUserInstance.id}">
-                                    <r:img uri="/images/skin/database_edit.png" plugin="metridoc-core"/>
+                                    <r:img dir="images/skin" file="database_edit.png" plugin="metridoc-core"/>
                                 </a>
                                 <g:if test="${shiroUserInstance.username != currentUserName}">
                                     <a class="delete" href="#" onclick="deleteUser(${shiroUserInstance.id})">
-                                        <r:img uri="/images/skin/database_delete.png" plugin="metridoc-core"/>
+                                        <r:img dir="images/skin" file="database_delete.png" plugin="metridoc-core"/>
                                     </a>
                                 </g:if>
                                 <g:form name="mdForm_${shiroUserInstance.id}" method="delete" action="delete"
