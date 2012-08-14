@@ -34,7 +34,7 @@ class ShiroUser {
     static hasMany = [roles: ShiroRole, permissions: String]
 
     static constraints = {
-        username(nullable: false, blank: false)
+        username(nullable: false, blank: false, unique: true)
         emailAddress(email: true, nullable: true)
         password blank: false, size: 5..15, matches: /[\S]+/, validator: { val, obj ->
             if (obj.password != obj.confirm)

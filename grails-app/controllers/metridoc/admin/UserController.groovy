@@ -116,6 +116,7 @@ class UserController {
         }
 
         shiroUserInstance.with {
+            username = params.username
             emailAddress = params.emailAddress
             password = params.password
             confirm = params.confirm
@@ -128,7 +129,6 @@ class UserController {
                 }
                 roles.add(role)
             }
-
 
             def isAString = params.roles instanceof String
 

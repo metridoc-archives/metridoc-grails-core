@@ -16,32 +16,30 @@
 -->
 <%@ page import="metridoc.reports.ShiroUser" %>
 
-
-
 <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'username', 'error')} required">
-	<label for="username">
-		<g:message code="shiroUser.username.label" default="User Name"/>
-		<span class="required-indicator">*</span>
-	</label>
-	<g:textField name="username" required="" value="${shiroUserInstance?.username}"/>
-</div>
-
-<div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'password', 'error')} ">
-	<label for="password">
-		<g:message code="shiroUser.passwordHash.label" default="Password"/>
+    <label for="username">
+        <g:message code="shiroUser.username.label" default="User Name"/>
         <span class="required-indicator">*</span>
-	</label>
-	<g:passwordField name="password" required="" />
+    </label>
+    <g:textField name="username" required="" value="${shiroUserInstance?.username}"/>
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'password', 'error')} ">
-	<label for="password">
-		<g:message code="shiroUser.passwordHash.label" default="Confirm Password" />
-	</label>
-	<g:passwordField name="confirm" required="" />
+    <label for="password">
+        <g:message code="shiroUser.passwordHash.label" default="Password"/>
+        <span class="required-indicator">*</span>
+    </label>
+    <g:passwordField name="password" required=""/>
 </div>
 
-<div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field:'emailAddress','error')} ">
+<div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'password', 'error')} ">
+    <label for="password">
+        <g:message code="shiroUser.passwordHash.label" default="Confirm Password"/>
+    </label>
+    <g:passwordField name="confirm" required=""/>
+</div>
+
+<div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'emailAddress', 'error')} ">
     <label for="emailAddress">
         <g:message code="shiroUser.emailAddress.label" default="Email"/>
     </label>
@@ -49,9 +47,18 @@
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'roles', 'error')} ">
-	<label for="roles">
-		<g:message code="shiroUser.roles.label" default="Roles" />
-	</label>
-	<g:select name="roles" from="${metridoc.reports.ShiroRole.list()}" multiple="multiple" optionKey="name" size="5" value="${shiroUserInstance?.roles*.id}" class="many-to-many" optionValue="name"/>
+    <label for="roles">
+        <g:message code="shiroUser.roles.label" default="Roles"/>
+    </label>
+    <select name="roles" multiple="multiple" size="5">
+        <g:each in="${metridoc.reports.ShiroRole.list()}" var="shiroRole">
+            <g:if test="${shiroUserInstance?.roles?.contains(shiroRole)}">
+            <option value="${shiroRole.name}" selected="selected" >${shiroRole.name}</option>
+            </g:if>
+            <g:else>
+                <option value="${shiroRole.name}">${shiroRole.name}</option>
+            </g:else>
+        </g:each>
+    </select>
 </div>
 
