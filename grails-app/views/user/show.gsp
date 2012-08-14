@@ -51,20 +51,9 @@
             <g:if test="${shiroUserInstance?.emailAddress}">
                 <li class="fieldcontain">
                     <span id="emailAddress-label" class="property-label"><g:message code="shiroUser.emailAddress.label"
-                                                                                    default="emailAddress"/></span>
+                                                                                    default="EmailAddress"/></span>
                     <span class="property-value" aria-labelledby="emailAddress-label"><g:fieldValue field="emailAddress"
                                                                                                     bean="${shiroUserInstance}"/></span>
-                </li>
-            </g:if>
-
-            <g:if test="${shiroUserInstance?.permissions}">
-                <li class="fieldcontain">
-                    <span id="permissions-label" class="property-label"><g:message code="shiroUser.permissions.label"
-                                                                                   default="Permissions"/></span>
-
-                    <span class="property-value" aria-labelledby="permissions-label"><g:fieldValue
-                            bean="${shiroUserInstance}" field="permissions"/></span>
-
                 </li>
             </g:if>
 
@@ -74,7 +63,7 @@
                                                                              default="Roles"/></span>
 
                     <g:each in="${shiroUserInstance.roles}" var="r">
-                        <span class="property-value" aria-labelledby="roles-label"><g:link controller="shiroRole"
+                        <span class="property-value" aria-labelledby="roles-label"><g:link controller="Role"
                                                                                            action="show"
                                                                                            id="${r.id}">${r.name}</g:link></span>
                     </g:each>

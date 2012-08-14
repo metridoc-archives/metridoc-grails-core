@@ -141,8 +141,6 @@ class UserController {
             }
         }
 
-        shiroUserInstance.properties.put('permissions', params.get('permissions').toString().replace('[', '').replace(']', '').split(','))
-
         if (!shiroUserInstance.save(flush: true)) {
             if (shiroUserInstance.errors) {
                 log.error("There were errors trying to update ${shiroUserInstance}")
