@@ -2,6 +2,7 @@ package metridoc.security
 
 import org.apache.shiro.grails.FilterAccessControlBuilder
 import org.apache.shiro.subject.Subject
+import org.apache.shiro.SecurityUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,5 +27,7 @@ class MetridocFilterAccessControlBuilder extends FilterAccessControlBuilder{
         super(subject)
     }
 
-
+    MetridocFilterAccessControlBuilder() {
+        this(SecurityUtils.subject)
+    }
 }

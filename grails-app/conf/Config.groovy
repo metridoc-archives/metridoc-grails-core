@@ -206,10 +206,10 @@ metridoc {
                 }
 
                 administration {
-                    manageUsers = "Manage Users"
+                    user = "Manage Users"
                     changePassword = "Change Password"
                     jenkins = "Install Jenkins"
-                    manageRoles = "Manage Roles"
+                    role = "Manage Roles"
                 }
             }
         }
