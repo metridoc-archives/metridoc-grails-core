@@ -68,4 +68,8 @@
         <sql>update reports_configuration set role=&apos;ROLE_ADMIN&apos;</sql>
         <addNotNullConstraint tableName="reports_configuration" columnName="role" columnDataType="varchar(500)"/>
     </changeSet>
+    <changeSet id="admin-06" author="Tommy Barker">
+        <comment>no longer need reports_configuration since we are managing reports in Config.groovy instead</comment>
+        <sql>drop table reports_configuration</sql>
+    </changeSet>
 </databaseChangeLog>
