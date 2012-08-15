@@ -50,7 +50,7 @@
 
     </div>
 
-    <div id="metridocNavigation">
+    <div id="metridocNavigation" class="ui-widget-header">
         <ul>
             <li>
                 <strong>
@@ -74,7 +74,7 @@
         </ul>
     </div>
     <g:layoutBody/>
-    <div class="footer" role="contentinfo"></div>
+    <div class="footer ui-widget-header" role="contentinfo"></div>
 
     <div id="spinner" class="spinner" style="display:none;">
         <g:message code="spinner.alt" default="Loading&hellip;"/>

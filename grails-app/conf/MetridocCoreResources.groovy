@@ -39,7 +39,7 @@ modules = {
     }
 
     application {
-        dependsOn 'jquery'
+        dependsOn 'jquery-ui', 'jquery'
         resource id: 'appJs',
             url: [plugin: "metridocCore", dir: 'js', file: 'application.js']
         resource id: 'mobileCss',
