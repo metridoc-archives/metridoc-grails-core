@@ -121,7 +121,11 @@ class UserController {
             password = params.password
             confirm = params.confirm
             roles = []
-
+            if (password != confirm) {
+                flash.message = message(code: 'user.password.dontmatch', default: 'Passwords not match')
+                render(view: "/user/edit", model: [shiroUserInstance: shiroUserInstance])
+                return
+            }
             def addRole = {roleName ->
                 log.debug("adding role ${roleName} for user ${shiroUserInstance}")
                 def role = ShiroRole.find {
@@ -129,16 +133,15 @@ class UserController {
                 }
                 roles.add(role)
             }
-
             def isAString = params.roles instanceof String
-
             if (isAString) {
                 params.roles = [params.roles]
             }
-
             params.roles.each {roleName ->
                 addRole(roleName)
             }
+
+            shiroUserInstance.setPasswordHash(new Sha256Hash(password).toHex())
         }
 
         if (!shiroUserInstance.save(flush: true)) {
