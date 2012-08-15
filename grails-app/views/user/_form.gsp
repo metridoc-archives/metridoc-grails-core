@@ -29,14 +29,14 @@
         <g:message code="shiroUser.passwordHash.label" default="Password"/>
         <span class="required-indicator">*</span>
     </label>
-    <g:passwordField name="password" required=""/>
+    <g:passwordField name="password" required="" value="${shiroUserInstance?.passwordHash}"/>
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'password', 'error')} ">
     <label for="password">
         <g:message code="shiroUser.passwordHash.label" default="Confirm Password"/>
     </label>
-    <g:passwordField name="confirm" required=""/>
+    <g:passwordField name="confirm" required="" value="${shiroUserInstance?.passwordHash}"/>
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'emailAddress', 'error')} ">

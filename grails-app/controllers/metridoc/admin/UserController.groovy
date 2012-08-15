@@ -21,7 +21,7 @@ import org.apache.shiro.crypto.hash.Sha256Hash
 import org.springframework.dao.DataIntegrityViolationException
 
 class UserController {
-    static allowedMethods = [save: "POST", update: "POST", delete: ['DELETE',"POST"], list: "GET", index: "GET"]
+    static allowedMethods = [save: "POST", update: "POST", delete: ['DELETE', "POST"], list: "GET", index: "GET"]
     def static final reportName = "Manage Users"
     static final adminOnly = true
     def userService
@@ -36,10 +36,10 @@ class UserController {
         def userCount = ShiroUser.count()
         def showPagination = userCount > max
         [
-            currentUserName: SecurityUtils.getSubject().getPrincipal(),
-            shiroUserInstanceList: ShiroUser.list(params),
-            shiroUserInstanceTotal: userCount,
-            showPagination: showPagination
+                currentUserName: SecurityUtils.getSubject().getPrincipal(),
+                shiroUserInstanceList: ShiroUser.list(params),
+                shiroUserInstanceTotal: userCount,
+                showPagination: showPagination
         ]
     }
 
@@ -77,8 +77,8 @@ class UserController {
         }
 
         [
-            currentUserName: SecurityUtils.getSubject().getPrincipal(),
-            shiroUserInstance: shiroUserInstance
+                currentUserName: SecurityUtils.getSubject().getPrincipal(),
+                shiroUserInstance: shiroUserInstance
         ]
     }
 
@@ -91,8 +91,8 @@ class UserController {
         }
 
         [
-            currentUserName: SecurityUtils.getSubject().getPrincipal(),
-            shiroUserInstance: shiroUserInstance
+                currentUserName: SecurityUtils.getSubject().getPrincipal(),
+                shiroUserInstance: shiroUserInstance
         ]
     }
 
@@ -108,24 +108,32 @@ class UserController {
             def version = params.version.toLong()
             if (shiroUserInstance.version > version) {
                 shiroUserInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                    [message(code: 'shiroUser.label', default: 'ShiroUser')] as Object[],
-                    "Another user has updated this ShiroUser while you were editing")
+                        [message(code: 'shiroUser.label', default: 'ShiroUser')] as Object[],
+                        "Another user has updated this ShiroUser while you were editing")
                 render(view: "/user/edit", model: [shiroUserInstance: shiroUserInstance])
                 return
             }
         }
+        if (params.password != params.confirm) {
+            flash.message = message(code: 'user.password.dontmatch', default: 'Passwords not match')
+            render(view: "/user/edit", model: [shiroUserInstance: shiroUserInstance])
+            return
+        }
+
+
+
 
         shiroUserInstance.with {
             username = params.username
             emailAddress = params.emailAddress
-            password = params.password
-            confirm = params.confirm
-            roles = []
-            if (password != confirm) {
-                flash.message = message(code: 'user.password.dontmatch', default: 'Passwords not match')
-                render(view: "/user/edit", model: [shiroUserInstance: shiroUserInstance])
-                return
+
+            if (!params.password.equals(shiroUserInstance.getPasswordHash())) {
+                password = params.password
+                confirm = params.confirm
+                shiroUserInstance.setPasswordHash(new Sha256Hash(password).toHex())
             }
+
+            roles = []
             def addRole = {roleName ->
                 log.debug("adding role ${roleName} for user ${shiroUserInstance}")
                 def role = ShiroRole.find {
@@ -141,7 +149,6 @@ class UserController {
                 addRole(roleName)
             }
 
-            shiroUserInstance.setPasswordHash(new Sha256Hash(password).toHex())
         }
 
         if (!shiroUserInstance.save(flush: true)) {
