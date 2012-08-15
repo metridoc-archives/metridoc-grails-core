@@ -58,7 +58,7 @@
                 </strong>
             </li>
 
-            <g:if env="development">
+            <g:if test="${'metridoc-core'.equals(grailsApplication.metadata.getAt("app.name"))}">
                 <% if (SecurityUtils.subject.principal != "anonymous" && SecurityUtils.subject.isAuthenticated()) { %>
                 <li>
                     <strong>
