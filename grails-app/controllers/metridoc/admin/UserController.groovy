@@ -50,6 +50,11 @@ class UserController {
     def save() {
         def password = params.get('password')
         def pwConfirm = params.get('confirm')
+        if (password.toString().length()<5 || password.toString().length()>15){
+            flash.message = message(code: 'user.password.constraint', default: 'Password should be within 5-15 length')
+            render(view: "/user/create")
+            return
+        }
         if (password != pwConfirm) {
             flash.message = message(code: 'user.password.dontmatch', default: 'Passwords not match')
             render(view: "/user/create")
@@ -120,18 +125,12 @@ class UserController {
             return
         }
 
-
-
-
         shiroUserInstance.with {
             username = params.username
             emailAddress = params.emailAddress
-
-            if (!params.password.equals(shiroUserInstance.getPasswordHash())) {
-                password = params.password
-                confirm = params.confirm
-                shiroUserInstance.setPasswordHash(new Sha256Hash(password).toHex())
-            }
+            password = params.password
+            confirm = params.confirm
+            shiroUserInstance.setPasswordHash(new Sha256Hash(password).toHex())
 
             roles = []
             def addRole = {roleName ->

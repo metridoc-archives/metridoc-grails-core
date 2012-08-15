@@ -45,15 +45,13 @@
         <g:hasErrors bean="${shiroUserInstance}">
             <ul class="errors" role="alert">
                 <g:eachError bean="${shiroUserInstance}" var="error">
-                    <g:if test="${error in org.springframework.validation.FieldError}">
-                    <li data-field-id="${error.field}">
-                        <g:message error="${error}"/></li>
-                    </g:if>
+                    <li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>><g:message
+                            error="${error}"/></li>
                 </g:eachError>
             </ul>
         </g:hasErrors>
-        <g:form method="post">
 
+        <g:form method="post">
             <g:hiddenField name="id" value="${shiroUserInstance?.id}"/>
             <g:hiddenField name="version" value="${shiroUserInstance?.version}"/>
 
