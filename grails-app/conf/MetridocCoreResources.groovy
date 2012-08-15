@@ -64,7 +64,7 @@ modules = {
     overrides {
         'jquery-theme' {
             resource id: 'theme',
-                url: [plugin: "metridocCore", dir: '/jquery-ui/forrest-dialog/css/custom-theme', file: 'jquery-ui-1.8.22.custom.css']
+                url: [plugin: "metridocCore", dir: '/jquery-ui/forrest-dialog/css/custom-theme', file: 'jquery-ui-1.8.23.custom.css']
         }
     }
 
