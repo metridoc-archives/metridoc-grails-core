@@ -48,7 +48,8 @@ target(main: "Config metridoc-reports plugin") {
         if (argsMap['o'] || isFileOverwrite(toFile)) {
             ant.mkdir(dir: toFile.replace("/${name}", ""))
             ant.copy(file: "${fromFile}",
-                    tofile: "${toFile}")
+                    tofile: "${toFile}",
+                    overwrite: "true")
             grailsConsole.info("copied ${fromFile} to ${toFile}")
         } else {
             grailsConsole.info("Ignored ${name}")
