@@ -48,11 +48,12 @@ $(document).ready(function () {
         var offset = $(this).children('strong').offset();
         var height = $(this).outerHeight(true);
         var width = $(this).outerWidth(true);
+        var dropDownWidth = $(this).children('ul').outerWidth(true);
         $(this).find('ul').css({
             visibility: 'visible',
             position: 'absolute',
             top:(offset.top + height) + "px",
-            marginLeft:(offset.left + width) + "px"
+            marginLeft:(offset.left - (dropDownWidth-width)/2) + "px"
         });
     };
 
