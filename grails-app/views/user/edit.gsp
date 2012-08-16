@@ -42,14 +42,15 @@
         <g:if test="${flash.message}">
             <div class="message" role="status">${flash.message}</div>
         </g:if>
+
+        %{--TODO: render Error is not userFriendly, need to convert a way to display messages--}%
+        <g:if test="${'metridoc-core'.equals(grailsApplication.metadata.getAt("app.name"))}">
         <g:hasErrors bean="${shiroUserInstance}">
             <ul class="errors" role="alert">
-                <g:eachError bean="${shiroUserInstance}" var="error">
-                    <li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>><g:message
-                            error="${error}"/></li>
-                </g:eachError>
+                <g:renderErrors bean="${shiroUserInstance}" as="list" />
             </ul>
         </g:hasErrors>
+        </g:if>
 
         <g:form method="post">
             <g:hiddenField name="id" value="${shiroUserInstance?.id}"/>

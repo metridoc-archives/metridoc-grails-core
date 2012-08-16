@@ -48,24 +48,27 @@ class UserController {
     }
 
     def save() {
-        def password = params.get('password')
-        def pwConfirm = params.get('confirm')
-        if (password.toString().length() < 5 || password.toString().length() > 15) {
-            flash.message = message(code: 'user.password.constraint', default: 'Password should be within 5-15 length')
-            render(view: "/user/create")
-            return
-        }
-        if (password != pwConfirm) {
-            flash.message = message(code: 'user.password.dontmatch', default: 'Passwords not match')
-            render(view: "/user/create")
-            return
-        }
 
-        def shiroUserInstance = new ShiroUser(username: params.get('username'), passwordHash: new Sha256Hash(password).toHex(), emailAddress: params.get('emailAddress'))
+        def password = params.get('password')
+        def confirm = params.get('confirm')
+
+        def shiroUserInstance = new ShiroUser(username: params.get('username'),password: password, confirm: confirm, passwordHash: new Sha256Hash(password).toHex(), emailAddress: params.get('emailAddress'))
         userService.addRolesToUser(shiroUserInstance, params.roles)
 
         if (!shiroUserInstance.save(flush: true)) {
             render(view: "/user/create", model: [shiroUserInstance: shiroUserInstance])
+            return
+        }
+        if (password.toString().length() < 5 || password.toString().length() > 15) {
+            shiroUserInstance.errors.rejectValue('password', 'blank.password', 'Password length must be within 5-15')
+            render(view: "/user/create", model: [shiroUserInstance: shiroUserInstance])
+            shiroUserInstance.delete()
+            return
+        }
+        if (password != confirm) {
+            shiroUserInstance.errors.rejectValue('password', '','Passwords are not matched')
+            render(view: "/user/create", model: [shiroUserInstance: shiroUserInstance])
+            shiroUserInstance.delete()
             return
         }
 
@@ -118,11 +121,6 @@ class UserController {
                 render(view: "/user/edit", model: [shiroUserInstance: shiroUserInstance])
                 return
             }
-        }
-        if (params.password != params.confirm) {
-            flash.message = message(code: 'user.password.dontmatch', default: 'Passwords not match')
-            render(view: "/user/edit", model: [shiroUserInstance: shiroUserInstance])
-            return
         }
 
         shiroUserInstance.with {
