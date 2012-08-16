@@ -12,7 +12,6 @@ class SecurityService {
     def fallback
     def customSecurityByController
     static transactional = false
-    def availableControllers
 
     def initiate() {
         def security = grailsApplication.config.metridoc.security
@@ -39,8 +38,19 @@ class SecurityService {
     private authorized(FilterAccessControlBuilder delegate, controllerName) {
         if (delegate.role("ROLE_ADMIN")) return true
 
+        def closure = customSecurityByController[controllerName]
+        if(closure) {
+            return runClosure(delegate, closure)
+        }
+
         if (anonymousApps.contains(controllerName)) return true
 
-        return false
+        return runClosure(delegate, fallback)
+    }
+
+    private runClosure(delegate, Closure closure) {
+        closure.delegate = delegate
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        return closure.call()
     }
 }
