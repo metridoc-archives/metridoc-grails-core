@@ -1,9 +1,8 @@
 #metridocNavigation {
     float: left;
     width: 100%;
-    border: none;
-    border-bottom-width: 1px;
-    border-top-width: 1px;
+    border-right: none;
+    border-left: none;
 }
 
 #metridocNavigation ul {
@@ -22,26 +21,31 @@
     padding: 5px 10px;
     color: #E5E9E2;
     text-decoration: none;
-    border-right: 1px solid #fff;
+    border-left:none;
+    border-bottom:none;
+    border-top:none;
+    /*border-right: 1px solid #fff;*/
 }
 
 #metridocNavigation a:hover {
     color: #b81900;
 }
 
-#metridocNavigation ul li:first-child{margin-left: 0;}
+#metridocNavigation ul li:first-child {
+    margin-left: 0;
+}
 
 /*style the sub menu*/
 #metridocNavigation ul li ul {
     position: absolute;
-    visibility:hidden;
-    margin:0;
-    padding:0;
+    visibility: hidden;
+    margin: 0;
+    padding: 0;
     width: 158px;
 }
 
 #metridocNavigation ul li ul li {
-    display:block;
+    display: block;
     float: none;
     width: 158px;
     text-align: center;

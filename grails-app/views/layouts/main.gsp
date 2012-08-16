@@ -54,7 +54,7 @@
         <ul>
             <li>
                 <strong>
-                    <a href="/<g:meta name="app.name"/>/home">Home</a>
+                    <a href="/<g:meta name="app.name"/>/home" class="ui-widget-header">Home</a>
                 </strong>
             </li>
 
