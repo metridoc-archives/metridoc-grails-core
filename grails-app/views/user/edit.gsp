@@ -43,14 +43,12 @@
             <div class="message" role="status">${flash.message}</div>
         </g:if>
 
-        %{--TODO: render Error is not userFriendly, need to convert a way to display messages--}%
-        <g:if test="${'metridoc-core'.equals(grailsApplication.metadata.getAt("app.name"))}">
         <g:hasErrors bean="${shiroUserInstance}">
             <ul class="errors" role="alert">
                 <g:renderErrors bean="${shiroUserInstance}" as="list" />
             </ul>
         </g:hasErrors>
-        </g:if>
+
 
         <g:form method="post">
             <g:hiddenField name="id" value="${shiroUserInstance?.id}"/>

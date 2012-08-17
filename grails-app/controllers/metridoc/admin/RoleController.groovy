@@ -59,7 +59,7 @@ class RoleController {
             return
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'shiroRole.label', default: 'Role'), shiroRoleInstance.id])
+        flash.message = message(code: 'default.created.message', args: [message(code: 'shiroRole.label', default: 'Role'), shiroRoleInstance.name.substring(5)])
         redirect(action: "show", id: shiroRoleInstance.id)
     }
 
@@ -118,28 +118,9 @@ class RoleController {
             return
         }
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'shiroRole.label', default: 'Role'), shiroRoleInstance.id])
+        flash.message = message(code: 'default.updated.message', args: [message(code: 'shiroRole.label', default: 'Role'), shiroRoleInstance.name.substring(5)])
         redirect(action: "show", id: shiroRoleInstance.id)
     }
 
-    def delete() {
 
-        def shiroRoleInstance = ShiroRole.get(params.id)
-        if (!shiroRoleInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'shiroRole.label', default: 'Role'), params.id])
-            redirect(action: "list")
-            return
-        }
-
-        try {
-            shiroRoleInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'shiroRole.label', default: 'Role'), params.id])
-            redirect(action: "list")
-
-        }
-        catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'shiroRole.label', default: 'Role'), params.id])
-            redirect(action: "show", id: params.id)
-        }
-    }
 }
