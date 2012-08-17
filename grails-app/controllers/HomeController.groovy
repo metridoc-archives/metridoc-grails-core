@@ -1,8 +1,3 @@
-import metridoc.utils.ClassUtils
-import metridoc.admin.ReportsConfiguration
-import org.apache.shiro.SecurityUtils
-import org.apache.commons.lang.StringUtils
-
 class HomeController {
 
     def grailsApplication
