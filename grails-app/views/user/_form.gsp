@@ -34,14 +34,15 @@
 
 <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'password', 'error')} ">
     <label for="password">
-        <g:message code="shiroUser.password.label" default="Confirm Password"/>
+        <g:message code="shiroUser.confirmPassword.label" default="Confirm Password"/>
+        <span class="required-indicator">*</span>
     </label>
     <g:passwordField name="confirm" />
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'emailAddress', 'error')} ">
     <label for="emailAddress">
-        <g:message code="shiroUser.emailAddress.label" default="Email"/>
+        <g:message code="shiroUser.emailAddress.label" default="Email Address"/>
     </label>
     <g:textField name="emailAddress" required="" value="${shiroUserInstance?.emailAddress}"/>
 </div>

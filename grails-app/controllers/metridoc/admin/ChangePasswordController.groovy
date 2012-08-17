@@ -30,13 +30,6 @@ class ChangePasswordController {
     def update() {
 
         def shiroUserInstance = ShiroUser.get(params.id)
-        def password = params.get('password')
-        def pwConfirm = params.get('confirm')
-        if (password != pwConfirm) {
-            flash.message = message(code: 'user.password.dontmatch', default: 'Passwords not match')
-            render(view: "/changePassword/edit")
-            return
-        }
 
         if (params.version) {
             def version = params.version.toLong()
@@ -49,9 +42,26 @@ class ChangePasswordController {
             }
         }
 
-        shiroUserInstance.setPasswordHash(new Sha256Hash(password).toHex())
+        if (params.get('password') != params.get('confirm')) {
+            shiroUserInstance.errors.rejectValue('password', '',"Passwords don't match")
+            render(view: "/changePassword/edit", model: [shiroUserInstance: shiroUserInstance])
+            return
+        }
+
+        shiroUserInstance.with {
+            username =  SecurityUtils.getSubject().getPrincipal()
+            password = params.password
+            confirm = params.confirm
+            shiroUserInstance.setPasswordHash(new Sha256Hash(password).toHex())
+        }
+
         if (!shiroUserInstance.save(flush: true)) {
-            flash.message = message(code: 'update.failed.message', default: 'update failed.')
+            if (shiroUserInstance.errors) {
+                log.error("There were errors trying to update ${shiroUserInstance}")
+                shiroUserInstance.errors.each {error ->
+                    log.error("Error ${error} occurred trying to update user ${shiroUserInstance}")
+                }
+            }
             render(view: "/changePassword/edit", model: [shiroUserInstance: shiroUserInstance])
             return
         }

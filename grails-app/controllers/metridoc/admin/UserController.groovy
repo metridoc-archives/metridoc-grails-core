@@ -66,7 +66,7 @@ class UserController {
             return
         }
         if (password != confirm) {
-            shiroUserInstance.errors.rejectValue('password', '','Passwords are not matched')
+            shiroUserInstance.errors.rejectValue('password', '',"Passwords don't match")
             render(view: "/user/create", model: [shiroUserInstance: shiroUserInstance])
             shiroUserInstance.delete()
             return
@@ -105,6 +105,7 @@ class UserController {
     }
 
     def update() {
+
         def shiroUserInstance = ShiroUser.get(params.id)
         if (!shiroUserInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), params.id])
@@ -121,6 +122,12 @@ class UserController {
                 render(view: "/user/edit", model: [shiroUserInstance: shiroUserInstance])
                 return
             }
+        }
+
+        if (params.get('password') != params.get('confirm')) {
+            shiroUserInstance.errors.rejectValue('password', '',"Passwords don't match")
+            render(view: "/user/edit", model: [shiroUserInstance: shiroUserInstance])
+            return
         }
 
         shiroUserInstance.with {
