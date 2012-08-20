@@ -44,7 +44,7 @@ html {
     background-image: -moz-linear-gradient(center top, #777, #ddd);
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #777), color-stop(1, #ddd));
     background-image: linear-gradient(top, #777, #ddd);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr = '#777777', EndColorStr = '#dddddd');
+
     background-repeat: no-repeat;
     height: 100%;
      /*change the box model to exclude the padding from the calculation of 100% height (IE8+)*/
@@ -68,6 +68,7 @@ html.no-cssgradients {
     text-align: left;
     -moz-box-shadow: 0 3px 10px #333333;
     -webkit-box-shadow: 0 3px 10px #333333;
+    box-shadow: 0 3px 10px #333333;
 }
 
 .ie6 #doc4,
@@ -76,6 +77,7 @@ html.no-cssgradients {
 .ie9 #doc4,
 .ie10 #doc4 {
     width: 960px;
+
 }
 
 body {
@@ -91,10 +93,13 @@ body {
 /* replace with .no-boxshadow body if you have modernizr available */
 .ie6 body,
 .ie7 body,
-.ie8 body {
+.ie8 body,
+.ie9 body,
+.ie10 body {
     border-color: #255b17;
     border-style: solid;
     border-width: 0 1px;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr = '#777777', EndColorStr = '#dddddd');
 }
 
 .md-application-content {
