@@ -14,12 +14,12 @@
  */
 modules = {
 
-    changePassword {
+    profile {
          dependsOn 'jquery-ui'
          resource id:'css',
-                 url: [plugin: "metridoCore", dir: 'changePassword/css', file: 'changePassword.css']
+                 url: [plugin: "metridoCore", dir: 'profile/css', file: 'profile.css']
          resource id:'js',
-                 url: [plugin: "metridocCore", dir: 'changePassword/js', file: 'changePassword.js']
+                 url: [plugin: "metridocCore", dir: 'profile/js', file: 'profile.js']
     }
 
     user {

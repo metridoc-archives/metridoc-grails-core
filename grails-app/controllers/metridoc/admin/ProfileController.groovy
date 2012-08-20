@@ -5,7 +5,7 @@ import org.apache.shiro.SecurityUtils
 import org.apache.shiro.crypto.hash.Sha256Hash
 
 
-class ChangePasswordController {
+class ProfileController {
 
     static allowedMethods = [save: "POST", update: "POST", index: "GET"]
 
@@ -37,22 +37,31 @@ class ChangePasswordController {
                 shiroUserInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
                         [message(code: 'shiroUser.label', default: 'User')] as Object[],
                         "Another user has updated this ShiroUser while you were editing")
-                render(view: "/changePassword/edit", model: [shiroUserInstance: shiroUserInstance])
+                render(view: "/profile/edit", model: [shiroUserInstance: shiroUserInstance])
                 return
             }
         }
+        def userInputCurrentPassword = params.get('oldPassword')
 
+        if (!shiroUserInstance.passwordHash.equals(new Sha256Hash(userInputCurrentPassword).toHex())) {
+            shiroUserInstance.errors.rejectValue('password', '', 'Current Password is not correct')
+            render(view: "/profile/edit", model: [shiroUserInstance: shiroUserInstance])
+            return
+        }
         if (params.get('password') != params.get('confirm')) {
-            shiroUserInstance.errors.rejectValue('password', '',"Passwords don't match")
-            render(view: "/changePassword/edit", model: [shiroUserInstance: shiroUserInstance])
+            shiroUserInstance.errors.rejectValue('password', '', "New passwords don't match")
+            render(view: "/profile/edit", model: [shiroUserInstance: shiroUserInstance])
             return
         }
 
         shiroUserInstance.with {
-            username =  SecurityUtils.getSubject().getPrincipal()
-            password = params.password
-            confirm = params.confirm
-            shiroUserInstance.setPasswordHash(new Sha256Hash(password).toHex())
+            username = params.username
+            if (params.password) {
+                password = params.password
+                confirm = params.confirm
+                shiroUserInstance.setPasswordHash(new Sha256Hash(password).toHex())
+            }
+            emailAddress = params.emailAddress
         }
 
         if (!shiroUserInstance.save(flush: true)) {
@@ -62,12 +71,12 @@ class ChangePasswordController {
                     log.error("Error ${error} occurred trying to update user ${shiroUserInstance}")
                 }
             }
-            render(view: "/changePassword/edit", model: [shiroUserInstance: shiroUserInstance])
+            render(view: "/profile/edit", model: [shiroUserInstance: shiroUserInstance])
             return
         }
 
         flash.message = message(code: 'default.updated.message', args: [message(code: 'shiroUser.label', default: 'User'), SecurityUtils.getSubject().principal])
-        redirect(controller: 'home', action: 'index', params: flash.message)
+        render(view:"/profile/edit", model: [shiroUserInstance:ShiroUser.get(params.id)])
     }
 
 }

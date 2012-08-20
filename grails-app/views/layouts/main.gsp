@@ -43,7 +43,7 @@
         <a id="metridocLoginLink" href="/<g:meta name="app.name"/>/auth">login</a>
         <% } else { %>
         <span id="metridocLoginLink">
-            <a href="/<g:meta name="app.name"/>/changePassword">${SecurityUtils.subject.principal}</a> (<a
+            <a href="/<g:meta name="app.name"/>/profile/edit">${SecurityUtils.subject.principal}</a> (<a
                 href="/<g:meta name="app.name"/>/auth/signOut">logout</a>)
         </span>
         <% } %>
@@ -65,7 +65,7 @@
                         <a href="#">My Account</a>
                     </strong>
                     <ul>
-                        <li><g:link controller="changePassword" action="edit">Change Password</g:link></li>
+                        <li><g:link controller="profile" action="edit">Profile</g:link></li>
                     </ul>
                 </li>
                 <% } %>

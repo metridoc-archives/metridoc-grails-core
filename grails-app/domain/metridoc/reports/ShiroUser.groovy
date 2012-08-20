@@ -35,7 +35,7 @@ class ShiroUser {
 
     static constraints = {
         username(nullable: false, blank: false, unique: true)
-        emailAddress(email: true, nullable: true)
+        emailAddress(email: true, nullable: true, unique: true)
         password(blank: false, size: 5..15, matches: /[\S]+/, validator: { val, obj ->
             return obj.password.equals(obj.confirm)
         })
