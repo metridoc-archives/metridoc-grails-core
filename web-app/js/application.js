@@ -53,7 +53,7 @@ $(document).ready(function () {
             visibility: 'visible',
             position: 'absolute',
             top:(offset.top + height) + "px",
-            marginLeft:(offset.left - (dropDownWidth-width)/2) + "px"
+            marginLeft:(offset.left) + "px"
         });
     };
 
