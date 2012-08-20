@@ -184,7 +184,7 @@ metridoc {
         custom {
             //based on controller name
             //counter = {.....}
-            changePassword = {
+            profile = {
 
                 def userName = SecurityUtils.subject.principal as String
 
