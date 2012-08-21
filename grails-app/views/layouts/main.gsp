@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <%@ page import="org.apache.shiro.SecurityUtils" %>
 <!--
 
