@@ -5,8 +5,20 @@ import org.apache.log4j.Level
 class ReportTagLib {
     static namespace = 'md'
 
+    def getStyleLayoutInConfig = {
+        String style = "main"
+        File configFile = new File("${System.getProperty('user.dir')}/grails-app/conf/Config.groovy")
+        configFile.eachLine {aLine->
+            if(aLine.contains('metridoc.style.layout =')){
+                style = aLine.split('metridoc.style.layout =')[1]
+                log.info "found style layout ${style} in config"
+            }
+        }
+        return style
+    }
+
     def report = {attrs, body ->
-        def layout = attrs.layout ? attrs.layout : "main"
+        def layout = attrs.layout ? attrs.layout : getStyleLayoutInConfig()
         def model = [layout: layout, body: body]
 
         if (attrs.module) {
