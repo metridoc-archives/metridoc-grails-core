@@ -11,6 +11,7 @@ configuration:
   settingUpDataSources: Setting Up Data Sources
 metridocPlugins:
   title: Metridoc Plugins
+  availablePlugins: Available Plugins
   overridingPluginArtifacts: Overriding Plugin Artifacts
   writingYourOwnPlugin: Writing Your Own Plugin
 metridocSecurity:
