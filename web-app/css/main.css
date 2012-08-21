@@ -719,3 +719,16 @@ p {
     padding-bottom: 10px;
     text-align: left;
 }
+
+
+/*Style for all input boxes*/
+.userInput
+{
+    /*previous setting: padding: 8px;*/
+    padding:.4em;
+    overflow:visible;
+
+    background: -webkit-gradient(linear, left top, left 25, from(#FFFFFF), color-stop(4%, #EEEEEE), to(#FFFFFF));/*Chrome and Safari*/
+    background: -moz-linear-gradient(top, #FFFFFF, #EEEEEE 1px, #FFFFFF 25px);/* Firefox Browsers */
+
+}

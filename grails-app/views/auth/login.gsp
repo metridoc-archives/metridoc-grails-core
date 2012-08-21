@@ -34,12 +34,12 @@
 
         <div>
             <label for="username">User Name :</label>
-            <input type="text" name="username" value="${username}" class="userInput"/>
+            <input type="text" name="username" value="${username}" class="userInput ui-corner-all"/>
         </div>
 
         <div>
             <label for="password">Password :</label>
-            <input type="password" name="password" value="" class="userInput"/>
+            <input type="password" name="password" value="" class="userInput ui-corner-all"/>
         </div>
 
         <div>
