@@ -1,3 +1,4 @@
+<!doctype html>
 <%@ page import="org.apache.shiro.SecurityUtils" %>
 <!--
 
@@ -15,7 +16,7 @@
     permissions and limitations under the License.
 
 -->
-<!doctype html>
+
 <!--[if lt IE 7 ]> <html lang="en" class="no-js ie6"> <![endif]-->
 <!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
 <!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
