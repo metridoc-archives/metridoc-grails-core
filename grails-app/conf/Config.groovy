@@ -214,7 +214,7 @@ metridoc {
 
                 administration {
                     user = "Manage Users"
-                    changePassword = "Change Password"
+                    profile = "User Profile"
                     jenkins = "Install Jenkins"
                     role = "Manage Roles"
                 }
