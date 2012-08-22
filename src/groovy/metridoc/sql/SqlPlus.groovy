@@ -25,6 +25,7 @@ import java.sql.Statement
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import javax.sql.DataSource
+import org.slf4j.LoggerFactory
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,9 +33,8 @@ import javax.sql.DataSource
  * Date: 7/18/11
  * Time: 3:38 PM
  */
-@Slf4j
 class SqlPlus extends Sql {
-
+    static final slfLog = LoggerFactory.getLogger(SqlPlus)
     static final PHASE_NAMES = "phaseName"
     static final Set IGNORED_KEYS = [PHASE_NAMES, "order"]
 
@@ -56,25 +56,25 @@ class SqlPlus extends Sql {
 
     int bulkInsert(String from, String to, List<String> columns) {
         def sql = getBulkSqlCalls().getBulkInsert(from, to, columns)
-        log.debug("executing bulk sql: {}", sql)
+        slfLog.debug("executing bulk sql: {}", sql)
         super.executeUpdate(sql)
     }
 
     int bulkInsert(String from, String to, Map<String, String> columnMap) {
         def sql = getBulkSqlCalls().getBulkInsert(from, to, columnMap)
-        log.debug("executing bulk sql: {}", sql)
+        slfLog.debug("executing bulk sql: {}", sql)
         super.executeUpdate(sql)
     }
 
     int bulkInsertNoDup(String from, String to, String noDupColumn, List columns) {
         def sql = getBulkSqlCalls().getNoDuplicateBulkInsert(from, to, noDupColumn, columns)
-        log.debug("executing bulk sql: {}", sql)
+        slfLog.debug("executing bulk sql: {}", sql)
         super.executeUpdate(sql)
     }
 
     int bulkInsertNoDup(String from, String to, String noDupColumn, Map<String, String> columnMap) {
         def sql = getBulkSqlCalls().getNoDuplicateBulkInsert(from, to, noDupColumn, columnMap)
-        log.debug("executing bulk sql: {}", sql)
+        slfLog.debug("executing bulk sql: {}", sql)
         super.executeUpdate(sql)
     }
 
@@ -85,32 +85,32 @@ class SqlPlus extends Sql {
         phases.each {order, phase ->
             long beginPhaseTime = new Date().getTime()
             def phaseName = phase.phaseName
-            log.info "starting phase ${phaseName}"
+            slfLog.info "starting phase ${phaseName}"
             if (!exclude(args.exclude, phaseName)) {
                 phase.each {sqlName, value ->
                     def fullSqlName = "${phaseName}.${sqlName}"
                     if (!exclude(args.exclude, fullSqlName)) {
 
                         if (!IGNORED_KEYS.contains(sqlName)) {
-                            log.info("running ${fullSqlName}")
+                            slfLog.info("running ${fullSqlName}")
                             long startTime = new Date().getTime()
                             int updateCount = executeUpdate(value.sql)
                             long endTime = new Date().getTime()
                             long totalTime = endTime - startTime
-                            log.info("finished running ${fullSqlName} with ${updateCount} updates, took ${totalTime} milliseconds")
+                            slfLog.info("finished running ${fullSqlName} with ${updateCount} updates, took ${totalTime} milliseconds")
                         }
                     } else {
-                        log.info("skipping sql ${fullSqlName}")
+                        slfLog.info("skipping sql ${fullSqlName}")
                     }
 
                 }
             } else {
-                log.info("skipping phase ${phaseName}")
+                slfLog.info("skipping phase ${phaseName}")
             }
 
             long endPhaseTime = new Date().getTime()
             long totalPhaseTime = endPhaseTime - beginPhaseTime
-            log.info "finished ${phaseName}, took ${totalPhaseTime} milliseconds"
+            slfLog.info "finished ${phaseName}, took ${totalPhaseTime} milliseconds"
         }
     }
 
@@ -189,7 +189,7 @@ class SqlPlus extends Sql {
                     setParameters(params, preparedStatement)
                     preparedStatement.addBatch()
                 }
-                log.debug("finished adding {} records to batch, now the batch will be executed", batch.size())
+                slfLog.debug("finished adding {} records to batch, now the batch will be executed", batch.size())
                 result = preparedStatement.executeBatch()
             }
         } finally {
@@ -219,23 +219,23 @@ class SqlPlus extends Sql {
             }
             String message = "processed ${recordCount} records with ${totalUpdates} updates"
             if (logEachBatch) {
-                log.info(message)
+                slfLog.info(message)
             } else {
-                log.debug(message)
+                slfLog.debug(message)
             }
         }
     }
 
     private static boolean shouldLog(boolean logEachBatch) {
         if (logEachBatch) {
-            return log.isInfoEnabled()
+            return slfLog.isInfoEnabled()
         }
 
-        return log.isDebugEnabled()
+        return slfLog.isDebugEnabled()
     }
 
     private static void logFailedRecord(record) {
-        log.error("record {} failed to be executed in batch", record)
+        slfLog.error("record {} failed to be executed in batch", record)
     }
 
     private static boolean failed(int update) {
@@ -317,7 +317,7 @@ class SqlPlus extends Sql {
                     setParameters(params, preparedStatement)
                     preparedStatement.addBatch()
                 }
-                log.debug("finished adding {} records to batch, now the batch will be executed", batch.size())
+                slfLog.debug("finished adding {} records to batch, now the batch will be executed", batch.size())
                 result = preparedStatement.executeBatch()
             }
         } finally {
@@ -328,7 +328,7 @@ class SqlPlus extends Sql {
     }
 
     private static void logRecordInsert(record) {
-        log.debug("adding {} to batch inserts", record)
+        slfLog.debug("adding {} to batch inserts", record)
     }
 
     private static String getInsertStatement(String tableOrInsert, Map values) {
@@ -345,7 +345,7 @@ class SqlPlus extends Sql {
     private static getInsertStatementForTable(String table, Map values) {
         def sortedSet = new TreeSet(values.keySet())
 
-        log.debug("retrieving insert statement for table {} using record {}", table, values)
+        slfLog.debug("retrieving insert statement for table {} using record {}", table, values)
         StringBuffer insert = new StringBuffer("insert into ")
         StringBuffer valuesToInsert = new StringBuffer("values (")
         insert.append(table)

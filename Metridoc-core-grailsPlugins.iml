@@ -4,8 +4,8 @@
     <facet type="web" name="GrailsWeb">
       <configuration>
         <webroots>
-          <root url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/jquery-1.7.1/web-app" relative="/" />
-          <root url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/jquery-ui-1.8.15/web-app" relative="/" />
+          <root url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/jquery-ui-1.8.15/web-app" relative="/" />
+          <root url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/jquery-1.7.1/web-app" relative="/" />
         </webroots>
         <sourceRoots />
       </configuration>
@@ -13,43 +13,45 @@
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/hibernate-2.0.4" />
-    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/jquery-1.7.1">
-      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/jquery-1.7.1/src/groovy" isTestSource="false" />
-      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/jquery-1.7.1/grails-app/i18n" isTestSource="false" />
-      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/jquery-1.7.1/grails-app/services" isTestSource="false" />
-      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/jquery-1.7.1/grails-app/taglib" isTestSource="false" />
+    <content url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/hibernate-2.1.0">
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/hibernate-2.1.0/grails-app/i18n" isTestSource="false" />
     </content>
-    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/jquery-ui-1.8.15">
-      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/jquery-ui-1.8.15/grails-app/i18n" isTestSource="false" />
-      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/jquery-ui-1.8.15/grails-app/taglib" isTestSource="false" />
+    <content url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/jquery-1.7.1">
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/jquery-1.7.1/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/jquery-1.7.1/grails-app/i18n" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/jquery-1.7.1/grails-app/services" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/jquery-1.7.1/grails-app/taglib" isTestSource="false" />
     </content>
-    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/release-2.0.3">
-      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/release-2.0.3/src/java" isTestSource="false" />
-      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/release-2.0.3/src/groovy" isTestSource="false" />
+    <content url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/jquery-ui-1.8.15">
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/jquery-ui-1.8.15/grails-app/i18n" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/jquery-ui-1.8.15/grails-app/taglib" isTestSource="false" />
     </content>
-    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/resources-1.1.6">
-      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/resources-1.1.6/src/java" isTestSource="false" />
-      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/resources-1.1.6/src/groovy" isTestSource="false" />
-      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/resources-1.1.6/grails-app/i18n" isTestSource="false" />
-      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/resources-1.1.6/grails-app/taglib" isTestSource="false" />
+    <content url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/release-2.0.3">
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/release-2.0.3/src/java" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/release-2.0.3/src/groovy" isTestSource="false" />
     </content>
-    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/rest-client-builder-1.0.2">
-      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/rest-client-builder-1.0.2/src/groovy" isTestSource="false" />
+    <content url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/resources-1.1.6">
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/resources-1.1.6/src/java" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/resources-1.1.6/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/resources-1.1.6/grails-app/i18n" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/resources-1.1.6/grails-app/taglib" isTestSource="false" />
     </content>
-    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/shiro-1.1.3">
-      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/shiro-1.1.3/src/java" isTestSource="false" />
-      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/shiro-1.1.3/src/groovy" isTestSource="false" />
-      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/shiro-1.1.3/grails-app/i18n" isTestSource="false" />
-      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/shiro-1.1.3/grails-app/services" isTestSource="false" />
-      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/shiro-1.1.3/grails-app/taglib" isTestSource="false" />
+    <content url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/rest-client-builder-1.0.2">
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/rest-client-builder-1.0.2/src/groovy" isTestSource="false" />
     </content>
-    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/svn-1.0.2">
-      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/svn-1.0.2/src/groovy" isTestSource="false" />
+    <content url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/shiro-1.1.3">
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/shiro-1.1.3/src/java" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/shiro-1.1.3/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/shiro-1.1.3/grails-app/i18n" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/shiro-1.1.3/grails-app/services" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/shiro-1.1.3/grails-app/taglib" isTestSource="false" />
     </content>
-    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/tomcat-2.0.4" />
-    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/webxml-1.4.1">
-      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/webxml-1.4.1/src/groovy" isTestSource="false" />
+    <content url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/svn-1.0.2">
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/svn-1.0.2/src/groovy" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/tomcat-2.1.0" />
+    <content url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/webxml-1.4.1">
+      <sourceFolder url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/webxml-1.4.1/src/groovy" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -58,7 +60,6 @@
     <orderEntry type="module-library" exported="">
       <library name="Grails User Library (Metridoc-core-grailsPlugins)">
         <CLASSES>
-          <root url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/shiro-1.1.3/lib" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/javax.activation/activation/jars/activation-1.1.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/javax.mail/mail/jars/mail-1.4.5.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.codehaus.gant/gant_groovy1.8/jars/gant_groovy1.8-1.9.7.jar!/" />
@@ -120,10 +121,14 @@
           <root url="jar://$USER_HOME$/.grails/ivy-cache/ant/ant/jars/ant-1.6.5.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.maven/maven-ant-tasks/jars/maven-ant-tasks-2.1.0.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.tmatesoft.svnkit/svnkit/jars/svnkit-1.3.5.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/commons-net/commons-net/jars/commons-net-3.1.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/com.jcraft/jsch/jars/jsch-0.1.48.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-ftp/bundles/camel-ftp-2.10.0.jar!/" />
+          <root url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/shiro-1.1.3/lib" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-core/plugins/shiro-1.1.3/lib" recursive="false" />
+        <jarDirectory url="file://$USER_HOME$/.grails/2.1.0/projects/metridoc-core/plugins/shiro-1.1.3/lib" recursive="false" />
       </library>
     </orderEntry>
   </component>
