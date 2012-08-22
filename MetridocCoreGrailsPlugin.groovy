@@ -17,7 +17,7 @@ import metridoc.workflows.WorkflowArtefactHandler
 */
 class MetridocCoreGrailsPlugin {
 
-    def artefacts = [WorkflowArtefactHandler]
+//    def artefacts = [WorkflowArtefactHandler]
     // the plugin version
     def version = "0.51-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
