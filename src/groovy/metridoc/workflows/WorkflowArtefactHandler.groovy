@@ -1,7 +1,6 @@
 package metridoc.workflows
 
 import org.codehaus.groovy.grails.commons.ArtefactHandlerAdapter
-import java.lang.reflect.Method
 import org.springframework.util.ReflectionUtils
 
 /**

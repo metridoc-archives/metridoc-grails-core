@@ -1,4 +1,5 @@
 import metridoc.schema.SchemaRunner
+import metridoc.workflows.WorkflowArtefactHandler
 
 /*
 * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
@@ -15,6 +16,8 @@ import metridoc.schema.SchemaRunner
 * permissions and limitations under the License.
 */
 class MetridocCoreGrailsPlugin {
+
+    def artefacts = [WorkflowArtefactHandler]
     // the plugin version
     def version = "0.51-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
