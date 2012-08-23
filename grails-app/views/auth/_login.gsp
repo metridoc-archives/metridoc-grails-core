@@ -23,13 +23,13 @@
 
         <div>
             <span>
-                <label for="rememberMe">Remember Me? :</label>
+                <label for="rememberMe" id="rememberLabel">Remember Me? :</label>
                 <g:checkBox name="rememberMe" value="${rememberMe}"/>
             </span>
 
             <g:if test="${'metridoc-core'.equals(grailsApplication.metadata.getAt("app.name"))}">
                 <span id="forgetPW">
-                    <g:link controller="auth" action="forgetPassword" class="userInput"
+                    <g:link controller="auth" action="forgetPassword"
                             name="forgetPW">Forget Password ?</g:link>
                 </span>
             </g:if>
