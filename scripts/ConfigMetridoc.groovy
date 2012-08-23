@@ -40,7 +40,6 @@ target(main: "Config metridoc-reports plugin") {
     mapFile(copyFileFromMap, "${basedir}/grails-app/conf/Config.groovy", "${metridocCorePluginDir}/src/templates/conf/Config.groovy")
     mapFile(copyFileFromMap, "${basedir}/grails-app/conf/DataSource.groovy", "${metridocCorePluginDir}/src/templates/conf/DataSource.groovy")
     mapFile(copyFileFromMap, "${basedir}/grails-app/conf/UrlMappings.groovy", "${metridocCorePluginDir}/src/templates/conf/UrlMappings.groovy")
-    mapFile(copyFileFromMap, "${basedir}/grails-app/conf/spring/resources.groovy", "${metridocCorePluginDir}/src/templates/conf/spring/resources.groovy")
 
     copyFileFromMap.each {toFile, fromFile ->
         def splitName = toFile.split("/")
