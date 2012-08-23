@@ -9,6 +9,6 @@ import org.codehaus.groovy.grails.commons.InjectableGrailsClass;
  * Time: 1:50 PM
  * To change this template use File | Settings | File Templates.
  */
-interface GrailsWorkflowClass extends InjectableGrailsClass {
+public interface GrailsWorkflowClass extends InjectableGrailsClass {
     Object run();
 }

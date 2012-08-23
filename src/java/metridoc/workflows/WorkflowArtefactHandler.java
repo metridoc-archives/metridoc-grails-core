@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
  * Time: 1:47 PM
  * To change this template use File | Settings | File Templates.
  */
-class WorkflowArtefactHandler extends ArtefactHandlerAdapter {
+public class WorkflowArtefactHandler extends ArtefactHandlerAdapter {
 
     public static final String TYPE = "Workflow";
 

@@ -9,7 +9,7 @@ import org.codehaus.groovy.grails.commons.AbstractInjectableGrailsClass;
  * Time: 2:05 PM
  * To change this template use File | Settings | File Templates.
  */
-class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass implements GrailsWorkflowClass {
+public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass implements GrailsWorkflowClass {
 
     public static final String WORKFLOW = "Workflow";
     public static final String RUN = "run";
