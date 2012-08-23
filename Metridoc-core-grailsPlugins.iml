@@ -75,7 +75,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="grails-2.1.0 (6)" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="grails-2.1.0" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="grails-2.1.0 (2)" level="application" />
     <orderEntry type="module-library" exported="">
       <library name="Grails User Library (Metridoc-core-grailsPlugins)">
         <CLASSES>
@@ -141,8 +140,6 @@
           <root url="jar://$USER_HOME$/.grails/ivy-cache/ant/ant/jars/ant-1.6.5.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.maven/maven-ant-tasks/jars/maven-ant-tasks-2.1.0.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.tmatesoft.svnkit/svnkit/jars/svnkit-1.3.5.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.quartz-scheduler/quartz/jars/quartz-1.8.4.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/antlr/antlr/jars/antlr-2.7.6.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-ftp/jars/camel-ftp-2.10.0.jar!/" />
         </CLASSES>
         <JAVADOC />
