@@ -13,42 +13,21 @@
  * permissions and limitations under the License.
  */
 
-/*#labels {*/
-    /*margin: auto;*/
-    /*width: 20%;*/
-    /*padding: 40px;*/
-    /*padding-left: 150px;*/
-/*}*/
-
-/*#labels div {*/
-    /*padding-bottom: 25px;*/
-/*}*/
-
-/*#inputs {*/
-    /*margin: auto;*/
-    /*padding: 40px;*/
-    /*padding-left: 50px;*/
-/*}*/
-
-/*#inputs div {*/
-    /*padding-bottom: 10px;*/
-/*}*/
-/*.buttons{*/
-    /*padding-left: 150px;*/
-    /*padding-bottom: 50px;*/
-/*}*/
-
-/*#flashMessage {*/
-    /*text-align: center;*/
-/*}*/
-
-
-form {
-    padding-top: 80px;
+#template {
+    padding-top: 50px;
     padding-bottom: 50px;
     padding-left: 30px;
 }
 
+.message{
+    margin: 10px;
+    z-index: 1;
+}
+
+form {
+    padding-right: 400px;
+    padding-top: 20px;
+}
 
 form div{
     padding-bottom: 10px;
@@ -63,20 +42,40 @@ label{
     top: 5px;
 }
 
-.userInput{
-    width: 180px;
+
+#usernameInput{
+    width: 190px;
+    margin-bottom: 10px;
+}
+
+#passwordInput{
+    width:110px;
+    margin-bottom: 10px;
+}
+
+#emailInput{
+    width: 200px;
     margin-bottom: 10px;
 }
 
 .buttons{
-    padding-left: 90px;
+    text-align: right;
 }
 
 button{
     padding-top: 20px;
-    margin-left: 5px;
+    margin-left: 0px;
     margin-top: 15px;
-
 }
+
+#forgetPW{
+    font-size: 0.9em;
+    width: 300px;
+    text-align: right;
+    padding-left: 50px;
+    position: relative;
+}
+
+
 
 

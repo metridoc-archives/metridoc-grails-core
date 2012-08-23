@@ -12,19 +12,56 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+
 import org.apache.shiro.SecurityUtils
 import org.apache.shiro.authc.AuthenticationException
 import org.apache.shiro.authc.UsernamePasswordToken
 import org.apache.shiro.web.util.SavedRequest
 import org.apache.shiro.web.util.WebUtils
+import metridoc.reports.ShiroUser
 
-class  AuthController {
+class AuthController {
     def shiroSecurityManager
 
-    def index = { redirect(action: "login", params: params) }
+    def index = {
+        if (!params.template) {
+            [template: 'login', username: params.username, rememberMe: (params.rememberMe != null), targetUri: params.targetUri]
+        }else{
+            [params: params]
+        }
+    }
 
     def login = {
-        return [ username: params.username, rememberMe: (params.rememberMe != null), targetUri: params.targetUri ]
+        render(view: 'index', model: [template: 'login', username: params.username, rememberMe: (params.rememberMe != null), targetUri: params.targetUri])
+    }
+
+    def unauthorized = {
+        render(view: 'index', model: [template: 'unauthorized'])
+    }
+
+    def forgetPassword = {
+        flash.message = "Please enter your email address you used for registration below"
+        render(view: 'index', model: [template: 'forgetPassword'])
+    }
+
+    def resetPassword = {
+        if (params.emailAddress) {
+            flash.message = "Thank you! An email providing an access to reset your password has been sent."
+            render(view: 'index', model: [template: 'forgetPassword'])
+            //TODO: send Mail doesn't work for now
+            if(ShiroUser.findAllByEmailAddress(params.emailAddress)){
+//                sendMail{
+//                    to params.emailAddress
+//                    subject  "Reset Password"
+//                    body "reset password here"
+//                }
+            }
+
+        } else {
+            flash.message = "Please offer your email address you used for registration below"
+            render(view: 'index', model: [template: 'forgetPassword'])
+        }
+
     }
 
     def signIn = {
@@ -34,19 +71,19 @@ class  AuthController {
         if (params.rememberMe) {
             authToken.rememberMe = true
         }
-        
+
         // If a controller redirected to this page, redirect back
         // to it. Otherwise redirect to the root URI.
         def targetUri = params.targetUri ?: "/"
-        
+
         // Handle requests saved by Shiro filters.
         def savedRequest = WebUtils.getSavedRequest(request)
         if (savedRequest) {
             targetUri = savedRequest.requestURI - request.contextPath
             if (savedRequest.queryString) targetUri = targetUri + '?' + savedRequest.queryString
         }
-        
-        try{
+
+        try {
             // Perform the actual login. An AuthenticationException
             // will be thrown if the username is unrecognised or the
             // password is incorrect.
@@ -55,7 +92,7 @@ class  AuthController {
             log.info "Redirecting to '${targetUri}'."
             redirect(uri: targetUri)
         }
-        catch (AuthenticationException ex){
+        catch (AuthenticationException ex) {
             // Authentication failed, so display the appropriate message
             // on the login page.
             log.info "Authentication failure for user '${params.username}'."
@@ -63,7 +100,7 @@ class  AuthController {
 
             // Keep the username and "remember me" setting so that the
             // user doesn't have to enter them again.
-            def m = [ username: params.username ]
+            def m = [username: params.username]
             if (params.rememberMe) {
                 m["rememberMe"] = true
             }
@@ -86,7 +123,4 @@ class  AuthController {
         redirect(uri: "/")
     }
 
-    def unauthorized = {
-        render "You do not have permission to access this page."
-    }
 }

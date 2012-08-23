@@ -25,9 +25,7 @@
 <body>
 
 <div id="page-body" role="main" style="padding: 50px; padding-left: 0px">
-    <g:if test="${flash.message}">
-        <div class="message" role="status" id="homeMsg">${flash.message}</div>
-    </g:if>
+
     <h1>Welcome to MetriDoc</h1>
 
     <p>
