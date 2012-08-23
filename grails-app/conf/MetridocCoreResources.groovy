@@ -81,4 +81,8 @@ modules = {
         resource id: 'loginCss',
             url: [plugin: "metridocCore", dir: 'auth/css', file: 'login.css']
     }
+
+    status {
+        dependsOn: 'jquery-ui'
+    }
 }

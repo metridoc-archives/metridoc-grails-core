@@ -17,7 +17,7 @@ import metridoc.workflows.WorkflowArtefactHandler
 */
 class MetridocCoreGrailsPlugin {
 
-//    def artefacts = [WorkflowArtefactHandler]
+    def artefacts = [WorkflowArtefactHandler]
     // the plugin version
     def version = "0.51-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
@@ -25,9 +25,14 @@ class MetridocCoreGrailsPlugin {
     // the other plugins this plugin depends on
     def loadAfter = ["rest-client-builder", "release", "hibernate"]
 
+    def watchedResources = [
+            "file:./grails-app/workflows/**/*Workflow.groovy",
+            "file:./plugins/*/grails-app/workflows/**/*Workflow.groovy"
+    ]
+
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
-        "scripts/_Events.groovy"
+            "scripts/_Events.groovy"
     ]
 
     def title = "Metridoc Core Plugin" // Headline display name of the plugin
@@ -42,11 +47,11 @@ class MetridocCoreGrailsPlugin {
 
     def license = "ECL2"
 
-    def organization = [ name: "University of Pennsylvania", url: "http://www.upenn.edu/" ]
+    def organization = [name: "University of Pennsylvania", url: "http://www.upenn.edu/"]
 
 //    def issueManagement = [ system: "JIRA", url: "metridoc.googlecode.com/svn/trunk/metridoc-core" ]
 
-    def scm = [ url: "https:metridoc.googlecode.com/svn/trunk/metridoc-core" ]
+    def scm = [url: "https:metridoc.googlecode.com/svn/trunk/metridoc-core"]
 
     def doWithWebDescriptor = { xml ->
         // Implement additions to web.xml (optional), this event occurs before

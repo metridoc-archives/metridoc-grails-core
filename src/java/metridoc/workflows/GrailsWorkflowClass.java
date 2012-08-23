@@ -1,6 +1,6 @@
-package metridoc.workflows
+package metridoc.workflows;
 
-import org.codehaus.groovy.grails.commons.InjectableGrailsClass
+import org.codehaus.groovy.grails.commons.InjectableGrailsClass;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,5 +10,5 @@ import org.codehaus.groovy.grails.commons.InjectableGrailsClass
  * To change this template use File | Settings | File Templates.
  */
 interface GrailsWorkflowClass extends InjectableGrailsClass {
-    def run()
+    Object run();
 }

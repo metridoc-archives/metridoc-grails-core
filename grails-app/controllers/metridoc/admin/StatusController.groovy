@@ -8,9 +8,10 @@ class StatusController {
         def model = [:]
 
         model.workflows = []
+        def workflows = model.workflows
 
-        grailsApplication.workflowClasses.each {GrailsClass clazz ->
-            model.workflow.add(clazz.name)
+        for(workflow in grailsApplication.workflowClasses) {
+            workflows.add(workflow as GrailsClass)
         }
 
         return model

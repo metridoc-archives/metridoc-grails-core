@@ -111,6 +111,8 @@
           <root url="jar://$USER_HOME$/.grails/ivy-cache/commons-net/commons-net/jars/commons-net-3.1.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/com.jcraft/jsch/jars/jsch-0.1.48.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-ftp/bundles/camel-ftp-2.10.0.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.quartz-scheduler/quartz/jars/quartz-1.8.4.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/antlr/antlr/jars/antlr-2.7.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
