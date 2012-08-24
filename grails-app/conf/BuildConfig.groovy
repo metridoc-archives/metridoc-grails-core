@@ -64,13 +64,13 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
+        compile ":quartz2:0.2.3"
         compile ":mail:1.0"
-        compile (":quartz:1.0-RC2")
         runtime ":hibernate:$grailsVersion"
         runtime ":jquery:1.7.1"
         runtime ":resources:1.1.6"
         runtime ":shiro:1.1.3"
-        runtime ":jquery-ui:1.8.15"
+        compile ":jquery-ui:1.8.15"
         runtime ":webxml:1.4.1"
         build ":tomcat:$grailsVersion"
         build ":rest-client-builder:1.0.2"

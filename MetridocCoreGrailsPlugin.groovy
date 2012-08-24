@@ -30,9 +30,9 @@ class MetridocCoreGrailsPlugin {
             "file:./plugins/*/grails-app/workflows/**/*Workflow.groovy"
     ]
 
-    // resources that are excluded from plugin packaging
     def pluginExcludes = [
-            "scripts/_Events.groovy"
+            "scripts/_Events.groovy",
+            "grails-app/workflows/metridoc/test/**/*",
     ]
 
     def title = "Metridoc Core Plugin" // Headline display name of the plugin

@@ -85,4 +85,8 @@ modules = {
     status {
         dependsOn: 'jquery-ui'
     }
+
+    quartz {
+        dependsOn: 'jquery-ui'
+    }
 }
