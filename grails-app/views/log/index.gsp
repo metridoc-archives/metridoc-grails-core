@@ -5,5 +5,6 @@
   Time: 2:24 PM
   To change this template use File | Settings | File Templates.
 --%>
+<g:javascript library="jquery" plugin="jquery"/>
 
-<pre>${logResponse}</pre>
+${logResponse}
