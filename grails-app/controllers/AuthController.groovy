@@ -22,11 +22,12 @@ import metridoc.reports.ShiroUser
 
 class AuthController {
     def shiroSecurityManager
+    def mailService
 
     def index = {
         if (!params.template) {
             [template: 'login', username: params.username, rememberMe: (params.rememberMe != null), targetUri: params.targetUri]
-        }else{
+        } else {
             [params: params]
         }
     }
@@ -48,13 +49,13 @@ class AuthController {
         if (params.emailAddress) {
             flash.message = "Thank you! An email providing an access to reset your password has been sent."
             render(view: 'index', model: [template: 'forgetPassword'])
-            //TODO: send Mail doesn't work for now
-            if(ShiroUser.findAllByEmailAddress(params.emailAddress)){
-//                sendMail{
-//                    to params.emailAddress
-//                    subject  "Reset Password"
-//                    body "reset password here"
-//                }
+
+            if (ShiroUser.findAllByEmailAddress(params.emailAddress)) {
+                mailService.sendMail {
+                    to "${params.emailAddress}"
+                    subject "Reset Password"
+                    body "Reset password link goes here"
+                }
             }
 
         } else {
