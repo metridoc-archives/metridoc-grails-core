@@ -1,1 +1,1 @@
-<div>You do not have permission to access this page.</div>
+<div id="unauthorized">Sorry, you do not have permission to access this page.</div>

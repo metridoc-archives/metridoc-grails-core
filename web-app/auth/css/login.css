@@ -81,6 +81,12 @@ button{
     position: relative;
 }
 
+#unauthorized {
+    padding-top: 70px;
+    padding-bottom: 50px;
+    padding-left: 50px;
+}
+
 
 
 
