@@ -22,7 +22,7 @@ class QuartzServiceTests {
     ]
 
     @Test
-    void "test the minimum amx"() {
+    void "test the minimum max"() {
         assert 10 == service.getMax([:])
     }
 
