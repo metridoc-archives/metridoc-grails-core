@@ -9,7 +9,7 @@ class QuartzService {
 
     }
 
-    def getMax(params) {
+    private static getMax(params) {
         def max = params.max
 
         max = max ? max : MAX_MINIMUM
@@ -17,7 +17,11 @@ class QuartzService {
     }
 
     private static listWorkflowsWithOffsetAndMax(params, workflows) {
+        def ordered = listOrderedWorkflows(params, workflows)
+        def offset = params.offset ? params.offset : 0
+        def to = Math.min(getMax(params) + offset, workflows.size())
 
+        ordered.subList(offset, to)
     }
 
     private static listOrderedWorkflows(params, workflows) {
