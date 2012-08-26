@@ -67,5 +67,9 @@ class QuartzServiceTests {
         workflowsList [0] == workflows[0]
         workflowsList [1] == workflows[2]
 
+        params.max = 1
+        workflowsList = service.listWorkflowsWithOffsetAndMax(params, workflows)
+        assert 1 == workflowsList.size()
+        workflowsList [0] == workflows[0]
     }
 }
