@@ -1,4 +1,4 @@
-package metridoc.core
+package metridoc.test
 
 grailsConsole.info "hey"
 

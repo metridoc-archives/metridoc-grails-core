@@ -12,15 +12,15 @@
         <table>
             <thead>
             <tr>
-                <g:sortableColumn property = "name" title="Workflows"/>
+                <g:sortableColumn property="name" title="Workflows"/>
             </tr>
             </thead>
             <tbody>
-            <g:each in="${workflows}" var="workflow" status="i">
-                <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
-                    <td>${workflow.name}</td>
-                </tr>
-            </g:each>
+                <g:each in="${workflows}" var="workflow" status="i">
+                    <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
+                        <td>${workflow.name}</td>
+                    </tr>
+                </g:each>
             </tbody>
         </table>
     </g:if>
