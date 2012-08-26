@@ -4,12 +4,24 @@ class QuartzService {
 
     static final MAX_LIMIT = 100
     static final MAX_MINIMUM = 10
+    def grailsApplication
 
     def listWorkflows(params) {
+        def workflows = []
+        def workflowClasses = grailsApplication.workflowClasses
 
+        workflowClasses.each {
+            workflows << [name: "$it.name"]
+        }
+
+        return listWorkflowsWithOffsetAndMax(params, workflows)
     }
 
-    private static getMax(params) {
+    def totalWorkflowCount() {
+        grailsApplication.workflowClasses.size()
+    }
+
+    static getMax(params) {
         def max = params.max
 
         max = max ? max : MAX_MINIMUM
@@ -28,7 +40,7 @@ class QuartzService {
         def result = []
         def order = params.order
 
-        if(order) {
+        if (order) {
             def map = new TreeMap()
             workflows.each {
                 map.put(it.name, it)
@@ -36,7 +48,7 @@ class QuartzService {
 
             result.addAll map.values()
 
-            if(order == "desc") {
+            if (order == "desc") {
                 result = result.reverse()
             }
         } else {
