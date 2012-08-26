@@ -16,6 +16,10 @@ class QuartzService {
         max < MAX_LIMIT ? max : MAX_LIMIT
     }
 
+    private static listWorkflowsWithOffsetAndMax(params, workflows) {
+
+    }
+
     private static listOrderedWorkflows(params, workflows) {
         def result = []
         def order = params.order

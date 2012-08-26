@@ -54,5 +54,4 @@ class QuartzServiceTests {
         assert ordered[2] == workflows[1]
     }
 
-
 }
