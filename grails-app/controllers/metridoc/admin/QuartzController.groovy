@@ -2,22 +2,17 @@ package metridoc.admin
 
 class QuartzController {
 
+    def quartzService
+
     def index() {
         chain(action: "list")
     }
 
     def list() {
-        def workflows = []
+        def workflows = quartzService.listWorkflows(params)
 
-        def max = Math.min(params.max ? params.int('max') : 10, 100)
-        params.max = max
-        def workflowClasses = grailsApplication.workflowClasses
-        def workflowCount = workflowClasses.size()
-        def showPagination = workflowCount > max
-
-        workflowClasses.each {
-            workflows << [name:"$it.name"]
-        }
+        def workflowCount = quartzService.totalWorkflowCount()
+        def showPagination = workflowCount > QuartzService.getMax(params)
 
         return [
             workflows: workflows,
