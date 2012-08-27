@@ -16,6 +16,8 @@
 import metridoc.dsl.JobBuilder
 import metridoc.targets._DataSourceLoader
 import org.apache.shiro.SecurityUtils
+import static org.quartz.SimpleScheduleBuilder.*
+import static org.quartz.CronScheduleBuilder.*
 
 // config files can either be Java properties files or ConfigSlurper scripts
 
@@ -36,9 +38,9 @@ if (rootLoader) {
     JobBuilder.isJob(loader)
     loader.rootLoader = rootLoader
     loader.grailsConsole = [
-        info: {String message ->
-            println message
-        }
+            info: {String message ->
+                println message
+            }
     ]
     loader.run()
     println "loading database drivers"
@@ -66,19 +68,19 @@ grails.project.groupId = appName // change this to alter the default package nam
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
 grails.mime.use.accept.header = false
 grails.mime.types = [html: ['text/html', 'application/xhtml+xml'],
-    xml: ['text/xml', 'application/xml'],
-    text: 'text/plain',
-    js: 'text/javascript',
-    rss: 'application/rss+xml',
-    atom: 'application/atom+xml',
-    css: 'text/css',
-    csv: 'text/csv',
-    all: '*/*',
-    json: ['application/json', 'text/json'],
-    form: 'application/x-www-form-urlencoded',
-    multipartForm: 'multipart/form-data',
-    xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    xls: "application/vnd.ms-excel"
+        xml: ['text/xml', 'application/xml'],
+        text: 'text/plain',
+        js: 'text/javascript',
+        rss: 'application/rss+xml',
+        atom: 'application/atom+xml',
+        css: 'text/css',
+        csv: 'text/csv',
+        all: '*/*',
+        json: ['application/json', 'text/json'],
+        form: 'application/x-www-form-urlencoded',
+        multipartForm: 'multipart/form-data',
+        xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        xls: "application/vnd.ms-excel"
 ]
 
 // URL Mapping Cache Max Size, defaults to 5000
@@ -133,30 +135,38 @@ log4j = {
         println "INFO: logs will be stored at ${config.metridoc.home}/logs"
 
         rollingFile name: "file",
-            maxBackupIndex: 10,
-            maxFileSize: "1MB",
-            file: "${config.metridoc.home}/logs/metridoc.log"
+                maxBackupIndex: 10,
+                maxFileSize: "1MB",
+                file: "${config.metridoc.home}/logs/metridoc.log"
 
         rollingFile name: "stacktrace",
-            maxFileSize: "1MB",
-            maxBackupIndex: 10,
-            file: "${config.metridoc.home}/logs/metridoc-stacktrace.log"
+                maxFileSize: "1MB",
+                maxBackupIndex: 10,
+                file: "${config.metridoc.home}/logs/metridoc-stacktrace.log"
+
+        rollingFile name: "jobLog",
+                maxFileSize: "1MB",
+                maxBackupIndex: 10,
+                file: "${config.metridoc.home}/logs/metridoc-job.log"
     }
 
     error 'org.codehaus.groovy.grails.web.servlet',  //  controllers
-        'org.codehaus.groovy.grails.web.pages', //  GSP
-        'org.codehaus.groovy.grails.web.sitemesh', //  layouts
-        'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-        'org.codehaus.groovy.grails.web.mapping', // URL mapping
-        'org.codehaus.groovy.grails.commons', // core / classloading
-        'org.codehaus.groovy.grails.plugins', // plugins
-        'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
-        'org.springframework',
-        'org.hibernate',
-        'net.sf.ehcache.hibernate',
-        'org.apache'
+            'org.codehaus.groovy.grails.web.pages', //  GSP
+            'org.codehaus.groovy.grails.web.sitemesh', //  layouts
+            'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
+            'org.codehaus.groovy.grails.web.mapping', // URL mapping
+            'org.codehaus.groovy.grails.commons', // core / classloading
+            'org.codehaus.groovy.grails.plugins', // plugins
+            'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
+            'org.springframework',
+            'org.hibernate',
+            'net.sf.ehcache.hibernate',
+            'org.apache'
 
     warn 'metridoc.camel'
+
+    //logs all job output
+    info jobLog: "metridoc.job"
 
     root {
         info 'stdout', 'file'
@@ -188,7 +198,7 @@ metridoc {
 
                 def userName = SecurityUtils.subject.principal as String
 
-                if("anonymous" == userName) {
+                if ("anonymous" == userName) {
                     return false
                 }
                 return true
@@ -218,6 +228,17 @@ metridoc {
                     jenkins = "Install Jenkins"
                     role = "Manage Roles"
                 }
+            }
+        }
+    }
+}
+
+metridoc {
+    scheduling {
+        workflows {
+            foo {
+                schedule = simpleSchedule().withIntervalInSeconds(30).repeatForever()
+                startNow = true
             }
         }
     }

@@ -1,6 +1,32 @@
 package metridoc.workflows;
 
+import groovy.lang.Script;
+import jline.*;
+import metridoc.dsl.JobBuilder;
+import org.apache.tools.ant.BuildException;
+import org.codehaus.groovy.grails.cli.ScriptExitException;
+import org.codehaus.groovy.grails.cli.interactive.CandidateListCompletionHandler;
+import org.codehaus.groovy.grails.cli.logging.GrailsConsoleErrorPrintStream;
+import org.codehaus.groovy.grails.cli.logging.GrailsConsolePrintStream;
 import org.codehaus.groovy.grails.commons.AbstractInjectableGrailsClass;
+import org.codehaus.groovy.runtime.DefaultGroovyMethods;
+import org.codehaus.groovy.runtime.StackTraceUtils;
+import org.codehaus.groovy.runtime.typehandling.NumberMath;
+import org.fusesource.jansi.Ansi;
+import org.fusesource.jansi.AnsiConsole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
+
+import java.io.*;
+import java.lang.reflect.Field;
+import java.util.Stack;
+
+import static org.fusesource.jansi.Ansi.Color.DEFAULT;
+import static org.fusesource.jansi.Ansi.Color.RED;
+import static org.fusesource.jansi.Ansi.Color.YELLOW;
+import static org.fusesource.jansi.Ansi.Erase.FORWARD;
+import static org.fusesource.jansi.Ansi.ansi;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,12 +40,26 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
     public static final String WORKFLOW = "Workflow";
     public static final String RUN = "run";
 
+
     public DefaultGrailsWorkflowClass(Class clazz) {
         super(clazz, WORKFLOW);
     }
 
     @Override
     public Object run() {
-        return getMetaClass().invokeMethod(getReferenceInstance(), RUN, new Object[]{});
+        Script reference = (Script) getReferenceInstance();
+
+        Logger logger = LoggerFactory.getLogger("metridoc.job." + getName());
+        GrailsConsoleFacade grailsConsole = new GrailsConsoleFacade();
+        grailsConsole.setLogger(logger);
+        reference.getBinding().setVariable("grailsConsole", grailsConsole);
+        JobBuilder.isJob(reference);
+
+        try {
+            return getMetaClass().invokeMethod(reference, RUN, new Object[]{});
+        } catch (Exception e) {
+            logger.error("Exception occurred while trying to run " + getName(), e);
+            throw new RuntimeException(e);
+        }
     }
 }

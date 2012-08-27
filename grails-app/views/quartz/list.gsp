@@ -13,12 +13,17 @@
             <thead>
             <tr>
                 <g:sortableColumn property="name" title="Workflows"/>
+                <th class="centeredContent">Previous Run</th>
+                <th class="centeredContent">Next Run</th>
             </tr>
+
             </thead>
             <tbody>
                 <g:each in="${workflows}" var="workflow" status="i">
                     <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
                         <td>${workflow.name}</td>
+                        <td class="centeredContent">${workflow.previousFireTime}</td>
+                        <td class="centeredContent">${workflow.nextFireTime}</td>
                     </tr>
                 </g:each>
             </tbody>

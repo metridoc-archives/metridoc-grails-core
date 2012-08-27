@@ -2,6 +2,7 @@ package metridoc.admin
 
 import grails.test.mixin.TestFor
 import org.junit.Test
+import org.quartz.Trigger
 
 /**
  * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions

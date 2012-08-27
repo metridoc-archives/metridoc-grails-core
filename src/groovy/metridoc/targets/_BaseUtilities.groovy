@@ -14,14 +14,14 @@
  */
 package metridoc.targets
 
-import metridoc.dsl.JobBuilder
+if(!binding.hasVariable("profile")) {
+    profile = {String message, Closure closure ->
+        def profileStartTime = new Date().time
 
-/**
- * Created by IntelliJ IDEA.
- * User: tbarker
- * Date: 6/24/12
- * Time: 7:08 PM
- */
-target(makeScriptAJob: "makes the script a job") {
-    JobBuilder.isJob(this)
+        grailsConsole.info "Profiling [${message}] start"
+        closure.call()
+        def profileEndTime = new Date().time
+        def timeTook = profileEndTime - profileStartTime
+        grailsConsole.info "Profiling [${message}] finish.  Took ${timeTook} ms"
+    }
 }
