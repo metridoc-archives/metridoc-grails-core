@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+
 <%--
   Created by IntelliJ IDEA.
   User: dongheng
@@ -5,6 +7,21 @@
   Time: 2:24 PM
   To change this template use File | Settings | File Templates.
 --%>
-<g:javascript library="jquery" plugin="jquery"/>
+<html>
+<head>
+    <r:require module="log"/>
+    <r:layoutResources/>
+</head>
+<body>
+<select id="typeSelector">
+    <option value="all">All</option>
+    <option value="error">Error</option>
+    <option value="warn">Warn</option>
+    <option value="info">Info</option>
+</select>
 
 ${logResponse}
+
+<r:layoutResources/>
+</body>
+</html>

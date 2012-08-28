@@ -77,16 +77,24 @@ modules = {
     }
 
     login {
-        dependsOn: 'jquery-ui'
+        dependsOn 'jquery-ui'
         resource id: 'loginCss',
             url: [plugin: "metridocCore", dir: 'auth/css', file: 'login.css']
     }
 
     status {
-        dependsOn: 'jquery-ui'
+        dependsOn 'jquery-ui'
     }
 
     quartz {
-        dependsOn: 'jquery-ui'
+        dependsOn 'jquery-ui'
+    }
+
+    log {
+        dependsOn 'jquery-ui'
+        resource id: 'css', disposition: 'head',
+                url: [plugin: "metridocCore", dir: 'log/css', file: 'log.css']
+        resource id: 'js', disposition: 'head',
+                url: [plugin: "metridocCore", dir: 'log/js', file: 'log.js']
     }
 }

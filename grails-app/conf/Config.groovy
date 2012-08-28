@@ -30,6 +30,9 @@ import static org.quartz.CronScheduleBuilder.*
 //    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
 // }
 
+//for jquery
+grails.views.javascript.library="jquery"
+
 def rootLoader = Thread.currentThread().contextClassLoader.rootLoader
 
 if (rootLoader) {

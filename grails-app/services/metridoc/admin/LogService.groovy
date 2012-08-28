@@ -41,4 +41,53 @@ class LogService {
         }
         return builder.toString();
     }
+
+    public static String addDiv(String str) {
+        int previousIndex = 0;
+        int currentIndex = str.indexOf("<br>", previousIndex);
+        StringBuffer resultBuffer = new StringBuffer();
+        if( currentIndex != -1 )
+        {
+            resultBuffer.append( "<div class=\"title\">"+
+                    str.substring( previousIndex, currentIndex ) );
+        }
+
+        previousIndex=currentIndex;
+        currentIndex = str.indexOf("<br>", previousIndex + 1);
+
+        while( currentIndex != -1 )
+        {
+            if( previousIndex+4 >= currentIndex )
+            {
+                break;
+            }
+            String currentLine = str.substring( previousIndex + 4, currentIndex );
+            String currentLineInDiv;
+            if( currentLine.contains("INFO") )
+            {
+                currentLineInDiv = "</div>\n<div class=\"content info\">" + currentLine;
+            }
+            else if( currentLine.contains("WARN") )
+            {
+                currentLineInDiv = "</div>\n<div class=\"content warn\">" + currentLine;
+            }
+            else if( currentLine.contains("ERROR") )
+            {
+                currentLineInDiv = "</div>\n<div class=\"content error\">" + currentLine;
+            }
+            else
+            {
+                currentLineInDiv = "<br>" + currentLine;
+            }
+
+            resultBuffer.append( currentLineInDiv );
+
+            //Go to next line
+            previousIndex = currentIndex;
+            currentIndex = str.indexOf("<br>", previousIndex + 1);
+        }
+        resultBuffer.append("</div>");
+
+        return resultBuffer.toString();
+    }
 }
