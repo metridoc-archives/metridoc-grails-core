@@ -2,6 +2,8 @@ package metridoc.workflows;
 
 import org.codehaus.groovy.grails.commons.InjectableGrailsClass;
 
+import java.util.Date;
+
 /**
  * Created with IntelliJ IDEA.
  * User: tbarker
@@ -11,4 +13,7 @@ import org.codehaus.groovy.grails.commons.InjectableGrailsClass;
  */
 public interface GrailsWorkflowClass extends InjectableGrailsClass {
     Object run();
+    Date getPreviousEndTime();
+    boolean isRunning();
+    Throwable getLastException();
 }

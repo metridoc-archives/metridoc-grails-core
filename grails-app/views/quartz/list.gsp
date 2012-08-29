@@ -12,22 +12,41 @@
         <table>
             <thead>
             <tr>
+                <th></th>
                 <g:sortableColumn property="name" title="Workflows"/>
                 <th class="centeredContent">Previous Run</th>
                 <th class="centeredContent">Next Run</th>
+                <th class="centeredContent">End Time</th>
             </tr>
 
             </thead>
             <tbody>
                 <g:each in="${workflows}" var="workflow" status="i">
                     <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
+                        <td class="centeredContent">
+                            <g:if test="${workflow.lastException}">
+                                <r:img plugin="metridoc-core" dir="images/skin" file="exclamation.png"/>
+                            </g:if>
+                            <g:if test="${workflow.running}">
+                                <r:img plugin="metridoc-core" dir="images" file="spinner.gif"/>
+                            </g:if>
+                            <g:else>
+                                <r:img plugin="metridoc-core" dir="images/skin" file="media-playback-start.png"/>
+                            </g:else>
+                        </td>
                         <td>${workflow.name}</td>
                         <td class="centeredContent">${workflow.previousFireTime}</td>
                         <td class="centeredContent">${workflow.nextFireTime}</td>
+                        <td class="centeredContent">${workflow.endTime}</td>
                     </tr>
                 </g:each>
             </tbody>
         </table>
+        <g:if test="${showPagination}">
+            <div class="pagination">
+                <g:paginate total="${workflowCount}"/>
+            </div>
+        </g:if>
     </g:if>
     <g:else>
     </g:else>

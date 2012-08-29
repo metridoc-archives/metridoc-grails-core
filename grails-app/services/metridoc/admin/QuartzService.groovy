@@ -6,8 +6,9 @@ import org.quartz.JobDataMap
 
 import static org.quartz.JobBuilder.newJob
 import static org.quartz.TriggerBuilder.newTrigger
-import org.quartz.Trigger
+
 import static org.quartz.TriggerKey.*
+import grails.plugin.quartz2.SimpleJobDetail
 
 class QuartzService {
 
@@ -18,6 +19,7 @@ class QuartzService {
     def quartzScheduler
     def jobDataByName = [:]
     def jobsByName = [:]
+    def workflowsByName = [:]
 
     def scheduleJobs() {
         loadAllJobInfo()
@@ -30,6 +32,13 @@ class QuartzService {
         loadJobData()
         loadJobs()
         loadTriggers()
+        loadWorkflows()
+    }
+
+    private loadWorkflows() {
+        doWorkflowClassesIteration {name, grailsClass->
+            workflowsByName[name] = grailsClass
+        }
     }
 
     private loadTriggers() {
@@ -37,10 +46,11 @@ class QuartzService {
             def schedule = grailsApplication.config.metridoc.scheduling.workflows."$name".schedule
             def startNow = grailsApplication.config.metridoc.scheduling.workflows."$name".startNow
 
-            if(schedule) {
+            if (schedule) {
+
                 def triggerBuilder = newTrigger()
                         .withIdentity("${name}Trigger", "Workflow").withSchedule(schedule)
-                if(startNow) {
+                if (startNow) {
                     triggerBuilder = triggerBuilder.startNow()
                 }
                 triggersByName[name] = triggerBuilder.build()
@@ -62,10 +72,14 @@ class QuartzService {
 
     private loadJobs() {
         doWorkflowClassesIteration {unCapName ->
-            jobsByName[unCapName] = newJob(InvokeMethodJob.class)
-                    .withIdentity("${unCapName}Job", "Worflow")
-                    .usingJobData(jobDataByName[unCapName])
-                    .build()
+            def jobDetail = new SimpleJobDetail()
+            jobDetail.setJobData(jobDataByName[unCapName])
+            jobDetail.concurrent = false
+            jobDetail.name = "${unCapName}Job"
+            jobDetail.group = "Worflow"
+            jobDetail.jobClass = InvokeMethodJob
+
+            jobsByName[unCapName] = jobDetail
         }
     }
 
@@ -85,10 +99,11 @@ class QuartzService {
         def workflows = []
 
         doWorkflowClassesIteration {unCapName, grailsClass ->
-            workflows << [name: "$grailsClass.name"]
+            def workflowModel = [name: "$grailsClass.name"]
+            workflows << workflowModel
+            loadJobDetails(grailsClass, workflowModel)
         }
 
-        loadJobDetails(workflows)
         return listWorkflowsWithOffsetAndMax(params, workflows)
     }
 
@@ -96,32 +111,54 @@ class QuartzService {
         workflowClasses.size()
     }
 
-    static getMax(params) {
-        def max = params.max
+    private getMax(params) {
+        def max = MAX_MINIMUM
 
-        max = max ? max : MAX_MINIMUM
+        def paramMax = params.max
+        if (paramMax) {
+            try {
+                max = Integer.valueOf(paramMax)
+            } catch (Exception ex){
+                log.warn("Could not convert max parameter ${paramMax} to integer")
+            }
+        }
+
         max < MAX_LIMIT ? max : MAX_LIMIT
     }
 
-    private loadJobDetails(workflows) {
-        workflows.each {
-            def name = StringUtils.uncapitalise(it.name)
-            def trigger = quartzScheduler.getTrigger(triggerKey("${name}Trigger", "Workflow"))
-            it.previousFireTime = "NA"
-            it.nextFireTime = "NA"
-            if (trigger) {
-                it.nextFireTime = trigger.nextFireTime.format("yyyy/MM/dd hh:mm:ss")
-                def previousFireTime = trigger.previousFireTime
-                if(previousFireTime) {
-                    it.previousFireTime = previousFireTime.format("yyyy/MM/dd hh:mm:ss")
-                }
+    private loadJobDetails(workflowClass, workflowModel) {
+        def name = StringUtils.uncapitalise(workflowClass.name)
+        def trigger = quartzScheduler.getTrigger(triggerKey("${name}Trigger", "Workflow"))
+
+        workflowModel.previousFireTime = "NA"
+        workflowModel.nextFireTime = "NA"
+        workflowModel.endTime = "NA"
+
+        if (trigger) {
+            workflowModel.nextFireTime = trigger.nextFireTime.format("yyyy/MM/dd hh:mm:ss")
+            def previousFireTime = trigger.previousFireTime
+            if (previousFireTime) {
+                workflowModel.previousFireTime = previousFireTime.format("yyyy/MM/dd hh:mm:ss")
             }
+
+            def endTime = workflowClass.previousEndTime
+            if (endTime) {
+                workflowModel.endTime = endTime.format("yyyy/MM/dd hh:mm:ss")
+            }
+            workflowModel.running = workflowClass.running
+            workflowModel.lastException = workflowClass.lastException
         }
     }
 
-    private static listWorkflowsWithOffsetAndMax(params, workflows) {
+    private listWorkflowsWithOffsetAndMax(params, workflows) {
         def ordered = listOrderedWorkflows(params, workflows)
-        def offset = params.offset ? params.offset : 0
+        def offset = 0
+        try {
+            offset = Integer.valueOf(params.offset)
+        } catch (Exception ex) {
+            //do nothing
+        }
+
         def to = Math.min(getMax(params) + offset, workflows.size())
 
         ordered.subList(offset, to)
@@ -148,6 +185,4 @@ class QuartzService {
 
         return result
     }
-
-
 }

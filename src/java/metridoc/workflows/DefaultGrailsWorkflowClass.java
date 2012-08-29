@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.Stack;
 
 import static org.fusesource.jansi.Ansi.Color.DEFAULT;
@@ -39,14 +40,17 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
 
     public static final String WORKFLOW = "Workflow";
     public static final String RUN = "run";
-
+    private Date previousEndTime = null;
+    private boolean running = false;
+    private Throwable lastException = null;
 
     public DefaultGrailsWorkflowClass(Class clazz) {
         super(clazz, WORKFLOW);
     }
 
     @Override
-    public Object run() {
+    public synchronized Object run() {
+        running = true;
         Script reference = (Script) getReferenceInstance();
 
         Logger logger = LoggerFactory.getLogger("metridoc.job." + getName());
@@ -59,7 +63,26 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
             return getMetaClass().invokeMethod(reference, RUN, new Object[]{});
         } catch (Exception e) {
             logger.error("Exception occurred while trying to run " + getName(), e);
+            lastException = e;
             throw new RuntimeException(e);
+        } finally {
+            previousEndTime = new Date();
+            running = false;
         }
+    }
+
+    @Override
+    public Date getPreviousEndTime() {
+        return previousEndTime;
+    }
+
+    @Override
+    public boolean isRunning() {
+        return running;
+    }
+
+    @Override
+    public Throwable getLastException() {
+        return lastException;
     }
 }
