@@ -27,11 +27,13 @@ class LogService {
 
 
         def previous = LineType.INFO
+        def previousDateClass = "all"
         file.eachLine {String line ->
             def escapedLine = escape(line)
-            def div = addDiv(escapedLine, previous)
+            def div = addDiv(escapedLine, previous, previousDateClass)
             def divLine = div.line
             previous = div.previous
+            previousDateClass = div.previousDateClass
             response << divLine
         }
     }
@@ -122,10 +124,12 @@ class LogService {
         }
     }
 
-    def addDiv(String line, previous) {
+    def addDiv(String line, previous, previousDateClass) {
 
+        def dateClass = getDateClass(line, previousDateClass, new Date())
         def addLine = {clazz, color->
-            "<div class=\"content ${clazz}\" style=\"color:${color}\">${line}</div>"
+            clazz += " ${dateClass}"
+            "<div class=\"content logLine ${clazz}\" style=\"color:${color}\">${line}</div>"
         }
 
         def result
@@ -141,7 +145,7 @@ class LogService {
                 result = addLine("info", "green")
         }
 
-        return [line: result, previous:type]
+        return [line: result, previous:type, previousDateClass:dateClass]
 
     }
 }

@@ -6,59 +6,52 @@
  * To change this template use File | Settings | File Templates.
  */
 
-$(function(){
-    $('#typeSelector').change(function(){
-        if( $(this).val()=="all" )
-        {
-            $('.info, .warn, .error').show();
-        }
-        else if( $(this).val()=="error" )
-        {
-            $('.error').show();
-            $('.info, .warn').hide();
-        }
-        else if( $(this).val()=="info" )
-        {
-            $('.info').show();
-            $('.error, .warn').hide();
-        }
-        else if( $(this).val()=="warn" )
-        {
-            $('.warn').show();
-            $('.error, .info').hide();
-        }
-    });
-});
 
-$(function() {
-    $('#dateSelector').change(function(){
-        if( $(this).val()=="all" )
-        {
-            $('.all, .hour, .sixHours, .twelveHours, .day').show();
-        }
-        else if( $(this).val()=="hour" )
-        {
-            $('.all').hide();
-            $('.hour').show();
-        }
-        else if( $(this).val()=="sixHours" )
-        {
-            $('.all').hide();
-            $('sixHours').show();
-        }
-        else if( $(this).val()=="twelveHours" )
-        {
-            $('.all').hide();
-            $('.twelveHours').show();
-        }
-        else if( $(this).val()=="day" )
-        {
-            $('.all').hide();
-            $('.day').show();
-        }
-    });
+
+$(function () {
+    $('#typeSelector').change(function () {
+        handleLogOutput()
+    })
 })
 
-$(window).load(function(){
 
-})
+function handleLogOutput() {
+    var selector = $('#typeSelector')
+    if (selector.val() == "all") {
+        $('.all').show();
+    }
+    else if (selector.val() == "error") {
+        $('.all').hide();
+        $('.error').show();
+    }
+    else if (selector.val() == "info") {
+        $('.all').hide();
+        $('.info').show();
+    }
+    else if (selector.val() == "warn") {
+        $('.all').hide();
+        $('.warn').show();
+    }
+    else if (selector.val() == "hour") {
+        $('.all').hide();
+        $('.hour').show();
+    }
+    else if (selector.val() == "sixHours") {
+        $('.all').hide();
+        $('.sixHours').show();
+    }
+    else if (selector.val() == "twelveHours") {
+        $('.all').hide();
+        $('.twelveHours').show();
+    }
+    else if (selector.val() == "day") {
+        $('.all').hide();
+        $('.day').show();
+    }
+}
+
+$(window).load(
+    function () {
+        handleLogOutput()
+    }
+)

@@ -19,9 +19,6 @@
     <option value="error">Error</option>
     <option value="warn">Warn</option>
     <option value="info">Info</option>
-</select>
-<select id="dateSelector">
-    <option value="all">All</option>
     <option value="hour" selected="true">Last Hour</option>
     <option value="sixHours">Last 6 Hours</option>
     <option value="twelveHours">Last 12 Hours</option>
