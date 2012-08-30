@@ -25,7 +25,9 @@
     <option value="day">Last 24 Hours</option>
 </select>
 
+<div id="metridocLogs">
 <md:outputLogFile filePath="${grailsApplication.config.metridoc.home + "/logs/metridoc.log"}"/>
+</div>
 
 <r:layoutResources/>
 </body>
