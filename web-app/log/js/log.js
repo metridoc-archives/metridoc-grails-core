@@ -28,5 +28,37 @@ $(function(){
             $('.error, .info').hide();
         }
     });
-
 });
+
+$(function() {
+    $('#dateSelector').change(function(){
+        if( $(this).val()=="all" )
+        {
+            $('.all, .hour, .sixHours, .twelveHours, .day').show();
+        }
+        else if( $(this).val()=="hour" )
+        {
+            $('.all').hide();
+            $('.hour').show();
+        }
+        else if( $(this).val()=="sixHours" )
+        {
+            $('.all').hide();
+            $('sixHours').show();
+        }
+        else if( $(this).val()=="twelveHours" )
+        {
+            $('.all').hide();
+            $('.twelveHours').show();
+        }
+        else if( $(this).val()=="day" )
+        {
+            $('.all').hide();
+            $('.day').show();
+        }
+    });
+})
+
+$(window).load(function(){
+
+})

@@ -12,6 +12,12 @@ import org.apache.commons.lang.text.StrBuilder
 class LogService {
 
     def grailsApplication
+    public static final ONE_HOUR = 1000 * 60 * 60
+    public static final SIX_HOURS = ONE_HOUR * 6
+    public static final TWELVE_HOURS = SIX_HOURS * 2
+    public static final ONE_DAY = TWELVE_HOURS * 2
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
+
     enum LineType {
         INFO, ERROR, WARN
     }
@@ -81,6 +87,41 @@ class LogService {
         return previous
     }
 
+    private static getDateClass(line, previousDate, now) {
+        def m = line =~ /(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})/
+        def result = "all"
+        if(m.lookingAt()) {
+            def date = Date.parse(DATE_FORMAT, m.group(1)).getTime()
+
+
+            def dateTest = {
+                def nowTime = now.time
+                def difference = nowTime - it
+                date > difference
+            }
+
+            if(dateTest(ONE_HOUR)) {
+                result += "hour"
+            }
+
+            if(dateTest(SIX_HOURS)) {
+                result += " sixHours"
+            }
+
+            if(dateTest(TWELVE_HOURS)) {
+                result += " twelveHours"
+            }
+
+            if(dateTest(ONE_DAY)) {
+                result += " day"
+            }
+
+            return result
+        } else {
+            return previousDate
+        }
+    }
+
     def addDiv(String line, previous) {
 
         def addLine = {clazz, color->
@@ -102,51 +143,5 @@ class LogService {
 
         return [line: result, previous:type]
 
-//        int previousIndex = 0;
-//        int currentIndex = str.indexOf("<br>", previousIndex);
-//        StringBuffer resultBuffer = new StringBuffer();
-//        if( currentIndex != -1 )
-//        {
-//            resultBuffer.append( "<div class=\"title\">"+
-//                    str.substring( previousIndex, currentIndex ) );
-//        }
-//
-//        previousIndex=currentIndex;
-//        currentIndex = str.indexOf("<br>", previousIndex + 1);
-//
-//        while( currentIndex != -1 )
-//        {
-//            if( previousIndex+4 >= currentIndex )
-//            {
-//                break;
-//            }
-//            String currentLine = str.substring( previousIndex + 4, currentIndex );
-//            String currentLineInDiv;
-//            if( currentLine.contains("INFO") )
-//            {
-//                currentLineInDiv = "</div>\n<div class=\"content info\">" + currentLine;
-//            }
-//            else if( currentLine.contains("WARN") )
-//            {
-//                currentLineInDiv = "</div>\n<div class=\"content warn\">" + currentLine;
-//            }
-//            else if( currentLine.contains("ERROR") )
-//            {
-//                currentLineInDiv = "</div>\n<div class=\"content error\">" + currentLine;
-//            }
-//            else
-//            {
-//                currentLineInDiv = "<br>" + currentLine;
-//            }
-//
-//            resultBuffer.append( currentLineInDiv );
-//
-//            //Go to next line
-//            previousIndex = currentIndex;
-//            currentIndex = str.indexOf("<br>", previousIndex + 1);
-//        }
-//        resultBuffer.append("</div>");
-//
-//        return resultBuffer.toString();
     }
 }

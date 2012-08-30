@@ -22,7 +22,7 @@
 </select>
 <select id="dateSelector">
     <option value="all">All</option>
-    <option value="hour">Last Hour</option>
+    <option value="hour" selected="true">Last Hour</option>
     <option value="sixHours">Last 6 Hours</option>
     <option value="twelveHours">Last 12 Hours</option>
     <option value="day">Last 24 Hours</option>
