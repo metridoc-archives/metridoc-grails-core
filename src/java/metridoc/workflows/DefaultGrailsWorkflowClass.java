@@ -1,32 +1,15 @@
 package metridoc.workflows;
 
 import groovy.lang.Script;
-import jline.*;
 import metridoc.dsl.JobBuilder;
-import org.apache.tools.ant.BuildException;
-import org.codehaus.groovy.grails.cli.ScriptExitException;
-import org.codehaus.groovy.grails.cli.interactive.CandidateListCompletionHandler;
-import org.codehaus.groovy.grails.cli.logging.GrailsConsoleErrorPrintStream;
-import org.codehaus.groovy.grails.cli.logging.GrailsConsolePrintStream;
 import org.codehaus.groovy.grails.commons.AbstractInjectableGrailsClass;
-import org.codehaus.groovy.runtime.DefaultGroovyMethods;
-import org.codehaus.groovy.runtime.StackTraceUtils;
-import org.codehaus.groovy.runtime.typehandling.NumberMath;
-import org.fusesource.jansi.Ansi;
-import org.fusesource.jansi.AnsiConsole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 
-import java.io.*;
-import java.lang.reflect.Field;
+import java.math.RoundingMode;
 import java.util.Date;
-import java.util.Stack;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.fusesource.jansi.Ansi.Color.DEFAULT;
-import static org.fusesource.jansi.Ansi.Color.RED;
-import static org.fusesource.jansi.Ansi.Color.YELLOW;
-import static org.fusesource.jansi.Ansi.Erase.FORWARD;
 import static org.fusesource.jansi.Ansi.ansi;
 
 /**
@@ -41,16 +24,27 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
     public static final String WORKFLOW = "Workflow";
     public static final String RUN = "run";
     private Date previousEndTime = null;
-    private boolean running = false;
+    private Date previousFireTime = null;
+    private String previousDuration = null;
+    private AtomicBoolean running = new AtomicBoolean(false);
     private Throwable lastException = null;
+    public static final Logger logger = LoggerFactory.getLogger(DefaultGrailsWorkflowClass.class);
 
     public DefaultGrailsWorkflowClass(Class clazz) {
         super(clazz, WORKFLOW);
     }
 
     @Override
-    public synchronized Object run() {
-        running = true;
+    public Object run() {
+
+        if(running.get()) {
+            String message = "Job " + getName() + " is already running";
+            logger.info(message);
+            return null;
+        }
+
+        running.getAndSet(true);
+        previousFireTime = new Date();
         Script reference = (Script) getReferenceInstance();
 
         Logger logger = LoggerFactory.getLogger("metridoc.job." + getName());
@@ -67,7 +61,8 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
             throw new RuntimeException(e);
         } finally {
             previousEndTime = new Date();
-            running = false;
+            previousDuration = getPreviousDuration(previousEndTime.getTime() - previousFireTime.getTime());
+            running.getAndSet(false);
         }
     }
 
@@ -78,11 +73,58 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
 
     @Override
     public boolean isRunning() {
-        return running;
+        return running.get();
     }
 
     @Override
     public Throwable getLastException() {
         return lastException;
+    }
+
+    public Date getPreviousFireTime() {
+        return previousFireTime;
+    }
+
+    private static double doCalculation(long milliseconds, int denominator) {
+        return Math.round(milliseconds / (double) denominator * 100) / (double) 100;
+    }
+
+    private static String getPreviousDuration(Long milliseconds) {
+        if(milliseconds == null) {
+            return null;
+        }
+
+        String currentFormat = String.valueOf(milliseconds) + "ms";
+        int oneSecond = 1000;
+
+        double calculation;
+        if(milliseconds >= oneSecond) {
+            calculation = doCalculation(milliseconds, oneSecond);
+            currentFormat = String.valueOf(calculation) + "s";
+        }
+
+        int oneMinute = oneSecond * 60;
+        if(milliseconds >= oneMinute) {
+            calculation = doCalculation(milliseconds, oneMinute);
+            currentFormat = String.valueOf(calculation) + "m";
+        }
+
+        int oneHour = oneMinute * 60;
+        if(milliseconds >= oneHour) {
+            calculation = doCalculation(milliseconds, oneHour);
+            currentFormat = String.valueOf(calculation) + "h";
+        }
+
+        int oneDay = oneHour * 24;
+        if(milliseconds >= oneDay) {
+            calculation = doCalculation(milliseconds, oneDay);
+            currentFormat = String.valueOf(calculation) + "d";
+        }
+
+        return currentFormat;
+    }
+
+    public String getPreviousDuration() {
+        return previousDuration;
     }
 }

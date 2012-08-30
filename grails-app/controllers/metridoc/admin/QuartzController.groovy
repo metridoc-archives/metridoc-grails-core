@@ -8,7 +8,7 @@ class QuartzController {
     def quartzService
 
     def index() {
-        chain(action: "list")
+        chain(action: "list", params: params)
     }
 
     def exception() {
@@ -34,18 +34,40 @@ class QuartzController {
                     noErrorMessage: "$workflowName does not have an error",
             ]
         }
+
     }
 
     def list() {
-        def workflows = quartzService.listWorkflows(params)
 
-        def workflowCount = quartzService.totalWorkflowCount()
-        def showPagination = workflowCount > quartzService.getMax(params)
+        def run = params.run
 
-        return [
-                workflows: workflows,
-                showPagination: showPagination,
-                workflowCount: workflowCount
-        ]
+        if (run) {
+            def workflowToRun = quartzService.workflowsByName[run]
+            if (workflowToRun) {
+                Thread.start {
+                    workflowToRun.run()
+                }
+            } else {
+                log.info "Could not run $run since it does not exist"
+            }
+
+            params.remove("run")
+            chain(action: "list", params: params)
+        } else {
+
+            def workflows = quartzService.listWorkflows(params)
+            log.info "will be using workflows ${workflows}"
+            def workflowCount = quartzService.totalWorkflowCount()
+            def showPagination = workflowCount > quartzService.getMax(params)
+
+            return [
+                    workflows: workflows,
+                    showPagination: showPagination,
+                    workflowCount: workflowCount
+            ]
+        }
+
+
+
     }
 }

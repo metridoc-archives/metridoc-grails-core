@@ -36,7 +36,7 @@ class QuartzService {
     }
 
     private loadWorkflows() {
-        doWorkflowClassesIteration {name, grailsClass->
+        doWorkflowClassesIteration {name, grailsClass ->
             workflowsByName[name] = grailsClass
         }
     }
@@ -99,7 +99,7 @@ class QuartzService {
         def workflows = []
 
         doWorkflowClassesIteration {unCapName, grailsClass ->
-            def workflowModel = [name: "$grailsClass.name"]
+            def workflowModel = [name: "$grailsClass.name", unCapName: unCapName]
             workflows << workflowModel
             loadJobDetails(grailsClass, workflowModel)
         }
@@ -118,7 +118,7 @@ class QuartzService {
         if (paramMax) {
             try {
                 max = Integer.valueOf(paramMax)
-            } catch (Exception ex){
+            } catch (Exception ex) {
                 log.warn("Could not convert max parameter ${paramMax} to integer")
             }
         }
@@ -133,21 +133,29 @@ class QuartzService {
         workflowModel.previousFireTime = "NA"
         workflowModel.nextFireTime = "NA"
         workflowModel.endTime = "NA"
+        workflowModel.previousDuration = "NA"
 
         if (trigger) {
             workflowModel.nextFireTime = trigger.nextFireTime.format("yyyy/MM/dd hh:mm:ss")
-            def previousFireTime = trigger.previousFireTime
-            if (previousFireTime) {
-                workflowModel.previousFireTime = previousFireTime.format("yyyy/MM/dd hh:mm:ss")
-            }
-
-            def endTime = workflowClass.previousEndTime
-            if (endTime) {
-                workflowModel.endTime = endTime.format("yyyy/MM/dd hh:mm:ss")
-            }
-            workflowModel.running = workflowClass.running
-            workflowModel.lastException = workflowClass.lastException
         }
+
+        def previousFireTime = workflowClass.previousFireTime
+        if (previousFireTime) {
+            workflowModel.previousFireTime = previousFireTime.format("yyyy/MM/dd hh:mm:ss")
+        }
+
+        def endTime = workflowClass.previousEndTime
+        if (endTime) {
+            workflowModel.endTime = endTime.format("yyyy/MM/dd hh:mm:ss")
+        }
+
+        def previousDuration = workflowClass.previousDuration
+        if(previousDuration) {
+            workflowModel.previousDuration = previousDuration
+        }
+
+        workflowModel.running = workflowClass.running
+        workflowModel.lastException = workflowClass.lastException
     }
 
     private listWorkflowsWithOffsetAndMax(params, workflows) {

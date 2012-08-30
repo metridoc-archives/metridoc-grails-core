@@ -243,11 +243,6 @@ metridoc {
                 schedule = simpleSchedule().withIntervalInSeconds(30).repeatForever()
                 startNow = true
             }
-
-            error {
-                schedule = simpleSchedule().withIntervalInSeconds(30).repeatForever()
-                startNow = true
-            }
         }
     }
 }

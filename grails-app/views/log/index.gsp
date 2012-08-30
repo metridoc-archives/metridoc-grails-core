@@ -12,6 +12,7 @@
     <r:require module="log"/>
     <r:layoutResources/>
 </head>
+
 <body>
 <select id="typeSelector">
     <option value="all">All</option>
@@ -19,8 +20,15 @@
     <option value="warn">Warn</option>
     <option value="info">Info</option>
 </select>
+<select id="dateSelector">
+    <option value="all">All</option>
+    <option value="hour">Last Hour</option>
+    <option value="sixHours">Last 6 Hours</option>
+    <option value="twelveHours">Last 12 Hours</option>
+    <option value="day">Last 24 Hours</option>
+</select>
 
-${logResponse}
+<md:outputLogFile filePath="${grailsApplication.config.metridoc.home + "/logs/metridoc.log"}"/>
 
 <r:layoutResources/>
 </body>

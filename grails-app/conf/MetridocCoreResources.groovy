@@ -88,6 +88,8 @@ modules = {
 
     quartz {
         dependsOn 'jquery-ui'
+        resource id: 'quartzJs',
+                url: [plugin: "metridocCore", dir: "quartz/js", file: 'quartz.js']
     }
 
     log {

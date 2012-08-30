@@ -16,7 +16,7 @@
                 <g:sortableColumn property="name" title="Workflows"/>
                 <th class="centeredContent">Previous Run</th>
                 <th class="centeredContent">Next Run</th>
-                <th class="centeredContent">End Time</th>
+                <th class="centeredContent">Last Duration</th>
             </tr>
 
             </thead>
@@ -25,19 +25,23 @@
                     <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
                         <td class="centeredContent">
                             <g:if test="${workflow.lastException}">
-                                <r:img plugin="metridoc-core" dir="images/skin" file="exclamation.png"/>
+                                <g:link action="exception" params="[id: workflow.unCapName]">
+                                    <r:img plugin="metridoc-core" dir="images/skin" file="exclamation.png"/>
+                                </g:link>
                             </g:if>
                             <g:if test="${workflow.running}">
                                 <r:img plugin="metridoc-core" dir="images" file="spinner.gif"/>
                             </g:if>
                             <g:else>
-                                <r:img plugin="metridoc-core" dir="images/skin" file="media-playback-start.png"/>
+                                <g:link params="[run: workflow.unCapName]">
+                                    <r:img plugin="metridoc-core" dir="images/skin" file="media-playback-start.png"/>
+                                </g:link>
                             </g:else>
                         </td>
                         <td>${workflow.name}</td>
                         <td class="centeredContent">${workflow.previousFireTime}</td>
                         <td class="centeredContent">${workflow.nextFireTime}</td>
-                        <td class="centeredContent">${workflow.endTime}</td>
+                        <td class="centeredContent">${workflow.previousDuration}</td>
                     </tr>
                 </g:each>
             </tbody>
