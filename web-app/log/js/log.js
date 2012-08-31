@@ -9,9 +9,39 @@
 
 
 $(function () {
+
     $('#typeSelector').change(function () {
         handleLogOutput()
-    })
+        $('#lineNumText').text("Total line number: "+ ($("div:visible").length-2) );
+    });
+
+    $('a.logNameATag').click(function(){
+        var aTagClass = $(this).attr('class').split(" ")[0];
+        var divClass = aTagClass.substring( 0, aTagClass.length-4 );
+        $('.all').hide();
+        $('.'+divClass).show();
+    });
+
+    $('#showAllLogName').click(function(){
+        $('.'+$('#typeSelector').val()).show();
+    });
+
+    $('#scrollTop').click(function(event){
+        event.preventDefault();
+        var previousURL = window.location.toString().split("#")[0];
+        window.location.href = previousURL + "#" + $("#metridocLogs div:visible:first").attr('id');
+    });
+
+    $('#scrollBottom').click(function(event){
+        event.preventDefault();
+        var previousURL = window.location.toString().split("#")[0];
+        window.location.href = previousURL + "#" + $("#metridocLogs div:visible:last").attr('id');
+    });
+
+
+    $( '#showAllLogName, #scrollTop, #scrollBottom' ).button().css({'padding' : '.1em', 'color' : 'black',
+        'height' : '1.5em', 'width' : '110px', 'font-size': '0.9em'});
+
 })
 
 
@@ -53,5 +83,6 @@ function handleLogOutput() {
 $(window).load(
     function () {
         handleLogOutput()
+        $('#lineNumText').text("Total line number: "+ ($("div:visible").length-2) );
     }
 )

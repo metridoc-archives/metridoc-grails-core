@@ -3,8 +3,19 @@
     height: 90%;
     border-top: #212121;
     border-top-style: ridge;
+    border-bottom: #212121;
+    border-bottom-style: ridge;
 }
 
 body,html {
     height: 100%
+}
+
+a:visited {color:blue;}
+
+
+
+.ui-button-text
+{
+    padding: 0em !important;
 }

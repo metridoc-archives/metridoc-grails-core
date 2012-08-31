@@ -25,6 +25,14 @@
     <option value="day">Last 24 Hours</option>
 </select>
 
+<a id="showAllLogName" href="#">Show all log</a>
+
+<a id="scrollTop" href="#">Top</a>
+<a id="scrollBottom" href="#">Bottom</a>
+
+<span id="lineNumText">Total line number: </span>
+
+
 <div id="metridocLogs">
 <md:outputLogFile filePath="${grailsApplication.config.metridoc.home + "/logs/metridoc.log"}"/>
 </div>

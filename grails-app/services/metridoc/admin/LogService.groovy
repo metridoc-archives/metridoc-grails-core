@@ -28,13 +28,17 @@ class LogService {
 
         def previous = LineType.INFO
         def previousDateClass = "all"
+        def previousLogNameClass = "none"
+        def lineNum = 0
         file.eachLine {String line ->
             def escapedLine = escape(line)
-            def div = addDiv(escapedLine, previous, previousDateClass)
+            def div = addDiv(escapedLine, previous, previousDateClass, previousLogNameClass, lineNum)
             def divLine = div.line
             previous = div.previous
             previousDateClass = div.previousDateClass
+            previousLogNameClass = div.previousLogNameClass
             response << divLine
+            lineNum++
         }
     }
 
@@ -103,7 +107,7 @@ class LogService {
             }
 
             if(dateTest(ONE_HOUR)) {
-                result += "hour"
+                result += " hour"
             }
 
             if(dateTest(SIX_HOURS)) {
@@ -124,12 +128,37 @@ class LogService {
         }
     }
 
-    def addDiv(String line, previous, previousDateClass) {
+    private static getLogNameClass(line, previousLogName) {
+        def m = line =~ /(INFO|ERROR|WARN)\s\&nbsp\;([^\s]*)\s\&nbsp\;-/
+        if(m.find()) {
+            return m.group(2)
+        } else {
+            return previousLogName
+        }
+    }
+
+    private static addATag(line, logName) {
+        line = line.replaceAll( logName, "<a href=\"#\" class=\""
+                +logName.replaceAll("\\.","\\_")+"ATag logNameATag\">"+logName+"</a>" )
+        return line
+    }
+
+    def addDiv(String line, previous, previousDateClass, previousLogNameClass, lineNum) {
 
         def dateClass = getDateClass(line, previousDateClass, new Date())
+        def logName = getLogNameClass(line, previousLogNameClass)
+        def logNameClass =logName.replaceAll("\\.","\\_")
+
+        //add A tag for each line.
+        line = addATag( line, logName )
+
         def addLine = {clazz, color->
             clazz += " ${dateClass}"
-            "<div class=\"content logLine ${clazz}\" style=\"color:${color}\">${line}</div>"
+            clazz += " ${logNameClass}"
+            def result= "<div id=\"line" + lineNum+"\" "+
+                    "class=\"content logLine ${clazz}\" "+
+                    "style=\"color:${color}\">${line}</div>"
+            return result
         }
 
         def result
@@ -145,7 +174,7 @@ class LogService {
                 result = addLine("info", "green")
         }
 
-        return [line: result, previous:type, previousDateClass:dateClass]
+        return [line: result, previous:type, previousDateClass:dateClass, previousLogNameClass:logNameClass]
 
     }
 }
