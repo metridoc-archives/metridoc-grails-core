@@ -19,11 +19,13 @@ $(function () {
         var aTagClass = $(this).attr('class').split(" ")[0];
         var divClass = aTagClass.substring( 0, aTagClass.length-4 );
         $('.all').hide();
-        $('.'+divClass).show();
+        $('.'+divClass+'.'+ $('#typeSelector').val()).show();
+        $('#lineNumText').text("Total line number: "+ ($("div:visible").length-2) );
     });
 
     $('#showAllLogName').click(function(){
         $('.'+$('#typeSelector').val()).show();
+        $('#lineNumText').text("Total line number: "+ ($("div:visible").length-2) );
     });
 
     $('#scrollTop').click(function(event){
