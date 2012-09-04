@@ -1,5 +1,6 @@
 package metridoc.workflows;
 
+import groovy.lang.Binding;
 import groovy.lang.Script;
 import metridoc.dsl.JobBuilder;
 import org.codehaus.groovy.grails.commons.AbstractInjectableGrailsClass;
@@ -34,7 +35,6 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
         super(clazz, WORKFLOW);
     }
 
-    @Override
     public Object run() {
 
         if(running.get()) {
@@ -42,16 +42,21 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
             logger.info(message);
             return null;
         }
-
         running.getAndSet(true);
         previousFireTime = new Date();
         Script reference = (Script) getReferenceInstance();
+        ScriptWrapper wrapper = (ScriptWrapper) reference.getBinding().getVariable("wrapper");
+        reference.setBinding(new Binding());
+        reference.getBinding().setVariable("wrapper", wrapper);
+        JobBuilder.isJob(reference);
 
         Logger logger = LoggerFactory.getLogger("metridoc.job." + getName());
-        GrailsConsoleFacade grailsConsole = new GrailsConsoleFacade();
-        grailsConsole.setLogger(logger);
-        reference.getBinding().setVariable("grailsConsole", grailsConsole);
-        JobBuilder.isJob(reference);
+
+        if(!reference.getBinding().hasVariable("grailsConsole")) {
+            GrailsConsoleFacade grailsConsole = new GrailsConsoleFacade();
+            grailsConsole.setLogger(logger);
+            reference.getBinding().setVariable("grailsConsole", grailsConsole);
+        }
 
         try {
             return getMetaClass().invokeMethod(reference, RUN, new Object[]{});
@@ -66,17 +71,14 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
         }
     }
 
-    @Override
     public Date getPreviousEndTime() {
         return previousEndTime;
     }
 
-    @Override
     public boolean isRunning() {
         return running.get();
     }
 
-    @Override
     public Throwable getLastException() {
         return lastException;
     }
@@ -126,5 +128,20 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
 
     public String getPreviousDuration() {
         return previousDuration;
+    }
+
+    @Override
+    public Object getReferenceInstance() {
+        Script script = (Script) super.getReferenceInstance();
+        Binding binding = script.getBinding();
+        boolean noWrapper = !binding.hasVariable("wrapper");
+
+        if(noWrapper) {
+            ScriptWrapper wrapper = new ScriptWrapper();
+            wrapper.setWrappedScript(script);
+            binding.setVariable("wrapper", wrapper);
+        }
+
+        return script;
     }
 }

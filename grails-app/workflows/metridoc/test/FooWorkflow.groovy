@@ -1,7 +1,12 @@
 package metridoc.test
 
-grailsConsole.info "hey"
+target(runFoo: "main target to run") {
+    grailsConsole.info "hey from foo"
 
-profile("profiling foo") {
-    Thread.sleep(60000)
+    profile("profiling foo") {
+        Thread.sleep(500)
+    }
 }
+
+
+

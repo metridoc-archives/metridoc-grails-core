@@ -28,7 +28,7 @@ class QuartzService {
         }
     }
 
-    private loadAllJobInfo() {
+    def loadAllJobInfo() {
         loadJobData()
         loadJobs()
         loadTriggers()

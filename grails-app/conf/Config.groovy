@@ -18,6 +18,7 @@ import metridoc.targets._DataSourceLoader
 import org.apache.shiro.SecurityUtils
 import static org.quartz.SimpleScheduleBuilder.*
 import static org.quartz.CronScheduleBuilder.*
+import org.apache.commons.lang.SystemUtils
 
 // config files can either be Java properties files or ConfigSlurper scripts
 
@@ -35,19 +36,21 @@ grails.views.javascript.library="jquery"
 
 def rootLoader = Thread.currentThread().contextClassLoader.rootLoader
 
-if (rootLoader) {
-    def loader = new _DataSourceLoader()
+if (new File("${SystemUtils.USER_HOME}/.grails/drivers").exists()) {
+    if (rootLoader) {
+        def loader = new _DataSourceLoader()
 
-    JobBuilder.isJob(loader)
-    loader.rootLoader = rootLoader
-    loader.grailsConsole = [
-            info: {String message ->
-                println message
-            }
-    ]
-    loader.run()
-    println "loading database drivers"
-    loader.loadDrivers()
+        JobBuilder.isJob(loader)
+        loader.rootLoader = rootLoader
+        loader.grailsConsole = [
+                info: {String message ->
+                    println message
+                }
+        ]
+        loader.run()
+        println "loading database drivers"
+        loader.loadDrivers()
+    }
 }
 
 
