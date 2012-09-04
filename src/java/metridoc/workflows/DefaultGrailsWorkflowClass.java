@@ -1,6 +1,7 @@
 package metridoc.workflows;
 
 import groovy.lang.Binding;
+import groovy.lang.Closure;
 import groovy.lang.Script;
 import metridoc.dsl.JobBuilder;
 import org.codehaus.groovy.grails.commons.AbstractInjectableGrailsClass;
@@ -59,7 +60,17 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
         }
 
         try {
-            return getMetaClass().invokeMethod(reference, RUN, new Object[]{});
+            getMetaClass().invokeMethod(reference, RUN, new Object[]{});
+            Binding binding = reference.getBinding();
+            String targetName = "run" + getName();
+            boolean hasTarget = binding.hasVariable(targetName);
+            if(hasTarget) {
+                Closure closure = (Closure) binding.getVariable(targetName);
+                return closure.call();
+            } else {
+                logger.warn(getName() + " workflow does not have a run" + getName() + " target");
+                return null;
+            }
         } catch (Exception e) {
             logger.error("Exception occurred while trying to run " + getName(), e);
             lastException = e;
