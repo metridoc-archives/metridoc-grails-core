@@ -19,12 +19,16 @@ import org.apache.shiro.authc.UsernamePasswordToken
 import org.apache.shiro.web.util.SavedRequest
 import org.apache.shiro.web.util.WebUtils
 import metridoc.reports.ShiroUser
+import org.apache.shiro.crypto.hash.Sha256Hash
 
 class AuthController {
     def shiroSecurityManager
     def mailService
+    def authService
+    def grailsApplication
+    def resetIdByUserName = [:]
 
-    def index = {
+    def index() {
         if (!params.template) {
             [template: 'login', username: params.username, rememberMe: (params.rememberMe != null), targetUri: params.targetUri]
         } else {
@@ -32,32 +36,35 @@ class AuthController {
         }
     }
 
-    def login = {
+    def login(){
         render(view: 'index', model: [template: 'login', username: params.username, rememberMe: (params.rememberMe != null), targetUri: params.targetUri])
     }
 
-    def unauthorized = {
+    def unauthorized(){
         render(view: 'index', model: [template: 'unauthorized'])
     }
 
-    def forgetPassword = {
+    def forgetPassword(){
         flash.message = "Please enter your email address you used for registration below"
         render(view: 'index', model: [template: 'forgetPassword'])
     }
 
-    def resetPassword = {
+    def resetPassword(){
         if (params.emailAddress) {
             flash.message = "Thank you! An email providing an access to reset your password has been sent."
             render(view: 'index', model: [template: 'forgetPassword'])
 
-            if (ShiroUser.findAllByEmailAddress(params.emailAddress)) {
+            def id = authService.addResetLink()
+            def link = grailsApplication.config.grails.serverURL + "/auth/doResetPassword?id=${id}"
+            def user = ShiroUser.findAllByEmailAddress(params.emailAddress)
+            if (user) {
                 mailService.sendMail {
                     to "${params.emailAddress}"
                     subject "Reset Password"
-                    body "Reset password link goes here"
+                    body "Go here to reset your password: ${link}"
                 }
+                resetIdByUserName[id] = user
             }
-
         } else {
             flash.message = "Please offer your email address you used for registration below"
             render(view: 'index', model: [template: 'forgetPassword'])
@@ -65,7 +72,44 @@ class AuthController {
 
     }
 
-    def signIn = {
+    def doResetPassword(){
+        def id = params.id
+        def resetId = params.resetPasswordId
+        def method = request.method
+
+        switch(method) {
+            case "POST":
+                def user = resetIdByUserName[resetId as Integer]
+                def password = params.password
+                if (user && password) {
+                    log.info "reseting password for ${user.username}"
+                    user.setPassword(new Sha256Hash(password).toHex())
+                    user.save(flush:true)
+                    def authToken = new UsernamePasswordToken(user.username, password)
+                    SecurityUtils.subject.login(authToken)
+                } else {
+                    if(!password) {
+                        log.info "tried to reset password but password was null, available params are ${params}"
+                    }
+
+                    if (!user) {
+                        log.info "tried to reset password but user was null, available users are ${resetIdByUserName}"
+                    }
+                }
+
+                chain(controller: "home", action: "index")
+                break;
+            case "GET":
+                if(id && authService.canReset(id as Integer)) {
+                    render(view: 'index', model: [template: 'doResetPassword', resetPasswordId: id])
+                } else {
+                    chain(action: "signIn")
+                }
+                break;
+        }
+    }
+
+    def signIn (){
         def authToken = new UsernamePasswordToken(params.username, params.password as String)
 
         // Support for "remember me"
@@ -116,7 +160,7 @@ class AuthController {
         }
     }
 
-    def signOut = {
+    def signOut(){
         // Log the user out of the application.
         SecurityUtils.subject?.logout()
 

@@ -119,6 +119,8 @@ grails.exceptionresolver.params.exclude = ['password']
 // enable query caching by default
 grails.hibernate.cache.queries = true
 
+metridoc.app.name = appName
+
 // set per-environment serverURL stem for creating absolute links
 environments {
     development {
@@ -126,6 +128,7 @@ environments {
         grails.gsp.reload.enable = true
         grails.resources.processing.enabled = true
         grails.resources.debug = true
+
     }
     production {
         grails.logging.jul.usebridge = false
@@ -243,7 +246,7 @@ metridoc {
     scheduling {
         workflows {
             foo {
-                schedule = simpleSchedule().withIntervalInSeconds(30).repeatForever()
+                schedule = simpleSchedule().withIntervalInMinutes(30).repeatForever()
                 startNow = true
             }
         }

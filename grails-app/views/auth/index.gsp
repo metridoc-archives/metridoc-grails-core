@@ -25,6 +25,6 @@
 </head>
 
 <body>
-<g:render template="${template}"/>
+<g:render plugin="metridoc-core" template="${template}"/>
 </body>
 </html>
