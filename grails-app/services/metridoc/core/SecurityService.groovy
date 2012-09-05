@@ -3,6 +3,7 @@ package metridoc.core
 import metridoc.security.MetridocFilterAccessControlBuilder
 import org.apache.commons.lang.StringUtils
 import org.apache.shiro.grails.FilterAccessControlBuilder
+import metridoc.security.MetridocFilterAccessControlBuilder
 
 class SecurityService {
 
