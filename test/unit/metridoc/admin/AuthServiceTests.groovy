@@ -21,7 +21,7 @@ class AuthServiceTests {
     void "id should be removed after checked"() {
         def id = service.addResetLink()
         assert service.canReset(id)
-        assert service.idByDate.size() == 0
+        assert service.dateById.size() == 0
     }
 
     @Test
