@@ -4,7 +4,7 @@ import org.apache.commons.lang.math.RandomUtils
 
 class AuthService {
 
-    def idByDate = [:]
+    def dateById = [:]
     public static final FIFTEEN_MINUTES = 1000 * 60 * 15
     def resetableUserById = [:]
 
@@ -21,7 +21,7 @@ class AuthService {
     }
 
     private canReset(id, now) {
-        def date = idByDate.remove(id)
+        def date = dateById.remove(id)
 
         if (date) {
             def validTime = now < (date.time + FIFTEEN_MINUTES)
@@ -36,7 +36,7 @@ class AuthService {
 
     def addResetLink() {
         def id = RandomUtils.nextInt()
-        idByDate[id] = new Date()
+        dateById[id] = new Date()
 
         return id
     }

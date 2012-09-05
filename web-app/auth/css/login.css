@@ -68,6 +68,11 @@ button{
     margin-top: 15px;
 }
 
+#upPasswordButton{
+    margin-right: 40px;
+    float: right;
+}
+
 #rememberLabel{
     font-size: 0.8em;
     top:2px

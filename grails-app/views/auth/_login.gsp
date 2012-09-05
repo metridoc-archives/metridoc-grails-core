@@ -30,7 +30,7 @@
             <g:if test="${'metridoc-core'.equals(grailsApplication.metadata.getAt("app.name"))}">
                 <span id="forgetPW">
                     <g:link controller="auth" action="forgetPassword"
-                            name="forgetPW">Forget Password ?</g:link>
+                            name="forgetPW">Forgot Password ?</g:link>
                 </span>
             </g:if>
         </div>

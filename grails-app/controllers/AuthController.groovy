@@ -44,14 +44,13 @@ class AuthController {
     }
 
     def forgetPassword(){
-        flash.message = "Please enter your email address you used for registration below"
         render(view: 'index', model: [template: 'forgetPassword'])
     }
 
     def resetPassword(){
         if (params.emailAddress) {
-            flash.message = "Thank you! An email providing an access to reset your password has been sent."
-            render(view: 'index', model: [template: 'forgetPassword'])
+            flash.message = "Thank you! An email providing a link to reset your password has been sent."
+            render(view: 'index', model: [template: 'forgetPassword', hideInput:true])
 
             def id = authService.addResetLink()
             def link = grailsApplication.config.grails.serverURL + "/auth/doResetPassword?id=${id}"
@@ -65,7 +64,6 @@ class AuthController {
                 authService.addUserById(id, user)
             }
         } else {
-            flash.message = "Please offer your email address you used for registration below"
             render(view: 'index', model: [template: 'forgetPassword'])
         }
 
@@ -80,11 +78,31 @@ class AuthController {
             case "POST":
                 def user = authService.getUserById(resetId as Integer)
                 def password = params.password
+
                 if (user && password) {
+                    if (password.toString().length() < 5 || password.toString().length() > 15){
+                        id = authService.addResetLink()
+                        authService.addUserById(id, user)
+                        def link = grailsApplication.config.grails.serverURL + "/auth/doResetPassword?id=${id}"
+                        flash.message = "Password length must be within 5-15"
+                        redirect(url: link, params: [resetPasswordId: id])
+                        return
+                    }
+                    if(params.get('password') != params.get('confirm')){//generate a new reset password id and link
+                        id = authService.addResetLink()
+                        authService.addUserById(id, user)
+                        def link = grailsApplication.config.grails.serverURL + "/auth/doResetPassword?id=${id}"
+                        flash.message = "Passwords don't match"
+                        redirect(url: link, params: [resetPasswordId: id])
+                        return
+                    }
+
                     def passwordHash = new Sha256Hash(password).toHex()
                     log.info "reseting password for ${user.username}"
                     ShiroUser.withTransaction {
                         def userToUpdate = ShiroUser.findByUsername(user.username)
+                        userToUpdate.password = params.password
+                        userToUpdate.confirm = params.confirm
                         userToUpdate.passwordHash = passwordHash
                         userToUpdate.save(flush:true)
                     }
