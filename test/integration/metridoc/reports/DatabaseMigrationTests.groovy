@@ -31,6 +31,11 @@ class DatabaseMigrationTests {
         assert tableExists(sql, "application_properties")
     }
 
+    @Test
+    void "test ranged by id queries"() {
+        assert ShiroUser.findAllByIdBetween(0L, Long.MAX_VALUE).size() > 0
+    }
+
     boolean tableExists(sql, tableName) {
         try {
             sql.firstRow("select count(*) as total from ${tableName}" as String).total

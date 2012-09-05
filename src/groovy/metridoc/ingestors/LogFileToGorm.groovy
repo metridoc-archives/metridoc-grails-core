@@ -13,9 +13,10 @@ class LogFileToGorm {
     def gormClass
     def sessionFactory
     int batchSize
-    def fileHandler
+    Closure parser
     int filesPerRun
     def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
+
 
     def run(){
 

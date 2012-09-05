@@ -33,6 +33,7 @@ class MetridocCoreGrailsPlugin {
     def pluginExcludes = [
             "scripts/_Events.groovy",
             "grails-app/workflows/metridoc/test/**/*",
+            "grails-app/domain/metridoc/test/**/*"
     ]
 
     def title = "Metridoc Core Plugin" // Headline display name of the plugin
