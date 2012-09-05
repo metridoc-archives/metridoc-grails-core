@@ -26,7 +26,6 @@ class AuthController {
     def mailService
     def authService
     def grailsApplication
-    def resetIdByUserName = [:]
 
     def index() {
         if (!params.template) {
@@ -56,14 +55,14 @@ class AuthController {
 
             def id = authService.addResetLink()
             def link = grailsApplication.config.grails.serverURL + "/auth/doResetPassword?id=${id}"
-            def user = ShiroUser.findAllByEmailAddress(params.emailAddress)
+            def user = ShiroUser.findByEmailAddress(params.emailAddress)
             if (user) {
                 mailService.sendMail {
                     to "${params.emailAddress}"
                     subject "Reset Password"
                     body "Go here to reset your password: ${link}"
                 }
-                resetIdByUserName[id] = user
+                authService.addUserById(id, user)
             }
         } else {
             flash.message = "Please offer your email address you used for registration below"
@@ -79,21 +78,25 @@ class AuthController {
 
         switch(method) {
             case "POST":
-                def user = resetIdByUserName[resetId as Integer]
+                def user = authService.getUserById(resetId as Integer)
                 def password = params.password
                 if (user && password) {
+                    def passwordHash = new Sha256Hash(password).toHex()
                     log.info "reseting password for ${user.username}"
-                    user.setPassword(new Sha256Hash(password).toHex())
-                    user.save(flush:true)
-                    def authToken = new UsernamePasswordToken(user.username, password)
+                    ShiroUser.withTransaction {
+                        def userToUpdate = ShiroUser.findByUsername(user.username)
+                        userToUpdate.passwordHash = passwordHash
+                        userToUpdate.save(flush:true)
+                    }
+                    def authToken = new UsernamePasswordToken(user.username, password as String)
                     SecurityUtils.subject.login(authToken)
                 } else {
                     if(!password) {
-                        log.info "tried to reset password but password was null, available params are ${params}"
+                        log.warn "tried to reset password but password was null, available params are ${params}"
                     }
 
                     if (!user) {
-                        log.info "tried to reset password but user was null, available users are ${resetIdByUserName}"
+                        log.warn "tried to reset password but user was null, available users are ${authService.resetableUserById}"
                     }
                 }
 

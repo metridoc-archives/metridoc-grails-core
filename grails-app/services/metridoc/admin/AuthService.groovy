@@ -6,9 +6,18 @@ class AuthService {
 
     def idByDate = [:]
     public static final FIFTEEN_MINUTES = 1000 * 60 * 15
+    def resetableUserById = [:]
 
     def canReset(id) {
         canReset(id, new Date().getTime())
+    }
+
+    def addUserById(id, user) {
+        resetableUserById[id] = user
+    }
+
+    def getUserById(id) {
+        resetableUserById.remove(id)
     }
 
     private canReset(id, now) {

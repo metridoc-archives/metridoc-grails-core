@@ -33,11 +33,9 @@ import org.apache.camel.model.RouteDefinition
  * Time: 2:02 PM
  * To change this template use File | Settings | File Templates.
  */
-abstract class ManagedRouteBuilder extends RouteBuilder {
+abstract class ManagedRouteBuilder extends ManagedExceptionRouteBuilder {
 
-    Throwable routeException
     Boolean usePolling
-    Closure exceptionHandler
 
     @Override
     RouteDefinition from(String uri) {
@@ -51,53 +49,6 @@ abstract class ManagedRouteBuilder extends RouteBuilder {
 
         super.from(formattedUri)
     }
-
-    @Override
-    void configure() {
-
-        use(CamelExtensionPlugin) {
-
-            onException(Throwable.class).process {Exchange exchange ->
-                def exception = exchange.getException()
-                if (exception) {
-                    handleException(exception, exchange)
-                } else {
-                    exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT)
-                    if (exception) {
-                        handleException(exception, exchange)
-                    } else {
-                        exception = new RuntimeException("An unknown exception occurred, if the log is not " +
-                            "sufficient to determine what happened consider setting logging level to DEBUG")
-                        handleException(exception, exchange)
-                    }
-                }
-            }
-
-            doConfigure()
-        }
-    }
-
-    Throwable getFirstException() {
-        return routeException
-    }
-
-    abstract void doConfigure()
-
-    @Override
-    void handleException(Throwable throwable, Exchange exchange) {
-        if (exceptionHandler) {
-            exceptionHandler.call(throwable, exchange)
-        } else {
-
-            if (routeException) {
-                log.error("an additional exception occurred", throwable)
-                return //only catch and throw the first one
-            }
-
-            routeException = throwable
-        }
-    }
-
 }
 
 class ScheduledPollEndpointWrapper {
