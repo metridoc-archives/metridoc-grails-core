@@ -1,6 +1,5 @@
 import metridoc.schema.SchemaRunner
 import metridoc.workflows.WorkflowArtefactHandler
-import metridoc.ingestors.IngestorArtefactHandler
 
 /*
 * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
@@ -18,7 +17,7 @@ import metridoc.ingestors.IngestorArtefactHandler
 */
 class MetridocCoreGrailsPlugin {
 
-    def artefacts = [WorkflowArtefactHandler, IngestorArtefactHandler]
+    def artefacts = [WorkflowArtefactHandler]
     // the plugin version
     def version = "0.51-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
