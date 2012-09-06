@@ -1,5 +1,6 @@
 import org.apache.commons.lang.SystemUtils
 import org.codehaus.groovy.runtime.InvokerInvocationException
+import org.codehaus.groovy.grails.commons.GrailsClass
 
 includeTargets << grailsScript('_GrailsBootstrap')
 
@@ -123,16 +124,18 @@ target(handleServer: "boots and runs the server") {
 target(loadAllWorkflows: "loads all workflows") {
     depends bootstrapOnce
     event('StatusUpdate', ["Loading all workflows"])
-    grailsApp.workflowClasses.each {grailsClass ->
-        event('StatusUpdate', ["Loading workflow ${grailsClass.getName()}"])
-        def reference = grailsClass.getReferenceInstance()
-        def wrapper = reference.wrapper
-        def name = grailsClass.getName()
-        reference.binding = binding
-        try {
-            wrapper.run()
-        } catch (Exception ex) {
-            grailsConsole.error "Could not load workflow ${name}: ${ex.message}", ex
+    grailsApp.workflowClasses.each {GrailsClass grailsClass ->
+        if (!grailsClass.isAbstract()) {
+            event('StatusUpdate', ["Loading workflow ${grailsClass.getName()}"])
+            def reference = grailsClass.getReferenceInstance()
+            def wrapper = reference.wrapper
+            def name = grailsClass.getName()
+            reference.binding = binding
+            try {
+                wrapper.run()
+            } catch (Exception ex) {
+                grailsConsole.error "Could not load workflow ${name}: ${ex.message}", ex
+            }
         }
     }
     event('StatusUpdate', ["Workflows loaded"])
