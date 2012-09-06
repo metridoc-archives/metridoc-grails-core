@@ -14,6 +14,7 @@ public class IngestorArtefactHandler extends ArtefactHandlerAdapter {
     public static final String TYPE = "Ingestor";
 
     public IngestorArtefactHandler() {
-        super(TYPE, GrailsIngestorClass.class, DefaultGrailsIngestorClass.class, null);
+        //type is the same as suffix, abstract classes are allowed
+        super(TYPE, GrailsIngestorClass.class, DefaultGrailsIngestorClass.class, TYPE, true);
     }
 }
