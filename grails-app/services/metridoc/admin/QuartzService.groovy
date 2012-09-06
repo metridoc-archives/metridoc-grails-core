@@ -9,6 +9,7 @@ import static org.quartz.TriggerBuilder.newTrigger
 
 import static org.quartz.TriggerKey.*
 import grails.plugin.quartz2.SimpleJobDetail
+import org.codehaus.groovy.grails.commons.GrailsClass
 
 class QuartzService {
 
@@ -92,7 +93,15 @@ class QuartzService {
     }
 
     private getWorkflowClasses() {
-        grailsApplication.workflowClasses
+        def result = []
+        grailsApplication.workflowClasses.each {GrailsClass gClass ->
+            def notAbstract = !gClass.isAbstract()
+            if(notAbstract) {
+                result.add(gClass)
+            }
+        }
+
+        return result
     }
 
     def listWorkflows(params) {

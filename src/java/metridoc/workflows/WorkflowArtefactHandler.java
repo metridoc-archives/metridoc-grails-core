@@ -18,7 +18,7 @@ public class WorkflowArtefactHandler extends ArtefactHandlerAdapter {
     public static final String TYPE = "Workflow";
 
     public WorkflowArtefactHandler() {
-        super(TYPE, GrailsWorkflowClass.class, DefaultGrailsWorkflowClass.class, null);
+        super(TYPE, GrailsWorkflowClass.class, DefaultGrailsWorkflowClass.class, null, true);
     }
 
     @Override

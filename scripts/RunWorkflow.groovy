@@ -60,7 +60,7 @@ target(checkAndRunServer: "checks if a server is already running, if not starts 
     }
 
     if (pingException) {
-        grailsConsole.error("Workflow server is not running properly, must exit shell", throwable)
+        grailsConsole.error("Workflow server is not running properly, must exit shell", pingException)
         System.exit(1)
     }
 }
@@ -90,8 +90,10 @@ target(handleServer: "boots and runs the server") {
                             compile()
                             loadAllWorkflows()
                             event('StatusUpdate', ["Server running command ${buffer}"])
-                            binding."${buffer}".call()
-                        } catch (Exception ex) {
+                            if ("start" != buffer) {
+                                binding."${buffer}".call()
+                            }
+                        } catch (Throwable ex) {
                             grailsConsole.error("Could not run ${buffer}: ${ex.message}", ex);
                         } finally {
                             output << "done${newLine}"
@@ -100,14 +102,13 @@ target(handleServer: "boots and runs the server") {
                 }
 
             } catch (InvokerInvocationException ex) {
-                //TODO: remove this when done with ddebugging
-                grailsConsole.info "GOT HERE"
                 def throwIt = true
                 def cause = ex.cause
                 if (cause instanceof SocketException) {
                     def socketClosed = cause.message.contains("Socket closed")
                     if (socketClosed) {
                         throwIt = false
+                        grails.warn "Socket closed while trying to accept messages from workflow server"
                     }
                 }
                 if (throwIt) {
