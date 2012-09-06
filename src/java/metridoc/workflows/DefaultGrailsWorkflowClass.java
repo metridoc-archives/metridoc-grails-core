@@ -8,7 +8,6 @@ import org.codehaus.groovy.grails.commons.AbstractInjectableGrailsClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.RoundingMode;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -47,9 +46,7 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
         previousFireTime = new Date();
         Script reference = (Script) getReferenceInstance();
         ScriptWrapper wrapper = (ScriptWrapper) reference.getBinding().getVariable("wrapper");
-        ApplicationContextBinding springBinding = new ApplicationContextBinding();
-        springBinding.setApplicationContext(this.getGrailsApplication().getMainContext());
-        reference.setBinding(springBinding);
+        reference.setBinding(new Binding());
         reference.getBinding().setVariable("wrapper", wrapper);
         JobBuilder.isJob(reference);
 
@@ -147,17 +144,6 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
     public Object getReferenceInstance() {
         Script script = (Script) super.getReferenceInstance();
         Binding binding = script.getBinding();
-        boolean bindingIsApplicationContextBinding = binding instanceof ApplicationContextBinding;
-
-        if(!bindingIsApplicationContextBinding) {
-            ApplicationContextBinding newBinding = new ApplicationContextBinding();
-            newBinding.setApplicationContext(getGrailsApplication().getMainContext());
-            for(Object variableName : binding.getVariables().keySet()) {
-                newBinding.setVariable((String) variableName, binding.getVariable((String) variableName));
-            }
-            script.setBinding(newBinding);
-            binding = newBinding;
-        }
         boolean noWrapper = !binding.hasVariable("wrapper");
 
         if(noWrapper) {
