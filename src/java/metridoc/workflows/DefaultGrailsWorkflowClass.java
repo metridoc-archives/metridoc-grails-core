@@ -47,6 +47,9 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
         Script reference = (Script) getReferenceInstance();
         ScriptWrapper wrapper = (ScriptWrapper) reference.getBinding().getVariable("wrapper");
         reference.setBinding(new Binding());
+        reference.getBinding().setVariable("grailsApp", getGrailsApplication());
+        reference.getBinding().setVariable("config", getGrailsApplication().getConfig());
+        reference.getBinding().setVariable("appCtx", getGrailsApplication().getMainContext());
         reference.getBinding().setVariable("wrapper", wrapper);
         JobBuilder.isJob(reference);
 
