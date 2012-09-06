@@ -1,5 +1,6 @@
 import metridoc.schema.SchemaRunner
 import metridoc.workflows.WorkflowArtefactHandler
+import metridoc.ingestors.IngestorArtefactHandler
 
 /*
 * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
@@ -17,7 +18,7 @@ import metridoc.workflows.WorkflowArtefactHandler
 */
 class MetridocCoreGrailsPlugin {
 
-    def artefacts = [WorkflowArtefactHandler]
+    def artefacts = [WorkflowArtefactHandler, IngestorArtefactHandler]
     // the plugin version
     def version = "0.51-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
@@ -27,7 +28,9 @@ class MetridocCoreGrailsPlugin {
 
     def watchedResources = [
             "file:./grails-app/workflows/**/*Workflow.groovy",
-            "file:./plugins/*/grails-app/workflows/**/*Workflow.groovy"
+            "file:./plugins/*/grails-app/workflows/**/*Workflow.groovy",
+            "file:./grails-app/ingestors/**/*Ingestor.groovy",
+            "file:./plugins/*/grails-app/ingestors/**/*Ingestor.groovy"
     ]
 
     def pluginExcludes = [

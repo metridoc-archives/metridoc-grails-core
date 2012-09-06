@@ -45,4 +45,6 @@ abstract class FileToBatchIngestor {
         handleBatch(currentBatch)
         currentBatch.clear()
     }
+
+    abstract void configure(ConfigObject config)
 }

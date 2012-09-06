@@ -1,5 +1,6 @@
 package metridoc.ingestors;
 
+import groovy.util.ConfigObject;
 import org.codehaus.groovy.grails.commons.InjectableGrailsClass;
 
 /**
@@ -10,4 +11,6 @@ import org.codehaus.groovy.grails.commons.InjectableGrailsClass;
  * To change this template use File | Settings | File Templates.
  */
 public interface GrailsIngestorClass extends InjectableGrailsClass {
+
+    void configure();
 }

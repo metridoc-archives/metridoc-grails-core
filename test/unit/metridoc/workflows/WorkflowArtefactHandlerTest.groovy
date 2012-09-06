@@ -17,8 +17,8 @@ class WorkflowArtefactHandlerTest {
     }
 
     @Test
-    void "test that any class with a run method can be a workflow artefact"() {
-        assert new WorkflowArtefactHandler().isArtefactClass(BarWorkflow.class)
+    void "test that any class must be a script to be a workflow"() {
+        assert !new WorkflowArtefactHandler().isArtefactClass(BarWorkflow.class)
     }
 
 }

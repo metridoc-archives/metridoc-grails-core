@@ -50,7 +50,7 @@ class QuartzService {
 
                 def triggerBuilder = newTrigger()
                         .withIdentity("${name}Trigger", "Workflow").withSchedule(schedule)
-                if (startNow) {
+                if (startNow == true) {
                     triggerBuilder = triggerBuilder.startNow()
                 }
                 triggersByName[name] = triggerBuilder.build()

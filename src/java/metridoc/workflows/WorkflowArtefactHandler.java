@@ -33,6 +33,6 @@ public class WorkflowArtefactHandler extends ArtefactHandlerAdapter {
         Method runMethod = ReflectionUtils.findMethod(clazz, DefaultGrailsWorkflowClass.RUN);
         boolean hasRunMethod = runMethod != null;
 
-        return isScript || hasRunMethod;
+        return isScript && hasRunMethod;
     }
 }

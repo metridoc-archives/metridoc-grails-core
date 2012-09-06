@@ -246,8 +246,7 @@ metridoc {
     scheduling {
         workflows {
             foo {
-                schedule = simpleSchedule().withIntervalInMinutes(30).repeatForever()
-                startNow = true
+                schedule = simpleSchedule().withIntervalInMinutes(5).repeatForever()
             }
         }
     }
