@@ -28,8 +28,6 @@ class MetridocCoreGrailsPlugin {
     def watchedResources = [
             "file:./grails-app/workflows/**/*Workflow.groovy",
             "file:./plugins/*/grails-app/workflows/**/*Workflow.groovy",
-            "file:./grails-app/ingestors/**/*Ingestor.groovy",
-            "file:./plugins/*/grails-app/ingestors/**/*Ingestor.groovy"
     ]
 
     def pluginExcludes = [
