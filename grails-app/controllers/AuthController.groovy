@@ -125,10 +125,10 @@ class AuthController {
                     if (id && authService.canReset(id as Integer)) {
                         render(view: 'index', model: [template: 'doResetPassword', resetPasswordId: id])
                     } else {
-                        chain(action: "signIn")
+                        redirect(action: "index")
                     }
                 } catch (NumberFormatException ne) {
-                    chain(action: "signIn")
+                    redirect(action: "index")
                 }
                 break;
         }
