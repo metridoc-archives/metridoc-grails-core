@@ -35,22 +35,22 @@ class AuthController {
         }
     }
 
-    def login(){
+    def login() {
         render(view: 'index', model: [template: 'login', username: params.username, rememberMe: (params.rememberMe != null), targetUri: params.targetUri])
     }
 
-    def unauthorized(){
+    def unauthorized() {
         render(view: 'index', model: [template: 'unauthorized'])
     }
 
-    def forgetPassword(){
+    def forgetPassword() {
         render(view: 'index', model: [template: 'forgetPassword'])
     }
 
-    def resetPassword(){
+    def resetPassword() {
         if (params.emailAddress) {
             flash.message = "Thank you! An email providing a link to reset your password has been sent."
-            render(view: 'index', model: [template: 'forgetPassword', hideInput:true])
+            render(view: 'index', model: [template: 'forgetPassword', hideInput: true])
 
             def id = authService.addResetLink()
             def link = grailsApplication.config.grails.serverURL + "/auth/doResetPassword?id=${id}"
@@ -69,18 +69,18 @@ class AuthController {
 
     }
 
-    def doResetPassword(){
+    def doResetPassword() {
         def id = params.id
         def resetId = params.resetPasswordId
         def method = request.method
 
-        switch(method) {
+        switch (method) {
             case "POST":
                 def user = authService.getUserById(resetId as Integer)
                 def password = params.password
 
                 if (user && password) {
-                    if (password.toString().length() < 5 || password.toString().length() > 15){
+                    if (password.toString().length() < 5 || password.toString().length() > 15) {
                         id = authService.addResetLink()
                         authService.addUserById(id, user)
                         def link = grailsApplication.config.grails.serverURL + "/auth/doResetPassword?id=${id}"
@@ -88,7 +88,7 @@ class AuthController {
                         redirect(url: link, params: [resetPasswordId: id])
                         return
                     }
-                    if(params.get('password') != params.get('confirm')){//generate a new reset password id and link
+                    if (params.get('password') != params.get('confirm')) {//generate a new reset password id and link
                         id = authService.addResetLink()
                         authService.addUserById(id, user)
                         def link = grailsApplication.config.grails.serverURL + "/auth/doResetPassword?id=${id}"
@@ -104,12 +104,12 @@ class AuthController {
                         userToUpdate.password = params.password
                         userToUpdate.confirm = params.confirm
                         userToUpdate.passwordHash = passwordHash
-                        userToUpdate.save(flush:true)
+                        userToUpdate.save(flush: true)
                     }
                     def authToken = new UsernamePasswordToken(user.username, password as String)
                     SecurityUtils.subject.login(authToken)
                 } else {
-                    if(!password) {
+                    if (!password) {
                         log.warn "tried to reset password but password was null, available params are ${params}"
                     }
 
@@ -121,16 +121,20 @@ class AuthController {
                 chain(controller: "home", action: "index")
                 break;
             case "GET":
-                if(id && authService.canReset(id as Integer)) {
-                    render(view: 'index', model: [template: 'doResetPassword', resetPasswordId: id])
-                } else {
+                try {
+                    if (id && authService.canReset(id as Integer)) {
+                        render(view: 'index', model: [template: 'doResetPassword', resetPasswordId: id])
+                    } else {
+                        chain(action: "signIn")
+                    }
+                } catch (NumberFormatException ne) {
                     chain(action: "signIn")
                 }
                 break;
         }
     }
 
-    def signIn (){
+    def signIn() {
         def authToken = new UsernamePasswordToken(params.username, params.password as String)
 
         // Support for "remember me"
@@ -181,7 +185,7 @@ class AuthController {
         }
     }
 
-    def signOut(){
+    def signOut() {
         // Log the user out of the application.
         SecurityUtils.subject?.logout()
 
