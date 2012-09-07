@@ -49,7 +49,7 @@ class AuthController {
 
     def resetPassword() {
         if (params.emailAddress) {
-            flash.message = "Thank you! An email providing a link to reset your password has been sent."
+            request.message = "Thank you! An email providing a link to reset your password has been sent."
             render(view: 'index', model: [template: 'forgetPassword', hideInput: true])
 
             def id = authService.addResetLink()

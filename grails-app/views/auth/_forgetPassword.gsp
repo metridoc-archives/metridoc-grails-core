@@ -1,6 +1,6 @@
 <div id="template">
-    <g:if test="${flash.message}">
-        <div class="message">${flash.message}</div>
+    <g:if test="${request.message}">
+        <div class="message">${request.message}</div>
     </g:if>
     <g:if test="${!hideInput}">
     <g:form action="resetPassword">
