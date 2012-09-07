@@ -6,10 +6,10 @@
     <g:form method="post" action="doResetPassword">
         <div>
             <label for="password">
-                <g:message code="shiroUser.password.label" default="Password"/>
+                <g:message code="shiroUser.newPassword.label" default="New Password"/>
                 <span class="required-indicator">*</span>
             </label>
-            <g:passwordField name="password"/>
+            <g:passwordField name="password" required=""/>
         </div>
 
         <div>
@@ -17,7 +17,7 @@
                 <g:message code="shiroUser.confirmPassword.label" default="Confirm Password"/>
                 <span class="required-indicator">*</span>
             </label>
-            <g:passwordField name="confirm"/>
+            <g:passwordField name="confirm" required=""/>
         </div>
 
         <g:hiddenField name="resetPasswordId" value="${resetPasswordId}"/>
