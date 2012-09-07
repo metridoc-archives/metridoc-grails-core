@@ -23,7 +23,7 @@ import org.apache.shiro.crypto.hash.Sha256Hash
 
 class AuthController {
     def shiroSecurityManager
-    def mailService
+
     def authService
     def grailsApplication
 
@@ -49,20 +49,9 @@ class AuthController {
 
     def resetPassword() {
         if (params.emailAddress) {
+            authService.sendResetPasswordEmail(params.emailAddress);
             request.message = "Thank you! An email providing a link to reset your password has been sent."
             render(view: 'index', model: [template: 'forgetPassword', hideInput: true])
-
-            def id = authService.addResetLink()
-            def link = grailsApplication.config.grails.serverURL + "/auth/doResetPassword?id=${id}"
-            def user = ShiroUser.findByEmailAddress(params.emailAddress)
-            if (user) {
-                mailService.sendMail {
-                    to "${params.emailAddress}"
-                    subject "Reset Password"
-                    body "Go here to reset your password: ${link}"
-                }
-                authService.addUserById(id, user)
-            }
         } else {
             render(view: 'index', model: [template: 'forgetPassword'])
         }
@@ -73,51 +62,36 @@ class AuthController {
         def id = params.id
         def resetId = params.resetPasswordId
         def method = request.method
-
         switch (method) {
             case "POST":
                 def user = authService.getUserById(resetId as Integer)
                 def password = params.password
-
+                def confirm = params.confirm
                 if (user && password) {
-                    if (password.toString().length() < 5 || password.toString().length() > 15) {
-                        id = authService.addResetLink()
-                        authService.addUserById(id, user)
-                        def link = grailsApplication.config.grails.serverURL + "/auth/doResetPassword?id=${id}"
+
+                    if (!authService.isPasswordValid(password.toString())) {
+                        def link = authService.newResetLink(user)
                         flash.message = "Password length must be within 5-15"
                         redirect(url: link, params: [resetPasswordId: id])
                         return
                     }
-                    if (params.get('password') != params.get('confirm')) {//generate a new reset password id and link
-                        id = authService.addResetLink()
-                        authService.addUserById(id, user)
-                        def link = grailsApplication.config.grails.serverURL + "/auth/doResetPassword?id=${id}"
+                    if (!authService.isPasswordMatch(password.toString(), confirm.toString())) {//generate a new reset password id and link
+                        def link = authService.newResetLink(user)
                         flash.message = "Passwords don't match"
                         redirect(url: link, params: [resetPasswordId: id])
                         return
                     }
 
-                    def passwordHash = new Sha256Hash(password).toHex()
-                    log.info "reseting password for ${user.username}"
-                    ShiroUser.withTransaction {
-                        def userToUpdate = ShiroUser.findByUsername(user.username)
-                        userToUpdate.password = params.password
-                        userToUpdate.confirm = params.confirm
-                        userToUpdate.passwordHash = passwordHash
-                        userToUpdate.save(flush: true)
-                    }
-                    def authToken = new UsernamePasswordToken(user.username, password as String)
-                    SecurityUtils.subject.login(authToken)
+                    authService.resetPassword(user, password as String, confirm as String);
+
                 } else {
                     if (!password) {
                         log.warn "tried to reset password but password was null, available params are ${params}"
                     }
-
                     if (!user) {
                         log.warn "tried to reset password but user was null, available users are ${authService.resetableUserById}"
                     }
                 }
-
                 chain(controller: "home", action: "index")
                 break;
             case "GET":
