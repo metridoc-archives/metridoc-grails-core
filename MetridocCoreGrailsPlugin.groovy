@@ -1,5 +1,8 @@
 import metridoc.schema.SchemaRunner
 import metridoc.workflows.WorkflowArtefactHandler
+import org.springframework.beans.factory.config.MethodInvokingFactoryBean
+import org.codehaus.groovy.grails.commons.GrailsClass
+import org.apache.commons.lang.StringUtils
 
 /*
 * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
@@ -68,6 +71,26 @@ class MetridocCoreGrailsPlugin {
             schema = "schemas/admin/adminSchema.xml"
             dataSource = ref("dataSource_admin")
         }
+
+        def workflowClasses = application.workflowClasses
+
+        		workflowClasses.each {GrailsClass workflowClass ->
+        			if (!workflowClass.isAbstract()) {
+                        def fullName = workflowClass.fullName
+                        def shortName = StringUtils.uncapitalise(workflowClass.shortName)
+
+                        "${shortName}Class"(MethodInvokingFactoryBean) {
+                            targetObject = ref("grailsApplication", true)
+                            targetMethod = "getArtefact"
+                            arguments = [ WorkflowArtefactHandler.TYPE, fullName ]
+                        }
+
+                        "${shortName}"(ref("${shortName}Class")) { bean ->
+                            bean.factoryMethod = "newInstance"
+                            bean.autowire = "byName"
+                        }
+                    }
+        		}
     }
 
     def doWithDynamicMethods = { ctx ->

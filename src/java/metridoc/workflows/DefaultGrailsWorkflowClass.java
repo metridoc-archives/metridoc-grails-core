@@ -4,6 +4,7 @@ import groovy.lang.Binding;
 import groovy.lang.Closure;
 import groovy.lang.Script;
 import metridoc.dsl.JobBuilder;
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.groovy.grails.commons.AbstractInjectableGrailsClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,7 +146,8 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
 
     @Override
     public Object getReferenceInstance() {
-        Script script = (Script) super.getReferenceInstance();
+        String shortName = StringUtils.uncapitalize(getShortName());
+        Script script = (Script) getGrailsApplication().getMainContext().getBean(shortName);
         Binding binding = script.getBinding();
         boolean noWrapper = !binding.hasVariable("wrapper");
 
