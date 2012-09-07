@@ -3,6 +3,7 @@ import metridoc.workflows.WorkflowArtefactHandler
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean
 import org.codehaus.groovy.grails.commons.GrailsClass
 import org.apache.commons.lang.StringUtils
+import grails.plugin.quartz2.JobArtefactHandler
 
 /*
 * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
@@ -74,23 +75,23 @@ class MetridocCoreGrailsPlugin {
 
         def workflowClasses = application.workflowClasses
 
-        		workflowClasses.each {GrailsClass workflowClass ->
-        			if (!workflowClass.isAbstract()) {
-                        def fullName = workflowClass.fullName
-                        def shortName = StringUtils.uncapitalise(workflowClass.shortName)
+        workflowClasses.each {GrailsClass workflowClass ->
+            if (!workflowClass.isAbstract()) {
+                def fullName = workflowClass.fullName
+                def shortName = StringUtils.uncapitalise(workflowClass.shortName)
 
-                        "${shortName}Class"(MethodInvokingFactoryBean) {
-                            targetObject = ref("grailsApplication", true)
-                            targetMethod = "getArtefact"
-                            arguments = [ WorkflowArtefactHandler.TYPE, fullName ]
-                        }
+                "${shortName}Class"(MethodInvokingFactoryBean) {
+                    targetObject = ref("grailsApplication", true)
+                    targetMethod = "getArtefact"
+                    arguments = [WorkflowArtefactHandler.TYPE, fullName]
+                }
 
-                        "${shortName}"(ref("${shortName}Class")) { bean ->
-                            bean.factoryMethod = "newInstance"
-                            bean.autowire = "byName"
-                        }
-                    }
-        		}
+                "${shortName}"(ref("${shortName}Class")) { bean ->
+                    bean.factoryMethod = "newInstance"
+                    bean.autowire = "byName"
+                }
+            }
+        }
     }
 
     def doWithDynamicMethods = { ctx ->
@@ -102,9 +103,9 @@ class MetridocCoreGrailsPlugin {
     }
 
     def onChange = { event ->
-        // Implement code that is executed when any artefact that this plugin is
-        // watching is modified and reloaded. The event contains: event.source,
-        // event.application, event.manager, event.ctx, and event.plugin.
+        if (application.isArtefactOfType(WorkflowArtefactHandler.TYPE, event.source)) {
+            //TODO:fill this in later
+        }
     }
 
     def onConfigChange = { event ->

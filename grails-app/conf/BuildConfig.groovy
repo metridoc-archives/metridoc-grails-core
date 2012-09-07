@@ -42,17 +42,10 @@ grails.project.dependency.resolution = {
 
     dependencies {
         compile 'org.codehaus.gpars:gpars:0.12'
-        compile("org.apache.camel:camel-core:2.10.0") {
-            excludes "slf4j-api"
-        }
         compile("org.liquibase:liquibase-core:2.0.1")
         test("org.apache.camel:camel-test:2.10.0")
-        compile("org.apache.camel:camel-ftp:2.10.0") {
+        compile("org.apache.camel:camel-ftp:2.9.2") {
             excludes "slf4j-api"
-        }
-        compile("org.apache.camel:camel-groovy:2.10.0") {
-            excludes 'camel-core'
-            excludes 'groovy-all'
         }
         compile("org.grails:grails-scripts:${grailsVersion}")
         compile("org.apache.ivy:ivy:2.2.0")
@@ -73,6 +66,7 @@ grails.project.dependency.resolution = {
     plugins {
         compile ":quartz2:0.2.3"
         compile ":mail:1.0"
+        compile ":routing:1.2.2"
         runtime ":hibernate:$grailsVersion"
         runtime ":jquery:1.7.1"
         runtime ":resources:1.1.6"

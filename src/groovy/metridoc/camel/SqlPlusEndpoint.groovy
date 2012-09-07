@@ -22,6 +22,7 @@ import org.apache.camel.impl.DefaultEndpoint
 import org.apache.camel.util.UnsafeUriCharactersEncoder
 
 import javax.sql.DataSource
+import org.apache.camel.PollingConsumer
 
 /**
  * Created by IntelliJ IDEA.
@@ -73,5 +74,19 @@ class SqlPlusEndpoint extends DefaultEndpoint {
     @Override
     protected String createEndpointUri() {
         return "sqlplus:" + UnsafeUriCharactersEncoder.encode(query);
+    }
+
+    @Override
+    PollingConsumer createPollingConsumer() {
+        return new SqlPlusPollingConsumer(endpoint: this)
+    }
+
+    String getTableQuery() {
+        def result = query
+        if (!result.startsWith("select")) {
+            result = "select * from ${query}"
+        }
+
+        return result
     }
 }

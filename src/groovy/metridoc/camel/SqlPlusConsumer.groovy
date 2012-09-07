@@ -106,8 +106,18 @@ class SqlUnManagedResultSet extends Sql {
     }
 
     @Override
+    protected void closeResources(Connection connection, Statement statement) {
+        this.connection = connection
+        this.statement = statement
+    }
+
+    @Override
     void close() {
-        super.closeResources(connection, statement, results)
+        if(results) {
+            super.closeResources(connection, statement, results)
+        } else {
+            super.closeResources(connection, statement)
+        }
         super.close()
     }
 }
