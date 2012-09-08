@@ -106,13 +106,12 @@
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.maven/maven-ant-tasks/jars/maven-ant-tasks-2.1.0.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.tmatesoft.svnkit/svnkit/jars/svnkit-1.3.5.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-spring/bundles/camel-spring-2.9.2.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-stream/bundles/camel-stream-2.9.2.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-groovy/bundles/camel-groovy-2.9.2.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/commons-net/commons-net/jars/commons-net-2.2.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/com.jcraft/jsch/jars/jsch-0.1.44-1.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-core/bundles/camel-core-2.9.2.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-ftp/bundles/camel-ftp-2.9.2.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.opensymphony.quartz/quartz/jars/quartz-1.6.1.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-stream/bundles/camel-stream-2.9.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
