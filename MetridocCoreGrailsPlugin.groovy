@@ -63,15 +63,6 @@ class MetridocCoreGrailsPlugin {
     }
 
     def doWithSpring = {
-        userSchemaRunner(SchemaRunner) {
-            schema = "schemas/user/userSchema.xml"
-            dataSource = ref("dataSource_admin")
-        }
-
-        adminSchemaRunner(SchemaRunner) {
-            schema = "schemas/admin/adminSchema.xml"
-            dataSource = ref("dataSource_admin")
-        }
 
         def workflowClasses = application.workflowClasses
 
