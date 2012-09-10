@@ -47,7 +47,7 @@ html {
 
     background-repeat: no-repeat;
     height: 100%;
-     /*change the box model to exclude the padding from the calculation of 100% height (IE8+)*/
+    /*change the box model to exclude the padding from the calculation of 100% height (IE8+)*/
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -61,14 +61,18 @@ html.no-cssgradients {
     height: 100%;
 }
 
+.shadow {
+    -moz-box-shadow: 0 3px 10px #333333;
+    -webkit-box-shadow: 0 3px 10px #333333;
+    box-shadow: 0 3px 10px #333333;
+}
+
 #doc4 {
     background: #ffffff;
     max-width: 960px;
     margin: 10px auto 10px;
     text-align: left;
-    -moz-box-shadow: 0 3px 10px #333333;
-    -webkit-box-shadow: 0 3px 10px #333333;
-    box-shadow: 0 3px 10px #333333;
+
 }
 
 .ie6 #doc4,
@@ -222,10 +226,9 @@ img {
     margin-top: 30px;
 }
 
-#list-shiroRole table{
+#list-shiroRole table {
     margin-top: 30px;
- }
-
+}
 
 /* CREATE/EDIT FORMS AND SHOW PAGES */
 
@@ -368,8 +371,8 @@ fieldset.embedded legend {
     box-shadow: 0 0 0.25em #b2d1ff;
 }
 
-#homeMsg{
-   z-index: 1;
+#homeMsg {
+    z-index: 1;
     margin: 0em 6em 0em 0em;
 }
 
@@ -454,8 +457,6 @@ td, th {
     vertical-align: top;
 }
 
-
-
 th {
     background-color: #efefef;
     background-image: -moz-linear-gradient(top, #ffffff, #eaeaea);
@@ -510,7 +511,6 @@ th.desc a {
 th:hover, tr:hover {
     background: #E1F2B6;
 }
-
 
 /*NAVIGATION MENU*/
 
@@ -569,7 +569,6 @@ th:hover, tr:hover {
     background-repeat: no-repeat;
     text-indent: 25px;
 }
-
 
 .nav a.home {
     background-image: url(../images/skin/house.png);
@@ -672,7 +671,7 @@ th:hover, tr:hover {
     text-decoration: underline;
 }
 
-.buttons .delete, .buttons .edit, .buttons .save {
+.buttons .delete, .buttons .edit, .buttons .save, .menu-item {
     background-position: 0.7em center;
     background-repeat: no-repeat;
     text-indent: 25px;
@@ -688,6 +687,11 @@ th:hover, tr:hover {
 
 .buttons .save {
     background-image: url(../images/skin/database_save.png);
+}
+
+a.users {
+    background-image: url(../images/skin/system-users.png);
+
 }
 
 a.skip {
@@ -722,16 +726,15 @@ p {
     text-align: left;
 }
 
-
 /*Style for all input boxes*/
-.userInput
-{
+.userInput {
     /*previous setting: padding: 8px;*/
-    padding:.4em;
-    overflow:visible;
+    padding: .4em;
+    overflow: visible;
 
-    background: -webkit-gradient(linear, left top, left 25, from(#FFFFFF), color-stop(4%, #EEEEEE), to(#FFFFFF));/*Chrome and Safari*/
-    background: -moz-linear-gradient(top, #FFFFFF, #EEEEEE 1px, #FFFFFF 25px);/* Firefox Browsers */
+    background: -webkit-gradient(linear, left top, left 25, from(#FFFFFF), color-stop(4%, #EEEEEE), to(#FFFFFF)); /*Chrome and Safari*/
+    background: -moz-linear-gradient(top, #FFFFFF, #EEEEEE 1px, #FFFFFF 25px); /* Firefox Browsers */
     filter: progid:DXImageTransform.Microsoft.gradient(startColorStr = '#EEEEEE', EndColorStr = '#FFFFFF');
 
 }
+

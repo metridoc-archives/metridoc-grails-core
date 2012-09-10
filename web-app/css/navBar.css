@@ -1,62 +1,69 @@
-#metridocNavigation {
-    float: left;
-    width: 100%;
+#metridocNavigationBar {
     border-right: none;
     border-left: none;
+    width: 100%;
+    float: left;
 }
 
-#metridocNavigation ul {
+#metridocNavigation {
     margin: 0;
     padding: 0;
+    list-style: none;
 }
 
-#metridocNavigation ul li {
-    list-style-type: none;
-    display: inline;
-}
-
-#metridocNavigation ul li a {
-    display: block;
+#metridocNavigation li {
     float: left;
-    padding: 5px 10px;
-    color: #E5E9E2;
+    /*display: block;*/
+    z-index: 500;
+    position: relative;
+}
+
+#metridocNavigation li a {
+    display: block;
+    padding: 8px 5px 0 5px;
+    font-weight: 700;
+    height: 23px;
     text-decoration: none;
-    border-left:none;
-    border-bottom:none;
-    border-top:none;
-    /*border-right: 1px solid #fff;*/
+    border-right: 1px solid #AAA;
+    color: #E5E9E2;
+    border-left: none;
+    border-bottom: none;
+    border-top: none;
 }
 
 #metridocNavigation a:hover {
     color: #b81900;
 }
 
-#metridocNavigation ul li:first-child {
-    margin-left: 0;
-}
-
-/*style the sub menu*/
-#metridocNavigation ul li ul {
+#metridocNavigation ul {
     position: absolute;
-    visibility: hidden;
-    margin: 0;
+    left: 0;
+    display: none;
+    margin: 0 0 0 -1px;
     padding: 0;
-    width: 158px;
+    list-style: none;
+    border: 1px solid #AAA;
 }
 
-#metridocNavigation ul li ul li {
-    display: block;
-    float: none;
-    width: 158px;
-    text-align: center;
+#metridocNavigation ul a {
+    border-right: none;
 }
 
-#metridocNavigation ul li ul li a:link, #metridocNavigation ul li ul li a:visited {
-    background-color: #E5E9E2;
-    color: #48802C;
-    width: 158px;
+#metridocNavigation ul li {
+    width: 200px;
+    float: left;
+    background: #fff;
+    font-weight: normal;
 }
 
-#metridocNavigation ul li ul li a:hover {
-    color: #b81900;
+#metridocNavigation ul li a {
+    font-weight: normal;
+    padding: 0.25em 0.7em;
 }
+
+#metridocNavigation ul a {
+    height: auto;
+    padding-bottom: 8px;
+    color: #666;
+}
+

@@ -41,25 +41,16 @@ $(function () {
 
 $(document).ready(function () {
 
-    $('#metridocNavigation > ul > li').bind('mouseover', openSubMenu);
-    $('#metridocNavigation >ul > li').bind('mouseout', closeSubMenu);
+     $('#metridocNavigation li').hover(
+         function () {
+             //show its submenu
+             $('ul', this).stop().slideDown(100);
 
-    function openSubMenu() {
-        var offset = $(this).children('strong').offset();
-        var height = $(this).outerHeight(true);
-        var width = $(this).outerWidth(true);
-        var dropDownWidth = $(this).children('ul').outerWidth(true);
-        $(this).find('ul').css({
-            visibility: 'visible',
-            position: 'absolute',
-            top:(offset.top + height) + "px",
-            marginLeft:(offset.left) + "px"
-        });
-    };
+         },
+         function () {
+             //hide its submenu
+             $('ul', this).stop().slideUp(100);
+         }
+     );
 
-    function closeSubMenu() {
-        $(this).find('ul').css('visibility', 'hidden');
-    }
-
-    ;
 });

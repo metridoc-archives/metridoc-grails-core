@@ -22,66 +22,64 @@
 <!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
 <!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"><!--<![endif]-->
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>MetriDoc</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <r:require module="application"/>
-    <g:layoutHead/>
-    <r:layoutResources/>
-</head>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>MetriDoc</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <r:require module="application"/>
+        <g:layoutHead/>
+        <r:layoutResources/>
+    </head>
 
-<body>
-<div id="doc4">
-    <div id="metridocBanner" role="banner">
-        <a id="metridocLogo" href="http://metridoc.googlecode.com">
-            <img src="${resource(plugin: 'metridocCore', dir: 'images', file: 'MDlogo_small.png')}"
-                 alt="MetriDoc"/>
-        </a>
+    <body>
+        <div id="doc4" class="shadow">
+            <div id="metridocBanner" role="banner">
+                <a id="metridocLogo" href="http://metridoc.googlecode.com">
+                    <img src="${resource(plugin: 'metridocCore', dir: 'images', file: 'MDlogo_small.png')}"
+                         alt="MetriDoc"/>
+                </a>
 
-        <% if (SecurityUtils.subject.principal == "anonymous" || !SecurityUtils.subject.isAuthenticated()) { %>
-        <a id="metridocLoginLink" href="/<g:meta name="app.name"/>/auth">login</a>
-        <% } else { %>
-        <span id="metridocLoginLink">
-            <a href="/<g:meta name="app.name"/>/profile/edit">${SecurityUtils.subject.principal}</a> (<a
-                href="/<g:meta name="app.name"/>/auth/signOut">logout</a>)
-        </span>
-        <% } %>
-
-    </div>
-
-    <div id="metridocNavigation" class="ui-widget-header">
-        <ul>
-            <li>
-                <strong>
-                    <a href="/<g:meta name="app.name"/>/home" class="ui-widget-header">Home</a>
-                </strong>
-            </li>
-
-            <g:if test="${'metridoc-core'.equals(grailsApplication.metadata.getAt("app.name"))}">
-                <% if (SecurityUtils.subject.principal != "anonymous" && SecurityUtils.subject.isAuthenticated()) { %>
-                <li>
-                    <strong>
-                        <a href="#">My Account</a>
-                    </strong>
-                    <ul>
-                        <li><g:link controller="profile" action="edit">Profile</g:link></li>
-                    </ul>
-                </li>
+                <% if (SecurityUtils.subject.principal == "anonymous" || !SecurityUtils.subject.isAuthenticated()) { %>
+                <a id="metridocLoginLink" href="/<g:meta name="app.name"/>/auth">login</a>
+                <% } else { %>
+                <span id="metridocLoginLink">
+                    <a href="/<g:meta name="app.name"/>/profile/edit">${SecurityUtils.subject.principal}</a> (<a
+                        href="/<g:meta name="app.name"/>/auth/signOut">logout</a>)
+                </span>
                 <% } %>
-            </g:if>
 
-        </ul>
-    </div>
-    <g:layoutBody/>
-    <div class="footer ui-widget-header" role="contentinfo"></div>
+            </div>
 
-    <div id="spinner" class="spinner" style="display:none;">
-        <g:message code="spinner.alt" default="Loading&hellip;"/>
-    </div>
+            <div id="metridocNavigationBar" class="ui-widget-header">
+                <ul id="metridocNavigation" class="shadow">
+                    <li>
+                        <a href="/<g:meta name="app.name"/>/home" class="ui-widget-header">Home</a>
+                    </li>
+                    <shiro:authenticated>
+                        <li>
+                            <g:link controller="profile" action="index">Settings</g:link>
+                            %{--<a href="/<g:meta name="app.name"/>/profile" class="ui-widget-header">Settings</a>--}%
+                            <ul class="shadow">
+                                <li>
+                                    <g:link controller="profile" action="index" class="users menu-item">Account</g:link>
+                                </li>
+                                <li>
+                                    <g:link controller="user" action="list" class="menu-item">Manage Users</g:link>
+                                </li>
+                            </ul>
+                        </li>
+                    </shiro:authenticated>
+                </ul>
+            </div>
+            <g:layoutBody/>
+            <div class="footer ui-widget-header" role="contentinfo"></div>
 
-    <r:layoutResources/>
-</div>
-</body>
+            <div id="spinner" class="spinner" style="display:none;">
+                <g:message code="spinner.alt" default="Loading&hellip;"/>
+            </div>
+
+            <r:layoutResources/>
+        </div>
+    </body>
 </html>
