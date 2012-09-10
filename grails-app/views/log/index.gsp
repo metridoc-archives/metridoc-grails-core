@@ -14,6 +14,11 @@
 </head>
 
 <body>
+
+<a id="home" href="/<g:meta name="app.name"/>/home">Home</a>
+<a id="showAllLogName" href="#">Show all log</a>
+<a id="scrollTop" href="#">Top</a>
+<a id="scrollBottom" href="#">Bottom</a>
 <select id="typeSelector">
     <option value="all">All</option>
     <option value="error">Error</option>
@@ -24,11 +29,6 @@
     <option value="twelveHours">Last 12 Hours</option>
     <option value="day">Last 24 Hours</option>
 </select>
-
-<a id="showAllLogName" href="#">Show all log</a>
-
-<a id="scrollTop" href="#">Top</a>
-<a id="scrollBottom" href="#">Bottom</a>
 
 <span id="lineNumText">Total line number: </span>
 

@@ -41,7 +41,7 @@ $(function () {
     });
 
 
-    $( '#showAllLogName, #scrollTop, #scrollBottom' ).button().css({'padding' : '.1em', 'color' : 'black',
+    $( '#home, #showAllLogName, #scrollTop, #scrollBottom' ).button().css({'padding' : '.1em', 'color' : 'black',
         'height' : '1.5em', 'width' : '110px', 'font-size': '0.9em'});
 
 })
