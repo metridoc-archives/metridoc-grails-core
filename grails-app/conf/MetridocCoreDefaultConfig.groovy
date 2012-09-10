@@ -25,6 +25,7 @@ metridoc {
                 fileName = file.name
                 beginDate = new Date(file.lastModified())
                 endDate = new Date(file.lastModified())
+                bytes = file.getBytes()
             }
         }
     }
