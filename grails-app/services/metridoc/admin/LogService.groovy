@@ -22,7 +22,11 @@ class LogService {
         INFO, ERROR, WARN
     }
 
-
+    /**
+     * Convert logs in given log file into a html page content
+     * @param response
+     * @param file  logFile which needs to be converted into html
+     */
     public void renderLog(response, file) {
 
         def previous = LineType.INFO
@@ -40,7 +44,11 @@ class LogService {
             lineNum++
         }
     }
-    //convert original string in log file to html string
+    /**
+     * Translate all special character in logging line into html representation.
+     * @param s a logging line
+     * @return a logging line with all special char converted to html representation
+     */
     public static String escape(String s) {
         StringBuilder builder = new StringBuilder();
         boolean previousWasASpace = false;
@@ -73,7 +81,13 @@ class LogService {
         }
         return builder.toString();
     }
-
+    /**
+     * Get the type of a logging line.
+     * If the line given as argument doesn't contain LineType, return the type of previous line
+     * @param line a logging line
+     * @param previous lineType of previous logging line
+     * @return lineType of the line given as argument
+     */
     public LineType getLineType(line, previous) {
         if (line.contains(LineType.INFO.toString())) {
             return LineType.INFO
@@ -133,12 +147,23 @@ class LogService {
         }
     }
     /**
-     * Get a logging line's type
-     * @param line escaped logging line
-     * @param previousLogName line type of previous line
-     * @return logging line type
+     * Convert the logName in the line to a link
+     * @return line content in which all logNames are converted to links
+     */
+    private static addATag(line, logName) {
+        line = line.replaceAll( logName, "<a href=\"#\" class=\""
+                +logName.replaceAll("\\.","\\_")+"ATag logNameATag\">"+logName+"</a>" )
+        return line
+    }
+    /**
+     * Get a logging line's LogName.
+     * If given line doesn't contain a logName, use previous line's logName.
+     * @param a logging line
+     * @param previousLogName LogName of the previous line
+     * @return logName of the line given in argument
      */
     private static getLogNameClass(line, previousLogName) {
+
         def m = line =~ /(INFO|WARN)\s\&nbsp\;([^\s]*)\s\&nbsp\;-/
         def n = line =~ /(ERROR)\s([^\s]*)\s\&nbsp\;-/
         if(m.find()) {
@@ -149,19 +174,13 @@ class LogService {
             return previousLogName
         }
     }
-
-    private static addATag(line, logName) {
-        line = line.replaceAll( logName, "<a href=\"#\" class=\""
-                +logName.replaceAll("\\.","\\_")+"ATag logNameATag\">"+logName+"</a>" )
-        return line
-    }
     /**
      * Each line in log file corresponds to a <div> in html
-     * @param line escaped line content
-     * @param previous   line type
-     * @param previousDateClass   previous Date
-     * @param previousLogNameClass
-     * @param lineNum
+     * @param line  line content
+     * @param previous   line type of previous logging line
+     * @param previousDateClass   DateType of previous logging line
+     * @param previousLogNameClass  LogName of previous logging line
+     * @param lineNum  index of the line given as argument
      * @return
      */
     def addDiv(String line, previous, previousDateClass, previousLogNameClass, lineNum) {
