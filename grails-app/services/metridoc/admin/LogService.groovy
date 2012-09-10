@@ -25,7 +25,6 @@ class LogService {
 
     public void renderLog(response, file) {
 
-
         def previous = LineType.INFO
         def previousDateClass = "all"
         def previousLogNameClass = "none"
@@ -41,7 +40,7 @@ class LogService {
             lineNum++
         }
     }
-
+    //convert original string in log file to html string
     public static String escape(String s) {
         StringBuilder builder = new StringBuilder();
         boolean previousWasASpace = false;
@@ -92,13 +91,19 @@ class LogService {
 
         return previous
     }
-
+    /**
+     * Categorize a logging line's time.
+     * If a line doesn't contain time information, categorize it as the time of last line.
+     * @param line escaped logging line content
+     * @param previousDate Time range of the previous line
+     * @param now Current time
+     * @return Time range of the line in argument
+     */
     private static getDateClass(line, previousDate, now) {
         def m = line =~ /(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})/
         def result = "all"
         if(m.lookingAt()) {
             def date = Date.parse(DATE_FORMAT, m.group(1)).getTime()
-
 
             def dateTest = {
                 def nowTime = now.time
@@ -127,11 +132,19 @@ class LogService {
             return previousDate
         }
     }
-
+    /**
+     * Get a logging line's type
+     * @param line escaped logging line
+     * @param previousLogName line type of previous line
+     * @return logging line type
+     */
     private static getLogNameClass(line, previousLogName) {
-        def m = line =~ /(INFO|ERROR|WARN)\s\&nbsp\;([^\s]*)\s\&nbsp\;-/
+        def m = line =~ /(INFO|WARN)\s\&nbsp\;([^\s]*)\s\&nbsp\;-/
+        def n = line =~ /(ERROR)\s([^\s]*)\s\&nbsp\;-/
         if(m.find()) {
             return m.group(2)
+        }else if(n.find()){
+            return n.group(2)
         } else {
             return previousLogName
         }
@@ -142,7 +155,15 @@ class LogService {
                 +logName.replaceAll("\\.","\\_")+"ATag logNameATag\">"+logName+"</a>" )
         return line
     }
-
+    /**
+     * Each line in log file corresponds to a <div> in html
+     * @param line escaped line content
+     * @param previous   line type
+     * @param previousDateClass   previous Date
+     * @param previousLogNameClass
+     * @param lineNum
+     * @return
+     */
     def addDiv(String line, previous, previousDateClass, previousLogNameClass, lineNum) {
 
         def dateClass = getDateClass(line, previousDateClass, new Date())
