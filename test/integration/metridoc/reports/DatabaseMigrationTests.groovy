@@ -29,6 +29,7 @@ class DatabaseMigrationTests {
         //table exists
         assert tableExists(sql, "shiro_user")
         assert tableExists(sql, "application_properties")
+        assert tableExists(sql, "loaded_files")
     }
 
     @Test
