@@ -22,16 +22,8 @@ class FileToBatchIngestorTest {
         ingestor.maxFiles = 2
         assert 0 == ingestor.maxFilesToProcess
 
-        ingestor.retrieveFiles = {[1,2]}
+        ingestor.files = [1,2]
         ingestor.maxFiles = 3
         assert 2 == ingestor.maxFilesToProcess
-
-        //one file
-        def file = File.createTempFile("foo", null)
-        file.deleteOnExit()
-        ingestor.retrieveFiles = {
-            return file
-        }
-        assert 1 == ingestor.maxFilesToProcess
     }
 }

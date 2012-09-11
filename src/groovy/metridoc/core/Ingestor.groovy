@@ -9,15 +9,17 @@ package metridoc.core
  */
 abstract class Ingestor {
 
-    def runIngest(Closure closure) {
+    def ingest(Closure closure) {
         prepareClosure(closure)
         closure.call()
         this.doIngest()
     }
 
     def prepareClosure(Closure closure) {
-        closure.delegate = this
-        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        if (closure) {
+            closure.delegate = this
+            closure.resolveStrategy = Closure.DELEGATE_FIRST
+        }
     }
 
     abstract doIngest()
