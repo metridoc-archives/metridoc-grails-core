@@ -2,6 +2,7 @@ package metridoc.core
 
 import org.apache.camel.component.file.GenericFileFilter
 import org.apache.camel.component.file.GenericFile
+import org.apache.shiro.crypto.hash.Sha256Hash
 
 class FileIngestorFilterService implements GenericFileFilter {
 
@@ -13,8 +14,20 @@ class FileIngestorFilterService implements GenericFileFilter {
         return false  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    boolean acceptFromFilter(GenericFile file) {
+    private compareBytes(GenericFile file, sha256) {
+        def bytes = file.file.bytes
+        assert bytes: "file must contain at 1 byte"
+        new Sha256Hash(bytes).toHex() == sha256
+    }
 
+    boolean acceptFromFilter(GenericFile file) {
+        for(filter in filtersByName.values()) {
+            if(filter.call(file)) {
+                return true
+            }
+        }
+
+        return false
     }
 
     def getFiltersByName() {
@@ -23,6 +36,10 @@ class FileIngestorFilterService implements GenericFileFilter {
         }
 
         _filtersByName = getFiltersByName(grailsApplication.config)
+    }
+
+    private static filterFile(file, closure) {
+        return closure.call(file)
     }
 
     private static getFiltersByName(ConfigObject config) {
