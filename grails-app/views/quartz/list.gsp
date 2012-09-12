@@ -8,6 +8,15 @@
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 <md:report>
+    <div class="nav" role="navigation">
+        <ul>
+            <li><g:link class="home" controller="home" action="index"><g:message code="default.home.label"
+                                                                                 default="Home"/></g:link></li>
+            <li><g:link class="log" controller="log" action="index"><g:message code="default.log.label"
+                                                                                default="Log"/></g:link></li>
+
+        </ul>
+    </div>
     <g:if test="${workflows}">
         <table>
             <thead>
@@ -18,8 +27,8 @@
                 <th class="centeredContent">Next Run</th>
                 <th class="centeredContent">Last Duration</th>
             </tr>
-
             </thead>
+
             <tbody>
                 <g:each in="${workflows}" var="workflow" status="i">
                     <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
@@ -38,7 +47,7 @@
                                 </g:link>
                             </g:else>
                         </td>
-                        <td>${workflow.name}</td>
+                        <td><g:link action="show" params="[id: workflow.unCapName]">${workflow.name}</g:link></td>
                         <td class="centeredContent">${workflow.previousFireTime}</td>
                         <td class="centeredContent">${workflow.nextFireTime}</td>
                         <td class="centeredContent">${workflow.previousDuration}</td>

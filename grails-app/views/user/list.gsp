@@ -44,6 +44,7 @@
 
             </tr>
             </thead>
+
             <tbody>
             <g:each in="${shiroUserInstanceList}" status="i" var="shiroUserInstance">
                 <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">

@@ -96,7 +96,7 @@ class QuartzService {
         def result = []
         grailsApplication.workflowClasses.each {GrailsClass gClass ->
             def notAbstract = !gClass.isAbstract()
-            if(notAbstract) {
+            if (notAbstract) {
                 result.add(gClass)
             }
         }
@@ -106,7 +106,6 @@ class QuartzService {
 
     def listWorkflows(params) {
         def workflows = []
-
         doWorkflowClassesIteration {unCapName, grailsClass ->
             def workflowModel = [name: "$grailsClass.name", unCapName: unCapName]
             workflows << workflowModel
@@ -114,6 +113,19 @@ class QuartzService {
         }
 
         return listWorkflowsWithOffsetAndMax(params, workflows)
+    }
+
+    def getAWorkflow(params) {
+        def name = params.id
+        def workflow = null;
+        doWorkflowClassesIteration {unCapName, grailsClass ->
+            def workflowModel = [name: "$grailsClass.name", unCapName: unCapName]
+            if (workflowModel.unCapName.equals(name)) {
+                loadJobDetails(grailsClass, workflowModel)
+                workflow =  workflowModel
+            }
+        }
+        return workflow
     }
 
     def totalWorkflowCount() {
@@ -159,7 +171,7 @@ class QuartzService {
         }
 
         def previousDuration = workflowClass.previousDuration
-        if(previousDuration) {
+        if (previousDuration) {
             workflowModel.previousDuration = previousDuration
         }
 

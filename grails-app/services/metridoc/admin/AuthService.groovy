@@ -10,8 +10,10 @@ class AuthService {
 
     def mailService
     def grailsApplication
+    /*A table of Time when the ResetPassword link is generated corresponding to each ResetPassword ID*/
     def dateById = [:]
     public static final FIFTEEN_MINUTES = 1000 * 60 * 15
+    //
     def resetableUserById = [:]
 
     def addUserById(id, user) {
