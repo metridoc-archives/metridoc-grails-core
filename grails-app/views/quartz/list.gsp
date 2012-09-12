@@ -34,7 +34,7 @@
                     <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
                         <td class="centeredContent">
                             <g:if test="${workflow.lastException}">
-                                <g:link action="exception" params="[id: workflow.unCapName]">
+                                <g:link action="show" params="[id: workflow.unCapName]">
                                     <r:img plugin="metridoc-core" dir="images/skin" file="exclamation.png"/>
                                 </g:link>
                             </g:if>

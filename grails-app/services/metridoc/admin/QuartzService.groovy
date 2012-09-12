@@ -10,6 +10,7 @@ import static org.quartz.TriggerBuilder.newTrigger
 import static org.quartz.TriggerKey.*
 import grails.plugin.quartz2.SimpleJobDetail
 import org.codehaus.groovy.grails.commons.GrailsClass
+import org.apache.commons.lang.exception.ExceptionUtils
 
 class QuartzService {
 
@@ -126,6 +127,17 @@ class QuartzService {
             }
         }
         return workflow
+    }
+
+    def getWorkflowErrorMsg(uncapName){
+        log.info "WORKFLOW_BY_NAME${workflowsByName}"
+        def workflow = workflowsByName[uncapName]
+        def errorMessage = null
+        def exception = workflow.lastException
+        if (exception) {
+            errorMessage = ExceptionUtils.getStackTrace(exception).encodeAsHTML()
+        }
+        return errorMessage
     }
 
     def totalWorkflowCount() {

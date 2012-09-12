@@ -53,17 +53,20 @@
         <g:form>
             <g:if test="${workflowToShow?.running}">
                 <div>
-                    <span>Running</span>
+                    <span>Running ${workflowToShow?.name}</span>
                     <span><r:img plugin="metridoc-core" dir="images" file="spinner.gif"/></span>
                 </div>
             </g:if>
             <g:else>
                 <fieldset class="buttons">
-                    <g:hiddenField name="id" value="${workflowToShow?.name}"/>
-                    <g:link params="[run: workflowToShow?.unCapName]">Run</g:link>
+                    <g:hiddenField name="id" value="${workflowToShow?.unCapName}"/>
+                    <g:link action="show" params="[run: workflowToShow?.unCapName]">Run</g:link>
                 </fieldset>
             </g:else>
         </g:form>
+
+        <g:render template="exception"/>
+
     </div>
 
 </md:report>

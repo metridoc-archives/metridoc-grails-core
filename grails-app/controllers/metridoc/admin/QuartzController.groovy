@@ -1,7 +1,6 @@
 package metridoc.admin
 
 import org.apache.commons.lang.StringUtils
-import org.apache.commons.lang.exception.ExceptionUtils
 
 class QuartzController {
 
@@ -40,7 +39,7 @@ class QuartzController {
     }
 
     def show(){
-        log.info "show workflow from here"
+
         def run = params.run
         if (run) {
             def workflowToRun = quartzService.workflowsByName[run]
@@ -55,39 +54,38 @@ class QuartzController {
             chain(action: "show", params: params)
         }else{
             def name = params.id
-            log.info "Workflow to show name ${name}"
+            log.info "NAME ${name}"
             def workflowToShow = quartzService.getAWorkflow(params)
+            def workflowErrorMsg = quartzService.getWorkflowErrorMsg(name)
             log.info "Will be showing workflow ${workflowToShow}NAME${workflowToShow.name}#${workflowToShow.previousFireTime}#${workflowToShow.nextFireTime}#${workflowToShow.previousDuration}"
+            log.info "ERROR ${workflowErrorMsg}"
             return [
-                    workflowToShow:workflowToShow
+                    capitalizedWorkflowName: StringUtils.capitalise(name),
+                    workflowToShow:workflowToShow,
+                    errorMessage: workflowErrorMsg,
             ]
         }
 
     }
-
-    def exception() {
-        def workflowName = params.id
-        def workflow = null
-        if (workflowName) {
-            workflow = quartzService.workflowsByName[workflowName]
-        }
-
-        if (!workflow) {
-            render(status: 400, view: "exception", model: [workflowException: "Workflow not specified"])
-        } else {
-            def errorMessage = null
-            def exception = workflow.lastException
-
-            if (exception) {
-                errorMessage = ExceptionUtils.getStackTrace(exception).encodeAsHTML()
-            }
-
-            return [
-                    capitalizedWorkflowName: StringUtils.capitalise(workflowName),
-                    errorMessage: errorMessage,
-                    noErrorMessage: "$workflowName does not have an error",
-            ]
-        }
-
-    }
+//
+//    def exception() {
+//        def workflowName = params.id
+//        def workflow = null
+//        if (workflowName) {
+//            workflow = quartzService.workflowsByName[workflowName]
+//        }
+//
+//        if (!workflow) {
+//            render(status: 400, view: "_exception", model: [workflowException: "Workflow not specified"])
+//        } else {
+//
+//            def errorMessage = quartzService.getWorkflowErrorMsg(workflowName)
+//            return [
+//                    capitalizedWorkflowName: StringUtils.capitalise(workflowName),
+//                    errorMessage: errorMessage,
+//                    noErrorMessage: "$workflowName does not have an error",
+//            ]
+//        }
+//
+//    }
 }
