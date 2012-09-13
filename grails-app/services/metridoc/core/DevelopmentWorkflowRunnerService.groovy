@@ -7,6 +7,7 @@ import org.apache.commons.lang.SystemUtils
 
 class DevelopmentWorkflowRunnerService {
 
+    def quartzService
     def grailsApplication
     def workflowServer
 
@@ -70,9 +71,8 @@ class DevelopmentWorkflowRunnerService {
     }
 
     def runWorkflow(String workflowName) {
-        def mainContext = grailsApplication.mainContext
         def unCappedWorkflowName = StringUtils.uncapitalise(workflowName)
-        def workflow = mainContext."${unCappedWorkflowName}WorkflowClass"
+        def workflow = quartzService.workflowsByName[unCappedWorkflowName]
         workflow.run()
     }
 

@@ -2,16 +2,17 @@ package metridoc.test
 
 class FooWorkflow extends Script {
 
-    def homeService
+    def barWorkflow
 
     @Override
     Object run() {
-        target(runFoo: "main target to run") {
+        target(runFoo: "the main target to run") {
 
-            grailsConsole.info "hey from foo"
+
+            grailsConsole.info "running sample workflow"
 
             //test DI
-            assert homeService
+            assert barWorkflow
 
 
             profile("profiling foo") {
