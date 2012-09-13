@@ -170,9 +170,18 @@ log4j = {
             'org.springframework',
             'org.hibernate',
             'net.sf.ehcache.hibernate',
-            'org.apache'
+            'org.apache',
+            'grails.util.GrailsUtil',
+            'org.grails.plugin.resource',
+            'grails.plugin.webxml.WebxmlGrailsPlugin'
 
-    warn 'metridoc.camel'
+
+
+    warn 'metridoc.camel',
+            'ShiroGrailsPlugin',
+            'org.quartz.core',
+            'org.codehaus.groovy.grails.scaffolding'
+
 
     //logs all job output
     info jobLog: "metridoc.job"

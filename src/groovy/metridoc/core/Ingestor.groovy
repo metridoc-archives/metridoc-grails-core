@@ -1,5 +1,7 @@
 package metridoc.core
 
+import org.codehaus.gant.GantBinding
+
 /**
  * Created with IntelliJ IDEA.
  * User: tbarker
@@ -8,6 +10,15 @@ package metridoc.core
  * To change this template use File | Settings | File Templates.
  */
 abstract class Ingestor {
+
+    GantBinding binding
+
+    Ingestor(GantBinding binding) {
+        this.binding = binding
+    }
+
+    Ingestor() {
+    }
 
     def ingest(Closure closure) {
         prepareClosure(closure)

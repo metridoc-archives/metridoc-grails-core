@@ -22,7 +22,7 @@ class FileToBatchIngestor extends Ingestor {
             file.withInputStream {InputStream stream ->
                 def batch = []
                 stream.eachLine("utf-8") {line, row ->
-                    def parsedLine = parseLine.call(line, row)
+                    def parsedLine = doParseLine(line, row)
                     if (parsedLine) {
                         batch.add(parsedLine)
                     }
@@ -30,25 +30,23 @@ class FileToBatchIngestor extends Ingestor {
                     if (batch.size() >= batchSize && !previewLines) {
                         def clonedBatch = []
                         clonedBatch.addAll(batch)
-                        storeBatch.call(clonedBatch)
+                        doStoreBatch(clonedBatch)
                         batch.clear()
                     }
 
                     if (previewLines) {
                         if (row < previewLines) {
-                            previewLine.call(line)
+                            doPreviewLine(line)
                         }
                     }
                 }
 
                 if (batch) {
-                    storeBatch.call(batch)
+                    doStoreBatch(batch)
                 }
             }
         } catch (Throwable throwable) {
-            if (rollbackFile) {
-                rollbackFile.call(file, throwable)
-            }
+            doRollbackFile(file, throwable)
             throw throwable
         }
     }
@@ -65,8 +63,30 @@ class FileToBatchIngestor extends Ingestor {
         prepareClosures()
         def maxFiles = maxFilesToProcess - 1
         (0..maxFiles).each {index ->
-            iterate(files[index])
+            doIterate(files[index])
         }
+    }
+
+    def doRollbackFile(file, throwable) {
+        if (rollbackFile) {
+            rollbackFile.call(file, throwable)
+        }
+    }
+
+    def doPreviewLine(line) {
+        previewLine.call(line)
+    }
+
+    def doParseLine(line, row) {
+        return parseLine.call(line, row)
+    }
+
+    def doStoreBatch(batch) {
+        storeBatch.call(batch)
+    }
+
+    def doIterate(File file) {
+        iterate.call(file)
     }
 
     def prepareClosures() {
