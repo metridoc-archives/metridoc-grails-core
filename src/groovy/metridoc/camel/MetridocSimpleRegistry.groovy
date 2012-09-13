@@ -15,12 +15,8 @@
 
 package metridoc.camel;
 
-import groovy.lang.Binding;
-import org.apache.camel.spi.Registry;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import org.apache.camel.spi.Registry;
 
 /**
  *
@@ -30,14 +26,24 @@ import java.util.Set;
  * @author Tommy Barker
  */
 public class MetridocSimpleRegistry implements Registry{
-    private final Binding services;
 
-    public MetridocSimpleRegistry(Binding services) {
-        this.services = services;
+    Binding binding
+    Registry registry
+
+    public MetridocSimpleRegistry(Binding binding) {
+        this.binding = binding;
+    }
+
+    public MetridocSimpleRegistry() {
     }
 
     public Object lookup(String name) {
-        return services.getVariables().get(name);
+        def object = binding.getVariables().get(name);
+        if(object == null && registry != null) {
+            object = registry.lookup(name)
+        }
+
+        return object
     }
 
     public <T> T lookup(String name, Class<T> type) {
@@ -47,7 +53,10 @@ public class MetridocSimpleRegistry implements Registry{
 
     public <T> Map<String, T> lookupByType(Class<T> type) {
         Map<String, T> result = new HashMap<String, T>();
-        Map variables = services.getVariables();
+        if(registry) {
+            result.putAll(registry.lookupByType(type))
+        }
+        Map variables = binding.getVariables();
         Set keySet = variables.keySet();
 
         for(Object key : keySet) {
