@@ -15,13 +15,14 @@
 package metridoc.targets
 
 import metridoc.camel.GroovyRouteBuilder
-import metridoc.camel.MetridocCamelContext
 import metridoc.camel.MetridocSimpleRegistry
+import metridoc.camel.SqlPlusComponent
 import metridoc.utils.CamelUtils
 import org.apache.camel.builder.RouteBuilder
 import org.apache.camel.component.file.GenericFile
 import org.apache.camel.component.file.GenericFileFilter
-import metridoc.camel.SqlPlusComponent
+import org.apache.camel.impl.DefaultCamelContext
+import org.apache.camel.impl.DefaultCamelContextNameStrategy
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,42 +31,46 @@ import metridoc.camel.SqlPlusComponent
  * Time: 9:42 AM
  */
 
-if (!binding.hasVariable("camelContext")) {
-    registry = new MetridocSimpleRegistry(binding)
-    camelContext = new MetridocCamelContext(registry)
-    template = camelContext.createProducerTemplate()
-    camelContext.addComponent("sqlplus", new SqlPlusComponent(camelContext))
-    camelContext.start()
-}
+
 
 getEndpoint = {String uri ->
-    camelContext.getEndpoint(uri)
+    retrieveCamelContext().getEndpoint(uri)
 }
 
 runRoute = {Object[] params ->
-    if(params[0] instanceof Closure) {
-        return doRunRoute(params[0])
-    }
-
-    return doRunRoute(params[0], params[1])
+    return doRunRoute(params[0])
 }
 
-createFileFilter =  {Closure closure ->
+createFileFilter = {Closure closure ->
     [
-        accept: {GenericFile file ->
-            return closure.call(file)
-        }
+            accept: {GenericFile file ->
+                return closure.call(file)
+            }
     ] as GenericFileFilter
 }
 
+
+def retrieveCamelContext() {
+    if (!binding.hasVariable("camelScriptingContext")) {
+        camelScriptingRegistry = new MetridocSimpleRegistry(binding)
+        camelScriptingContext = new DefaultCamelContext(camelScriptingRegistry)
+        camelScriptingContext.nameStrategy = new DefaultCamelContextNameStrategy("metridocCamelScripting")
+        camelScriptingContext.setLazyLoadTypeConverters(true)
+        camelScriptingTemplate = camelScriptingContext.createProducerTemplate()
+        camelScriptingContext.addComponent("sqlplus", new SqlPlusComponent(camelScriptingContext))
+        camelScriptingContext.start()
+    }
+
+    return camelScriptingContext
+}
 
 def RouteBuilder doRunRoute(Closure closure) {
 
     def routeBuilder = new GroovyRouteBuilder()
     routeBuilder.setRoute(closure)
 
-    camelContext.addRoutes(routeBuilder)
-    CamelUtils.waitTillDone(camelContext)
+    retrieveCamelContext().addRoutes(routeBuilder)
+    CamelUtils.waitTillDone(retrieveCamelContext())
 
     def exception = routeBuilder.routeException
     if (exception) {
@@ -75,6 +80,7 @@ def RouteBuilder doRunRoute(Closure closure) {
     return routeBuilder
 }
 
-def doRunRoute(RouteBuilder routeBuilder, Closure closure) {
-    camelContext.addRoutes(routeBuilder)
+def doRunRoute(RouteBuilder routeBuilder) {
+    retrieveCamelContext().addRoutes(routeBuilder)
+    CamelUtils.waitTillDone(retrieveCamelContext())
 }

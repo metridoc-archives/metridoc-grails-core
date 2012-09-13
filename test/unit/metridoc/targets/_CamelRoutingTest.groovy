@@ -35,7 +35,7 @@ class _CamelRoutingTest {
                 def mock = getEndpoint("mock:endBasic")
                 mock.reset()
                 mock.expectedMessageCount(1)
-                ProducerTemplate template = camelContext.createProducerTemplate()
+                ProducerTemplate template = camelScriptingContext.createProducerTemplate()
                 template.requestBody("mock:endBasic", ObjectUtils.NULL)
                 mock.assertIsSatisfied()
             }

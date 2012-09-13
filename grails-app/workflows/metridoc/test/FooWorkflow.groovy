@@ -1,5 +1,8 @@
 package metridoc.test
 
+import org.apache.camel.ProducerTemplate
+import org.apache.commons.lang.ObjectUtils
+
 class FooWorkflow extends Script {
 
     def barWorkflow
@@ -18,6 +21,16 @@ class FooWorkflow extends Script {
             profile("profiling foo") {
                 Thread.sleep(500)
             }
+
+            def routeRan = false
+            runRoute {
+                from("direct:fooWorkflow").process {
+                    routeRan = true
+                }
+            }
+
+            camelScriptingTemplate.requestBody("direct:fooWorkflow", ObjectUtils.NULL)
+            assert routeRan
         }
     }
 }

@@ -54,22 +54,5 @@ class MetridocCamelContext extends DefaultCamelContext {
         this.setLazyLoadTypeConverters(true)
         this.disableJMX()
         this.nameStrategy = new DefaultCamelContextNameStrategy("metridocCamel")
-
-        addShutdownHook {
-            if (stopAtShutdown) {
-                log.debug("calling shutdown hook to stop camel")
-                if (this.status.stopped) {
-                    log.debug("camel has already stopped, no need to stop it")
-                } else {
-                    try {
-                        this.stop()
-                    } catch (Exception e) {
-                        log.error("Could not properly stop the camel context", e)
-                    }
-                }
-            }
-
-            log.debug("camel context has shutdown")
-        }
     }
 }

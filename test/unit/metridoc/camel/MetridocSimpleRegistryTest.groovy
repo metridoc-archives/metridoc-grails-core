@@ -17,8 +17,11 @@ class MetridocSimpleRegistryTest {
     void "can set a backup registry for the registry"() {
         Binding binding = new Binding()
         Registry registry = new SimpleRegistry()
+        binding.appCtx = [
+            registry: registry
+        ]
         registry.put("foo", "bar")
-        Registry metridocRegistry = new MetridocSimpleRegistry(registry: registry, binding:binding)
+        Registry metridocRegistry = new MetridocSimpleRegistry(binding:binding)
         assert "bar" == metridocRegistry.lookup("foo")
         assert "bar" == metridocRegistry.lookupByType(String)["foo"]
     }

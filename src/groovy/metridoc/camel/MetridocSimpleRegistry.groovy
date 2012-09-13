@@ -25,10 +25,9 @@ import org.apache.camel.spi.Registry;
  *
  * @author Tommy Barker
  */
-public class MetridocSimpleRegistry implements Registry{
+public class MetridocSimpleRegistry implements Registry {
 
     Binding binding
-    Registry registry
 
     public MetridocSimpleRegistry(Binding binding) {
         this.binding = binding;
@@ -39,11 +38,22 @@ public class MetridocSimpleRegistry implements Registry{
 
     public Object lookup(String name) {
         def object = binding.getVariables().get(name);
-        if(object == null && registry != null) {
+        def registry = getApplicationContextRegistry()
+        if (object == null && registry) {
             object = registry.lookup(name)
         }
 
         return object
+    }
+
+    def getApplicationContextRegistry() {
+        def registry
+        if (binding.hasVariable("appCtx")) {
+            def applicationContext = binding.appCtx
+            registry = applicationContext.registry
+        }
+
+        return registry
     }
 
     public <T> T lookup(String name, Class<T> type) {
@@ -53,15 +63,16 @@ public class MetridocSimpleRegistry implements Registry{
 
     public <T> Map<String, T> lookupByType(Class<T> type) {
         Map<String, T> result = new HashMap<String, T>();
-        if(registry) {
+        def registry = getApplicationContextRegistry()
+        if (registry) {
             result.putAll(registry.lookupByType(type))
         }
         Map variables = binding.getVariables();
         Set keySet = variables.keySet();
 
-        for(Object key : keySet) {
+        for (Object key : keySet) {
             Object value = variables.get(key);
-            if(type.isInstance(value)) {
+            if (type.isInstance(value)) {
                 result.put((String) key, type.cast(value));
             }
         }

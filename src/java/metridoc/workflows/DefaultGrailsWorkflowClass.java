@@ -4,6 +4,7 @@ import groovy.lang.Binding;
 import groovy.lang.Closure;
 import groovy.lang.Script;
 import metridoc.dsl.JobBuilder;
+import org.apache.camel.CamelContext;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.groovy.grails.commons.AbstractInjectableGrailsClass;
 import org.slf4j.Logger;
@@ -62,9 +63,10 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
             reference.getBinding().setVariable("grailsConsole", grailsConsole);
         }
 
+        Binding binding = reference.getBinding();
+
         try {
             getMetaClass().invokeMethod(reference, RUN, new Object[]{});
-            Binding binding = reference.getBinding();
             String targetName = "run" + getName();
             boolean hasTarget = binding.hasVariable(targetName);
             if(hasTarget) {
@@ -82,6 +84,14 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
             previousEndTime = new Date();
             previousDuration = getPreviousDuration(previousEndTime.getTime() - previousFireTime.getTime());
             running.getAndSet(false);
+            if(binding.hasVariable("camelScriptingContext")) {
+                CamelContext camelContext = (CamelContext) binding.getVariable("camelScriptingContext");
+                try {
+                    camelContext.stop();
+                } catch (Exception e) {
+                    logger.warn("had troubles stopping camelContext {}", camelContext.toString());
+                }
+            }
         }
     }
 
