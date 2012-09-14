@@ -101,7 +101,6 @@ class QuartzService {
                 result.add(gClass)
             }
         }
-
         return result
     }
 
@@ -109,20 +108,19 @@ class QuartzService {
         def workflows = []
         doWorkflowClassesIteration {unCapName, grailsClass ->
             def workflowModel = [name: "$grailsClass.name", unCapName: unCapName]
-            workflows << workflowModel
             loadJobDetails(grailsClass, workflowModel)
+            workflows << workflowModel
         }
-
         return listWorkflowsWithOffsetAndMax(params, workflows)
     }
 
-    def getAWorkflow(params) {
-        def name = params.id
+    def getAWorkflow(name) {
         def workflow = null;
         doWorkflowClassesIteration {unCapName, grailsClass ->
             def workflowModel = [name: "$grailsClass.name", unCapName: unCapName]
             if (workflowModel.unCapName.equals(name)) {
                 loadJobDetails(grailsClass, workflowModel)
+                workflowsByName.put(unCapName, workflowModel)
                 workflow =  workflowModel
             }
         }
@@ -130,10 +128,10 @@ class QuartzService {
     }
 
     def getWorkflowErrorMsg(uncapName){
-        log.info "WORKFLOW_BY_NAME${workflowsByName}"
         def workflow = workflowsByName[uncapName]
         def errorMessage = null
         def exception = workflow.lastException
+        log.info "EXCEPTION_IN_${workflow.name}_##${exception}"
         if (exception) {
             errorMessage = ExceptionUtils.getStackTrace(exception).encodeAsHTML()
         }
@@ -159,7 +157,7 @@ class QuartzService {
         max < MAX_LIMIT ? max : MAX_LIMIT
     }
 
-    private loadJobDetails(workflowClass, workflowModel) {
+    def loadJobDetails(workflowClass, workflowModel) {
         def name = StringUtils.uncapitalise(workflowClass.name)
         def trigger = quartzScheduler.getTrigger(triggerKey("${name}Trigger", "Workflow"))
 

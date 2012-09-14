@@ -24,24 +24,27 @@
             <li><g:link class="home" controller="home" action="index">
                 <g:message code="default.home.label" default="Home"/>
             </g:link></li>
-            <li><g:link class="create" controller="user" action="create"><g:message code="default.create.label" args="['User']" default="Create User"/></g:link></li>
-            <li><g:link class="list" controller="role" action="list"><g:message code="default.list.label" args="['Role']" default="Role List"/></g:link></li>
-            <li><g:link class="create" controller="role" action="create"><g:message code="default.create.label" args="['Role']" default="Create Role"/></g:link></li>
+            <li><g:link class="create" controller="user" action="create"><g:message code="default.create.label"
+                                                                                    args="['User']"
+                                                                                    default="Create User"/></g:link></li>
+            <li><g:link class="list" controller="role" action="list"><g:message code="default.list.label"
+                                                                                args="['Role']"
+                                                                                default="Role List"/></g:link></li>
+            <li><g:link class="create" controller="role" action="create"><g:message code="default.create.label"
+                                                                                    args="['Role']"
+                                                                                    default="Create Role"/></g:link></li>
         </ul>
     </div>
-%{--<g:set var="entityName" value="${message(code: 'shiroUser.label', default: 'ShiroUser')}"/>--}%
-    <div id="list-shiroUser" class="content scaffold-list" role="main">
 
+    <div id="list-shiroUser" class="content scaffold-list" role="main">
         <g:if test="${flash.message}">
             <div class="message" role="status">${flash.message}</div>
         </g:if>
         <table>
             <thead>
             <tr>
-
                 <g:sortableColumn property="username"
                                   title="Users"/>
-
             </tr>
             </thead>
 

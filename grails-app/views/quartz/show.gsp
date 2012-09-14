@@ -12,7 +12,7 @@
         <ul>
             <li><g:link class="home" controller="home" action="index"><g:message code="default.home.label"
                                                                                  default="Home"/></g:link></li>
-            <li><g:link class="jobList" controller="quartz" action="list"><g:message code="default.list.label"
+            <li><g:link class="list" controller="quartz" action="list"><g:message code="default.list.label"
                                                                                      args="['Job']"
                                                                                      default="Job List"/></g:link></li>
             <li><g:link class="log" controller="log" action="index"><g:message code="default.log.label"
@@ -22,10 +22,9 @@
     </div>
 
     <div id="show-workflow" class="content scaffold-show" role="main">
-        <h1><g:message code="default.job.label" args="[workflowToShow?.name]" default="Job"/></h1>
+        <h1><g:message code="default.job.label" args="[capitalizedWorkflowName]" default="Job"/></h1>
 
         <ol class="property-list shiroUser">
-            <g:if test="${workflowToShow}">${workflowToShow}</g:if>
 
             <g:if test="${workflowToShow?.previousFireTime}">
                 <li class="fieldcontain">
@@ -51,18 +50,19 @@
 
         </ol>
         <g:form>
-            <g:if test="${workflowToShow?.running}">
-                <div>
-                    <span>Running ${workflowToShow?.name}</span>
-                    <span><r:img plugin="metridoc-core" dir="images" file="spinner.gif"/></span>
-                </div>
-            </g:if>
-            <g:else>
-                <fieldset class="buttons">
-                    <g:hiddenField name="id" value="${workflowToShow?.unCapName}"/>
-                    <g:link action="show" params="[run: workflowToShow?.unCapName]">Run</g:link>
-                </fieldset>
-            </g:else>
+            %{--TODO: run button(currently not working)--}%
+            %{--<g:if test="${workflowToShow?.running}">--}%
+                %{--<div>--}%
+                    %{--<span>Running ${workflowToShow?.name}</span>--}%
+                    %{--<span><r:img plugin="metridoc-core" dir="images" file="spinner.gif"/></span>--}%
+                %{--</div>--}%
+            %{--</g:if>--}%
+            %{--<g:else>--}%
+                %{--<fieldset class="buttons">--}%
+                    %{--<g:hiddenField name="id" value="${workflowToShow?.unCapName}"/>--}%
+                    %{--<g:link action="show" params="[run: workflowToShow?.unCapName]">Run</g:link>--}%
+                %{--</fieldset>--}%
+            %{--</g:else>--}%
         </g:form>
 
         <g:render template="exception"/>
