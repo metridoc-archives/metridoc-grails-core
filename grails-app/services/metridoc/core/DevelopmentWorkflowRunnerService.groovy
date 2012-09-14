@@ -44,13 +44,19 @@ class DevelopmentWorkflowRunnerService {
                                 }
                             }
 
-                        } catch (Exception ex) {
-                            log.error("Exception occurred while processing a message from the workflow server", ex)
-                            output << "error${newLine}"
+                        } catch (SocketException ex) {
+                            if(ex.message.contains("Socket closed"))
+                            log.debug("Socket was closed, workflow server has likely been shutdown")
+                            notDone = false
                         }
                     }
                 } catch (Exception e) {
-                    log.error("unexpected error with workflow server", e)
+                    log.error("unexpected error with workflow server, shutting it down", e)
+                    try {
+                        workflowServer.close()
+                    } catch (Exception e) {
+                        //do nothing, fail silently
+                    }
                 }
             }
         }

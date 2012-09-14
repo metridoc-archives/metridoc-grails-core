@@ -180,7 +180,8 @@ log4j = {
     warn 'metridoc.camel',
             'ShiroGrailsPlugin',
             'org.quartz.core',
-            'org.codehaus.groovy.grails.scaffolding'
+            'org.codehaus.groovy.grails.scaffolding',
+            'metridoc.utils.CamelUtils'
 
 
     //logs all job output
