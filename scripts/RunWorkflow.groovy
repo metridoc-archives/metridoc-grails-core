@@ -12,12 +12,11 @@ target(main: "Runs a workflow via the commandline instead of in he application")
         def s = new Socket(InetAddress.getLocalHost(), 4444);
         try {
             s.withStreams { input, output ->
-                if (argsMap.x) {
-                    output << "exit${newLine}"
-                } else {
-                    output << "${workflowName}${newLine}"
-                }
+                output << "${workflowName}${newLine}"
                 def response = input.newReader().readLine()
+                if("error" == response) {
+                    throw new RuntimeException("error occurred running workflow ${workflowName}")
+                }
                 event('StatusUpdate', ["client received message [${response}] from server"])
             }
         } finally {
@@ -55,7 +54,7 @@ checkServer = {
 
     thread.join(10000)
 
-    if(pingException) {
+    if (pingException) {
         return false
     }
 

@@ -54,7 +54,7 @@ class DevelopmentWorkflowRunnerService {
                     log.error("unexpected error with workflow server, shutting it down", e)
                     try {
                         workflowServer.close()
-                    } catch (Exception e) {
+                    } catch (Exception exception) {
                         //do nothing, fail silently
                     }
                 }
