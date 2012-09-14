@@ -18,7 +18,9 @@ class MetridocSimpleRegistryTest {
         Binding binding = new Binding()
         Registry registry = new SimpleRegistry()
         binding.appCtx = [
-            registry: registry
+            camelContext: [
+                    registry:registry
+            ]
         ]
         registry.put("foo", "bar")
         Registry metridocRegistry = new MetridocSimpleRegistry(binding:binding)

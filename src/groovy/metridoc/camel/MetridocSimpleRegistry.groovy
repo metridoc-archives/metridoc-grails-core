@@ -50,7 +50,10 @@ public class MetridocSimpleRegistry implements Registry {
         def registry
         if (binding.hasVariable("appCtx")) {
             def applicationContext = binding.appCtx
-            registry = applicationContext.registry
+            def camelContext = applicationContext.camelContext
+            if(camelContext) {
+                registry = camelContext.registry
+            }
         }
 
         return registry
