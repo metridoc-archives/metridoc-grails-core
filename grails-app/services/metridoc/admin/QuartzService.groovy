@@ -1,16 +1,14 @@
 package metridoc.admin
 
 import grails.plugin.quartz2.InvokeMethodJob
+import grails.plugin.quartz2.SimpleJobDetail
 import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang.exception.ExceptionUtils
+import org.codehaus.groovy.grails.commons.GrailsClass
 import org.quartz.JobDataMap
 
-import static org.quartz.JobBuilder.newJob
 import static org.quartz.TriggerBuilder.newTrigger
-
-import static org.quartz.TriggerKey.*
-import grails.plugin.quartz2.SimpleJobDetail
-import org.codehaus.groovy.grails.commons.GrailsClass
-import org.apache.commons.lang.exception.ExceptionUtils
+import static org.quartz.TriggerKey.triggerKey
 
 class QuartzService {
 
@@ -51,7 +49,7 @@ class QuartzService {
             if (schedule) {
 
                 def triggerBuilder = newTrigger()
-                        .withIdentity("${name}Trigger", "Workflow").withSchedule(schedule)
+                    .withIdentity("${name}Trigger", "Workflow").withSchedule(schedule)
                 if (startNow == true) {
                     triggerBuilder = triggerBuilder.startNow()
                 }
@@ -88,7 +86,7 @@ class QuartzService {
     private loadJobData() {
         doWorkflowClassesIteration {unCapName, grailsClass ->
             jobDataByName[unCapName] = new JobDataMap(
-                    [targetObject: grailsClass, targetMethod: "run"]
+                [targetObject: grailsClass, targetMethod: "run"]
             )
         }
     }
@@ -121,13 +119,13 @@ class QuartzService {
             if (workflowModel.unCapName.equals(name)) {
                 loadJobDetails(grailsClass, workflowModel)
                 workflowsByName.put(unCapName, workflowModel)
-                workflow =  workflowModel
+                workflow = workflowModel
             }
         }
         return workflow
     }
 
-    def getWorkflowErrorMsg(uncapName){
+    def getWorkflowErrorMsg(uncapName) {
         def workflow = workflowsByName[uncapName]
         def errorMessage = null
         def exception = workflow.lastException
@@ -136,6 +134,17 @@ class QuartzService {
             errorMessage = ExceptionUtils.getStackTrace(exception).encodeAsHTML()
         }
         return errorMessage
+    }
+
+    def runJob(jobName) {
+        def workflowToRun = workflowsByName[jobName]
+        if (workflowToRun) {
+            Thread.start {
+                workflowToRun.run()
+            }
+        } else {
+            log.warn "Could not run $jobName since it does not exist, available workflows are ${workflowsByName}"
+        }
     }
 
     def totalWorkflowCount() {

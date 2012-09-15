@@ -12,28 +12,34 @@ class QuartzController {
     }
 
     def list() {
-        def run = params.run
-        if (run) {
-            def workflowToRun = quartzService.workflowsByName[run]
-            if (workflowToRun) {
-                Thread.start {
-                    workflowToRun.run()
-                }
-            } else {
-                log.info "Could not run $run since it does not exist"
-            }
-            params.remove("run")
-            chain(action: "list", params: params)
+        def workflows = quartzService.listWorkflows(params)
+        def workflowCount = quartzService.totalWorkflowCount()
+        def showPagination = workflowCount > quartzService.getMax(params)
+        return [
+            workflows: workflows,
+            showPagination: showPagination,
+            workflowCount: workflowCount
+        ]
+    }
 
+    def jobListOnly() {
+        def workflows = quartzService.listWorkflows(params)
+        def workflowCount = quartzService.totalWorkflowCount()
+        def showPagination = workflowCount > quartzService.getMax(params)
+        return [
+            workflows: workflows,
+            showPagination: showPagination,
+            workflowCount: workflowCount
+        ]
+    }
+
+    def runJob() {
+        def workflowName = params.id
+        if (workflowName) {
+            quartzService.runJob(workflowName)
+            render "job ${workflowName} running"
         } else {
-            def workflows = quartzService.listWorkflows(params)
-            def workflowCount = quartzService.totalWorkflowCount()
-            def showPagination = workflowCount > quartzService.getMax(params)
-            return [
-                    workflows: workflows,
-                    showPagination: showPagination,
-                    workflowCount: workflowCount
-            ]
+            render "no job specified"
         }
     }
 
@@ -63,13 +69,13 @@ class QuartzController {
         def workflowErrorMsg = quartzService.getWorkflowErrorMsg(unCapName)
 
         return [
-                capitalizedWorkflowName: StringUtils.capitalise(unCapName),
-                workflowToShow: workflowToShow,
-                errorMessage: workflowErrorMsg,
+            capitalizedWorkflowName: StringUtils.capitalise(unCapName),
+            workflowToShow: workflowToShow,
+            errorMessage: workflowErrorMsg,
         ]
     }
 
-    def showException(){
+    def showException() {
         def workflowName = params.id
         def workflow = null
         if (workflowName) {
@@ -87,9 +93,9 @@ class QuartzController {
             }
 
             return [
-                    capitalizedWorkflowName: StringUtils.capitalise(workflowName),
-                    errorMessage: errorMessage,
-                    noErrorMessage: "$workflowName does not have an error",
+                capitalizedWorkflowName: StringUtils.capitalise(workflowName),
+                errorMessage: errorMessage,
+                noErrorMessage: "$workflowName does not have an error",
             ]
         }
 
