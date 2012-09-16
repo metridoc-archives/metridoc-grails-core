@@ -47,7 +47,7 @@ checkServer = {
             try {
                 s.close()
             } catch (Exception ex) {
-                grailsConsole.error(ex.message)
+                //do nothing
             }
         }
     }

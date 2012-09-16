@@ -19,13 +19,20 @@ class QuartzService {
     def quartzScheduler
     def jobDataByName = [:]
     def jobsByName = [:]
-    def workflowsByName = [:]
+    private _workflowsByName = [:]
 
     def scheduleJobs() {
         loadAllJobInfo()
         triggersByName.each {name, trigger ->
             quartzScheduler.scheduleJob(jobsByName[name], trigger)
         }
+    }
+
+    def getWorkflowsByName() {
+        if(_workflowsByName) return _workflowsByName
+
+        loadWorkflows()
+        return _workflowsByName
     }
 
     def loadAllJobInfo() {
@@ -37,7 +44,7 @@ class QuartzService {
 
     private loadWorkflows() {
         doWorkflowClassesIteration {name, grailsClass ->
-            workflowsByName[name] = grailsClass
+            _workflowsByName[name] = grailsClass
         }
     }
 
@@ -118,7 +125,7 @@ class QuartzService {
             def workflowModel = [name: "$grailsClass.name", unCapName: unCapName]
             if (workflowModel.unCapName.equals(name)) {
                 loadJobDetails(grailsClass, workflowModel)
-                workflowsByName.put(unCapName, workflowModel)
+                _workflowsByName.put(unCapName, workflowModel)
                 workflow = workflowModel
             }
         }
@@ -126,7 +133,7 @@ class QuartzService {
     }
 
     def getWorkflowErrorMsg(uncapName) {
-        def workflow = workflowsByName[uncapName]
+        def workflow = _workflowsByName[uncapName]
         def errorMessage = null
         def exception = workflow.lastException
         log.info "EXCEPTION_IN_${workflow.name}_##${exception}"
@@ -137,13 +144,13 @@ class QuartzService {
     }
 
     def runJob(jobName) {
-        def workflowToRun = workflowsByName[jobName]
+        def workflowToRun = _workflowsByName[jobName]
         if (workflowToRun) {
             Thread.start {
                 workflowToRun.run()
             }
         } else {
-            log.warn "Could not run $jobName since it does not exist, available workflows are ${workflowsByName}"
+            log.warn "Could not run $jobName since it does not exist, available workflows are ${_workflowsByName}"
         }
     }
 

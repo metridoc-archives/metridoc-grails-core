@@ -79,6 +79,7 @@ class DevelopmentWorkflowRunnerService {
     def runWorkflow(String workflowName) {
         def unCappedWorkflowName = StringUtils.uncapitalise(workflowName)
         def workflow = quartzService.workflowsByName[unCappedWorkflowName]
+        assert workflow: "workflow $workflowName does not exist"
         workflow.run()
     }
 

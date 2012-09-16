@@ -44,12 +44,16 @@ $(document).ready(function () {
      $('#metridocNavigation li').hover(
          function () {
              //show its submenu
-             $('ul', this).stop().slideDown(100);
+            //TODO: delete this if show hide works better
+//             $('ul', this).stop().slideDown(100);
+             $('ul', this).stop().show();
 
          },
          function () {
              //hide its submenu
-             $('ul', this).stop().slideUp(100);
+             //TODO: delete this if show hide works better
+//             $('ul', this).stop().slideUp(100);
+             $('ul', this).stop().hide();
          }
      );
 
