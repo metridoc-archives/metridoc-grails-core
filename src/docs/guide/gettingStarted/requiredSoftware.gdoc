@@ -5,6 +5,11 @@
 * Text editor or IDE (IntelliJ, Eclipse or NetBeans)
 
 {note}
+Grails is actually optional.  Every project we build uses the [grails wrapper|http://grails.org/doc/latest/guide/commandLine.html#wrapper].
+So for instance, if you are on a linux based system, simply run @./grailsw@ instead of grails at the top of the project.
+This allows you to use grails with only the jvm installed!
+{note}
+{note}
 Many package managers have grails.  For instance, if you are using a mac, try [MacPorts|http://www.macports.org/]
 and do @sudo port install grails@.  For Ubuntu you can follow the instructions on the bottom of the Grails download
 [page|http://grails.org/Download/]
