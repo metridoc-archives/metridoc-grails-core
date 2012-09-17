@@ -2,7 +2,7 @@ package metridoc.core
 
 import grails.util.Environment
 import org.codehaus.groovy.runtime.InvokerInvocationException
-import org.apache.maven.artifact.ant.shaded.StringUtils
+import org.apache.commons.lang.StringUtils
 import org.apache.commons.lang.SystemUtils
 
 class DevelopmentWorkflowRunnerService {
