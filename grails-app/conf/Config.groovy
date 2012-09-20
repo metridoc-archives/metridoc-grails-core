@@ -204,7 +204,7 @@ metridoc {
 
         //steps: checks for custom, checks if anonymous, then does fallback
 
-        anonymous = ["illiad", "logout", "auth", "counter", "sushi", "home"]
+        anonymous = ["illiad", "logout", "auth", "counter", "sushi", "home", "whoami"]
 
         fallback = {
             return role("ROLE_ADMIN") //|| ipIn("<ip group name>")

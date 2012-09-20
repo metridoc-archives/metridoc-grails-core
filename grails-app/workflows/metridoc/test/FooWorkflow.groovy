@@ -12,7 +12,7 @@ class FooWorkflow extends Script {
         target(runFoo: "the main target to run") {
 
 
-            grailsConsole.info "running sample workflow"
+            grailsConsole.info "running sample workflow foo"
 
             //test DI
             assert barWorkflow

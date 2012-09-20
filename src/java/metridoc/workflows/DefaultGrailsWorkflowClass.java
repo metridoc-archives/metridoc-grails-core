@@ -11,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.fusesource.jansi.Ansi.ansi;
@@ -39,13 +42,14 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
 
     public Object run() {
 
+        boolean concurrentRun = false;
         if(running.get()) {
-            String message = "Job " + getName() + " is already running";
-            logger.info(message);
-            return null;
+            String message = "Multiple instances of " + getName() + " are running, time stats for this run will not be collected";
+            logger.warn(message);
+        } else {
+            running.getAndSet(true);
+            previousFireTime = new Date();
         }
-        running.getAndSet(true);
-        previousFireTime = new Date();
         Script reference = (Script) getReferenceInstance();
         ScriptWrapper wrapper = (ScriptWrapper) reference.getBinding().getVariable("wrapper");
         reference.setBinding(new Binding());
@@ -56,6 +60,7 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
         JobBuilder.isJob(reference);
 
         Logger logger = LoggerFactory.getLogger("metridoc.job." + getName());
+        reference.getBinding().setVariable("log", logger);
 
         if(!reference.getBinding().hasVariable("grailsConsole")) {
             GrailsConsoleFacade grailsConsole = new GrailsConsoleFacade();
@@ -81,9 +86,11 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
             lastException = e;
             throw new RuntimeException(e);
         } finally {
-            previousEndTime = new Date();
-            previousDuration = getPreviousDuration(previousEndTime.getTime() - previousFireTime.getTime());
-            running.getAndSet(false);
+            if (!concurrentRun) {
+                previousDuration = getPreviousDuration(previousEndTime.getTime() - previousFireTime.getTime());
+                previousEndTime = new Date();
+                running.getAndSet(false);
+            }
             if(binding.hasVariable("camelScriptingContext")) {
                 CamelContext camelContext = (CamelContext) binding.getVariable("camelScriptingContext");
                 try {

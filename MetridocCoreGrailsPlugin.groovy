@@ -123,6 +123,7 @@ class MetridocCoreGrailsPlugin {
             }
 
             "${shortName}"(ref("${shortName}Class")) { bean ->
+                bean.scope = "prototype"
                 bean.factoryMethod = "newInstance"
                 bean.autowire = "byName"
             }
