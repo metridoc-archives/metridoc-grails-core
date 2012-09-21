@@ -64,12 +64,12 @@
 
                     <ul class="shadow">
                         <li>
-                            <g:link controller="profile" action="index" class="users menu-item">Account</g:link>
+                            <g:link controller="profile" action="index" class="userAccount menu-item">Account</g:link>
                         </li>
 
                         <% if (SecurityUtils.subject.hasRole("ROLE_ADMIN")) { %>
                             <li>
-                                <g:link controller="user" action="list" class="menu-item">Manage Users</g:link>
+                                <g:link controller="user" action="list" class="users menu-item">Manage Users</g:link>
                             </li>
                         <% } %>
                     </ul>

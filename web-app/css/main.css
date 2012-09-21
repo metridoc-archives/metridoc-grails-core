@@ -695,7 +695,10 @@ th:hover, tr:hover {
 
 a.users {
     background-image: url(../images/skin/system-users.png);
+}
 
+a.userAccount{
+    background-image: url(../images/skin/system-user.png);
 }
 
 a.skip {
