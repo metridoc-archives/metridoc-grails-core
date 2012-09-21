@@ -79,5 +79,6 @@ grails.project.dependency.resolution = {
         build ":rest-client-builder:1.0.2"
         build ":release:2.0.3"
         build ":svn:1.0.2"
+        compile ":standalone:1.1.1"
     }
 }
