@@ -22,64 +22,69 @@
 <!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
 <!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"><!--<![endif]-->
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>MetriDoc</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <g:javascript library="jquery"/>
-        <r:require module="application"/>
-        <g:layoutHead/>
-        <r:layoutResources/>
-    </head>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>MetriDoc</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <g:javascript library="jquery"/>
+    <r:require module="application"/>
+    <g:layoutHead/>
+    <r:layoutResources/>
+</head>
 
-    <body>
-        <div id="doc4" class="shadow">
-            <div id="metridocBanner" role="banner">
-                <a id="metridocLogo" href="http://metridoc.googlecode.com">
-                    <img src="${resource(plugin: 'metridocCore', dir: 'images', file: 'MDlogo_small.png')}"
-                         alt="MetriDoc"/>
-                </a>
+<body>
+<div id="doc4" class="shadow">
+    <div id="metridocBanner" role="banner">
+        <a id="metridocLogo" href="http://metridoc.googlecode.com">
+            <img src="${resource(plugin: 'metridocCore', dir: 'images', file: 'MDlogo_small.png')}"
+                 alt="MetriDoc"/>
+        </a>
 
-                <% if (SecurityUtils.subject.principal == "anonymous" || !SecurityUtils.subject.isAuthenticated()) { %>
-                <a id="metridocLoginLink" href="/<g:meta name="app.name"/>/auth">login</a>
-                <% } else { %>
-                <span id="metridocLoginLink">
-                    <a href="/<g:meta name="app.name"/>/profile/edit">${SecurityUtils.subject.principal}</a> (<a
-                        href="/<g:meta name="app.name"/>/auth/signOut">logout</a>)
-                </span>
-                <% } %>
+        <% if (SecurityUtils.subject.principal == "anonymous" || !SecurityUtils.subject.isAuthenticated()) { %>
+        <a id="metridocLoginLink" href="/<g:meta name="app.name"/>/auth">login</a>
+        <% } else { %>
+        <span id="metridocLoginLink">
+            <a href="/<g:meta name="app.name"/>/profile/edit">${SecurityUtils.subject.principal}</a> (<a
+                href="/<g:meta name="app.name"/>/auth/signOut">logout</a>)
+        </span>
+        <% } %>
 
-            </div>
+    </div>
 
-            <div id="metridocNavigationBar" class="ui-widget-header">
-                <ul id="metridocNavigation" class="shadow">
-                    <li>
-                        <a href="/<g:meta name="app.name"/>/home" class="ui-widget-header">Home</a>
-                    </li>
-                    <shiro:authenticated>
+    <div id="metridocNavigationBar" class="ui-widget-header">
+        <ul id="metridocNavigation" class="shadow">
+            <li>
+                <a href="/<g:meta name="app.name"/>/home" class="ui-widget-header">Home</a>
+            </li>
+            <shiro:authenticated>
+                <% if (SecurityUtils.subject.principal != "anonymous" && SecurityUtils.subject.isAuthenticated()) { %>
+                <li>
+                    <g:link controller="profile" action="index">Settings</g:link>
+
+                    <ul class="shadow">
                         <li>
-                            <g:link controller="profile" action="index">Settings</g:link>
-                            %{--<a href="/<g:meta name="app.name"/>/profile" class="ui-widget-header">Settings</a>--}%
-                            <ul class="shadow">
-                                <li>
-                                    <g:link controller="profile" action="index" class="users menu-item">Account</g:link>
-                                </li>
-                                <li>
-                                    <g:link controller="user" action="list" class="menu-item">Manage Users</g:link>
-                                </li>
-                            </ul>
+                            <g:link controller="profile" action="index" class="users menu-item">Account</g:link>
                         </li>
-                    </shiro:authenticated>
-                </ul>
-            </div>
-            <g:layoutBody/>
 
-            <div id="spinner" class="spinner" style="display:none;">
-                <g:message code="spinner.alt" default="Loading&hellip;"/>
-            </div>
+                        <% if (SecurityUtils.subject.hasRole("ROLE_ADMIN")) { %>
+                            <li>
+                                <g:link controller="user" action="list" class="menu-item">Manage Users</g:link>
+                            </li>
+                        <% } %>
+                    </ul>
+                </li>
+                <% } %>
+            </shiro:authenticated>
+        </ul>
+    </div>
+    <g:layoutBody/>
 
-            <r:layoutResources/>
-        </div>
-    </body>
+    <div id="spinner" class="spinner" style="display:none;">
+        <g:message code="spinner.alt" default="Loading&hellip;"/>
+    </div>
+
+    <r:layoutResources/>
+</div>
+</body>
 </html>
