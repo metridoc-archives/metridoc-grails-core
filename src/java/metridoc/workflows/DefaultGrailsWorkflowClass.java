@@ -87,8 +87,10 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
             throw new RuntimeException(e);
         } finally {
             if (!concurrentRun) {
-                previousDuration = getPreviousDuration(previousEndTime.getTime() - previousFireTime.getTime());
                 previousEndTime = new Date();
+                if (previousEndTime != null && previousFireTime != null) {
+                    previousDuration = getPreviousDuration(previousEndTime.getTime() - previousFireTime.getTime());
+                }
                 running.getAndSet(false);
             }
             if(binding.hasVariable("camelScriptingContext")) {
