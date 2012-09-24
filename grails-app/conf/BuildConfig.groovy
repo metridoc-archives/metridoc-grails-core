@@ -72,7 +72,9 @@ grails.project.dependency.resolution = {
         runtime ":hibernate:$grailsVersion"
         runtime ":jquery:1.7.1"
         runtime ":resources:1.1.6"
-        runtime ":shiro:1.1.3"
+        runtime (":shiro:1.1.3") {
+            excludes "shiro-quartz"
+        }
         compile ":jquery-ui:1.8.15"
         runtime ":webxml:1.4.1"
         build ":tomcat:$grailsVersion"
