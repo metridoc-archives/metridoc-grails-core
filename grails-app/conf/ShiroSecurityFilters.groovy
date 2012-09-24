@@ -26,10 +26,7 @@ class ShiroSecurityFilters {
     //it has been initialized and throw an exception
     def grailsApplication
     def securityService
-    def anonymousApps
     Closure fallback
-    def customSecurityByController = [:]
-    private initiated = false
 
     def filters = {
         all(uri: "/**") {

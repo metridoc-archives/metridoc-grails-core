@@ -118,7 +118,7 @@ class AuthController {
 
         // If a controller redirected to this page, redirect back
         // to it. Otherwise redirect to the root URI.
-        def targetUri = params.targetUri ?: "/"
+        def targetUri = params.targetUri
 
         // Handle requests saved by Shiro filters.
         def savedRequest = WebUtils.getSavedRequest(request)
@@ -133,8 +133,12 @@ class AuthController {
             // password is incorrect.
             SecurityUtils.subject.login(authToken)
 
-            log.info "Redirecting to '${targetUri}'."
-            redirect(uri: targetUri)
+            if (targetUri) {
+                log.info "Redirecting to '${targetUri}'."
+                redirect(uri: targetUri)
+            } else {
+                redirect(controller: "home")
+            }
         }
         catch (AuthenticationException ex) {
             // Authentication failed, so display the appropriate message
@@ -164,7 +168,7 @@ class AuthController {
         SecurityUtils.subject?.logout()
 
         // For now, redirect back to the home page.
-        redirect(uri: "/")
+        redirect(controller: "home")
     }
 
 }
