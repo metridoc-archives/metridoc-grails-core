@@ -97,12 +97,14 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
                 }
                 running.getAndSet(false);
             }
-            if(binding.hasVariable("camelScriptingContext")) {
-                CamelContext camelContext = (CamelContext) binding.getVariable("camelScriptingContext");
-                try {
-                    camelContext.stop();
-                } catch (Exception e) {
-                    logger.warn("had troubles stopping camelContext {}", camelContext.toString());
+            if (binding != null) {
+                if(binding.hasVariable("camelScriptingContext")) {
+                    CamelContext camelContext = (CamelContext) binding.getVariable("camelScriptingContext");
+                    try {
+                        camelContext.stop();
+                    } catch (Exception e) {
+                        logger.warn("had troubles stopping camelContext {}", camelContext.toString());
+                    }
                 }
             }
 
