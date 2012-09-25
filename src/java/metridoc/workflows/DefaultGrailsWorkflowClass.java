@@ -104,6 +104,8 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
                     logger.warn("had troubles stopping camelContext {}", camelContext.toString());
                 }
             }
+
+            logger.info("finished running the job " + getName());
         }
     }
 
