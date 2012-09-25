@@ -85,7 +85,7 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
                 logger.warn(getName() + " workflow does not have a run" + getName() + " target");
                 return null;
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             logger.error("Exception occurred while trying to run " + getName(), e);
             lastException = e;
             throw new RuntimeException(e);
