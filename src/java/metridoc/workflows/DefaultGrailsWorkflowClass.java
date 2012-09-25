@@ -50,6 +50,7 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
             running.getAndSet(true);
             previousFireTime = new Date();
         }
+        logger.info("Building job " + getName());
         Script reference = (Script) getReferenceInstance();
         ScriptWrapper wrapper = (ScriptWrapper) reference.getBinding().getVariable("wrapper");
         reference.setBinding(new Binding());
@@ -71,10 +72,12 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
         Binding binding = reference.getBinding();
 
         try {
+            logger.info ("running the job " + getName());
             getMetaClass().invokeMethod(reference, RUN, new Object[]{});
             String targetName = "run" + getName();
             boolean hasTarget = binding.hasVariable(targetName);
             if(hasTarget) {
+                logger.info ("running the target " + targetName + " for job " + getName());
                 Closure closure = (Closure) binding.getVariable(targetName);
                 return closure.call();
             } else {
