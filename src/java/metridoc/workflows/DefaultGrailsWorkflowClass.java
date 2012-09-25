@@ -51,6 +51,7 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
             previousFireTime = new Date();
         }
 
+        Binding binding = null;
         try {
             logger.info("Building job " + getName());
             Script reference = (Script) getReferenceInstance();
@@ -71,7 +72,7 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
                 reference.getBinding().setVariable("grailsConsole", grailsConsole);
             }
 
-            Binding binding = reference.getBinding();
+            binding = reference.getBinding();
             logger.info ("running the job " + getName());
             getMetaClass().invokeMethod(reference, RUN, new Object[]{});
             String targetName = "run" + getName();
