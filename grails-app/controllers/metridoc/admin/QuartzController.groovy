@@ -44,34 +44,12 @@ class QuartzController {
     }
 
     def show() {
-
-        def run = params.run
-        if (run) {
-            def workflowToShow = quartzService.workflowsByName[run]
-
-            if (workflowToShow) {
-                log.info "RUN WORKFLOW ${workflowToShow}"
-                Thread.start {
-                    workflowToShow.run()
-                }
-            } else {
-                log.info "Could not run $run since it does not exist"
-            }
-            params.remove("run")
-            params.put("id", run)
-
-            chain(action: "show", params: params)
-            return
-        }
-
         def unCapName = params.id
-        def workflowToShow = quartzService.getAWorkflow(unCapName)
-        def workflowErrorMsg = quartzService.getWorkflowErrorMsg(unCapName)
-
+        def workflowModel = quartzService.workflowModelByName[unCapName]
+        log.info "searching for workflow information for ${unCapName} amongst workflows [${quartzService.workflowModelByName}]"
+        workflowModel.capitalizedWorkflowName = StringUtils.capitalise(unCapName)
         return [
-            capitalizedWorkflowName: StringUtils.capitalise(unCapName),
-            workflowToShow: workflowToShow,
-            errorMessage: workflowErrorMsg,
+            workflow: workflowModel,
         ]
     }
 

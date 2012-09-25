@@ -22,48 +22,33 @@
     </div>
 
     <div id="show-workflow" class="content scaffold-show" role="main">
-        <h1><g:message code="default.job.label" args="[capitalizedWorkflowName]" default="Job"/></h1>
+        <h1><g:message code="default.job.label" args="[workflow.capitalizedWorkflowName]" default="Job"/></h1>
 
         <ol class="property-list shiroUser">
 
-            <g:if test="${workflowToShow?.previousFireTime}">
+            <g:if test="${workflow?.previousFireTime}">
                 <li class="fieldcontain">
                     <span id="emailAddress-label" class="property-label">Previous Run</span>
                     <span class="property-value"
-                          aria-labelledby="emailAddress-label">${workflowToShow.previousFireTime}</span>
+                          aria-labelledby="emailAddress-label">${workflow.previousFireTime}</span>
                 </li>
             </g:if>
 
-            <g:if test="${workflowToShow?.nextFireTime}">
+            <g:if test="${workflow?.nextFireTime}">
                 <li class="fieldcontain">
                     <span id="roles-label" class="property-label">Next Run</span>
-                    <span class="property-value" aria-labelledby="roles-label">${workflowToShow.nextFireTime}</span>
+                    <span class="property-value" aria-labelledby="roles-label">${workflow.nextFireTime}</span>
                 </li>
             </g:if>
 
-            <g:if test="${workflowToShow?.previousDuration}">
+            <g:if test="${workflow?.previousDuration}">
                 <li class="fieldcontain">
                     <span id="label" class="property-label">Last Duration</span>
-                    <span class="property-value" aria-labelledby="roles-label">${workflowToShow.previousDuration}</span>
+                    <span class="property-value" aria-labelledby="roles-label">${workflow.previousDuration}</span>
                 </li>
             </g:if>
 
         </ol>
-        <g:form>
-            %{--TODO: run button(currently not working)--}%
-            %{--<g:if test="${workflowToShow?.running}">--}%
-                %{--<div>--}%
-                    %{--<span>Running ${workflowToShow?.name}</span>--}%
-                    %{--<span><r:img plugin="metridoc-core" dir="images" file="spinner.gif"/></span>--}%
-                %{--</div>--}%
-            %{--</g:if>--}%
-            %{--<g:else>--}%
-                %{--<fieldset class="buttons">--}%
-                    %{--<g:hiddenField name="id" value="${workflowToShow?.unCapName}"/>--}%
-                    %{--<g:link action="show" params="[run: workflowToShow?.unCapName]">Run</g:link>--}%
-                %{--</fieldset>--}%
-            %{--</g:else>--}%
-        </g:form>
 
         <g:render template="exception"/>
 

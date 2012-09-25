@@ -109,14 +109,28 @@ class QuartzService {
         return result
     }
 
-    def listWorkflows(params) {
+    def listWorkflows() {
         def workflows = []
         doWorkflowClassesIteration {unCapName, grailsClass ->
             def workflowModel = [name: "$grailsClass.name", unCapName: unCapName]
             loadJobDetails(grailsClass, workflowModel)
             workflows << workflowModel
         }
-        return listWorkflowsWithOffsetAndMax(params, workflows)
+
+        return workflows
+    }
+
+    def getWorkflowModelByName() {
+        def result = [:]
+        listWorkflows().each {
+            result[it.unCapName] = it
+        }
+
+        return result
+    }
+
+    def listWorkflows(params) {
+        return listWorkflowsWithOffsetAndMax(params, listWorkflows())
     }
 
     def getWorkflowErrorMsg(uncapName) {
