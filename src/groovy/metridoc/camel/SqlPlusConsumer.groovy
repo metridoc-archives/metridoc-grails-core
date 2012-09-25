@@ -22,6 +22,7 @@ import java.sql.Connection
 import java.sql.ResultSet
 import java.sql.Statement
 import javax.sql.DataSource
+import metridoc.sql.SqlPlus
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,9 +30,9 @@ import javax.sql.DataSource
  * Date: 8/4/11
  * Time: 3:40 PM
  */
-@Mixin(SqlPlusMixin.class)
 class SqlPlusConsumer extends DefaultConsumer {
 
+    SqlPlus sql
     Boolean release = false
     ResultSet resultSet
     SqlUnManagedResultSet sqlUnManaged
@@ -79,6 +80,39 @@ class SqlPlusConsumer extends DefaultConsumer {
     @Override
     protected void doStop() {
         getSqlUnManaged().close()
+    }
+
+    SqlPlus getSql() {
+        if (sql) {
+            return sql
+        }
+
+        sql = new SqlPlus(getDataSource())
+        sql.withStatement {Statement statement ->
+            statement.setFetchSize(getFetchSize())
+        }
+
+        return sql
+    }
+
+    DataSource getDataSource() {
+        return endpoint.dataSource
+    }
+
+    int getFetchSize() {
+        return endpoint.fetchSize
+    }
+
+    int getBatchSize() {
+        return endpoint.batchSize
+    }
+
+    boolean getLogBatches() {
+        return endpoint.logBatches
+    }
+
+    String getQuery() {
+        return endpoint.query
     }
 }
 

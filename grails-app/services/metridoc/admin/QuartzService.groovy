@@ -119,21 +119,8 @@ class QuartzService {
         return listWorkflowsWithOffsetAndMax(params, workflows)
     }
 
-    def getAWorkflow(name) {
-        def workflow = null;
-        doWorkflowClassesIteration {unCapName, grailsClass ->
-            def workflowModel = [name: "$grailsClass.name", unCapName: unCapName]
-            if (workflowModel.unCapName.equals(name)) {
-                loadJobDetails(grailsClass, workflowModel)
-                _workflowsByName.put(unCapName, workflowModel)
-                workflow = workflowModel
-            }
-        }
-        return workflow
-    }
-
     def getWorkflowErrorMsg(uncapName) {
-        def workflow = _workflowsByName[uncapName]
+        def workflow = workflowsByName[uncapName]
         def errorMessage = null
         def exception = workflow.lastException
         log.info "EXCEPTION_IN_${workflow.name}_##${exception}"
@@ -144,13 +131,13 @@ class QuartzService {
     }
 
     def runJob(jobName) {
-        def workflowToRun = _workflowsByName[jobName]
+        def workflowToRun = workflowsByName[jobName]
         if (workflowToRun) {
             Thread.start {
                 workflowToRun.run()
             }
         } else {
-            log.warn "Could not run $jobName since it does not exist, available workflows are ${_workflowsByName}"
+            log.warn "Could not run $jobName since it does not exist, available workflows are ${workflowsByName}"
         }
     }
 
