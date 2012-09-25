@@ -1,5 +1,5 @@
 
-class MetridocBootStrap {
+class MetridocCoreBootStrap {
 
     def initAuthService
     def quartzService
