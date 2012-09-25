@@ -50,6 +50,7 @@ grails.project.dependency.resolution = {
         compile("org.grails:grails-scripts:${grailsVersion}")
         compile("org.apache.ivy:ivy:2.2.0")
         compile("mysql:mysql-connector-java:5.1.20")
+        compile("org.codehaus.gant:gant_groovy1.8:1.9.8")
         compile("org.apache.poi:poi:3.8-beta3")
         compile("org.apache.poi:poi-ooxml:3.8-beta3") {
             excludes "xmlbeans"
