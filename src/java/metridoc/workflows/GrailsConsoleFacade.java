@@ -1,8 +1,5 @@
 package metridoc.workflows;
 
-import jline.ConsoleReader;
-import jline.History;
-import jline.Terminal;
 import org.apache.tools.ant.BuildException;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.codehaus.groovy.runtime.StackTraceUtils;
@@ -10,7 +7,6 @@ import org.codehaus.groovy.runtime.typehandling.NumberMath;
 import org.slf4j.Logger;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Stack;
@@ -46,15 +42,6 @@ public class GrailsConsoleFacade {
      * The last message that was printed
      */
     String lastMessage = "";
-
-    /**
-     * The reader to read info from the console
-     */
-    ConsoleReader reader;
-
-    Terminal terminal;
-
-    History history;
 
     Logger logger;
 
@@ -92,10 +79,6 @@ public class GrailsConsoleFacade {
     private boolean readPropOrTrue(String prop) {
         String property = System.getProperty(prop);
         return property == null ? true : Boolean.valueOf(property);
-    }
-
-    protected ConsoleReader createConsoleReader() throws IOException {
-        throw new UnsupportedOperationException("createConsoleReader not supported");
     }
 
     private boolean isWindows() {
@@ -412,22 +395,8 @@ public class GrailsConsoleFacade {
         return null;
     }
 
-    private void assertAllowInput() {
-        if (reader == null) {
-            throw new IllegalStateException("User input is not enabled, cannot obtain input stream");
-        }
-    }
-
     private String readLine(String prompt, boolean secure) {
-        assertAllowInput();
-        userInputActive = true;
-        try {
-            return secure ? reader.readLine(prompt, SECURE_MASK_CHAR) : reader.readLine(prompt);
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading input: " + e.getMessage());
-        } finally {
-            userInputActive = false;
-        }
+        throw new IllegalStateException("User input is not enabled, cannot obtain input stream");
     }
 
     /**
