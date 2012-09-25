@@ -50,28 +50,28 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
             running.getAndSet(true);
             previousFireTime = new Date();
         }
-        logger.info("Building job " + getName());
-        Script reference = (Script) getReferenceInstance();
-        ScriptWrapper wrapper = (ScriptWrapper) reference.getBinding().getVariable("wrapper");
-        reference.setBinding(new Binding());
-        reference.getBinding().setVariable("grailsApp", getGrailsApplication());
-        reference.getBinding().setVariable("config", getGrailsApplication().getConfig());
-        reference.getBinding().setVariable("appCtx", getGrailsApplication().getMainContext());
-        reference.getBinding().setVariable("wrapper", wrapper);
-        JobBuilder.isJob(reference);
-
-        Logger logger = LoggerFactory.getLogger("metridoc.job." + getName());
-        reference.getBinding().setVariable("log", logger);
-
-        if(!reference.getBinding().hasVariable("grailsConsole")) {
-            GrailsConsoleFacade grailsConsole = new GrailsConsoleFacade();
-            grailsConsole.setLogger(logger);
-            reference.getBinding().setVariable("grailsConsole", grailsConsole);
-        }
-
-        Binding binding = reference.getBinding();
 
         try {
+            logger.info("Building job " + getName());
+            Script reference = (Script) getReferenceInstance();
+            ScriptWrapper wrapper = (ScriptWrapper) reference.getBinding().getVariable("wrapper");
+            reference.setBinding(new Binding());
+            reference.getBinding().setVariable("grailsApp", getGrailsApplication());
+            reference.getBinding().setVariable("config", getGrailsApplication().getConfig());
+            reference.getBinding().setVariable("appCtx", getGrailsApplication().getMainContext());
+            reference.getBinding().setVariable("wrapper", wrapper);
+            JobBuilder.isJob(reference);
+
+            Logger logger = LoggerFactory.getLogger("metridoc.job." + getName());
+            reference.getBinding().setVariable("log", logger);
+
+            if(!reference.getBinding().hasVariable("grailsConsole")) {
+                GrailsConsoleFacade grailsConsole = new GrailsConsoleFacade();
+                grailsConsole.setLogger(logger);
+                reference.getBinding().setVariable("grailsConsole", grailsConsole);
+            }
+
+            Binding binding = reference.getBinding();
             logger.info ("running the job " + getName());
             getMetaClass().invokeMethod(reference, RUN, new Object[]{});
             String targetName = "run" + getName();
