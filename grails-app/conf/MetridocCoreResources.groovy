@@ -17,7 +17,7 @@ modules = {
     profile {
         dependsOn 'jquery-ui'
         resource id: 'css',
-            url: [plugin: "metridoCore", dir: 'profile/css', file: 'profile.css'],
+            url: [plugin: "metridocCore", dir: 'profile/css', file: 'profile.css'],
             attrs: [type: 'css']
         resource id: 'js',
             url: [plugin: "metridocCore", dir: 'profile/js', file: 'profile.js'],
