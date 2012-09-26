@@ -701,6 +701,14 @@ a.userAccount{
     background-image: url(../images/skin/system-user.png);
 }
 
+a.log {
+    background-image: url(../images/skin/text-x-generic.png);
+}
+
+a.quartz {
+    background-image: url(../images/skin/database_table.png);
+}
+
 a.skip {
     position: absolute;
     left: -9999px;

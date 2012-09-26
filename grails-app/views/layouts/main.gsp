@@ -60,8 +60,8 @@
             <shiro:authenticated>
                 <% if (SecurityUtils.subject.principal != "anonymous" && SecurityUtils.subject.isAuthenticated()) { %>
                 <li>
-                    <g:link controller="profile" action="index">Settings</g:link>
-
+                    %{--<g:link controller="profile" action="index">Settings</g:link>--}%
+                    <a href="#">Settings</a>
                     <ul class="shadow">
                         <li>
                             <g:link controller="profile" action="index" class="userAccount menu-item">Account</g:link>
@@ -70,6 +70,12 @@
                         <% if (SecurityUtils.subject.hasRole("ROLE_ADMIN")) { %>
                             <li>
                                 <g:link controller="user" action="list" class="users menu-item">Manage Users</g:link>
+                            </li>
+                            <li>
+                                <g:link controller="log" action="index" class="log menu-item">Application Log</g:link>
+                            </li>
+                            <li>
+                                <g:link controller="quartz" action="index" class="quartz menu-item">Job List</g:link>
                             </li>
                         <% } %>
                     </ul>
