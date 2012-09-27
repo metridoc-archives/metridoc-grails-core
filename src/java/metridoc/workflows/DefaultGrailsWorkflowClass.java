@@ -11,12 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
-import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.CountDownLatch;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static org.fusesource.jansi.Ansi.ansi;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created with IntelliJ IDEA.
@@ -33,6 +30,7 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
     private Date previousFireTime = null;
     private String previousDuration = null;
     private AtomicBoolean running = new AtomicBoolean(false);
+    private AtomicReference<Thread> runningThread = new AtomicReference<Thread>();
     private Throwable lastException = null;
     public static final Logger logger = LoggerFactory.getLogger(DefaultGrailsWorkflowClass.class);
 
@@ -42,43 +40,63 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
 
     public Object run() {
 
-        boolean concurrentRun = false;
-        if(running.get()) {
-            String message = "Multiple instances of " + getName() + " are running, time stats for this run will not be collected";
-            logger.warn(message);
-        } else {
-            running.getAndSet(true);
-            previousFireTime = new Date();
+        Thread jobToJoin = null;
+        synchronized (this) {
+            if (isRunning()) {
+                String message = getName() + " is already running, joining job already in progress";
+                logger.warn(message);
+                jobToJoin = runningThread.get();
+            } else {
+                runningThread.getAndSet(Thread.currentThread());
+            }
         }
 
+        try {
+            if(jobToJoin != null) {
+                jobToJoin.join();
+                return null;
+            } else {
+                return doRun();
+            }
+        } catch (InterruptedException e) {
+            logger.error("job " + getName() + "interrupted (likely stopped)", e);
+            return null;
+        }
+    }
+
+    private Object doRun() {
+        previousFireTime = new Date();
         Binding binding = null;
+        Map<String, Object> variables = null;
+        boolean noError = true;
         try {
             logger.info("Building job " + getName());
             Script reference = (Script) getReferenceInstance();
             ScriptWrapper wrapper = (ScriptWrapper) reference.getBinding().getVariable("wrapper");
             reference.setBinding(new Binding());
-            reference.getBinding().setVariable("grailsApp", getGrailsApplication());
-            reference.getBinding().setVariable("config", getGrailsApplication().getConfig());
-            reference.getBinding().setVariable("appCtx", getGrailsApplication().getMainContext());
-            reference.getBinding().setVariable("wrapper", wrapper);
+            binding = reference.getBinding();
+            binding.setVariable("grailsApp", getGrailsApplication());
+            binding.setVariable("config", getGrailsApplication().getConfig());
+            binding.setVariable("appCtx", getGrailsApplication().getMainContext());
+            binding.setVariable("wrapper", wrapper);
             JobBuilder.isJob(reference);
 
             Logger logger = LoggerFactory.getLogger("metridoc.job." + getName());
-            reference.getBinding().setVariable("log", logger);
+            binding.setVariable("log", logger);
 
-            if(!reference.getBinding().hasVariable("grailsConsole")) {
+            variables = binding.getVariables();
+            if (!variables.containsKey("grailsConsole")) {
                 GrailsConsoleFacade grailsConsole = new GrailsConsoleFacade();
                 grailsConsole.setLogger(logger);
                 reference.getBinding().setVariable("grailsConsole", grailsConsole);
             }
 
-            binding = reference.getBinding();
-            logger.info ("running the job " + getName());
+            logger.info("running the job " + getName());
             getMetaClass().invokeMethod(reference, RUN, new Object[]{});
             String targetName = "run" + getName();
-            boolean hasTarget = binding.hasVariable(targetName);
-            if(hasTarget) {
-                logger.info ("running the target " + targetName + " for job " + getName());
+            boolean hasTarget = variables.containsKey(targetName);
+            if (hasTarget) {
+                logger.info("running the target " + targetName + " for job " + getName());
                 Closure closure = (Closure) binding.getVariable(targetName);
                 return closure.call();
             } else {
@@ -88,17 +106,16 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
         } catch (Throwable e) {
             logger.error("Exception occurred while trying to run " + getName(), e);
             lastException = e;
+            noError = false;
             throw new RuntimeException(e);
         } finally {
-            if (!concurrentRun) {
-                previousEndTime = new Date();
-                if (previousEndTime != null && previousFireTime != null) {
-                    previousDuration = getPreviousDuration(previousEndTime.getTime() - previousFireTime.getTime());
-                }
-                running.getAndSet(false);
+            previousEndTime = new Date();
+            if (previousEndTime != null && previousFireTime != null) {
+                previousDuration = getPreviousDuration(previousEndTime.getTime() - previousFireTime.getTime());
             }
+            running.getAndSet(false);
             if (binding != null) {
-                if(binding.hasVariable("camelScriptingContext")) {
+                if (variables.containsKey("camelScriptingContext")) {
                     CamelContext camelContext = (CamelContext) binding.getVariable("camelScriptingContext");
                     try {
                         camelContext.stop();
@@ -109,6 +126,10 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
             }
 
             logger.info("finished running the job " + getName());
+            runningThread.getAndSet(null);
+            if(noError) {
+                lastException = null;
+            }
         }
     }
 
@@ -116,12 +137,29 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
         return previousEndTime;
     }
 
-    public boolean isRunning() {
-        return running.get();
+    public synchronized boolean isRunning() {
+        if(runningThread.get() == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public Throwable getLastException() {
         return lastException;
+    }
+
+    @Override
+    public void stop() {
+        synchronized (this) {
+            Thread runningThread = this.runningThread.get();
+            if(runningThread != null) {
+                runningThread.interrupt();
+                this.runningThread.getAndSet(null);
+            } else {
+                logger.warn("Could not stop " + getName() + " since it is not running");
+            }
+        }
     }
 
     public Date getPreviousFireTime() {
@@ -133,7 +171,7 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
     }
 
     private static String getPreviousDuration(Long milliseconds) {
-        if(milliseconds == null) {
+        if (milliseconds == null) {
             return null;
         }
 
@@ -141,25 +179,25 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
         int oneSecond = 1000;
 
         double calculation;
-        if(milliseconds >= oneSecond) {
+        if (milliseconds >= oneSecond) {
             calculation = doCalculation(milliseconds, oneSecond);
             currentFormat = String.valueOf(calculation) + "s";
         }
 
         int oneMinute = oneSecond * 60;
-        if(milliseconds >= oneMinute) {
+        if (milliseconds >= oneMinute) {
             calculation = doCalculation(milliseconds, oneMinute);
             currentFormat = String.valueOf(calculation) + "m";
         }
 
         int oneHour = oneMinute * 60;
-        if(milliseconds >= oneHour) {
+        if (milliseconds >= oneHour) {
             calculation = doCalculation(milliseconds, oneHour);
             currentFormat = String.valueOf(calculation) + "h";
         }
 
         int oneDay = oneHour * 24;
-        if(milliseconds >= oneDay) {
+        if (milliseconds >= oneDay) {
             calculation = doCalculation(milliseconds, oneDay);
             currentFormat = String.valueOf(calculation) + "d";
         }
@@ -176,9 +214,10 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
         String shortName = StringUtils.uncapitalize(getShortName());
         Script script = (Script) getGrailsApplication().getMainContext().getBean(shortName);
         Binding binding = script.getBinding();
-        boolean noWrapper = !binding.hasVariable("wrapper");
+        Map<String, Object> variables = binding.getVariables();
+        boolean noWrapper = !variables.containsKey("wrapper");
 
-        if(noWrapper) {
+        if (noWrapper) {
             ScriptWrapper wrapper = new ScriptWrapper();
             wrapper.setWrappedScript(script);
             binding.setVariable("wrapper", wrapper);

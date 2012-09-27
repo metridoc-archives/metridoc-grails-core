@@ -155,6 +155,13 @@ class QuartzService {
         }
     }
 
+    def stopJob(jobName) {
+        def workflowToRun = workflowsByName[jobName]
+        if (workflowToRun) {
+            workflowToRun.stop()
+        }
+    }
+
     def totalWorkflowCount() {
         workflowClasses.size()
     }

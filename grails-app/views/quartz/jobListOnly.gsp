@@ -33,6 +33,9 @@
                             </g:if>
                             <g:if test="${workflow.running}">
                                 <r:img plugin="metridoc-core" dir="images" file="spinner.gif"/>
+                                <g:remoteLink action="stopJob" id="${workflow.unCapName}" onComplete="updateTable()">
+                                    <r:img plugin="metridoc-core" dir="images/skin" file="media-playback-stop.png"/>
+                                </g:remoteLink>
                             </g:if>
                             <g:else>
                                 <g:remoteLink action="runJob" id="${workflow.unCapName}" onComplete="updateTable()">

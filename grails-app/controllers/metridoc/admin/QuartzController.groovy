@@ -43,6 +43,16 @@ class QuartzController {
         }
     }
 
+    def stopJob() {
+        def workflowName = params.id
+        if (workflowName) {
+            quartzService.stopJob(workflowName)
+            render "stopped job ${workflowName}"
+        } else {
+            render "no job specified"
+        }
+    }
+
     def show() {
         def unCapName = params.id
         def workflowModel = quartzService.workflowModelByName[unCapName]

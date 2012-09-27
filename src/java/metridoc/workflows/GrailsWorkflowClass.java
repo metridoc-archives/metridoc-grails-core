@@ -16,4 +16,5 @@ public interface GrailsWorkflowClass extends InjectableGrailsClass {
     Date getPreviousEndTime();
     boolean isRunning();
     Throwable getLastException();
+    void stop();
 }

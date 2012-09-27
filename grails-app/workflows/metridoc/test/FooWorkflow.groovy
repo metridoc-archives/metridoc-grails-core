@@ -19,7 +19,7 @@ class FooWorkflow extends Script {
 
 
             profile("profiling foo") {
-                Thread.sleep(500)
+                Thread.sleep(5000)
             }
 
             def routeRan = false
