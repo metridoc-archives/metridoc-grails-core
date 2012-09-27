@@ -63,15 +63,19 @@ grails.project.dependency.resolution = {
         compile("com.google.visualization:visualization-datasource:1.1.1") {
             excludes "commons-lang"
             excludes "commons-logging"
+            excludes "opencsv"
         }
-        compile("javax.mail:mail:1.4.5")
     }
 
     plugins {
+        compile 'net.sf.opencsv:opencsv:2.3'
+        compile ":plugin-config:0.1.5"
         compile ":plugin-config:0.1.5"
         compile ":quartz2:0.2.3"
         compile ":mail:1.0"
-        compile ":routing:1.2.2"
+        compile (":routing:1.2.2") {
+            excludes 'slf4j-api'
+        }
         runtime ":hibernate:$grailsVersion"
         runtime ":jquery:1.7.1"
         runtime ":resources:1.1.6"
