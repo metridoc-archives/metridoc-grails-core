@@ -43,7 +43,7 @@ grails.project.dependency.resolution = {
     dependencies {
         compile 'org.codehaus.gpars:gpars:0.12'
         compile("org.liquibase:liquibase-core:2.0.1")
-        test("org.apache.camel:camel-test:2.10.0")
+        test("org.apache.camel:camel-test:2.9.2")
         compile("org.apache.camel:camel-ftp:2.9.2") {
             excludes "slf4j-api"
         }
@@ -55,18 +55,20 @@ grails.project.dependency.resolution = {
         compile("org.apache.poi:poi-ooxml:3.8-beta3") {
             excludes "xmlbeans"
         }
-        compile("net.sf.opencsv:opencsv:2.3")
         compile("com.googlecode.gant-ext:gant-ext:0.5") {
             excludes 'logback-classic'
             excludes 'slf4j-api'
             excludes 'gant_groovy1.8'
+        }
+        compile("com.google.visualization:visualization-datasource:1.1.1") {
+            excludes "commons-lang"
+            excludes "commons-logging"
         }
         compile("javax.mail:mail:1.4.5")
     }
 
     plugins {
         compile ":plugin-config:0.1.5"
-        compile ":export:1.5"
         compile ":quartz2:0.2.3"
         compile ":mail:1.0"
         compile ":routing:1.2.2"
