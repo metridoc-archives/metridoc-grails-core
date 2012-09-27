@@ -65,10 +65,10 @@ grails.project.dependency.resolution = {
             excludes "commons-logging"
             excludes "opencsv"
         }
+        compile 'net.sf.opencsv:opencsv:2.3'
     }
 
     plugins {
-        compile 'net.sf.opencsv:opencsv:2.3'
         compile ":plugin-config:0.1.5"
         compile ":plugin-config:0.1.5"
         compile ":quartz2:0.2.3"

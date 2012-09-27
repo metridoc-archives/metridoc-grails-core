@@ -152,6 +152,7 @@
           <root url="jar://$USER_HOME$/.grails/ivy-cache/com.ibm.icu/icu4j/jars/icu4j-4.0.1.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/com.google.visualization/visualization-datasource/jars/visualization-datasource-1.1.1.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/javax.mail/mail/jars/mail-1.4.3.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/net.sf.opencsv/opencsv/jars/opencsv-2.3.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
