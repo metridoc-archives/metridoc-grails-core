@@ -41,9 +41,6 @@
                                 <g:remoteLink action="runJob" id="${workflow.unCapName}" onComplete="updateTable()">
                                     <r:img plugin="metridoc-core" dir="images/skin" file="media-playback-start.png"/>
                                 </g:remoteLink>
-                            %{--<g:link params="[run: workflow.unCapName]">--}%
-                            %{----}%
-                            %{--</g:link>--}%
                             </g:else>
                         </td>
                         <td><g:link action="show" params="[id: workflow.unCapName]">${workflow.name}</g:link></td>

@@ -61,7 +61,7 @@ class XlsIterator extends BaseExcelIterator {
         def result = []
         def rowNum = getRowNum()
 
-        metridoc.plugins.impl.iterators.XlsIterator.log.debug("retrieving row {} for sheet {}", rowNum, getSheet().sheetName)
+        log.debug("retrieving row {} for sheet {}", rowNum, getSheet().sheetName)
         Row row = getSheet().getRow(rowNum)
         if(row == null) {
             return null
