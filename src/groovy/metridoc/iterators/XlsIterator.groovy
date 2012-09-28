@@ -97,7 +97,7 @@ class XlsIterator extends BaseExcelIterator {
             case Cell.CELL_TYPE_BOOLEAN:
                 return cell.booleanCellValue
             case Cell.CELL_TYPE_FORMULA:
-                return cell.booleanCellValue
+                return cell.cellFormula
             default:
                 return null
         }
