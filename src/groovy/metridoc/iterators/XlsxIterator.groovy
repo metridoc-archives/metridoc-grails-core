@@ -22,6 +22,7 @@ import groovy.util.logging.Slf4j
 
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLStreamReader
+import org.slf4j.LoggerFactory
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,9 +31,9 @@ import javax.xml.stream.XMLStreamReader
  * Time: 9:13 AM
  * To change this template use File | Settings | File Templates.
  */
-@Slf4j
 class XlsxIterator extends BaseExcelIterator {
 
+    private static log = LoggerFactory.getLogger(XlsxIterator)
     XMLStreamReader reader
 
     SharedStringsTable stringLookup

@@ -33,4 +33,28 @@ class XlsIteratorCreatorTest {
         def row = iterator.next()
         assert 1 == row.get(0)
     }
+
+    @Test
+    void "if a row has no data, then the row should be null"() {
+        assert iterator.sheet.getRow(358)
+        assert null == iterator.sheet.getRow(359)
+    }
+
+    @Test
+    void "if there is no more data an error is thrown"() {
+        def next
+        (1..359).each {
+            next = iterator.next()
+        }
+
+        assert 359 == next.get(0) as Integer
+        assert !iterator.hasNext()
+
+        try {
+            iterator.next()
+            assert false: "exception should have occurred"
+        } catch(NoSuchElementException ex) {
+
+        }
+    }
 }
