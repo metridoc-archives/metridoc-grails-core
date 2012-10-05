@@ -50,8 +50,8 @@ class QuartzService {
 
     private loadTriggers() {
         doWorkflowClassesIteration {name ->
-            def schedule = grailsApplication.config.metridoc.scheduling.workflows."$name".schedule
-            def startNow = grailsApplication.config.metridoc.scheduling.workflows."$name".startNow
+            def schedule = grailsApplication.mergedConfig.metridoc.scheduling.workflows."$name".schedule
+            def startNow = grailsApplication.mergedConfig.metridoc.scheduling.workflows."$name".startNow
 
             if (schedule) {
 
