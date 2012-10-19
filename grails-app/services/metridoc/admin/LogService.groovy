@@ -1,6 +1,7 @@
 package metridoc.admin
 
 import org.apache.commons.lang.text.StrBuilder
+import java.util.regex.Pattern
 
 /**
  * Created with IntelliJ IDEA.
@@ -151,7 +152,7 @@ class LogService {
      * @return line content in which all logNames are converted to links
      */
     private static addATag(line, logName) {
-        line = line.replaceAll( logName, "<a href=\"#\" class=\""
+        line = line.replaceAll(Pattern.quote(logName), "<a href=\"#\" class=\""
                 +logName.replaceAll("\\.","\\_")+"ATag logNameATag\">"+logName+"</a>" )
         return line
     }
