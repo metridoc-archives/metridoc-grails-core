@@ -18,8 +18,19 @@ class FooWorkflow extends Script {
             assert barWorkflow
 
 
+            //make things run long enough so we can test stopping
             profile("profiling foo") {
-                Thread.sleep(5000)
+                (0..2500000).each{
+                    long count
+                    (1L..Long.MAX_VALUE).each {
+                        count = it
+                    }
+                    if(it % 5000) {
+                        if(Thread.currentThread().isInterrupted()) {
+                            throw new RuntimeException("prematurely stopped")
+                        }
+                    }
+                }
             }
 
             def routeRan = false

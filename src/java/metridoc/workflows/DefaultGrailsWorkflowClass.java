@@ -29,7 +29,6 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
     private Date previousEndTime = null;
     private Date previousFireTime = null;
     private String previousDuration = null;
-    private AtomicBoolean running = new AtomicBoolean(false);
     private AtomicReference<Thread> runningThread = new AtomicReference<Thread>();
     private Throwable lastException = null;
     public static final Logger logger = LoggerFactory.getLogger(DefaultGrailsWorkflowClass.class);
@@ -41,26 +40,41 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
     public Object run() {
 
         Thread jobToJoin = null;
+        final Object[] result = {null};
         synchronized (this) {
             if (isRunning()) {
                 String message = getName() + " is already running, joining job already in progress";
                 logger.warn(message);
                 jobToJoin = runningThread.get();
             } else {
-                runningThread.getAndSet(Thread.currentThread());
+
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        //gets around the 'final' unmutable issues
+                        result[0] = doRun();
+                    }
+                };
+
+                Thread jobThread = new Thread(runnable);
+                runningThread.getAndSet(jobThread);
+                runningThread.get().start();
             }
         }
 
         try {
-            if(jobToJoin != null) {
+            if (jobToJoin != null) {
                 jobToJoin.join();
                 return null;
             } else {
-                return doRun();
+                runningThread.get().join();
+                return result[0];
             }
         } catch (InterruptedException e) {
             logger.error("job " + getName() + "interrupted (likely stopped)", e);
             return null;
+        } finally {
+            runningThread.getAndSet(null);
         }
     }
 
@@ -113,7 +127,6 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
             if (previousEndTime != null && previousFireTime != null) {
                 previousDuration = getPreviousDuration(previousEndTime.getTime() - previousFireTime.getTime());
             }
-            running.getAndSet(false);
             if (binding != null) {
                 if (variables.containsKey("camelScriptingContext")) {
                     CamelContext camelContext = (CamelContext) binding.getVariable("camelScriptingContext");
@@ -126,8 +139,7 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
             }
 
             logger.info("finished running the job " + getName());
-            runningThread.getAndSet(null);
-            if(noError) {
+            if (noError) {
                 lastException = null;
             }
         }
@@ -138,7 +150,7 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
     }
 
     public synchronized boolean isRunning() {
-        if(runningThread.get() == null) {
+        if (runningThread.get() == null) {
             return false;
         } else {
             return true;
@@ -151,14 +163,12 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
 
     @Override
     public void stop() {
-        synchronized (this) {
-            Thread runningThread = this.runningThread.get();
-            if(runningThread != null) {
-                runningThread.interrupt();
-                this.runningThread.getAndSet(null);
-            } else {
-                logger.warn("Could not stop " + getName() + " since it is not running");
-            }
+        Thread runningThread = this.runningThread.get();
+        if (runningThread != null) {
+            runningThread.interrupt();
+            logger.info("Trying to stop " + getName());
+        } else {
+            logger.warn("Could not stop " + getName() + " since it is not running");
         }
     }
 
