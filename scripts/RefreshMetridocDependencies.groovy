@@ -17,7 +17,8 @@ target(main: "Deletes the cached metridoc dependencies") {
         ant.delete(dir: file)
     }
 
-    grailsConsole.updateStatus "You must exit the grails shell before using this project again"
+    grailsConsole.info "since caches can get currupt, we will exit the grails shell if we are in interactive mode"
+    System.exit(0)
 }
 
 setDefaultTarget(main)
