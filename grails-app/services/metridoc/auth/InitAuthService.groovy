@@ -25,9 +25,12 @@ class InitAuthService {
     static dataSource
 
     static {
-        def config = Holders.grailsApplication.mergedConfig
-        if(config.dataSource_admin) {
-            dataSource = "dataSource_admin"
+        def grailsApplication = Holders.grailsApplication
+
+        if (grailsApplication) {
+            if(grailsApplication.mergedConfig.dataSource_admin) {
+                dataSource = 'admin'
+            }
         }
     }
 
