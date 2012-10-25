@@ -25,8 +25,12 @@ class ApplicationProperties {
     String value
 
     static mapping = {
-        if(Holders.grailsApplication.mergedConfig.dataSource_admin) {
-            datasource('admin')
+        def grailsApplication = Holders.grailsApplication
+
+        if (grailsApplication) {
+            if(grailsApplication.mergedConfig.dataSource_admin) {
+                datasource('admin')
+            }
         }
     }
 
