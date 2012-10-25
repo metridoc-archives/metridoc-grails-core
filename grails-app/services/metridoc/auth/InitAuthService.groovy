@@ -3,6 +3,7 @@ package metridoc.auth
 import metridoc.reports.ShiroRole
 import metridoc.reports.ShiroUser
 import org.apache.shiro.crypto.hash.Sha256Hash
+import grails.util.Holders
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,6 +21,15 @@ class InitAuthService {
     final static REPORT_USER = "report_user"
     final static ROLE = "ROLE_"
     final static DEFAULT_ROLES = [ANONYMOUS, ADMIN, REPORT_USER]
+
+    static dataSource
+
+    static {
+        def config = Holders.grailsApplication.mergedConfig
+        if(config.dataSource_admin) {
+            dataSource = "dataSource_admin"
+        }
+    }
 
     def init() {
         initDefaultRoles()

@@ -24,17 +24,18 @@ environments {
 }
 
 inMemoryDataSource = {
-    dbCreate = "none" // one of 'create', 'create-drop', 'update', 'validate', ''
-    url = "jdbc:h2:~/.metridoc/db;MVCC=TRUE"
+    dbCreate = "create-drop" // one of 'create', 'create-drop', 'update', 'validate', ''
+    url = "jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
     logSql = true
 }
 
 allInMememoryDataSource = {
     dataSource inMemoryDataSource
-    dataSource_illiad inMemoryDataSource
-    dataSource_from_illiad inMemoryDataSource
-    dataSource_admin inMemoryDataSource
-    dataSource_ezproxy inMemoryDataSource
+//    dataSource_admin {
+//        dbCreate = "create-drop" // one of 'create', 'create-drop', 'update', 'validate', ''
+//        url = "jdbc:h2:mem:devAdmin;MVCC=TRUE;LOCK_TIMEOUT=10000"
+//        logSql = true
+//    }
 }
 
 productionDataSourceProperties = {
@@ -55,52 +56,12 @@ environments {
 
         dataSource {
             pooled = true
-            dbCreate = "none"
+            dbCreate = "update"
             url = "jdbc:mysql://localhost:3306/metridoc"
             driverClassName = "com.mysql.jdbc.Driver"
             dialect = org.hibernate.dialect.MySQL5InnoDBDialect
             username = "root"
             password = "password"
-            properties(productionDataSourceProperties)
-        }
-
-        dataSource_admin {
-            pooled = true
-            dbCreate = "none"
-            url = "jdbc:mysql://localhost:3306/admin"
-            driverClassName = "com.mysql.jdbc.Driver"
-            dialect = org.hibernate.dialect.MySQL5InnoDBDialect
-            username = "root"
-            password = "password"
-            properties(productionDataSourceProperties)
-        }
-
-        dataSource_illiad {
-            pooled = true
-            dbCreate = "none"
-            url = "jdbc:mysql://localhost:3306/illiad"
-            driverClassName = "com.mysql.jdbc.Driver"
-            dialect = org.hibernate.dialect.MySQL5InnoDBDialect
-            username = "root"
-            password = "password"
-            properties(productionDataSourceProperties)
-        }
-
-        dataSource_ezproxy{
-            pooled = true
-            dbCreate = "none"
-            url = "jdbc:mysql://localhost:3306/illiad"
-            driverClassName = "com.mysql.jdbc.Driver"
-            dialect = org.hibernate.dialect.MySQL5InnoDBDialect
-            username = "root"
-            password = "password"
-            properties(productionDataSourceProperties)
-        }
-
-        dataSource_from_illiad {
-            pooled = true
-            dbCreate = "none"
-            url = "jdbc:h2:mem:developmentDb;MVCC=TRUE"
             properties(productionDataSourceProperties)
         }
     }

@@ -14,6 +14,8 @@
  */
 package metridoc.admin
 
+import grails.util.Holders
+
 /**
  * helpful for persisting application properties in a database
  */
@@ -23,7 +25,9 @@ class ApplicationProperties {
     String value
 
     static mapping = {
-        datasource 'admin'
+        if(Holders.grailsApplication.mergedConfig.dataSource_admin) {
+            datasource('admin')
+        }
     }
 
     static constraints = {

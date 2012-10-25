@@ -1,19 +1,6 @@
 import org.apache.commons.lang.SystemUtils
 
-metridoc {
-    schemas {
-        admin {
-            dataSource = "admin"
-            schema = "schemas/admin/adminSchema.xml"
-        }
-        user {
-            dataSource = "admin"
-            schema = "schemas/user/userSchema.xml"
-        }
-    }
-}
-
-
+//TODO:what is this?  Maybe our first attempt at doing a file store?  Confusing... get rid fo this?
 metridoc {
     files {
         directory = "${SystemUtils.USER_HOME}/.metridoc/files"

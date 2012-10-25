@@ -14,6 +14,8 @@
  */
 package metridoc.reports
 
+import grails.util.Holders
+
 /**
  * Created by IntelliJ IDEA.
  * User: tbarker
@@ -29,7 +31,9 @@ class ShiroUser {
     static transients = ['password', 'confirm']
 
     static mapping = {
-        datasource 'admin'
+        if(Holders.grailsApplication.mergedConfig.dataSource_admin) {
+            datasource('admin')
+        }
     }
     static hasMany = [roles: ShiroRole, permissions: String]
 
