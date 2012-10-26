@@ -56,12 +56,7 @@ class SqlPlusConsumer extends DefaultConsumer {
     }
 
     String getTableQuery() {
-        def result = query
-        if (!result.startsWith("select")) {
-            result = "select * from ${query}"
-        }
-
-        return result
+        endpoint.tableQuery
     }
 
     @Override
