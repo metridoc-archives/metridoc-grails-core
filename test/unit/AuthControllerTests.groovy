@@ -12,6 +12,16 @@ class AuthControllerTests {
 
     @Test
     void "forgotPassword in model is not there if mail is not set up correctly"() {
+        def grailsApplication = [
+                config: [
+                        grails: [
+                                mail: [
+                                        username: null
+                                ]
+                        ]
+                ]
+        ]
+        controller.grailsApplication = grailsApplication
         def model = controller.index()
         assert !model.containsKey("forgotPassword")
     }
@@ -31,6 +41,8 @@ class AuthControllerTests {
         ]
 
         controller.grailsApplication = grailsApplication
+        assert controller.grailsApplication.config.grails.mail.username
+        def model = controller.index()
         assert model.forgotPassword
         controller.grailsApplication = false
     }
