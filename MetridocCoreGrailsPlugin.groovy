@@ -4,6 +4,7 @@ import org.springframework.beans.factory.config.MethodInvokingFactoryBean
 import org.codehaus.groovy.grails.commons.GrailsClass
 import org.apache.commons.lang.StringUtils
 import grails.plugin.quartz2.JobArtefactHandler
+import metridoc.utils.ShiroBootUpUtils
 
 /*
 * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
@@ -62,6 +63,8 @@ class MetridocCoreGrailsPlugin {
         // Implement additions to web.xml (optional), this event occurs before
     }
 
+
+
     def doWithSpring = {
 
         def workflowClasses = application.workflowClasses
@@ -70,6 +73,12 @@ class MetridocCoreGrailsPlugin {
             configureWorkflowBeans.delegate = delegate
             configureWorkflowBeans(workflowClass)
         }
+
+        def shiroConfig = application.config.security.shiro
+
+        //have to do it in here instead of using the plugin config plugin since the shiro plugin does not use the
+        //plugin config plugin
+        ShiroBootUpUtils.addDefaultParameters(shiroConfig)
     }
 
     def doWithDynamicMethods = { ctx ->
@@ -77,7 +86,7 @@ class MetridocCoreGrailsPlugin {
     }
 
     def doWithApplicationContext = { applicationContext ->
-        // Implement post initialization spring config (optional)
+
     }
 
     def onChange = { event ->
@@ -90,7 +99,6 @@ class MetridocCoreGrailsPlugin {
                 // if job already exists, delete it from scheduler
                 //just stop all jobs
                 scheduler.clear()
-
 
                 // add job artefact to application
                 def workflowClass = application.addArtefact(WorkflowArtefactHandler.TYPE, event.source)
