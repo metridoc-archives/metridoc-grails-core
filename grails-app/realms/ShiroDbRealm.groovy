@@ -55,7 +55,22 @@ class ShiroDbRealm {
         return account
     }
 
+    def isAdmin(principal) {
+        def roles = ShiroUser.withCriteria {
+            roles {
+                eq("name", "ROLE_ADMIN")
+            }
+            eq("username", principal)
+        }
+
+        return roles.size() > 0 ? true : false
+    }
+
     def hasRole(principal, roleName) {
+
+        def isAdmin = isAdmin(principal)
+        if(isAdmin) return true
+
         def roles = ShiroUser.withCriteria {
             roles {
                 eq("name", roleName)
@@ -66,15 +81,19 @@ class ShiroDbRealm {
         return roles.size() > 0
     }
 
-    def hasAllRoles(principal, roles) {
+    def hasAllRoles(principal, roleList) {
+        if(isAdmin(principal)) {
+            return true
+        }
+
         def r = ShiroUser.withCriteria {
             roles {
-                'in'("name", roles)
+                'in'("name", roleList)
             }
             eq("username", principal)
         }
 
-        return r.size() == roles.size()
+        return r.size() == roleList.size()
     }
 
     def isPermitted(principal, requiredPermission) {
