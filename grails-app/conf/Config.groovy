@@ -199,33 +199,6 @@ grails.doc.subtitle = " "
 
 grails.doc.title = "MetriDoc User Manual"
 
-metridoc {
-    security {
-
-        //steps: checks for custom, checks if anonymous, then does fallback
-
-        anonymous = ["illiad", "logout", "auth", "counter", "sushi", "home", "whoami"]
-
-        fallback = {
-            return role("ROLE_ADMIN") //|| ipIn("<ip group name>")
-        }
-
-        custom {
-            //based on controller name
-            //counter = {.....}
-            profile = {
-
-                def userName = SecurityUtils.subject.principal as String
-
-                if ("anonymous" == userName) {
-                    return false
-                }
-                return true
-            }
-        }
-    }
-}
-
 //sets the layout for all pages
 metridoc.style.layout = "main"
 
