@@ -54,9 +54,10 @@ class AuthController {
     }
 
     def resetPassword() {
-        if (params.emailAddress) {
-            authService.sendResetPasswordEmail(params.emailAddress);
-            request.message = "Thank you! An email providing a link to reset your password has been sent."
+        def email = params.emailAddress
+        if (email) {
+            authService.sendResetPasswordEmail(email);
+            request.message = "An email with a reset link has been sent to ${email}"
             render(view: 'index', model: [template: 'forgetPassword', hideInput: true])
         } else {
             render(view: 'index', model: [template: 'forgetPassword'])
