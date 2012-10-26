@@ -6,11 +6,9 @@ import org.apache.shiro.crypto.hash.Sha256Hash
 import grails.util.Holders
 
 /**
- * Created with IntelliJ IDEA.
- * User: weizhuowu
- * Date: 7/17/12
- * Time: 5:33 PM
- * To change this template use File | Settings | File Templates.
+ * @auhor Tommy Barker
+ *
+ * initializes all default roles and users.  The default users are <code>admin</code> and <code>anonymous</code>.
  */
 class InitAuthService {
 
@@ -22,6 +20,9 @@ class InitAuthService {
     final static ROLE = "ROLE_"
     final static DEFAULT_ROLES = [ANONYMOUS, ADMIN, REPORT_USER]
 
+    /**
+     * The dataSource that the service will build a transaction around
+     */
     static dataSource
 
     static {
@@ -34,6 +35,9 @@ class InitAuthService {
         }
     }
 
+    /**
+     * calls all security initializations
+     */
     def init() {
         initDefaultRoles()
         initAdminUser()
@@ -98,6 +102,10 @@ class InitAuthService {
         }
     }
 
+    /**
+     * add all default roles if they don't exist, which include ROLE_ANONYMOUS, ROLE_ADMIN, and ROLE_REPORT_USER
+     * @return
+     */
     def initDefaultRoles() {
         DEFAULT_ROLES.each {shortRoleName ->
             def roleExists = ShiroRole.find {
@@ -110,6 +118,12 @@ class InitAuthService {
         }
     }
 
+    /**
+     * creates a role based on short name.  role <code>foo</code> would become <code>ROLE_FOO</code> and would be saved
+     * with permission <code>foo</code>
+     * @param type
+     * @return
+     */
     static createRole(String type) {
         def role = new ShiroRole(
             name: createRoleName(type)
