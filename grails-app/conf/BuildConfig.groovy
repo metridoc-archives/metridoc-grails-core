@@ -20,14 +20,15 @@ grails.project.test.reports.dir = "target/test-reports"
 grails.project.target.level = 1.6
 grails.project.source.level = 1.6
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
+
+//location of the release repository
 grails.project.repos.metridocRepo.url = "https://metridoc.googlecode.com/svn/plugins"
+//name of the repository
 grails.project.repos.default = "metridocRepo"
 
 grails.project.dependency.resolution = {
-    // inherit Grails' default dependencies
-    inherits("global") {
-        excludes "groovy-1.7-rc-2"
-    }
+    // inherit Grails' default dependencies, this has to be here
+    inherits("global")
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     checksums true // Whether to verify checksums on resolve
 
@@ -41,14 +42,15 @@ grails.project.dependency.resolution = {
     }
 
     dependencies {
-        compile 'org.codehaus.gpars:gpars:0.12'
+        //used for schema migration
         compile("org.liquibase:liquibase-core:2.0.1")
+        //used for testing camel routes
         test("org.apache.camel:camel-test:2.9.2")
+        //not explicitely used, but can be helpful for transfering files in workflows
         compile("org.apache.camel:camel-ftp:2.9.2") {
             excludes "slf4j-api"
         }
-        compile("org.grails:grails-scripts:${grailsVersion}")
-        compile("org.apache.ivy:ivy:2.2.0")
+
         compile("mysql:mysql-connector-java:5.1.20")
         compile("org.codehaus.gant:gant_groovy1.8:1.9.8")
         compile("org.apache.poi:poi:3.8-beta3")
