@@ -20,19 +20,24 @@ class ShiroDbRealmTest {
 
     @Before
     void "create some data"() {
-        def user = new ShiroUser(username: "admin", passwordHash: "asdasd")
-        def role = new ShiroRole(name: "ROLE_ADMIN")
+        ShiroUser.withTransaction{
+            def adminUser = new ShiroUser(username: "admin", passwordHash: "asdasd")
+            def adminRole = new ShiroRole(name: "ROLE_ADMIN")
 
-        user.addToRoles(role)
-        user.save(failOnError: true)
+            adminUser.addToRoles(adminRole)
+            assert adminUser.save()
 
-        user = new ShiroUser(username: "foo", passwordHash: "asdasd")
-        role = new ShiroRole(name: "ROLE_FOO")
+            def fooUser = new ShiroUser(username: "foo", passwordHash: "asdasd")
+            def fooRole = new ShiroRole(name: "ROLE_FOO")
 
-        user.addToRoles(role)
-        user.save(failOnError: true)
+            fooUser.addToRoles(fooRole)
+            assert fooUser.save()
 
-        new ShiroRole(name: "ROLE_BAR").save(failOnError: true)
+            assert new ShiroRole(name: "ROLE_BAR").save()
+
+            assert 2 == ShiroUser.list().size()
+            assert 3 == ShiroRole.list().size()
+        }
     }
 
     @Test
