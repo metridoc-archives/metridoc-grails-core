@@ -22,8 +22,6 @@ import metridoc.reports.ShiroUser
 import org.apache.shiro.crypto.hash.Sha256Hash
 
 class AuthController {
-    def shiroSecurityManager
-
     def authService
     def grailsApplication
 
