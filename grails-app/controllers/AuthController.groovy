@@ -28,11 +28,19 @@ class AuthController {
     def grailsApplication
 
     def index() {
+        def model
         if (!params.template) {
-            [template: 'login', username: params.username, rememberMe: (params.rememberMe != null), targetUri: params.targetUri]
+            model = [template: 'login', username: params.username, rememberMe: (params.rememberMe != null), targetUri: params.targetUri]
         } else {
-            [params: params]
+            model = [params: params]
         }
+
+        def mailIsSet = grailsApplication.config.grails.mail.username
+        if(mailIsSet) {
+            model.forgotPassword = true
+        }
+
+        return model
     }
 
     def login() {

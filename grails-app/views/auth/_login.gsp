@@ -27,7 +27,7 @@
                 <g:checkBox name="rememberMe" value="${rememberMe}"/>
             </span>
 
-            <g:if test="${'metridoc-core'.equals(grailsApplication.metadata.getAt("app.name"))}">
+            <g:if test="${forgotPassword}">
                 <span id="forgetPW">
                     <g:link controller="auth" action="forgetPassword"
                             name="forgetPW">Forgot Password ?</g:link>
