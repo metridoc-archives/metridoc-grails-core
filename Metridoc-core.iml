@@ -17,6 +17,11 @@
         <sourceRoots />
       </configuration>
     </facet>
+    <facet type="hibernate" name="Hibernate">
+      <configuration>
+        <datasource-map />
+      </configuration>
+    </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
@@ -34,7 +39,6 @@
       <sourceFolder url="file://$MODULE_DIR$/test/unit" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test/integration" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
-      <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -66,10 +70,10 @@
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-core/bundles/camel-core-2.9.2.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-ftp/bundles/camel-ftp-2.9.2.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.liquibase/liquibase-core/jars/liquibase-core-2.0.1.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.shiro/shiro-spring/bundles/shiro-spring-1.1.0.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.shiro/shiro-ehcache/bundles/shiro-ehcache-1.1.0.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.shiro/shiro-web/bundles/shiro-web-1.1.0.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.shiro/shiro-core/bundles/shiro-core-1.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.shiro/shiro-spring/jars/shiro-spring-1.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.shiro/shiro-ehcache/jars/shiro-ehcache-1.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.shiro/shiro-web/jars/shiro-web-1.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.shiro/shiro-core/jars/shiro-core-1.1.0.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-test/bundles/camel-test-2.9.2.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/xml-resolver/xml-resolver/jars/xml-resolver-1.2.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/xerces/xercesImpl/jars/xercesImpl-2.8.1.jar!/" />
@@ -114,7 +118,10 @@
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.tmatesoft.svnkit/svnkit/jars/svnkit-1.3.5.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../../library/shiro-spring-1.1.0-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../library/shiro-web-1.1.0-sources.jar!/" />
+        </SOURCES>
         <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" />
       </library>
     </orderEntry>

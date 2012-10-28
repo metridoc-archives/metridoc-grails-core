@@ -12,16 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-/**
- * Created with IntelliJ IDEA.
- * User: tbarker
- * Date: 8/22/12
- * Time: 2:05 PM
- * To change this template use File | Settings | File Templates.
- */
 public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass implements GrailsWorkflowClass {
 
     public static final String WORKFLOW = "Workflow";
@@ -49,7 +41,6 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
             } else {
 
                 Runnable runnable = new Runnable() {
-                    @Override
                     public void run() {
                         //gets around the 'final' unmutable issues
                         result[0] = doRun();
@@ -150,18 +141,13 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
     }
 
     public synchronized boolean isRunning() {
-        if (runningThread.get() == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return runningThread.get() != null;
     }
 
     public Throwable getLastException() {
         return lastException;
     }
 
-    @Override
     public void stop() {
         Thread runningThread = this.runningThread.get();
         if (runningThread != null) {
