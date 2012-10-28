@@ -15,15 +15,21 @@
     </head>
 
     <body>
-        <table>
+        <table id="accessInfoTable" border="1">
             <tr>
                 <th>Link</th>
-                <th>Has Access</th>
+                <th>Access</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Description</th>
             </tr>
             <g:each status="i" in="${links}" var="link">
                 <tr>
                     <td id="linkUrl_${i}"><g:createLink controller="${link.controller}" action="index"/></td>
                     <td id="linkHasAccess_${i}"></td>
+                    <td>${link.title}</td>
+                    <td>${link.category}</td>
+                    <td>${link.description}</td>
                     <script type="text/javascript">checkAndSetAccess(${i})</script>
                 </tr>
             </g:each>

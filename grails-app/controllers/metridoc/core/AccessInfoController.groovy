@@ -9,4 +9,9 @@ class AccessInfoController {
             links: accessInfoService.buildHomeLinks()
         ]
     }
+
+    //TODO: once finished remove this
+    def testMenu() {
+
+    }
 }

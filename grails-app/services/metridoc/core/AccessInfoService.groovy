@@ -6,18 +6,13 @@ class AccessInfoService {
 
     def grailsApplication
 
+    /**
+     * inspects all controllers to determine if they should be available on the home page
+     * @return model that represents a controller, actions, titles and descriptions of links that should be displayed on the home page
+     *
+     */
     def buildHomeLinks() {
 
-        def result = []
-        grailsApplication.controllerClasses.each {controller ->
-            def homeInfo = GrailsClassUtils.getStaticFieldValue(controller.clazz, "home")
-            if (homeInfo) {
-                homeInfo.each {
-                    result << [controller: controller.name, action: it.action]
-                }
-            }
-        }
 
-        return result
     }
 }

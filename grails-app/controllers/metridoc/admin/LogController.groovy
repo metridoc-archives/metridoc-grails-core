@@ -5,7 +5,11 @@ class LogController {
     static home = [
         [
             action: "index",
-            title: "Application Log"
+            title: "Application Log",
+            category: "Administration",
+            description: """
+                Displays the application log that is normally stored under <code>USER_HOME/.metridoc/logs/metridoc.log</code>
+            """
         ]
     ]
 

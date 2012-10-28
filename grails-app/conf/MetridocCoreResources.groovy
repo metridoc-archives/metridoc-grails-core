@@ -119,7 +119,7 @@ modules = {
     }
 
     accessInfo {
-        dependsOn 'jquery-ui'
+        dependsOn 'jquery'
         resource id: 'js', disposition: 'head',
             url: [plugin: "metridocCore", dir: 'accessInfo', file: 'accessInfo.js'],
             attrs: [type: 'js']

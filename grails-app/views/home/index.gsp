@@ -20,6 +20,7 @@
 <head>
     <meta name="layout" content="main"/>
     <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.5.1/build/cssgrids/grids-min.css">
+
 </head>
 
 <body>
@@ -30,52 +31,54 @@
 
     <p>
         MetriDoc is an extendable platform to view and maintain library statistics and reports.
-        <shiro:isNotLoggedIn>
-            You must <g:link controller="auth" action="index">login</g:link> to view available applications.
-        </shiro:isNotLoggedIn>
     </p>
+    <table id="accessInfoTable" border="1">
+        <tr>
+            <th>Link</th>
+            <th>Access</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Description</th>
+        </tr>
+        <script>
+            function checkAndSetAccess(status) {
+                var url = $('#linkUrl_' + status).text();
+                if (url.search("checkAccess") == -1) {
+                    if (url.search('\\?') == -1) {
+                        url = url + "?"
+                    }
 
-    <shiro:isLoggedIn>
-        <div id="application-list" role="navigation">
-            <g:if test="${hasLinks}">
-                <div class="yui3-g">
-                    <div class="yui3-u-1-2">
-                        <h2>Available Applications</h2>
-                        <ul>
-                            <g:if test="${reportLinks}">
-                                <g:each var="c" in="${reportLinks}">
-                                    <li class="application"><g:link
-                                            controller="${c.controllerName}">${c.reportName}</g:link></li>
-                                </g:each>
-                            </g:if>
-                            <g:else>
-                                <li class="application">No reports available</li>
-                            </g:else>
-                        </ul>
-                    </div>
+                    url = url + "checkAccess"
+                }
 
-                    <g:if test="${adminLinks}">
-                        <div class="yui3-u-1-2">
-                            <h2>Administration</h2>
-                            <ul>
-                                <g:each var="c" in="${adminLinks}">
-                                    <li class="application"><g:link
-                                            controller="${c.controllerName}">${c.reportName}</g:link></li>
-                                </g:each>
-                            </ul>
-                        </div>
-                    </g:if>
-                </div>
+                var text = $.ajax({
+                    url:url,
+                    type:'GET',
+                    cache:false,
+                    async:false
+                }).responseText;
 
-            </g:if>
-            <g:else>
-                <p>
-                    Please <g:link controller="auth"
-                                   action="index">login</g:link> to view available applications.
-                </p>
-            </g:else>
-        </div>
-    </shiro:isLoggedIn>
+                if (text.search("Remember Me?") == -1) {
+                    $('#linkHasAccess_' + status).html('true');
+                } else {
+                    $('#linkHasAccess_' + status).html('false');
+                }
+            }
+
+        </script>
+        <g:each in="${controllers}" var="controller" status="i">
+
+            <tr>
+                <td id="linkUrl_${i}"><g:createLink controller="${controller.controllerName}" action="${controller.action}"/></td>
+                <td id="linkHasAccess_${i}"></td>
+                <td>${controller.title}</td>
+                <td>${controller.category}</td>
+                <td>${controller.description}</td>
+                <script type="text/javascript">checkAndSetAccess(${i})</script>
+            </tr>
+        </g:each>
+    </table>
+
 </div>
 </body>
 </html>
