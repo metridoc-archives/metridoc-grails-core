@@ -89,12 +89,12 @@ grails.project.dependency.resolution = {
             excludes 'slf4j-api'
         }
         runtime ":hibernate:$grailsVersion"
-        runtime ":jquery:1.7.1"
+        runtime ":jquery:1.7.2"
         runtime ":resources:1.1.6"
         runtime (":shiro:1.1.3") {
             excludes "shiro-quartz"
         }
-        compile ":jquery-ui:1.8.15"
+        compile ":jquery-ui:1.8.24"
         runtime ":webxml:1.4.1"
         build ":tomcat:$grailsVersion"
         build ":rest-client-builder:1.0.2"
