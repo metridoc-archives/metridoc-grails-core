@@ -30,54 +30,56 @@
     <h1>Welcome to MetriDoc</h1>
 
     <p>
-        MetriDoc is an extendable platform to view and maintain library statistics and reports.
+        MetriDoc is an extendable platform to view and maintain library statistics and reports.  After improving our
+        security,  home page navigation no longer works.  This will be fixed once
+        <a href="https://upennlib.atlassian.net/browse/METCORE-84">METCORE-84</a> is done.
     </p>
-    <table id="accessInfoTable" border="1">
-        <tr>
-            <th>Link</th>
-            <th>Access</th>
-            <th>Title</th>
-            <th>Category</th>
-            <th>Description</th>
-        </tr>
-        <script>
-            function checkAndSetAccess(status) {
-                var url = $('#linkUrl_' + status).text();
-                if (url.search("checkAccess") == -1) {
-                    if (url.search('\\?') == -1) {
-                        url = url + "?"
-                    }
+    %{--<table id="accessInfoTable" border="1">--}%
+        %{--<tr>--}%
+            %{--<th>Link</th>--}%
+            %{--<th>Access</th>--}%
+            %{--<th>Title</th>--}%
+            %{--<th>Category</th>--}%
+            %{--<th>Description</th>--}%
+        %{--</tr>--}%
+        %{--<script>--}%
+            %{--function checkAndSetAccess(status) {--}%
+                %{--var url = $('#linkUrl_' + status).text();--}%
+                %{--if (url.search("checkAccess") == -1) {--}%
+                    %{--if (url.search('\\?') == -1) {--}%
+                        %{--url = url + "?"--}%
+                    %{--}--}%
 
-                    url = url + "checkAccess"
-                }
+                    %{--url = url + "checkAccess"--}%
+                %{--}--}%
 
-                var text = $.ajax({
-                    url:url,
-                    type:'GET',
-                    cache:false,
-                    async:false
-                }).responseText;
+                %{--var text = $.ajax({--}%
+                    %{--url:url,--}%
+                    %{--type:'GET',--}%
+                    %{--cache:false,--}%
+                    %{--async:false--}%
+                %{--}).responseText;--}%
 
-                if (text.search("Remember Me?") == -1) {
-                    $('#linkHasAccess_' + status).html('true');
-                } else {
-                    $('#linkHasAccess_' + status).html('false');
-                }
-            }
+                %{--if (text.search("Remember Me?") == -1) {--}%
+                    %{--$('#linkHasAccess_' + status).html('true');--}%
+                %{--} else {--}%
+                    %{--$('#linkHasAccess_' + status).html('false');--}%
+                %{--}--}%
+            %{--}--}%
 
-        </script>
-        <g:each in="${controllers}" var="controller" status="i">
+        %{--</script>--}%
+        %{--<g:each in="${controllers}" var="controller" status="i">--}%
 
-            <tr>
-                <td id="linkUrl_${i}"><g:createLink controller="${controller.controllerName}" action="${controller.action}"/></td>
-                <td id="linkHasAccess_${i}"></td>
-                <td>${controller.title}</td>
-                <td>${controller.category}</td>
-                <td>${controller.description}</td>
-                <script type="text/javascript">checkAndSetAccess(${i})</script>
-            </tr>
-        </g:each>
-    </table>
+            %{--<tr>--}%
+                %{--<td id="linkUrl_${i}"><g:createLink controller="${controller.controllerName}" action="${controller.action}"/></td>--}%
+                %{--<td id="linkHasAccess_${i}"></td>--}%
+                %{--<td>${controller.title}</td>--}%
+                %{--<td>${controller.category}</td>--}%
+                %{--<td>${controller.description}</td>--}%
+                %{--<script type="text/javascript">checkAndSetAccess(${i})</script>--}%
+            %{--</tr>--}%
+        %{--</g:each>--}%
+    %{--</table>--}%
 
 </div>
 </body>
