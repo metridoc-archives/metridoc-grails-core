@@ -20,7 +20,6 @@
 <head>
     <meta name="layout" content="main"/>
     <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.5.1/build/cssgrids/grids-min.css">
-
 </head>
 
 <body>
@@ -30,9 +29,8 @@
     <h1>Welcome to MetriDoc</h1>
 
     <p>
-        MetriDoc is an extendable platform to view and maintain library statistics and reports.  After improving our
-        security,  home page navigation no longer works.  This will be fixed once
-        <a href="https://upennlib.atlassian.net/browse/METCORE-84">METCORE-84</a> is done.
+        MetriDoc is an extendable platform to view and maintain library statistics and reports.  Please choose an
+        application or report below.
     </p>
 
     <div class="linkContainer">
