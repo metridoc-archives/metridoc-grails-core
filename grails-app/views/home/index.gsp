@@ -34,53 +34,34 @@
         security,  home page navigation no longer works.  This will be fixed once
         <a href="https://upennlib.atlassian.net/browse/METCORE-84">METCORE-84</a> is done.
     </p>
-    %{--<table id="accessInfoTable" border="1">--}%
-        %{--<tr>--}%
-            %{--<th>Link</th>--}%
-            %{--<th>Access</th>--}%
-            %{--<th>Title</th>--}%
-            %{--<th>Category</th>--}%
-            %{--<th>Description</th>--}%
-        %{--</tr>--}%
-        %{--<script>--}%
-            %{--function checkAndSetAccess(status) {--}%
-                %{--var url = $('#linkUrl_' + status).text();--}%
-                %{--if (url.search("checkAccess") == -1) {--}%
-                    %{--if (url.search('\\?') == -1) {--}%
-                        %{--url = url + "?"--}%
-                    %{--}--}%
 
-                    %{--url = url + "checkAccess"--}%
-                %{--}--}%
+    <div class="linkContainer">
+        <md:header>Available Applications</md:header>
 
-                %{--var text = $.ajax({--}%
-                    %{--url:url,--}%
-                    %{--type:'GET',--}%
-                    %{--cache:false,--}%
-                    %{--async:false--}%
-                %{--}).responseText;--}%
+        <g:if test="${!applicationControllers}">
+            <ul class="undecorated">
+                <li>No applications available</li>
+            </ul>
+        </g:if>
 
-                %{--if (text.search("Remember Me?") == -1) {--}%
-                    %{--$('#linkHasAccess_' + status).html('true');--}%
-                %{--} else {--}%
-                    %{--$('#linkHasAccess_' + status).html('false');--}%
-                %{--}--}%
-            %{--}--}%
+        <g:each in="${applicationControllers}" var="appController" status="i">
+            <ul class="undecorated">
+                <li><a href="${createLink(controller: appController.controllerName, action: 'index')}">${appController.title}</a> - ${appController.description}</li>
+            </ul>
+        </g:each>
+    </div>
 
-        %{--</script>--}%
-        %{--<g:each in="${controllers}" var="controller" status="i">--}%
-
-            %{--<tr>--}%
-                %{--<td id="linkUrl_${i}"><g:createLink controller="${controller.controllerName}" action="${controller.action}"/></td>--}%
-                %{--<td id="linkHasAccess_${i}"></td>--}%
-                %{--<td>${controller.title}</td>--}%
-                %{--<td>${controller.category}</td>--}%
-                %{--<td>${controller.description}</td>--}%
-                %{--<script type="text/javascript">checkAndSetAccess(${i})</script>--}%
-            %{--</tr>--}%
-        %{--</g:each>--}%
-    %{--</table>--}%
-
+    <div class="linkContainer">
+        <shiro:hasRole name="ROLE_ADMIN">
+            <md:header>Administration</md:header>
+            <g:each in="${adminControllers}" var="controller" status="i">
+                <ul class="undecorated">
+                    <li><a href="${createLink(controller: controller.controllerName, action: 'index')}">${controller.title}</a> - ${controller.description}
+                    </li>
+                </ul>
+            </g:each>
+        </shiro:hasRole>
+    </div>
 </div>
 </body>
 </html>

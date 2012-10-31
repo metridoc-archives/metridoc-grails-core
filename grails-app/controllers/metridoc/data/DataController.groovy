@@ -16,6 +16,10 @@ package metridoc.data
 
 class DataController {
 
+    static final homePage = [
+            exclude: true
+    ]
+
     def grailsApplication
 
     def index() {

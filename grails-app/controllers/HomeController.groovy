@@ -2,10 +2,15 @@ class HomeController {
 
     def homeService
 
+    static final homePage = [
+            exclude: true
+    ]
+
     def index() {
         def model = [:]
-        model << homeService.layoutConfig
-        model.controllers = homeService.controllerInformation
+        model.adminControllers = homeService.adminControllers
+        model.applicationControllers = homeService.applicationControllers
+
         return model
     }
 

@@ -5,6 +5,15 @@ import org.apache.commons.lang.exception.ExceptionUtils
 
 class QuartzController {
 
+    static homePage = [
+            title: "Workflow List",
+            adminOnly: true,
+            description: """
+                List of all available workflows and their next scheduled run.  All workflows can be manually ran on this
+                page as well.
+            """
+    ]
+
     def quartzService
 
     def index() {

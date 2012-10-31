@@ -2,7 +2,14 @@ package metridoc.admin
 
 import org.codehaus.groovy.grails.commons.GrailsClass
 
+/**
+ * Currently working on this.  Intends to display a very simple page on server status and what components are installed
+ */
 class StatusController {
+
+    static final homePage = [
+            exclude: true
+    ]
 
     def index() {
         def model = [:]

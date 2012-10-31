@@ -21,6 +21,16 @@ import org.apache.shiro.crypto.hash.Sha256Hash
 import org.springframework.dao.DataIntegrityViolationException
 
 class UserController {
+
+    static homePage = [
+            title: "Manage Users",
+            adminOnly: true,
+            description: """
+                Create, update and delete users and roles.  This does not affect external authc and authz via ldap
+                or other means.  All operations are used against MetriDoc's internal database.
+            """
+    ]
+
     static allowedMethods = [save: "POST", update: "POST", delete: ['DELETE', "POST"], list: "GET", index: "GET"]
     def static final reportName = "Manage Users"
     static final adminOnly = true

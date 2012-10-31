@@ -16,6 +16,10 @@ package metridoc.logout
 
 class LogoutController {
 
+    static final homePage = [
+            exclude: true
+    ]
+
     def index() {
         session.invalidate()
         redirect(controller: "auth")

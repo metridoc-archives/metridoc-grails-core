@@ -69,10 +69,9 @@ html.no-cssgradients {
 
 #doc4 {
     background: #ffffff;
-    max-width: 960px;
+    max-width: 1000px;
     margin: 10px auto 10px;
     text-align: left;
-
 }
 
 .ie6 #doc4,
@@ -80,8 +79,7 @@ html.no-cssgradients {
 .ie8 #doc4,
 .ie9 #doc4,
 .ie10 #doc4 {
-    width: 960px;
-
+    width: 1000px;
 }
 
 body {
@@ -117,7 +115,7 @@ body {
 }
 
 #page-body {
-    margin: 2em 1em 0em 10em;
+    margin: 2em 1em 0em 7em;
 }
 
 .ie6 body {
@@ -750,6 +748,16 @@ p {
     background: -webkit-gradient(linear, left top, left 25, from(#FFFFFF), color-stop(4%, #EEEEEE), to(#FFFFFF)); /*Chrome and Safari*/
     background: -moz-linear-gradient(top, #FFFFFF, #EEEEEE 1px, #FFFFFF 25px); /* Firefox Browsers */
     filter: progid:DXImageTransform.Microsoft.gradient(startColorStr = '#EEEEEE', EndColorStr = '#FFFFFF');
-
 }
 
+ul.undecorated {
+    list-style: none;
+}
+
+.linkContainer {
+    padding-top: 25px;
+}
+
+.linkContainer ul {
+    margin-left: 1em;
+}

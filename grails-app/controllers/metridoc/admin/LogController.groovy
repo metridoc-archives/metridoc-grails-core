@@ -2,15 +2,13 @@ package metridoc.admin
 
 class LogController {
 
-    static home = [
-        [
-            action: "index",
+    static homePage = [
             title: "Application Log",
-            category: "Administration",
+            adminOnly: true,
             description: """
-                Displays the application log that is normally stored under <code>USER_HOME/.metridoc/logs/metridoc.log</code>
+                Displays the application log that is normally stored under
+                <code>USER_HOME/.metridoc/logs/metridoc.log</code>
             """
-        ]
     ]
 
     def index() {

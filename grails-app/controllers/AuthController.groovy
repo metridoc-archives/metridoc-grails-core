@@ -22,6 +22,10 @@ import metridoc.reports.ShiroUser
 import org.apache.shiro.crypto.hash.Sha256Hash
 
 class AuthController {
+
+    static final homePage = [
+            exclude: true
+    ]
     def authService
     def grailsApplication
 

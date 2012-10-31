@@ -18,9 +18,13 @@ import metridoc.reports.ShiroRole
 import org.springframework.dao.DataIntegrityViolationException
 
 class RoleController {
+
+    static final homePage = [
+            exclude: true
+    ]
+
     static allowedMethods = [save: "POST", update: "POST", delete: "DELETE", list: "GET", index: "GET"]
     def static final reportName = "Manage Roles"
-    static final adminOnly = true
 
     def index() {
         chain(action: "list")
