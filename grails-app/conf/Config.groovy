@@ -202,32 +202,15 @@ grails.doc.title = "MetriDoc User Manual"
 //sets the layout for all pages
 metridoc.style.layout = "main"
 
-metridoc {
-    style {
-        home {
-            layout {
-                //if the app exists a link will be added under the name available applications
-                availableApplications {
-                    illiad = "Illiad Dashboards"
-                    counter = "Counter Reports"
-                    sushi = "Sushi Tester"
-                    fallback = "No applications available"
-                }
-
-                administration {
-                    user = "Manage Users"
-                    profile = "User Profile"
-                    jenkins = "Install Jenkins"
-                    role = "Manage Roles"
-                }
-            }
-        }
-    }
-}
-
+/**
+ * here is a scheduling example for a workflow named FooWorkflow
+ */
 metridoc {
     scheduling {
         workflows {
+            //camel case version of the workflow, fo if a workflow is named FooWorkflow, this would be named foo.
+            //If the name of the workflow is FooBarWorkflow, this would be fooBar if you want it to be scheduled.  For
+            //now a new schedule can only be created here and the server must restart for it to take affect.
             foo {
                 schedule = simpleSchedule().withIntervalInMinutes(5).repeatForever()
             }

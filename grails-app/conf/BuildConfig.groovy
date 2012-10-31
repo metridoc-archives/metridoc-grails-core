@@ -41,6 +41,7 @@ grails.project.dependency.resolution = {
         mavenRepo "https://oss.sonatype.org/content/repositories/snapshots"
     }
 
+    //standard jar maven dependencies
     dependencies {
         //used for schema migration
         compile("org.liquibase:liquibase-core:2.0.1")
@@ -51,27 +52,36 @@ grails.project.dependency.resolution = {
             excludes "slf4j-api"
         }
 
+        //by default metridoc is tested on mysql
         compile("mysql:mysql-connector-java:5.1.20")
+        //used to add targets to the workflow api
         compile("org.codehaus.gant:gant_groovy1.8:1.9.8")
+        //used for handling xls files
         compile("org.apache.poi:poi:3.8-beta3")
+        //eventually will be used for xlsx files.  Right now xmlbeans is causing classpath problems.  Looks like
+        //these issues have been taken care of as of grails 2.1.1
         compile("org.apache.poi:poi-ooxml:3.8-beta3") {
+            //TODO: remove this after upgrading to something later than grails 2.1.0
             excludes "xmlbeans"
         }
+        //helpful library to embed gant
         compile("com.googlecode.gant-ext:gant-ext:0.5") {
             excludes 'logback-classic'
             excludes 'slf4j-api'
             excludes 'gant_groovy1.8'
         }
+        //helpful for exposing data as json, csv, or jsonp objects according to the google wire protocol
         compile("com.google.visualization:visualization-datasource:1.1.1") {
             excludes "commons-lang"
             excludes "commons-logging"
             excludes "opencsv"
         }
+        //Helps with csv data
         compile 'net.sf.opencsv:opencsv:2.3'
     }
 
+    //grails based plugins
     plugins {
-        compile ":plugin-config:0.1.5"
         compile ":plugin-config:0.1.5"
         compile ":quartz2:0.2.3"
         compile ":mail:1.0"
