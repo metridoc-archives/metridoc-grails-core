@@ -16,11 +16,6 @@
 class UrlMappings {
 
     static mappings = {
-        "/"(controller: "home", action: "index")
-        "/admin"(view: "/admin/index")
-        //TODO: do we really need this anymore?  Do we really want to maintain this?
-        "/data/$action?/$projectName?/$filePath**?"(controller: "data")
-
         "/$controller/$action?/$id?" {
             constraints {
                 // apply constraints here
