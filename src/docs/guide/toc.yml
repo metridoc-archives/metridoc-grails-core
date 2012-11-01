@@ -6,6 +6,7 @@ gettingStarted:
   requiredExperience: Required Experience
   firstMetridocProject: First MetriDoc Project
   developingMetridoc: Developing MetriDoc
+  upgradingMetridoc: Upgrading MetriDoc
 configuration:
   title: Configuration
   settingUpDataSources: Setting Up Data Sources
