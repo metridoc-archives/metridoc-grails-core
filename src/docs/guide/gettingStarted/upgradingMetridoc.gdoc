@@ -1,0 +1,12 @@
+Upgrading is simple.  Just go into your BuildConfig.groovy file and change the version of metridoc that you are using.
+For instance, say you see something like
+
+{code}
+
+compile (":metridoc-core:0.52-SNAPSHOT") {
+    exclude "xmlbeans"
+}
+
+{code}
+
+in your @BuildConfig.groovy@.  You can change to version @0.52@ by just replacing @0.52-SNAPSHOT@ with @0.52@
