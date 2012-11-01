@@ -1,8 +1,31 @@
 We used to have a starter project available, but as we have continued to streamline MetriDoc, this really didn't seem
 worth the effort anymore.  Using the standard grails create-app method gets you started just fine
 
-So this is the recommended method now.  After installing grails via the methods mentioned [here|http://metridoc.googlecode.com/svn/trunk/metridoc-core/target/docs/guide/gettingStarted.html#requiredSoftware],
-run @grails create-app metridoc@ on the command line.  After this is done you will need to change 1 file and delete the contents
+h3. Installing via Commandline
+
+{code}
+grails create-app metridoc
+curl http://metridoc.googlecode.com/svn/trunk/buildconfig/BuildConfig.groovy > metridoc/grails-app/conf/BuildConfig.groovy
+curl http://metridoc.googlecode.com/svn/trunk/urlmappings/UrlMappings.groovy > metridoc/grails-app/conf/UrlMappings.groovy
+rm -rf metridoc/grails-app/views/*
+cd metridoc
+grails run-app
+{code}
+
+The script above is available in trunk, so you can also do:
+
+{code}
+curl -s http://metridoc.googlecode.com/svn/trunk/bash/createMetridocProject.sh | sh
+{code}
+
+If all goes well, you should see this page:
+
+!http://metridoc.googlecode.com/svn/trunk/metridoc-core/src/docs/images/MetriDocHome.png!
+
+h3. Installing Manually
+
+After installing grails via the methods mentioned [here|http://metridoc.googlecode.com/svn/trunk/metridoc-core/target/docs/guide/gettingStarted.html#requiredSoftware],
+run @grails create-app metridoc@ on the command line.  After this is done you will need to change 2 files and delete the contents
 of a directory to get metridoc
 core up and running.  Open metridoc/grails-app/conf/BuildConfig.groovy, and add the following within the @repository@ block:
 
@@ -80,6 +103,24 @@ grails.project.dependency.resolution = {
         compile (":metridoc-core:latest.integration") {
             exclude "xmlbeans"
         }
+    }
+}
+{code}
+
+Next we need to change the file @UrlMappings.groovy@ at @grails-app/conf/UrlMappings.groovy@.  Delete the line @"/"(view:"/index")@.
+The @UrlMappings.groovy@ file should look something like:
+
+{code}
+class UrlMappings {
+
+    static mappings = {
+        "/$controller/$action?/$id?" {
+            constraints {
+                // apply constraints here
+            }
+        }
+
+        "500"(view: '/error')
     }
 }
 {code}
