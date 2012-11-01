@@ -217,3 +217,12 @@ metridoc {
         }
     }
 }
+
+metridoc {
+    security {
+        accessFromConfig = [
+            title: "Access From Config",
+            description:"Access is determined by config file for home page"
+        ]
+    }
+}

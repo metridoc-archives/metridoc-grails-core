@@ -8,25 +8,6 @@ class HomeService {
     static final HOME_DATA_FIELD = "homePage"
     def grailsApplication
 
-    def getLayoutConfig() {
-        grailsApplication.config.metridoc.style.home.layout ? grailsApplication.config.metridoc.style.home.layout : 'main'
-    }
-
-    def getControllerInformation() {
-        def result = []
-        grailsApplication.controllerClasses.each {controller ->
-            def homeLinks = GrailsClassUtils.getStaticFieldValue(controller.clazz, "home")
-            if (homeLinks) {
-                homeLinks.each {homeLink ->
-                    homeLink << [controllerName: controller.name]
-                    result << homeLink
-                }
-            }
-        }
-
-        return result
-    }
-
     /**
      *
      * @return indication whether or not a controller is an application controller.  These include all controllers
@@ -59,9 +40,13 @@ class HomeService {
      */
     def getControllerMetaData(Closure closure) {
         def result = [:] as TreeMap
+        def securityConfig = grailsApplication.mergedConfig.metridoc.security
         grailsApplication.controllerClasses.each {controller ->
             def dataField = GrailsClassUtils.getStaticFieldValue(controller.clazz, HOME_DATA_FIELD)
             def homePageMetaData = dataField ? dataField : [:]
+            def uncapControllerName = StringUtils.uncapitalise(controller.name)
+            def homePageInfoFromConfig = securityConfig[uncapControllerName] ? securityConfig[uncapControllerName] : [:]
+            homePageMetaData.putAll(homePageInfoFromConfig)
             if (closure.call(homePageMetaData)) {
                 if(!homePageMetaData || !homePageMetaData.title) {
                     homePageMetaData.title = controller.naturalName
