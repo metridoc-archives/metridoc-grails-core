@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>2 Getting Started 0.52-SNAPSHOT</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/gettingStarted.html"><strong>2</strong><span>Getting Started</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/configuration.html"><strong>3</strong><span>Configuration</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/metridocPlugins.html"><strong>4</strong><span>Metridoc Plugins</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/metridocSecurity.html"><strong>5</strong><span>Metridoc Security</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p> </p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/configuration.html"><strong>3</strong><span>Configuration</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>2 Getting Started - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Thomas Barker, Weizhuo Wu</p>
+
+                    <p><strong>Version:</strong> 0.52-SNAPSHOT</p>
+
+                    
+                </div>
+
+                
+                <div id="table-of-content">
+                    <h2>Table of Contents</h2>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#requiredSoftware"><strong>2.1</strong><span>Required Software</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#requiredExperience"><strong>2.2</strong><span>Required Experience</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#firstMetridocProject"><strong>2.3</strong><span>First MetriDoc Project</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#developingMetridoc"><strong>2.4</strong><span>Developing MetriDoc</span></a>
+                    </div>
+                    
+                </div>
+                
+
+                
+
+<h1 id="gettingStarted">2 Getting Started</h1>
+
+
+
+<h2 id="requiredSoftware">2.1 Required Software</h2>
+<ul class="star">
+<li><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="blank">Java 6 or above</a></li>
+<li><a href="http://dist.springframework.org.s3.amazonaws.com/release/GRAILS/grails-2.0.4.zip" target="blank">Grails 2.0.4</a></li>
+<li><a href="http://www.mysql.com/" target="blank">Mysql</a></li>
+<li>Subversion</li>
+<li>Text editor or IDE (IntelliJ, Eclipse or NetBeans)</li>
+</ul><p class="paragraph"/><blockquote class="note">
+Grails is actually optional.  Every project we build uses the <a href="http://grails.org/doc/latest/guide/commandLine.html#wrapper" target="blank">grails wrapper</a>.
+So for instance, if you are on a linux based system, simply run <code>./grailsw</code> instead of grails at the top of the project.
+This allows you to use grails with only the jvm installed!
+</blockquote>
+<blockquote class="note">
+Many package managers have grails.  For instance, if you are using a mac, try <a href="http://www.macports.org/" target="blank">MacPorts</a>
+and do <code>sudo port install grails</code>.  For Ubuntu you can follow the instructions on the bottom of the Grails download
+<a href="http://grails.org/Download/" target="blank">page</a>
+</blockquote>
+<blockquote class="note">
+MetriDoc is developed in IntelliJ, and to a lesser extent Eclipse and vim.  Although IntelliJ is not free, it
+is a very good IDE for Grails.  Education licenses for IntelliJ are very cheap.  You can find details for setting up
+Grails in various IDE / Text editor environments <a href="http://grails.org/doc/latest/guide/gettingStarted.html#ide" target="blank">here</a>
+</blockquote>
+
+
+<h2 id="requiredExperience">2.2 Required Experience</h2>
+MetriDoc uses the web framework <a href="http://www.grails.org" target="blank">Grails</a>.  Grails is similar to the web framework ruby on rails framework,
+but sits on top of the Groovy language.  Anyone with Java web experience, or experience in rapid development
+environments such as Rails or Django should pick up Grails quickly.<p class="paragraph"/>Here are some Grails resources:
+<ul class="star">
+<li><a href="http://www.grails.org" target="blank">Grails Website</a></li>
+<li><a href="http://grails.org/doc/latest/" target="blank">Grails User Manual</a></li>
+<li><a href="http://grails.org/Tutorials" target="blank">Tutorials</a></li>
+<li><a href="http://www.manning.com/gsmith/" target="blank">Grails in Action</a></li>
+</ul><p class="paragraph"/>
+
+
+<h2 id="firstMetridocProject">2.3 First MetriDoc Project</h2>
+We used to have a starter project available, but as we have continued to streamline MetriDoc, this really didn't seem
+worth the effort anymore.  Using the standard grails create-app method gets you started just fine<p class="paragraph"/><h3>Installing via Commandline</h3><p class="paragraph"/><div class="code"><pre>grails create&#45;app metridoc
+curl http://metridoc.googlecode.com/svn/trunk/buildconfig/BuildConfig.groovy &#62; metridoc/grails&#45;app/conf/BuildConfig.groovy
+curl http://metridoc.googlecode.com/svn/trunk/urlmappings/UrlMappings.groovy &#62; metridoc/grails&#45;app/conf/UrlMappings.groovy
+rm &#45;rf metridoc/grails&#45;app/views/&#42;
+cd metridoc
+grails run&#45;app</pre></div><p class="paragraph"/>The script above is available in trunk, so you can also do:<p class="paragraph"/><div class="code"><pre>curl &#45;s http://metridoc.googlecode.com/svn/trunk/bash/createMetridocProject.sh | sh</pre></div><p class="paragraph"/>If all goes well, you should see this page:<p class="paragraph"/><img border="0" class="center" src="http://metridoc.googlecode.com/svn/trunk/metridoc-core/src/docs/images/MetriDocHome.png"></img><p class="paragraph"/><h3>Installing Manually</h3><p class="paragraph"/>After installing grails via the methods mentioned <a href="http://metridoc.googlecode.com/svn/trunk/metridoc-core/target/docs/guide/gettingStarted.html#requiredSoftware" target="blank">here</a>,
+run <code>grails create-app metridoc</code> on the command line.  After this is done you will need to change 2 files and delete the contents
+of a directory to get metridoc
+core up and running.  Open metridoc/grails-app/conf/BuildConfig.groovy, and add the following within the <code>repository</code> block:<p class="paragraph"/><div class="code"><pre>grailsRepo <span class="java&#45;quote">"https://metridoc.googlecode.com/svn/plugins/"</span>, <span class="java&#45;quote">"metridocRepo"</span></pre></div><p class="paragraph"/>then add the following in the <code>plugins</code> block:<p class="paragraph"/><div class="code"><pre>compile (<span class="java&#45;quote<a href="metridoc&#45;core:latest.integration"</span>)">></a> &#123;
+    exclude <span class="java&#45;quote">"xmlbeans"</span>
+&#125;</pre></div><p class="paragraph"/>The finished <code>BuildConfig.groovy</code> file should look something like:<p class="paragraph"/><div class="code"><pre>grails.servlet.version = <span class="java&#45;quote">"2.5"</span> // Change depending on target container compliance (2.5 or 3.0)
+grails.project.class.dir = <span class="java&#45;quote">"target/classes"</span>
+grails.project.test.class.dir = <span class="java&#45;quote">"target/test&#45;classes"</span>
+grails.project.test.reports.dir = <span class="java&#45;quote">"target/test&#45;reports"</span>
+grails.project.target.level = 1.6
+grails.project.source.level = 1.6
+//grails.project.war.file = <span class="java&#45;quote">"target/$&#123;appName&#125;&#45;$&#123;appVersion&#125;.war"</span><p class="paragraph"/>grails.project.dependency.resolution = &#123;
+    // inherit Grails' <span class="java&#45;keyword">default</span> dependencies
+    inherits(<span class="java&#45;quote">"global"</span>) &#123;
+        // specify dependency exclusions here; <span class="java&#45;keyword">for</span> example, uncomment <span class="java&#45;keyword">this</span> to disable ehcache:
+        // excludes 'ehcache'
+    &#125;
+    log <span class="java&#45;quote">"error"</span> // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+    checksums <span class="java&#45;keyword">true</span> // Whether to verify checksums on resolve<p class="paragraph"/>    repositories &#123;
+        inherits <span class="java&#45;keyword">true</span> // Whether to inherit repository definitions from plugins<p class="paragraph"/>        grailsPlugins()
+        grailsHome()
+        grailsCentral()<p class="paragraph"/>        mavenLocal()
+        mavenCentral()
+        grailsRepo <span class="java&#45;quote">"https://metridoc.googlecode.com/svn/plugins/"</span>, <span class="java&#45;quote">"metridocRepo"</span><p class="paragraph"/>
+        // uncomment these (or add <span class="java&#45;keyword">new</span> ones) to enable remote dependency resolution from <span class="java&#45;keyword">public</span> Maven repositories
+        //mavenRepo <span class="java&#45;quote">"http://snapshots.repository.codehaus.org"</span>
+        //mavenRepo <span class="java&#45;quote">"http://repository.codehaus.org"</span>
+        //mavenRepo <span class="java&#45;quote">"http://download.java.net/maven/2/"</span>
+        //mavenRepo <span class="java&#45;quote">"http://repository.jboss.com/maven2/"</span>
+    &#125;
+    dependencies &#123;
+        // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.<p class="paragraph"/>        // runtime 'mysql:mysql&#45;connector&#45;java:5.1.20'
+    &#125;<p class="paragraph"/>    plugins &#123;
+        runtime <span class="java&#45;quote<a href="hibernate:$grailsVersion"</span>">></a>
+        runtime <span class="java&#45;quote<a href="jquery:1.7.2"</span>">></a>
+        runtime <span class="java&#45;quote<a href="resources:1.1.6"</span>">></a><p class="paragraph"/>        // Uncomment these (or add <span class="java&#45;keyword">new</span> ones) to enable additional resources capabilities
+        //runtime <span class="java&#45;quote<a href="zipped&#45;resources:1.0"</span>">></a>
+        //runtime <span class="java&#45;quote<a href="cached&#45;resources:1.0"</span>">></a>
+        //runtime <span class="java&#45;quote<a href="yui&#45;minify&#45;resources:0.1.4"</span>">></a><p class="paragraph"/>        build <span class="java&#45;quote<a href="tomcat:$grailsVersion"</span>">></a><p class="paragraph"/>        runtime <span class="java&#45;quote<a href="database&#45;migration:1.1"</span>">></a><p class="paragraph"/>        compile ':cache:1.0.0'
+        compile (<span class="java&#45;quote<a href="metridoc&#45;core:latest.integration"</span>)">></a> &#123;
+            exclude <span class="java&#45;quote">"xmlbeans"</span>
+        &#125;
+    &#125;
+&#125;</pre></div><p class="paragraph"/>Next we need to change the file <code>UrlMappings.groovy</code> at <code>grails-app/conf/UrlMappings.groovy</code>.  Delete the line <code>"/"(view:"/index")</code>.
+The <code>UrlMappings.groovy</code> file should look something like:<p class="paragraph"/><div class="code"><pre>class UrlMappings &#123;<p class="paragraph"/>    <span class="java&#45;keyword">static</span> mappings = &#123;
+        <span class="java&#45;quote">"/$controller/$action?/$id?"</span> &#123;
+            constraints &#123;
+                // apply constraints here
+            &#125;
+        &#125;<p class="paragraph"/>        <span class="java&#45;quote">"500"</span>(view: '/error')
+    &#125;
+&#125;</pre></div><p class="paragraph"/>After <code>BuildConfig.groovy</code> has been updated, delete the contents of the directory grails-app/views
+and navigate to the metridoc directory and run <code>grails run-app</code><p class="paragraph"/>If all goes well, you should see this page:<p class="paragraph"/><img border="0" class="center" src="http://metridoc.googlecode.com/svn/trunk/metridoc-core/src/docs/images/MetriDocHome.png"></img><p class="paragraph"/><blockquote class="note">
+The plugin may fail saying that there is a corrupt cache.  If this happens, run
+<code>grails --refresh-dependencies compile</code> and try <code>grails run-app</code> again
+</blockquote>
+
+
+<h2 id="developingMetridoc">2.4 Developing MetriDoc</h2>
+If you are developing metridoc you will need to checkout MetriDoc trunk using subversion by running the command:<p class="paragraph"/><div class="code"><pre>svn co https://metridoc.googlecode.com/svn/trunk</pre></div><p class="paragraph"/>Many IDEs have version control support.  If you are using IntelliJ you can do <code>VCS -&#62; Checkout from Version Control -&#62; Subversion</code>.
+Add the repository https://metridoc.googlecode.com/svn/trunk and follow the instructions.  By doing this, IntelliJ
+will create a project structure for all the metridoc modules
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/configuration.html"><strong>3</strong><span>Configuration</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">commandline</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/commandline/config-metridoc.html">config-metridoc</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/commandline/create-report.html">create-report</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/commandline/refresh-metridoc-dependencies.html">refresh-metridoc-dependencies</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">taglibs</h1><div class="menu-sub">
+                        
+                            
+                            </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

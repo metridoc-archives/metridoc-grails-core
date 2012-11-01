@@ -44,7 +44,7 @@
 
         <g:each in="${applicationControllers}" var="appController" status="i">
             <ul class="undecorated">
-                <li><a href="${createLink(controller: appController.controllerName, action: 'index')}">${appController.title}</a> - ${appController.description}</li>
+                <li><a href="${createLink(controller: appController.controllerName, action: 'index')}">${appController.title}</a><g:if test="${appController.description}"> - </g:if>${appController.description}</li>
             </ul>
         </g:each>
     </div>
@@ -54,7 +54,8 @@
             <md:header>Administration</md:header>
             <g:each in="${adminControllers}" var="controller" status="i">
                 <ul class="undecorated">
-                    <li><a href="${createLink(controller: controller.controllerName, action: 'index')}">${controller.title}</a> - ${controller.description}
+                    <li>
+                        <a href="${createLink(controller: controller.controllerName, action: 'index')}">${controller.title}</a><g:if test="${controller.description}"> - </g:if>${controller.description}
                     </li>
                 </ul>
             </g:each>
