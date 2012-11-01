@@ -1,12 +1,91 @@
-Although it is possible to create a project from scratch, there is a basic project already available.  To use the
-base project you must have subversion installed.  Move to a directory where you would like to install the metridoc
-workspace.  Run the following commands to install and run the base Metridoc project
+We used to have a starter project available, but as we have continued to streamline MetriDoc, this really didn't seem
+worth the effort anymore.  Using the standard grails create-app method gets you started just fine
+
+So this is the recommended method now.  After installing grails via the methods mentioned [here|http://metridoc.googlecode.com/svn/trunk/metridoc-core/target/docs/guide/gettingStarted.html#requiredSoftware],
+run @grails create-app metridoc@ on the command line.  After this is done you will need to change 1 file and delete the contents
+of a directory to get metridoc
+core up and running.  Open metridoc/grails-app/conf/BuildConfig.groovy, and add the following within the @repository@ block:
 
 {code}
-svn export http://metridoc.googlecode.com/svn/trunk/startup/metridoc
-cd metridoc
-grails run-app
+grailsRepo "https://metridoc.googlecode.com/svn/plugins/", "metridocRepo"
 {code}
+
+then add the following in the @plugins@ block:
+
+{code}
+compile (":metridoc-core:latest.integration") {
+    exclude "xmlbeans"
+}
+{code}
+
+The finished @BuildConfig.groovy@ file should look something like:
+
+{code}
+grails.servlet.version = "2.5" // Change depending on target container compliance (2.5 or 3.0)
+grails.project.class.dir = "target/classes"
+grails.project.test.class.dir = "target/test-classes"
+grails.project.test.reports.dir = "target/test-reports"
+grails.project.target.level = 1.6
+grails.project.source.level = 1.6
+//grails.project.war.file = "target/${appName}-${appVersion}.war"
+
+grails.project.dependency.resolution = {
+    // inherit Grails' default dependencies
+    inherits("global") {
+        // specify dependency exclusions here; for example, uncomment this to disable ehcache:
+        // excludes 'ehcache'
+    }
+    log "error" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+    checksums true // Whether to verify checksums on resolve
+
+    repositories {
+        inherits true // Whether to inherit repository definitions from plugins
+
+        grailsPlugins()
+        grailsHome()
+        grailsCentral()
+
+        mavenLocal()
+        mavenCentral()
+        grailsRepo "https://metridoc.googlecode.com/svn/plugins/", "metridocRepo"
+
+
+        // uncomment these (or add new ones) to enable remote dependency resolution from public Maven repositories
+        //mavenRepo "http://snapshots.repository.codehaus.org"
+        //mavenRepo "http://repository.codehaus.org"
+        //mavenRepo "http://download.java.net/maven/2/"
+        //mavenRepo "http://repository.jboss.com/maven2/"
+    }
+    dependencies {
+        // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
+
+        // runtime 'mysql:mysql-connector-java:5.1.20'
+    }
+
+    plugins {
+        runtime ":hibernate:$grailsVersion"
+        runtime ":jquery:1.7.2"
+        runtime ":resources:1.1.6"
+
+        // Uncomment these (or add new ones) to enable additional resources capabilities
+        //runtime ":zipped-resources:1.0"
+        //runtime ":cached-resources:1.0"
+        //runtime ":yui-minify-resources:0.1.4"
+
+        build ":tomcat:$grailsVersion"
+
+        runtime ":database-migration:1.1"
+
+        compile ':cache:1.0.0'
+        compile (":metridoc-core:latest.integration") {
+            exclude "xmlbeans"
+        }
+    }
+}
+{code}
+
+After @BuildConfig.groovy@ has been updated, delete the contents of the directory grails-app/views
+and navigate to the metridoc directory and run @grails run-app@
 
 If all goes well, you should see this page:
 

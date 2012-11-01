@@ -75,10 +75,13 @@ class JobBuilder {
     }
 
     def static addPlugins(Script job) {
+        //TODO: since we have grails and the workflow api, do we need this anymore?
         job.includeTargets << _PropertiesLoader
         job.includeTargets << _DataSourceLoader
         job.includeTargets << _CamelRouting
+        //TODO: since we have grails and the workflow api, do we need this anymore?
         job.includeTool << BulkSql
+        //TODO: since we have grails and the workflow api, do we need this anymore?
         job.includeTargets << _SchemaLoader
         job.includeTargets << _BaseUtilities
     }

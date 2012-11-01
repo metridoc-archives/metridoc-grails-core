@@ -117,11 +117,4 @@ modules = {
             url: [plugin: "metridocCore", dir: 'log/js', file: 'log.js'],
             attrs: [type: 'js']
     }
-
-    accessInfo {
-        dependsOn 'jquery'
-        resource id: 'js', disposition: 'head',
-            url: [plugin: "metridocCore", dir: 'accessInfo', file: 'accessInfo.js'],
-            attrs: [type: 'js']
-    }
 }
