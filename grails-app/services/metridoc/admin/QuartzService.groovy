@@ -23,13 +23,18 @@ class QuartzService {
 
     def scheduleJobs() {
         loadAllJobInfo()
-        triggersByName.each {name, trigger ->
-            quartzScheduler.scheduleJob(jobsByName[name], trigger)
+
+        def disableQuartz = grailsApplication.mergedConfig.metridoc.scheduling.disabled
+
+        if (!disableQuartz) {
+            triggersByName.each {name, trigger ->
+                quartzScheduler.scheduleJob(jobsByName[name], trigger)
+            }
         }
     }
 
     def getWorkflowsByName() {
-        if(_workflowsByName) return _workflowsByName
+        if (_workflowsByName) return _workflowsByName
 
         loadWorkflows()
         return _workflowsByName
@@ -56,7 +61,7 @@ class QuartzService {
             if (schedule) {
 
                 def triggerBuilder = newTrigger()
-                    .withIdentity("${name}Trigger", "Workflow").withSchedule(schedule)
+                        .withIdentity("${name}Trigger", "Workflow").withSchedule(schedule)
                 if (startNow == true) {
                     triggerBuilder = triggerBuilder.startNow()
                 }
@@ -93,7 +98,7 @@ class QuartzService {
     private loadJobData() {
         doWorkflowClassesIteration {unCapName, grailsClass ->
             jobDataByName[unCapName] = new JobDataMap(
-                [targetObject: grailsClass, targetMethod: "run"]
+                    [targetObject: grailsClass, targetMethod: "run"]
             )
         }
     }
