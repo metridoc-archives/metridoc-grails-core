@@ -4,10 +4,8 @@ import javax.annotation.PostConstruct
 import metridoc.liquibase.MetridocLiquibase
 
 /**
- * Created by IntelliJ IDEA.
- * User: tbarker
- * Date: 7/17/12
- * Time: 4:59 PM
+ *
+ * @deprecated use spring liquibase capabilities or the grails migration plugin instead
  */
 class SchemaRunner {
 

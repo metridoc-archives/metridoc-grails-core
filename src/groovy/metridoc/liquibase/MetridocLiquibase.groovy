@@ -38,6 +38,8 @@ import org.springframework.util.ClassUtils
  * runs a liquibase migration.  Used {@link liquibase.integration.spring.SpringLiquibase} as a template to get this to
  * work
  *
+ * @deprecated use the spring liquibase support instead or the grails database migration plugin
+ *
  */
 class MetridocLiquibase {
 
