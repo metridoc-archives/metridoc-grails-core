@@ -3,8 +3,7 @@ import metridoc.workflows.WorkflowArtefactHandler
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean
 import org.codehaus.groovy.grails.commons.GrailsClass
 import org.apache.commons.lang.StringUtils
-import grails.plugin.quartz2.JobArtefactHandler
-import metridoc.utils.ShiroBootUpUtils
+import metridoc.utils.ShiroBootupUtils
 
 /*
 * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
@@ -79,7 +78,7 @@ class MetridocCoreGrailsPlugin {
 
         //have to do it in here instead of using the plugin config plugin since the shiro plugin does not use the
         //plugin config plugin
-        ShiroBootUpUtils.addDefaultParameters(shiroConfig)
+        ShiroBootupUtils.addDefaultParameters(shiroConfig)
     }
 
     def doWithDynamicMethods = { ctx ->

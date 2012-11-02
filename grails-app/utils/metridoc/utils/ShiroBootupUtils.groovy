@@ -5,7 +5,7 @@ package metridoc.utils
  *
  * Basic static class to handle some default parameters in the shiro plugin
  */
-class ShiroBootUpUtils {
+class ShiroBootupUtils {
 
     static addDefaultParameters(ConfigObject configObject) {
         //if not set by the user in Config.groovy or elsewhere
