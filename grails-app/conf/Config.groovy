@@ -66,6 +66,7 @@ if (new File("${metridoc.home}/MetridocConfig.groovy").exists()) {
 }
 grails.config.locations << "file:${metridoc.home}/MetridocConfig.groovy"
 
+
 if (System.properties["${appName}.config.location"]) {
     grails.config.locations << "file:" + System.properties["${appName}.config.location"]
 }

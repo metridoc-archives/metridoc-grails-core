@@ -14,6 +14,8 @@
  */
 package metridoc.logout
 
+import org.apache.shiro.SecurityUtils
+
 class LogoutController {
 
     static final homePage = [
@@ -21,7 +23,7 @@ class LogoutController {
     ]
 
     def index() {
-        session.invalidate()
-        redirect(controller: "auth")
+        SecurityUtils.subject.logout()
+        redirect(controller: "home")
     }
 }
