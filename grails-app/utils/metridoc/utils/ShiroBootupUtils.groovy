@@ -12,14 +12,14 @@ class ShiroBootupUtils {
         def filter = configObject.filter
         if(!filter.filterChainDefinitions) {
             filter.filterChainDefinitions = """
-                /*Admin/* = authc,roles[ROLE_ADMIN]
-                /admin/* = authc,roles[ROLE_ADMIN]
-                /log/* = authc,roles[ROLE_ADMIN]
-                /profile/* = authc
-                /quartz/* = authc,roles[ROLE_ADMIN]
-                /role/* = authc,roles[ROLE_ADMIN]
-                /status/* = authc,roles[ROLE_ADMIN]
-                /user/* = authc,roles[ROLE_ADMIN]
+                /*Admin/* = user,roles[ROLE_ADMIN]
+                /admin/* = user,roles[ROLE_ADMIN]
+                /log/* = user,roles[ROLE_ADMIN]
+                /profile/* = user
+                /quartz/* = user,roles[ROLE_ADMIN]
+                /role/* = user,roles[ROLE_ADMIN]
+                /status/* = user,roles[ROLE_ADMIN]
+                /user/* = user,roles[ROLE_ADMIN]
             """
         }
     }

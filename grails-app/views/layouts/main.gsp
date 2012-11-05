@@ -41,7 +41,7 @@
                  alt="MetriDoc"/>
         </a>
 
-        <% if (SecurityUtils.subject.principal == "anonymous" || !SecurityUtils.subject.isAuthenticated()) { %>
+        <% if (SecurityUtils.subject.principal == "anonymous" || !SecurityUtils.subject.principal) { %>
         <a id="metridocLoginLink" href="/<g:meta name="app.name"/>/auth">login</a>
         <% } else { %>
         <span id="metridocLoginLink">
@@ -57,8 +57,8 @@
             <li>
                 <a href="/<g:meta name="app.name"/>/home" class="ui-widget-header">Home</a>
             </li>
-            <shiro:authenticated>
-                <% if (SecurityUtils.subject.principal != "anonymous" && SecurityUtils.subject.isAuthenticated()) { %>
+            <shiro:user>
+                <% if (SecurityUtils.subject.principal != "anonymous") { %>
                 <li>
                     %{--<g:link controller="profile" action="index">Settings</g:link>--}%
                     <a href="#">Settings</a>
@@ -67,7 +67,7 @@
                             <g:link controller="profile" action="index" class="userAccount menu-item">Account</g:link>
                         </li>
 
-                        <% if (SecurityUtils.subject.hasRole("ROLE_ADMIN")) { %>
+                        <shiro:hasRole name="ROLE_ADMIN">
                             <li>
                                 <g:link controller="user" action="list" class="users menu-item">Manage Users</g:link>
                             </li>
@@ -77,11 +77,11 @@
                             <li>
                                 <g:link controller="quartz" action="index" class="quartz menu-item">Job List</g:link>
                             </li>
-                        <% } %>
+                        </shiro:hasRole>
                     </ul>
                 </li>
                 <% } %>
-            </shiro:authenticated>
+            </shiro:user>
         </ul>
     </div>
     <g:layoutBody/>

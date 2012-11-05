@@ -27,3 +27,5 @@ metridoc {
         ]
     }
 }
+
+security.shiro.authc.required = false
