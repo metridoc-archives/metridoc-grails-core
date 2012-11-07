@@ -12,7 +12,7 @@ class BarJob extends MetridocJob{
 
     def someProperty = "somePropertyValue"
     static triggers = {
-      simple repeatInterval: 60000l // execute job once every minute
+      simple name:  "basic trigger", repeatInterval: 60000l// execute job once every minute
     }
 
     @Override
@@ -58,5 +58,11 @@ class BarJob extends MetridocJob{
 
         assert camelRouteWorked
         assert camelRouteWithRouteBuilderWorked
+
+        target(default: "the default target for job bar") {
+            profile("profiling the default target for bar") {
+                log.info "runnng the default target for bar"
+            }
+        }
     }
 }

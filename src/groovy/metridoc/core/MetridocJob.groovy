@@ -20,11 +20,34 @@ abstract class MetridocJob {
     ProducerTemplate producerJobTemplate
     Registry camelJobRegistry
     CamelContext camelJobContext
-    static final log = LoggerFactory.getLogger(MetridocJob)
+
+    private final static ThreadLocal<Map> targetMap = new ThreadLocal<Map>() {
+        @Override
+        protected Map initialValue() {
+            [:]
+        }
+    }
+
+    private final static ThreadLocal<Set> targetsRan = new ThreadLocal<Set>() {
+        @Override
+        protected Set initialValue() {
+            [] as Set
+        }
+    }
 
     def execute(JobExecutionContext context) {
         doExecute(context)
         doExecute()
+        def targetFromJobDataMap = context.jobDetail.jobDataMap.get("target")
+        if(targetFromJobDataMap) {
+            dependsOn(targetFromJobDataMap)
+        } else {
+            def containsDefault = targetMap.get().containsKey("default")
+            if(containsDefault) {
+                dependsOn("default")
+            }
+        }
+
         getCamelJobContext().stop()
         camelJobContext = null
     }
@@ -41,11 +64,23 @@ abstract class MetridocJob {
     }
 
     def target(Map data, Closure closure) {
-
+        assert data.size() == 1: "the map in target can only have one variable, which is the name and the description of the target"
+        def key = (data.keySet() as List)[0]
+        targetMap.get().put(key, closure)
     }
 
-    def dependsOn(String targetName) {
-
+    def dependsOn(String... targetNames) {
+        targetNames.each{targetName ->
+            Closure target = targetMap.get().get(targetName)
+            assert target: "target $targetName does not exist"
+            def targetHasNotBeenCalled = !targetsRan.get().contains(targetName)
+            if (targetHasNotBeenCalled) {
+                target.delegate = this
+                target.resolveStrategy = Closure.DELEGATE_FIRST
+                target.call()
+                targetsRan.get().add(targetName)
+            }
+        }
     }
 
     /**
@@ -74,13 +109,13 @@ abstract class MetridocJob {
     }
 
     ProducerTemplate getProducerJobTemplate() {
-        if(producerJobTemplate) return producerJobTemplate
+        if (producerJobTemplate) return producerJobTemplate
 
         producerJobTemplate = getCamelJobContext().createProducerTemplate()
     }
 
     def getCamelJobContext() {
-        if(camelJobContext) return camelJobContext
+        if (camelJobContext) return camelJobContext
         camelJobContext = new DefaultCamelContext(getCamelJobRegistry())
         camelJobContext.nameStrategy = new DefaultCamelContextNameStrategy("metridocCamelJob")
         camelJobContext.setLazyLoadTypeConverters(true)
@@ -91,7 +126,7 @@ abstract class MetridocJob {
     }
 
     def getCamelJobRegistry() {
-        if(camelJobRegistry) return camelJobRegistry
+        if (camelJobRegistry) return camelJobRegistry
         final job = this
         camelJobRegistry = new Registry() {
 
@@ -124,7 +159,7 @@ abstract class MetridocJob {
                 job.metaClass.properties.each {
                     def propertyName = it.getName()
                     def lookup = lookup(propertyName, tClass)
-                    if(lookup) {
+                    if (lookup) {
                         result[propertyName] = lookup
                     }
                 }
