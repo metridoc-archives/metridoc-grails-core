@@ -6,7 +6,7 @@ import metridoc.core.MetridocJob
 
 class BarJob extends MetridocJob{
     static triggers = {
-      simple repeatInterval: 5000l // execute job once in 5 seconds
+      simple repeatInterval: 60000l // execute job once every minute
     }
 
     @Override
