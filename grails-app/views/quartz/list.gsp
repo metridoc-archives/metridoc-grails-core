@@ -50,10 +50,9 @@
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         <td>${job.name}</td>
                         <td>${job.trigger?.name}</td>
-                        <g:set var="tooltip">${job.duration >= 0 ? "Job ran in: " + job.duration + "ms" : (job.error ? "Job threw exception: " + job.error : "")}</g:set>
                         <td class="quartz-tooltip quartz-status ${job.status ?: "not-run"}"
-                            data-tooltip="${tooltip}">${job.lastRun}</td>
-                        <td class="quartz-to-hide">${tooltip}</td>
+                            data-tooltip="${job.tooltip}">${job.lastRun}</td>
+                        <td class="quartz-to-hide">${job.tooltip}</td>
                         <g:if test="${scheduler.isInStandbyMode() || job.triggerStatus == Trigger.TriggerState.PAUSED}">
                             <td class="hasCountdown countdown_amount">Paused</td>
                         </g:if>

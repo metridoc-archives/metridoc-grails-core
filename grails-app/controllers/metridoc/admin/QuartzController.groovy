@@ -35,9 +35,6 @@ class QuartzController {
                         def currentJob = createJob(jobGroup, jobKey.name, jobsList, trigger.key.name)
                         currentJob.trigger = trigger
                         currentJob.triggerStatus = quartzScheduler.getTriggerState(trigger.key)
-//                        currentJob.triggerStatus = Trigger.TriggerState.find {Trigger.TriggerState theTrigger ->
-//                            theTrigger.value() == state
-//                        } ?: "UNKNOWN"
                     }
                 } else {
                     createJob(jobGroup, jobKey.name, jobsList)
