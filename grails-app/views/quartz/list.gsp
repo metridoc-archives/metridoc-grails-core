@@ -63,12 +63,6 @@
                         <td class="quartz-actions">
                             <g:if test="${job.status != 'running'}">
                                 <g:if test="${job.trigger}">
-                                    <a href="<g:createLink action="stop"
-                                                           params="[jobName: job.name, triggerName: job.trigger.name, triggerGroup: job.trigger.group]"/>"><img
-                                            class="quartz-tooltip" data-tooltip="Stop job from running again"
-                                            src="<g:resource dir="quartz/images" file="stop.png"
-                                                             plugin="metridoc-core"/>">
-                                    </a>
                                     <g:if test="${job.triggerStatus == Trigger.TriggerState.PAUSED}">
                                         <a href="<g:createLink action="resume"
                                                                params="[jobName: job.name, jobGroup: job.group]"/>"><img

@@ -44,12 +44,6 @@ class QuartzController {
         [jobs: jobsList, now: new Date(), scheduler: quartzScheduler]
     }
 
-    def stop() {
-        triggers.put(params.jobName, quartzScheduler.getTrigger(triggerKey(params.triggerName, params.triggerGroup)))
-        quartzScheduler.unscheduleJob(triggerKey(params.triggerName, params.triggerGroup))
-        redirect(action: "list")
-    }
-
     def start() {
         def trigger = triggers.get(params.jobName)
         quartzScheduler.scheduleJob(trigger)
