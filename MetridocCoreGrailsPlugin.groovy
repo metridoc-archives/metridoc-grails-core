@@ -1,9 +1,9 @@
-import metridoc.schema.SchemaRunner
-import metridoc.workflows.WorkflowArtefactHandler
-import org.springframework.beans.factory.config.MethodInvokingFactoryBean
-import org.codehaus.groovy.grails.commons.GrailsClass
-import org.apache.commons.lang.StringUtils
 import metridoc.utils.ShiroBootupUtils
+import metridoc.workflows.WorkflowArtefactHandler
+import org.apache.commons.lang.StringUtils
+import org.codehaus.groovy.grails.commons.GrailsClass
+import org.springframework.beans.factory.config.MethodInvokingFactoryBean
+import metridoc.core.QuartzMonitorJobFactory
 
 /*
 * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
@@ -27,20 +27,20 @@ class MetridocCoreGrailsPlugin {
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.0.4 > *"
 
-    def dependsOn = [quartz2:"0.2.3"]
+    def dependsOn = [quartz2: "0.2.3"]
     // the other plugins this plugin depends on
     def loadAfter = ["rest-client-builder", "release", "hibernate"]
 
     def watchedResources = [
-            "file:./grails-app/workflows/**/*Workflow.groovy",
-            "file:./plugins/*/grails-app/workflows/**/*Workflow.groovy",
+        "file:./grails-app/workflows/**/*Workflow.groovy",
+        "file:./plugins/*/grails-app/workflows/**/*Workflow.groovy",
     ]
 
     def pluginExcludes = [
-            "scripts/_Events.groovy",
-            "grails-app/workflows/metridoc/test/**/*",
-            "grails-app/controllers/metridoc/test/**/*",
-            "grails-app/domain/metridoc/test/**/*"
+        "scripts/_Events.groovy",
+        "grails-app/workflows/metridoc/test/**/*",
+        "grails-app/controllers/metridoc/test/**/*",
+        "grails-app/domain/metridoc/test/**/*"
     ]
 
     def title = "Metridoc Core Plugin" // Headline display name of the plugin
@@ -81,6 +81,10 @@ class MetridocCoreGrailsPlugin {
         //have to do it in here instead of using the plugin config plugin since the shiro plugin does not use the
         //plugin config plugin
         ShiroBootupUtils.addDefaultParameters(shiroConfig)
+
+        quartzJobFactory(QuartzMonitorJobFactory) {
+            sessionFactory = ref("sessionFactory")
+        }
     }
 
     def doWithDynamicMethods = { ctx ->

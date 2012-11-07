@@ -29,7 +29,7 @@ public class DefaultGrailsWorkflowClass extends AbstractInjectableGrailsClass im
         super(clazz, WORKFLOW);
     }
 
-    public Object run() {
+    public Object execute() {
 
         Thread jobToJoin = null;
         final Object[] result = {null};

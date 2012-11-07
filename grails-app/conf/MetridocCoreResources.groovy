@@ -102,10 +102,28 @@ modules = {
     }
 
     quartz {
-        dependsOn 'jquery-ui'
-        resource id: 'quartzJs',
-            url: [plugin: "metridocCore", dir: "quartz/js", file: 'quartz.js'],
+        dependsOn 'jquery'
+        resource id: 'quartzMonitorJs',
+            url: [plugin: "metridocCore", dir: "quartz/js", file: 'quartz-monitor.js'],
             attrs: [type: 'js']
+        resource id: 'quartzCountdownJs',
+            url: [plugin: "metridocCore", dir: "quartz/js", file: 'jquery.countdown.js'],
+            attrs: [type: 'js']
+        resource id: 'quartzColorJs',
+            url: [plugin: "metridocCore", dir: "quartz/js", file: 'jquery.color.js'],
+            attrs: [type: 'js']
+        resource id: 'quartzClockJs',
+            url: [plugin: "metridocCore", dir: "quartz/js", file: 'jquery.clock.js'],
+            attrs: [type: 'js']
+        resource id: 'quartzClockCss',
+            url: [plugin: "metridocCore", dir: "quartz/css", file: 'jquery.clock.css'],
+            attrs: [type: 'css']
+        resource id: 'quartzCountdownCss',
+            url: [plugin: "metridocCore", dir: "quartz/css", file: 'jquery.countdown.css'],
+            attrs: [type: 'css']
+        resource id: 'quartzMonitorCss',
+            url: [plugin: "metridocCore", dir: "quartz/css", file: 'quartz-monitor.css'],
+            attrs: [type: 'css']
     }
 
     log {

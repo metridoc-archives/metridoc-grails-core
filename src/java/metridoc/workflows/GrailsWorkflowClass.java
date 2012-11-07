@@ -12,7 +12,7 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 public interface GrailsWorkflowClass extends InjectableGrailsClass {
-    Object run();
+    Object execute();
     Date getPreviousEndTime();
     boolean isRunning();
     Throwable getLastException();

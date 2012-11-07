@@ -6,34 +6,103 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="org.quartz.Trigger" contentType="text/html;charset=UTF-8" %>
 <md:report>
-    <div class="nav" role="navigation">
-        <ul>
-            <li><g:link class="home" controller="home" action="index"><g:message code="default.home.label"
-                                                                                 default="Home"/></g:link></li>
-            <li><g:link class="log" controller="log" action="index"><g:message code="default.log.label"
-                                                                               default="Log"/></g:link></li>
+    <div class="body">
+        <h1 id="quartz-title">
+            Quartz Jobs
+            <g:if test="${scheduler.isInStandbyMode()}">
+                <a href="<g:createLink action="startScheduler"/>"><img class="quartz-tooltip"
+                                                                       data-tooltip="Start scheduler"
+                                                                       src="<g:resource dir="quartz/images" file="play-all.png"
+                                                                                        plugin="metridoc-core"/>"></a>
+            </g:if>
+            <g:else>
+                <a href="<g:createLink action="stopScheduler"/>"><img class="quartz-tooltip"
+                                                                      data-tooltip="Pause scheduler"
+                                                                      src="<g:resource dir="quartz/images" file="pause-all.png"
+                                                                                       plugin="metridoc-core"/>"></a>
+            </g:else>
+        </h1>
+        <g:if test="${flash.message}">
+            <div class="message">${flash.message}</div>
+        </g:if>
+        <div id="clock" data-time="${now.time}">
+            <h3>Current Time: ${now}</h3>
+        </div>
 
-        </ul>
+        <div class="list">
+            <table id="quartz-jobs">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <g:if test="${grailsApplication.config.quartz.monitor.showTriggerNames}">
+                        <th>Trigger Name</th>
+                    </g:if>
+                    <th>Last Run</th>
+                    <th class="quartz-to-hide">Result</th>
+                    <th>Next Scheduled Run</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <g:each in="${jobs}" status="i" var="job">
+                    <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+                        <td>${job.name}</td>
+                        <g:if test="${grailsApplication.config.quartz.monitor.showTriggerNames}">
+                            <td>${job.trigger?.name}</td>
+                        </g:if>
+                        <g:set var="tooltip">${job.duration >= 0 ? "Job ran in: " + job.duration + "ms" : (job.error ? "Job threw exception: " + job.error : "")}</g:set>
+                        <td class="quartz-tooltip quartz-status ${job.status ?: "not-run"}"
+                            data-tooltip="${tooltip}">${job.lastRun}</td>
+                        <td class="quartz-to-hide">${tooltip}</td>
+                        <g:if test="${scheduler.isInStandbyMode() || job.triggerStatus == Trigger.TriggerState.PAUSED}">
+                            <td class="hasCountdown countdown_amount">Paused</td>
+                        </g:if>
+                        <g:else>
+                            <td class="quartz-countdown"
+                                data-next-run="${job.trigger?.nextFireTime?.time ?: ""}">${job.trigger?.nextFireTime}</td>
+                        </g:else>
+                        <td class="quartz-actions">
+                            <g:if test="${job.status != 'running'}">
+                                <g:if test="${job.trigger}">
+                                    <a href="<g:createLink action="stop"
+                                                           params="[jobName: job.name, triggerName: job.trigger.name, triggerGroup: job.trigger.group]"/>"><img
+                                            class="quartz-tooltip" data-tooltip="Stop job from running again"
+                                            src="<g:resource dir="quartz/images" file="stop.png" plugin="metridoc-core"/>">
+                                    </a>
+                                    <g:if test="${job.triggerStatus == Trigger.TriggerState.PAUSED}">
+                                        <a href="<g:createLink action="resume"
+                                                               params="[jobName: job.name, jobGroup: job.group]"/>"><img
+                                                class="quartz-tooltip" data-tooltip="Resume job schedule"
+                                                src="<g:resource dir="quartz/images" file="resume.png"
+                                                                 plugin="metridoc-core"/>"></a>
+                                    </g:if>
+                                    <g:elseif test="${job.trigger.mayFireAgain()}">
+                                        <a href="<g:createLink action="pause"
+                                                               params="[jobName: job.name, jobGroup: job.group]"/>"><img
+                                                class="quartz-tooltip" data-tooltip="Pause job schedule"
+                                                src="<g:resource dir="quartz/images" file="pause.png"
+                                                                 plugin="metridoc-core"/>"></a>
+                                    </g:elseif>
+                                </g:if>
+                                <g:else>
+                                    <a href="<g:createLink action="start"
+                                                           params="[jobName: job.name, jobGroup: job.group]"/>"><img
+                                            class="quartz-tooltip" data-tooltip="Start job schedule"
+                                            src="<g:resource dir="quartz/images" file="start.png" plugin="metridoc-core"/>">
+                                    </a>
+                                </g:else>
+                                <a href="<g:createLink action="runNow"
+                                                       params="[jobName: job.name, jobGroup: job.group]"/>"><img
+                                        class="quartz-tooltip" data-tooltip="Run now"
+                                        src="<g:resource dir="quartz/images" file="run.png" plugin="metridoc-core"/>"></a>
+                            </g:if>
+                        </td>
+                    </tr>
+                </g:each>
+                </tbody>
+            </table>
+        </div>
     </div>
-
-    <br/>
-
-    <div id="jobTable" />
-    <script type="text/javascript">
-
-        function updateTable() {
-            $.get('jobListOnly', function (data) {
-                $('#jobTable').html(data);
-            })
-        }
-
-        setInterval(function () {
-                    updateTable();
-                }, 5000
-        )
-
-        updateTable();
-    </script>
 </md:report>

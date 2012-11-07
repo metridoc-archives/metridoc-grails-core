@@ -9,6 +9,7 @@ import org.quartz.JobDataMap
 
 import static org.quartz.TriggerBuilder.newTrigger
 import static org.quartz.TriggerKey.triggerKey
+import grails.plugin.quartz2.GrailsArtefactJobDetailFactoryBean
 
 class QuartzService {
 
@@ -90,6 +91,7 @@ class QuartzService {
             jobDetail.name = "${unCapName}Job"
             jobDetail.group = "Worflow"
             jobDetail.jobClass = InvokeMethodJob
+            jobDetail.jobDataMap.put(GrailsArtefactJobDetailFactoryBean.JOB_NAME_PARAMETER, "${unCapName}WorkflowClass")
 
             jobsByName[unCapName] = jobDetail
         }
