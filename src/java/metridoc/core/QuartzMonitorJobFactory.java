@@ -5,6 +5,8 @@ import grails.plugin.quartz2.GrailsJobFactory;
 import org.hibernate.SessionFactory;
 import org.quartz.*;
 import org.quartz.spi.TriggerFiredBundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
@@ -55,6 +57,7 @@ public class QuartzMonitorJobFactory extends GrailsJobFactory {
         GrailsArtefactJob job;
         Map<String, Object> jobDetails;
         private SessionFactory sessionFactory;
+        private final Logger log = LoggerFactory.getLogger(QuartzDisplayJob.class);
 
         public QuartzDisplayJob(GrailsArtefactJob job, Map<String, Object> jobDetails, SessionFactory sessionFactory) {
             this.job = job;
@@ -75,13 +78,21 @@ public class QuartzMonitorJobFactory extends GrailsJobFactory {
                 error = e.getMessage();
                 jobDetails.put("error", error);
                 jobDetails.put("status", "error");
+                addDurationAndToolTip(jobDetails, start);
+                log.error("error occurred running job " + context.getJobDetail().getKey() + " with trigger " + context.getTrigger().getKey(), e);
                 if (e instanceof JobExecutionException) {
                     throw (JobExecutionException) e;
                 }
                 throw new JobExecutionException(e.getMessage(), e);
             }
             jobDetails.put("status", "complete");
+            addDurationAndToolTip(jobDetails, start);
+
+        }
+
+        public void addDurationAndToolTip(Map<String, Object> jobDetails, long start) {
             long duration = System.currentTimeMillis() - start;
+            String error = (String) jobDetails.get("error");
             jobDetails.put("duration", duration);
             String jobRunTime = "Job ran in " + duration + "ms";
             String jobException = error != null ? ", with error " + error : "";

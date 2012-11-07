@@ -17,9 +17,12 @@ abstract class MetridocJob {
 
     def concurrent = false
     def grailsApplication
-    ProducerTemplate producerJobTemplate
-    Registry camelJobRegistry
-    CamelContext camelJobContext
+
+    private final static ThreadLocal<ProducerTemplate> _producerJobTemplate = new ThreadLocal<ProducerTemplate>()
+
+    private final static ThreadLocal<ProducerTemplate> _camelJobRegistry = new ThreadLocal<Registry>()
+
+    private final static ThreadLocal<CamelContext> _camelJobContext = new ThreadLocal<CamelContext>()
 
     private final static ThreadLocal<Map> targetMap = new ThreadLocal<Map>() {
         @Override
@@ -49,7 +52,6 @@ abstract class MetridocJob {
         }
 
         getCamelJobContext().stop()
-        camelJobContext = null
     }
 
     def runRoute(Closure closure) {
@@ -96,8 +98,20 @@ abstract class MetridocJob {
         log.info "profiling [$description] finished ${end - start} ms"
     }
 
-    def includeTargets(Script script) {
+    def includeTargets(Class<Script> scriptClass) {
+        return includeTargets(scriptClass, new Binding())
+    }
 
+    def includeTargets(Class<Script> scriptClass, Binding binding) {
+
+        binding.setVariable("target") {Map description, Closure closure ->
+            target(description, closure)
+        }
+        Script script = scriptClass.newInstance()
+        script.binding = binding
+        script.run()
+
+        return binding
     }
 
     def doExecute() {
@@ -109,26 +123,27 @@ abstract class MetridocJob {
     }
 
     ProducerTemplate getProducerJobTemplate() {
-        if (producerJobTemplate) return producerJobTemplate
+        if (_producerJobTemplate.get()) return _producerJobTemplate.get()
 
-        producerJobTemplate = getCamelJobContext().createProducerTemplate()
+        _producerJobTemplate.set(getCamelJobContext().createProducerTemplate())
+        return _producerJobTemplate.get()
     }
 
-    def getCamelJobContext() {
-        if (camelJobContext) return camelJobContext
-        camelJobContext = new DefaultCamelContext(getCamelJobRegistry())
+    CamelContext getCamelJobContext() {
+        if (_camelJobContext.get()) return _camelJobContext.get()
+        def camelJobContext = new DefaultCamelContext(getCamelJobRegistry())
         camelJobContext.nameStrategy = new DefaultCamelContextNameStrategy("metridocCamelJob")
         camelJobContext.setLazyLoadTypeConverters(true)
         camelJobContext.addComponent("sqlplus", new SqlPlusComponent(camelJobContext))
         camelJobContext.start()
-
-        return camelJobContext
+        _camelJobContext.set(camelJobContext)
+        return _camelJobContext.get()
     }
 
     def getCamelJobRegistry() {
-        if (camelJobRegistry) return camelJobRegistry
+        if (_camelJobRegistry.get()) return _camelJobRegistry.get()
         final job = this
-        camelJobRegistry = new Registry() {
+        def camelJobRegistry = new Registry() {
 
             @Override
             Object lookup(String s) {
@@ -167,5 +182,8 @@ abstract class MetridocJob {
                 return result;
             }
         }
+
+        _camelJobRegistry.set(camelJobRegistry)
+        return _camelJobRegistry.get()
     }
 }

@@ -61,8 +61,11 @@ class BarJob extends MetridocJob{
 
         target(default: "the default target for job bar") {
             profile("profiling the default target for bar") {
-                log.info "runnng the default target for bar"
+                log.info "running the default target for bar"
             }
         }
+
+        includeTargets(BarScript)
+        dependsOn("runBar")
     }
 }
