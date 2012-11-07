@@ -48,30 +48,6 @@ public class QuartzMonitorJobFactory extends GrailsJobFactory {
         return job;
     }
 
-//    protected Object createJobInstance(TriggerFiredBundle bundle) throws Exception {
-//        //String grailsJobName = bundle.getJobDetail().getName();
-//        String grailsJobName = bundle.getTrigger().getKey().getName();
-//        Scheduler scheduler = applicationContext.getBean(Scheduler.class);
-//        Object job = super.newJob(bundle, scheduler);
-//        if (job instanceof GrailsArtefactJob) {
-//            Map<String, Object> map;
-//            if (jobRuns.containsKey(grailsJobName)) {
-//                map = jobRuns.get(grailsJobName);
-//            } else {
-//                map = new HashMap<String, Object>();
-//                jobRuns.put(grailsJobName, map);
-//            }
-//            job = new QuartzDisplayJob((GrailsArtefactJob) job, map, sessionFactory);
-//        }
-//        return job;
-//    }
-
-//    @Override
-//    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-//        super.setApplicationContext(applicationContext);    //To change body of overridden methods use File | Settings | File Templates.
-//        this.applicationContext = applicationContext;
-//    }
-
     /**
      * Quartz Job implementation that invokes execute() on the GrailsTaskClassJob instance whilst recording the time
      */
