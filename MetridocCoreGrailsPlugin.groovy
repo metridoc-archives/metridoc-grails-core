@@ -26,6 +26,8 @@ class MetridocCoreGrailsPlugin {
     def version = "0.52-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.0.4 > *"
+
+    def dependsOn = [quartz2:"0.2.3"]
     // the other plugins this plugin depends on
     def loadAfter = ["rest-client-builder", "release", "hibernate"]
 
