@@ -14,13 +14,15 @@
             <g:if test="${scheduler.isInStandbyMode()}">
                 <a href="<g:createLink action="startScheduler"/>"><img class="quartz-tooltip"
                                                                        data-tooltip="Start scheduler"
-                                                                       src="<g:resource dir="quartz/images" file="play-all.png"
+                                                                       src="<g:resource dir="quartz/images"
+                                                                                        file="play-all.png"
                                                                                         plugin="metridoc-core"/>"></a>
             </g:if>
             <g:else>
                 <a href="<g:createLink action="stopScheduler"/>"><img class="quartz-tooltip"
                                                                       data-tooltip="Pause scheduler"
-                                                                      src="<g:resource dir="quartz/images" file="pause-all.png"
+                                                                      src="<g:resource dir="quartz/images"
+                                                                                       file="pause-all.png"
                                                                                        plugin="metridoc-core"/>"></a>
             </g:else>
         </h1>
@@ -36,9 +38,7 @@
                 <thead>
                 <tr>
                     <th>Name</th>
-                    <g:if test="${grailsApplication.config.quartz.monitor.showTriggerNames}">
-                        <th>Trigger Name</th>
-                    </g:if>
+                    <th>Trigger Name</th>
                     <th>Last Run</th>
                     <th class="quartz-to-hide">Result</th>
                     <th>Next Scheduled Run</th>
@@ -49,9 +49,7 @@
                 <g:each in="${jobs}" status="i" var="job">
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         <td>${job.name}</td>
-                        <g:if test="${grailsApplication.config.quartz.monitor.showTriggerNames}">
-                            <td>${job.trigger?.name}</td>
-                        </g:if>
+                        <td>${job.trigger?.name}</td>
                         <g:set var="tooltip">${job.duration >= 0 ? "Job ran in: " + job.duration + "ms" : (job.error ? "Job threw exception: " + job.error : "")}</g:set>
                         <td class="quartz-tooltip quartz-status ${job.status ?: "not-run"}"
                             data-tooltip="${tooltip}">${job.lastRun}</td>
@@ -69,7 +67,8 @@
                                     <a href="<g:createLink action="stop"
                                                            params="[jobName: job.name, triggerName: job.trigger.name, triggerGroup: job.trigger.group]"/>"><img
                                             class="quartz-tooltip" data-tooltip="Stop job from running again"
-                                            src="<g:resource dir="quartz/images" file="stop.png" plugin="metridoc-core"/>">
+                                            src="<g:resource dir="quartz/images" file="stop.png"
+                                                             plugin="metridoc-core"/>">
                                     </a>
                                     <g:if test="${job.triggerStatus == Trigger.TriggerState.PAUSED}">
                                         <a href="<g:createLink action="resume"
@@ -90,13 +89,15 @@
                                     <a href="<g:createLink action="start"
                                                            params="[jobName: job.name, jobGroup: job.group]"/>"><img
                                             class="quartz-tooltip" data-tooltip="Start job schedule"
-                                            src="<g:resource dir="quartz/images" file="start.png" plugin="metridoc-core"/>">
+                                            src="<g:resource dir="quartz/images" file="start.png"
+                                                             plugin="metridoc-core"/>">
                                     </a>
                                 </g:else>
                                 <a href="<g:createLink action="runNow"
                                                        params="[jobName: job.name, jobGroup: job.group]"/>"><img
                                         class="quartz-tooltip" data-tooltip="Run now"
-                                        src="<g:resource dir="quartz/images" file="run.png" plugin="metridoc-core"/>"></a>
+                                        src="<g:resource dir="quartz/images" file="run.png" plugin="metridoc-core"/>">
+                                </a>
                             </g:if>
                         </td>
                     </tr>
