@@ -13,9 +13,9 @@ import org.quartz.SimpleScheduleBuilder
 
 class QuartzController {
     static homePage = [
-        title: "Job List",
-        adminOnly: true,
-        description: """
+            title: "Job List",
+            adminOnly: true,
+            description: """
                 List of all available jobs and their next scheduled run.  All jobs can be manually ran on this
                 page as well.
             """
@@ -39,10 +39,10 @@ class QuartzController {
                     triggers.each {Trigger trigger ->
                         def name = trigger.key.name
                         def unScheduled = false
-                        if(name.startsWith("manual")) {
+                        if (name.startsWith("manual")) {
                             def previousFireTime = trigger.previousFireTime.time
                             def now = new Date().time
-                            if(now - previousFireTime > 1000 * 60 * 60 * 24) {
+                            if (now - previousFireTime > 1000 * 60 * 60 * 24) {
                                 quartzScheduler.unScheduleJob(trigger.key)
                                 unScheduled = true
                             }
@@ -85,10 +85,20 @@ class QuartzController {
         def end = now + 365 * 5 //5 years in the future
 
         def schedule = SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(1 * 24 * 56).repeatForever()
+        def triggerId = "manualRun-${RandomUtils.nextInt(1000)}"
         def trigger = TriggerBuilder.newTrigger().forJob(params.jobName, params.jobGroup).startAt(new Date())
-                .endAt(end).withIdentity("manualRun-${RandomUtils.nextInt(1000)}").withSchedule(schedule).build()
+                .endAt(end).withIdentity(triggerId).withSchedule(schedule).build()
         quartzScheduler.scheduleJob(trigger)
-    redirect(action: "list")
+
+        if (params.containsKey("returnTriggerId")) {
+            render triggerId
+        } else {
+            redirect(action: "list")
+        }
+    }
+
+    def status() {
+        render quartzScheduler.getTriggerState(TriggerKey.triggerKey(params.id))
     }
 
     def startScheduler() {

@@ -19,7 +19,7 @@ class BarJob extends MetridocJob{
     def doExecute() {
         profile("running bar") {
             assert grailsApplication
-            Thread.sleep(1000)
+            Thread.sleep(20000)
         }
 
         assert camelJobContext: "camel context not loaded"
