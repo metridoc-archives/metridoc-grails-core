@@ -15,7 +15,7 @@ grails run-app
 The script above is available in trunk, so you can also do:
 
 {code}
-curl -s http://metridoc.googlecode.com/svn/trunk/bash/createMetridocProject.sh | sh
+curl -s http://metridoc.googlecode.com/svn/trunk/startup/createMetridocProject.sh | sh
 {code}
 
 If all goes well, you should see this page:
