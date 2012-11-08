@@ -40,7 +40,7 @@ class HomeService {
      */
     def getControllerMetaData(Closure closure) {
         def result = [:] as TreeMap
-        def securityConfig = grailsApplication.mergedConfig.metridoc.security
+        def securityConfig = grailsApplication.mergedConfig.metridoc.homePage
         grailsApplication.controllerClasses.each {controller ->
             def dataField = GrailsClassUtils.getStaticFieldValue(controller.clazz, HOME_DATA_FIELD)
             def homePageMetaData = dataField ? dataField : [:]

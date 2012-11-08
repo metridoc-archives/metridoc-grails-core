@@ -36,20 +36,16 @@ grails.views.javascript.library="jquery"
 
 def rootLoader = Thread.currentThread().contextClassLoader.rootLoader
 
-if (new File("${SystemUtils.USER_HOME}/.grails/drivers").exists()) {
+def driverDirectory = new File("${SystemUtils.USER_HOME}/.grails/drivers")
+if (driverDirectory.exists() && driverDirectory.isDirectory()) {
     if (rootLoader) {
-        def loader = new _DataSourceLoader()
-
-        JobBuilder.isJob(loader)
-        loader.rootLoader = rootLoader
-        loader.grailsConsole = [
-                info: {String message ->
-                    println message
-                }
-        ]
-        loader.run()
-        println "loading database drivers"
-        loader.loadDrivers()
+        driverDirectory.eachFile {
+            if(it.name.endsWith(".jar")) {
+                def url = it.toURI().toURL()
+                log.info "adding driver ${url}"
+                rootLoader.addURL(url)
+            }
+        }
     }
 }
 
@@ -204,7 +200,8 @@ grails.doc.title = "MetriDoc User Manual"
 metridoc.style.layout = "main"
 
 /**
- * here is a scheduling example for a workflow named FooWorkflow
+ * here is a scheduling example for a workflow named FooWorkflow.  Workflows are currently deprecated, uses grail's
+ * job plugin instead which should be installed by default
  */
 metridoc {
     scheduling {
@@ -219,8 +216,12 @@ metridoc {
     }
 }
 
+/**
+ * home page configuration to determine how a link is displayed on the home page.  these properties can ne set within
+ * the controller as well.
+ */
 metridoc {
-    security {
+    homePage {
         accessFromConfig = [
             title: "Access From Config",
             description:"Access is determined by config file for home page"
