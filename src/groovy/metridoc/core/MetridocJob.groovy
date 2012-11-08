@@ -3,7 +3,6 @@ package metridoc.core
 import org.apache.camel.builder.RouteBuilder
 import org.quartz.JobExecutionContext
 
-import org.slf4j.LoggerFactory
 import org.apache.camel.ProducerTemplate
 import org.apache.camel.CamelContext
 import org.apache.camel.impl.DefaultCamelContext
@@ -12,6 +11,7 @@ import metridoc.camel.GroovyRouteBuilder
 import org.apache.camel.impl.DefaultCamelContextNameStrategy
 import metridoc.camel.SqlPlusComponent
 import metridoc.utils.CamelUtils
+import org.quartz.JobExecutionException
 
 abstract class MetridocJob {
 
@@ -39,19 +39,37 @@ abstract class MetridocJob {
     }
 
     def execute(JobExecutionContext context) {
-        doExecute(context)
-        doExecute()
-        def targetFromJobDataMap = context.jobDetail.jobDataMap.get("target")
-        if(targetFromJobDataMap) {
-            dependsOn(targetFromJobDataMap)
-        } else {
-            def containsDefault = targetMap.get().containsKey("default")
-            if(containsDefault) {
-                dependsOn("default")
+        try {
+            refreshThreadLocalVariables()
+            doExecute(context)
+            doExecute()
+            def targetFromJobDataMap = context.trigger.jobDataMap.get("target")
+            if(targetFromJobDataMap) {
+                depends(targetFromJobDataMap)
+            } else {
+                def containsDefault = targetMap.get().containsKey("default")
+                if(containsDefault) {
+                    depends("default")
+                }
+            }
+        } catch (Throwable t) {
+            log.error("error occurred running job " + context.getJobDetail().getKey() + " with trigger " + context.getTrigger().getKey(), t);
+            throw new JobExecutionException(t)
+        } finally {
+            try {
+                getCamelJobContext().stop()
+            } catch (Throwable throwable) {
+                //ignore
+                log.warn("exception while shutting down camel", throwable)
             }
         }
+    }
 
-        getCamelJobContext().stop()
+    def refreshThreadLocalVariables() {
+        _producerJobTemplate.set(null)
+        _camelJobContext.set(null)
+        _camelJobRegistry.set(null)
+        targetMap.set([:])
     }
 
     def runRoute(Closure closure) {
@@ -66,15 +84,19 @@ abstract class MetridocJob {
     }
 
     def target(Map data, Closure closure) {
-        assert data.size() == 1: "the map in target can only have one variable, which is the name and the description of the target"
+        if(data.size() != 1) {
+            throw new JobExecutionException("the map in target can only have one variable, which is the name and the description of the target")
+        }
         def key = (data.keySet() as List)[0]
         targetMap.get().put(key, closure)
     }
 
-    def dependsOn(String... targetNames) {
+    def depends(String... targetNames) {
         targetNames.each{targetName ->
             Closure target = targetMap.get().get(targetName)
-            assert target: "target $targetName does not exist"
+            if(!target) {
+                throw new JobExecutionException("target $targetName does not exist")
+            }
             def targetHasNotBeenCalled = !targetsRan.get().contains(targetName)
             if (targetHasNotBeenCalled) {
                 target.delegate = this

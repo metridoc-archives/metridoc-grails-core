@@ -13,9 +13,11 @@ class ShiroBootupUtils {
         if(!filter.filterChainDefinitions) {
             filter.filterChainDefinitions = """
                 /*Admin/* = user,roles[ROLE_ADMIN]
+                /whoami = authcBasic
                 /admin/* = user,roles[ROLE_ADMIN]
                 /log/* = user,roles[ROLE_ADMIN]
                 /profile/* = user
+                /quartz/runNow = authcBasic,roles[ROLE_ADMIN]
                 /quartz/* = user,roles[ROLE_ADMIN]
                 /role/* = user,roles[ROLE_ADMIN]
                 /status/* = user,roles[ROLE_ADMIN]

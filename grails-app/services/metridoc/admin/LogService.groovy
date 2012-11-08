@@ -152,9 +152,14 @@ class LogService {
      * @return line content in which all logNames are converted to links
      */
     private static addATag(line, logName) {
-        line = line.replaceAll(Pattern.quote(logName), "<a href=\"#\" class=\""
-                +logName.replaceAll("\\.","\\_")+"ATag logNameATag\">"+logName+"</a>" )
-        return line
+        def result
+        try {
+            result = line.replaceAll(Pattern.quote(logName), "<a href=\"#\" class=\""
+                    +logName.replaceAll("\\.","\\_")+"ATag logNameATag\">"+logName+"</a>" )
+        } catch (Exception e) {
+            result = line
+        }
+        return result
     }
     /**
      * Get a logging line's LogName.

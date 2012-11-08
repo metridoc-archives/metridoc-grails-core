@@ -56,6 +56,9 @@
                         <g:if test="${scheduler.isInStandbyMode() || job.triggerStatus == Trigger.TriggerState.PAUSED}">
                             <td class="hasCountdown countdown_amount">Paused</td>
                         </g:if>
+                        <g:elseif test="${job.trigger?.name.startsWith("manual")}">
+                            <td>NA</td>
+                        </g:elseif>
                         <g:else>
                             <td class="quartz-countdown"
                                 data-next-run="${job.trigger?.nextFireTime?.time ?: ""}">${job.trigger?.nextFireTime}</td>

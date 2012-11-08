@@ -5,6 +5,11 @@ import org.quartz.JobKey
 import org.quartz.Trigger
 import org.quartz.TriggerKey
 import org.quartz.impl.matchers.GroupMatcher
+import org.quartz.JobDataMap
+import org.quartz.TriggerBuilder
+import org.apache.commons.lang.math.RandomUtils
+import org.quartz.ScheduleBuilder
+import org.quartz.SimpleScheduleBuilder
 
 class QuartzController {
     static homePage = [
@@ -32,9 +37,22 @@ class QuartzController {
                 def triggers = quartzScheduler.getTriggersOfJob(jobKey)
                 if (triggers) {
                     triggers.each {Trigger trigger ->
-                        def currentJob = createJob(jobGroup, jobKey.name, jobsList, trigger.key.name)
-                        currentJob.trigger = trigger
-                        currentJob.triggerStatus = quartzScheduler.getTriggerState(trigger.key)
+                        def name = trigger.key.name
+                        def unScheduled = false
+                        if(name.startsWith("manual")) {
+                            def previousFireTime = trigger.previousFireTime.time
+                            def now = new Date().time
+                            if(now - previousFireTime > 1000 * 60 * 60 * 24) {
+                                quartzScheduler.unScheduleJob(trigger.key)
+                                unScheduled = true
+                            }
+                        }
+
+                        if (!unScheduled) {
+                            def currentJob = createJob(jobGroup, jobKey.name, jobsList, trigger.key.name)
+                            currentJob.trigger = trigger
+                            currentJob.triggerStatus = quartzScheduler.getTriggerState(trigger.key)
+                        }
                     }
                 } else {
                     createJob(jobGroup, jobKey.name, jobsList)
@@ -61,8 +79,16 @@ class QuartzController {
     }
 
     def runNow() {
-        quartzScheduler.triggerJob(jobKey(params.jobName, params.jobGroup), null)
-        redirect(action: "list")
+        def dataMap = new JobDataMap(params)
+        def now = new Date()
+
+        def end = now + 365 * 5 //5 years in the future
+
+        def schedule = SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(1 * 24 * 56).repeatForever()
+        def trigger = TriggerBuilder.newTrigger().forJob(params.jobName, params.jobGroup).startAt(new Date())
+                .endAt(end).withIdentity("manualRun-${RandomUtils.nextInt(1000)}").withSchedule(schedule).build()
+        quartzScheduler.scheduleJob(trigger)
+    redirect(action: "list")
     }
 
     def startScheduler() {

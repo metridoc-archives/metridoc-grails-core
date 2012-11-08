@@ -12,7 +12,7 @@ class BarJob extends MetridocJob{
 
     def someProperty = "somePropertyValue"
     static triggers = {
-      simple name:  "basic trigger", repeatInterval: 60000l// execute job once every minute
+      simple name:  "basic trigger", repeatInterval: 360000l// execute job once every hour
     }
 
     @Override
@@ -66,6 +66,10 @@ class BarJob extends MetridocJob{
         }
 
         includeTargets(BarScript)
-        dependsOn("runBar")
+        depends("runBar")
+
+        target(directRun: "not called by default, but could be called via url with 'target' set") {
+            log.info "directRun target called in BarJob"
+        }
     }
 }
