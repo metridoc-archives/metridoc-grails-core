@@ -30,6 +30,7 @@ class MetridocCoreGrailsPlugin {
     def dependsOn = [quartz2: "0.2.3"]
     // the other plugins this plugin depends on
     def loadAfter = ["rest-client-builder", "release", "hibernate"]
+    def loadBefore = ["shiro"]
 
     def watchedResources = [
         "file:./grails-app/workflows/**/*Workflow.groovy",
