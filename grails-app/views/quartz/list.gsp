@@ -50,8 +50,7 @@
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         <td>${job.name}</td>
                         <td>${job.trigger?.name}</td>
-                        <td class="quartz-tooltip quartz-status ${job.status ?: "not-run"}"
-                            data-tooltip="${job.tooltip}">${job.lastRun}</td>
+                        <td class="quartz-tooltip quartz-status ${job.status ?: "not-run"}" data-tooltip="${job.tooltip}">${job.lastRun}</td>
                         <td class="quartz-to-hide">${job.tooltip}</td>
                         <g:if test="${scheduler.isInStandbyMode() || job.triggerStatus == Trigger.TriggerState.PAUSED}">
                             <td class="hasCountdown countdown_amount">Paused</td>
@@ -64,7 +63,7 @@
                                 data-next-run="${job.trigger?.nextFireTime?.time ?: ""}">${job.trigger?.nextFireTime}</td>
                         </g:else>
                         <td class="quartz-actions">
-                            <g:if test="${job.status != 'running'}">
+                            <g:if test="${job.status != 'running'  && !job.trigger.key.name.startsWith("manual")}">
                                 <g:if test="${job.trigger}">
                                     <g:if test="${job.triggerStatus == Trigger.TriggerState.PAUSED}">
                                         <a href="<g:createLink action="resume"
