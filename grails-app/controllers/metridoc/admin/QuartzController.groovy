@@ -84,8 +84,11 @@ class QuartzController {
 
         def end = now + 365 * 5 //5 years in the future
 
-        def schedule = SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(1 * 24 * 56).repeatForever()
-        def triggerId = "manualRun-${RandomUtils.nextInt(1000)}"
+        //next run will be 4 years in the future, clearly this won't run by then and the job will be unscheduled
+        //the 5 year and 4 year number are arbitrary, basically we are tricking oracle to keep the job around so we can
+        //continue to retrieve statistics from it
+        def schedule = SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(1 * 24 * 56 * 4).repeatForever()
+        def triggerId = "manualRun-${RandomUtils.nextInt(10000)}"
         def trigger = TriggerBuilder.newTrigger().forJob(params.jobName, params.jobGroup).startAt(new Date())
                 .endAt(end).withIdentity(triggerId).withSchedule(schedule).build()
         quartzScheduler.scheduleJob(trigger)
