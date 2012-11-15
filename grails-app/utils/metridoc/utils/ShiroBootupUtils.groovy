@@ -1,5 +1,7 @@
 package metridoc.utils
 
+import org.apache.commons.lang.StringUtils
+
 /**
  * @author Tommy Barker
  *
@@ -10,8 +12,12 @@ class ShiroBootupUtils {
     static addDefaultParameters(ConfigObject configObject) {
         //if not set by the user in Config.groovy or elsewhere
         def filter = configObject.filter
-        if(!filter.filterChainDefinitions) {
-            filter.filterChainDefinitions = """
+        if (!filter.filterChainDefinitions) {
+            filter.filterChainDefinitions = StringUtils.EMPTY
+        }
+        def currentFilterChainDefinitions = filter.filterChainDefinitions
+
+        filter.filterChainDefinitions = currentFilterChainDefinitions + """
                 /*Admin/* = user,roles[ROLE_ADMIN]
                 /whoami = authcBasic
                 /admin/* = user,roles[ROLE_ADMIN]
@@ -23,6 +29,5 @@ class ShiroBootupUtils {
                 /status/* = user,roles[ROLE_ADMIN]
                 /user/* = user,roles[ROLE_ADMIN]
             """
-        }
     }
 }

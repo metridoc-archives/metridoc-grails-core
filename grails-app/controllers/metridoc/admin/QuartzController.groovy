@@ -39,7 +39,7 @@ class QuartzController {
                     triggers.each {Trigger trigger ->
                         def name = trigger.key.name
                         def unScheduled = false
-                        if (name.startsWith("manual")) {
+                        if (name.startsWith("manual") && trigger.previousFireTime) {
                             def previousFireTime = trigger.previousFireTime.time
                             def now = new Date().time
                             if (now - previousFireTime > 1000 * 60 * 60 * 24) {
