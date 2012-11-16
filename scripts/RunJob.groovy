@@ -33,10 +33,10 @@ target(main: "The description of the script goes here!") {
         def url = "${runJobArguments.protocol}://${runJobArguments.host}/${grailsAppName}/quartz/runNow?jobGroup=DEFAULT&jobName=${argsMap.params[0]}${runJobArguments.target}&returnTriggerId"
 
         if (runJobArguments.testRun) {
-            grailsConsole.info "run-job url is ${url}"
+            grailsConsole.info "run-job url is ${url} with username ${runJobArguments.user} and password ${runJobArguments.password}"
         } else {
             def triggerId = restBuilder.get(url) {
-                auth("admin", "password")
+                auth(runJobArguments.admin, runJobArguments.password)
             }.text
             grailsConsole.info "triger id is: $triggerId"
         }
@@ -49,10 +49,12 @@ def usage() {
 }
 
 def parseArgumentsAndSetDefaults() {
-    runJobArguments.host = argsMap.host ? argsMap.host : "localhost:8080"
+    runJobArguments.host = argsMap.host ?: "localhost:8080"
     runJobArguments.testRun = argsMap."test-run" ? true : false
-    runJobArguments.protocol = argsMap.protocol ? argsMap.protocol : "http"
+    runJobArguments.protocol = argsMap.protocol ?: "http"
     runJobArguments.target = argsMap.target ? "&target=${argsMap.target}" : ""
+    runJobArguments.user = argsMap.user ?: "admin"
+    runJobArguments.password = argsMap.password ?: "password"
 }
 
 setDefaultTarget(main)
