@@ -78,7 +78,7 @@ abstract class MetridocJob {
         execute(buildJobContextFacade(target))
     }
 
-    JobExecutionContext buildJobContextFacade(String target = "default") {
+    JobExecutionContext buildJobContextFacade(String target = null) {
         [
                 getJobDetail: {
                     [

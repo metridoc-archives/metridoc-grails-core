@@ -26,10 +26,9 @@ class MetridocJobTest {
     }
 
     @Test
-    void "without specifying the target, the target in the job data map is default"() {
-        assert "default" == helper.buildJobContextFacade().trigger.jobDataMap.target
+    void "if target is not supplied, then target is null in job data map"() {
+        assert null == helper.buildJobContextFacade().trigger.jobDataMap.target
     }
-
 }
 
 class MetridocJobTestHelper extends MetridocJob {
