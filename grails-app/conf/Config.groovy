@@ -13,12 +13,9 @@
  * permissions and limitations under the License.
  */
 
-import metridoc.dsl.JobBuilder
-import metridoc.targets._DataSourceLoader
-import org.apache.shiro.SecurityUtils
-import static org.quartz.SimpleScheduleBuilder.*
-import static org.quartz.CronScheduleBuilder.*
 import org.apache.commons.lang.SystemUtils
+
+import static org.quartz.SimpleScheduleBuilder.simpleSchedule
 
 // config files can either be Java properties files or ConfigSlurper scripts
 

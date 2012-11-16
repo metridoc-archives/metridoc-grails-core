@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.grails.commons.GrailsClass
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean
 import metridoc.core.QuartzMonitorJobFactory
+import grails.plugin.quartz2.QuartzFactoryBean
 
 /*
 * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
@@ -29,7 +30,7 @@ class MetridocCoreGrailsPlugin {
 
     def dependsOn = [quartz2: "0.2.3"]
     // the other plugins this plugin depends on
-    def loadAfter = ["rest-client-builder", "release", "hibernate"]
+    def loadAfter = ["rest-client-builder", "release", "hibernate", "quartz2"]
     def loadBefore = ["shiro"]
 
     def watchedResources = [
@@ -80,6 +81,16 @@ class MetridocCoreGrailsPlugin {
 
         def shiroConfig = application.config.security.shiro
 
+        def disableQuartz = Boolean.valueOf(System.getProperty("metridoc.quartz.disabled", "false"))
+        if(disableQuartz) {
+            def quartzProps = loadQuartzConfig(application.mergedConfig)
+            quartzScheduler(QuartzFactoryBean) {
+                quartzProperties = quartzProps
+                grailsApplication = ref('grailsApplication')
+                autoStartup = false
+                globalJobListeners = [ref('jobErrorLoggerListener')]//,ref('persistenceContextJobListener')]
+            }
+        }
         //have to do it in here instead of using the plugin config plugin since the shiro plugin does not use the
         //plugin config plugin
         ShiroBootupUtils.addDefaultParameters(shiroConfig)
@@ -153,5 +164,16 @@ class MetridocCoreGrailsPlugin {
 
     def onShutdown = { event ->
         // Implement code that is executed when the application shuts down (optional)
+    }
+
+    Properties loadQuartzConfig(config) {
+        def properties = new Properties()
+        if (config.org.containsKey('quartz')) {
+            properties << config.org.quartz.toProperties('org.quartz')
+        }
+
+        //config.quartz._properties = properties
+
+        return properties
     }
 }

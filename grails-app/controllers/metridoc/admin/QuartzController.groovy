@@ -104,7 +104,11 @@ class QuartzController {
     }
 
     def status() {
-        render quartzScheduler.getTriggerState(TriggerKey.triggerKey(params.id))
+        if(params.id) {
+            render QuartzMonitorJobFactory.jobRuns[params.id]?.status ?: "unknown"
+        } else {
+            render(status: 400, text: "no id provided")
+        }
     }
 
     def startScheduler() {

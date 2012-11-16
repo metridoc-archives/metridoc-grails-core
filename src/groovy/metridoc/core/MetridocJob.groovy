@@ -12,6 +12,11 @@ import org.apache.camel.impl.DefaultCamelContextNameStrategy
 import metridoc.camel.SqlPlusComponent
 import metridoc.utils.CamelUtils
 import org.quartz.JobExecutionException
+import org.quartz.JobDetail
+import org.quartz.JobKey
+import org.quartz.TriggerKey
+import org.quartz.Trigger
+import org.quartz.JobDataMap
 
 abstract class MetridocJob {
 
@@ -43,17 +48,17 @@ abstract class MetridocJob {
             refreshThreadLocalVariables()
             doExecute(context)
             doExecute()
-            def targetFromJobDataMap = context.trigger.jobDataMap.get("target")
-            if(targetFromJobDataMap) {
+            def targetFromJobDataMap = context?.trigger?.jobDataMap?.get("target")
+            if (targetFromJobDataMap) {
                 depends(targetFromJobDataMap)
             } else {
                 def containsDefault = targetMap.get().containsKey("default")
-                if(containsDefault) {
+                if (containsDefault) {
                     depends("default")
                 }
             }
         } catch (Throwable t) {
-            log.error("error occurred running job " + context.getJobDetail().getKey() + " with trigger " + context.getTrigger().getKey(), t);
+            log.error("error occurred running job " + context.getJobDetail().getKey().getName() + " with trigger " + context.getTrigger().getKey().getName(), t);
             throw new JobExecutionException(t)
         } finally {
             try {
@@ -63,6 +68,39 @@ abstract class MetridocJob {
                 log.warn("exception while shutting down camel", throwable)
             }
         }
+    }
+
+    def executeCli() {
+         execute(buildJobContextFacade())
+    }
+
+    def executeCli(String target) {
+        execute(buildJobContextFacade(target))
+    }
+
+    JobExecutionContext buildJobContextFacade(String target = "default") {
+        [
+                getJobDetail: {
+                    [
+                            getKey: {
+                                new JobKey(this.class.name)
+                            }
+                    ] as JobDetail
+                },
+                getTrigger: {
+                    [
+                            getKey:  {
+                                new TriggerKey("manual-cli")
+                            },
+                            getJobDataMap: {
+                                def jobDataMap = new JobDataMap()
+                                jobDataMap.put("target", target)
+                                return jobDataMap
+                            }
+                    ] as Trigger
+                }
+
+        ] as JobExecutionContext
     }
 
     def refreshThreadLocalVariables() {
@@ -84,7 +122,7 @@ abstract class MetridocJob {
     }
 
     def target(Map data, Closure closure) {
-        if(data.size() != 1) {
+        if (data.size() != 1) {
             throw new JobExecutionException("the map in target can only have one variable, which is the name and the description of the target")
         }
         def key = (data.keySet() as List)[0]
@@ -92,9 +130,9 @@ abstract class MetridocJob {
     }
 
     def depends(String... targetNames) {
-        targetNames.each{targetName ->
+        targetNames.each {targetName ->
             Closure target = targetMap.get().get(targetName)
-            if(!target) {
+            if (!target) {
                 throw new JobExecutionException("target $targetName does not exist")
             }
             def targetHasNotBeenCalled = !targetsRan.get().contains(targetName)
