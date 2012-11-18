@@ -10,7 +10,7 @@ package metridoc.test
 class ErrorJob {
 
     static triggers = {
-        simple name: "error trigger", repeatInterval: 360000l// execute job once every hour
+        cron name: "error job", cronExpression: "0 0 0 * * ?"
     }
 
     def execute() {

@@ -15,8 +15,6 @@
 
 import org.apache.commons.lang.SystemUtils
 
-import static org.quartz.SimpleScheduleBuilder.simpleSchedule
-
 // config files can either be Java properties files or ConfigSlurper scripts
 
 // grails.config.locations = [ "classpath:${appName}-config.properties",
@@ -29,7 +27,7 @@ import static org.quartz.SimpleScheduleBuilder.simpleSchedule
 // }
 
 //for jquery
-grails.views.javascript.library="jquery"
+grails.views.javascript.library = "jquery"
 
 def rootLoader = Thread.currentThread().contextClassLoader.rootLoader
 
@@ -37,7 +35,7 @@ def driverDirectory = new File("${SystemUtils.USER_HOME}/.grails/drivers")
 if (driverDirectory.exists() && driverDirectory.isDirectory()) {
     if (rootLoader) {
         driverDirectory.eachFile {
-            if(it.name.endsWith(".jar")) {
+            if (it.name.endsWith(".jar")) {
                 def url = it.toURI().toURL()
                 log.info "adding driver ${url}"
                 rootLoader.addURL(url)
@@ -68,19 +66,19 @@ grails.project.groupId = appName // change this to alter the default package nam
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
 grails.mime.use.accept.header = false
 grails.mime.types = [html: ['text/html', 'application/xhtml+xml'],
-        xml: ['text/xml', 'application/xml'],
-        text: 'text/plain',
-        js: 'text/javascript',
-        rss: 'application/rss+xml',
-        atom: 'application/atom+xml',
-        css: 'text/css',
-        csv: 'text/csv',
-        all: '*/*',
-        json: ['application/json', 'text/json'],
-        form: 'application/x-www-form-urlencoded',
-        multipartForm: 'multipart/form-data',
-        xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        xls: "application/vnd.ms-excel"
+    xml: ['text/xml', 'application/xml'],
+    text: 'text/plain',
+    js: 'text/javascript',
+    rss: 'application/rss+xml',
+    atom: 'application/atom+xml',
+    css: 'text/css',
+    csv: 'text/csv',
+    all: '*/*',
+    json: ['application/json', 'text/json'],
+    form: 'application/x-www-form-urlencoded',
+    multipartForm: 'multipart/form-data',
+    xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    xls: "application/vnd.ms-excel"
 ]
 
 // URL Mapping Cache Max Size, defaults to 5000
@@ -138,48 +136,47 @@ log4j = {
         println "INFO: logs will be stored at ${config.metridoc.home}/logs"
 
         rollingFile name: "file",
-                maxBackupIndex: 10,
-                maxFileSize: "1MB",
-                file: "${config.metridoc.home}/logs/metridoc.log"
+            maxBackupIndex: 10,
+            maxFileSize: "1MB",
+            file: "${config.metridoc.home}/logs/metridoc.log"
 
         rollingFile name: "stacktrace",
-                maxFileSize: "1MB",
-                maxBackupIndex: 10,
-                file: "${config.metridoc.home}/logs/metridoc-stacktrace.log"
+            maxFileSize: "1MB",
+            maxBackupIndex: 10,
+            file: "${config.metridoc.home}/logs/metridoc-stacktrace.log"
 
         rollingFile name: "jobLog",
-                maxFileSize: "1MB",
-                maxBackupIndex: 10,
-                file: "${config.metridoc.home}/logs/metridoc-job.log"
+            maxFileSize: "1MB",
+            maxBackupIndex: 10,
+            file: "${config.metridoc.home}/logs/metridoc-job.log"
     }
 
     error 'org.codehaus.groovy.grails.web.servlet',  //  controllers
-            'org.codehaus.groovy.grails.web.pages', //  GSP
-            'org.codehaus.groovy.grails.web.sitemesh', //  layouts
-            'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-            'org.codehaus.groovy.grails.web.mapping', // URL mapping
-            'org.codehaus.groovy.grails.commons', // core / classloading
-            'org.codehaus.groovy.grails.plugins', // plugins
-            'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
-            'org.springframework',
-            'org.hibernate',
-            'net.sf.ehcache.hibernate',
-            'org.apache',
-            'grails.util.GrailsUtil',
-            'org.grails.plugin.resource',
-            'grails.plugin.webxml.WebxmlGrailsPlugin'
+        'org.codehaus.groovy.grails.web.pages', //  GSP
+        'org.codehaus.groovy.grails.web.sitemesh', //  layouts
+        'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
+        'org.codehaus.groovy.grails.web.mapping', // URL mapping
+        'org.codehaus.groovy.grails.commons', // core / classloading
+        'org.codehaus.groovy.grails.plugins', // plugins
+        'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
+        'org.springframework',
+        'org.hibernate',
+        'net.sf.ehcache.hibernate',
+        'org.apache',
+        'grails.util.GrailsUtil',
+        'org.grails.plugin.resource',
+        'grails.plugin.webxml.WebxmlGrailsPlugin',
+        'org.quartz',
+        'grails.plugin.quartz2',
+        'metridoc.core.DevelopmentWorkflowRunnerService'
 
 
 
     warn 'metridoc.camel',
-            'ShiroGrailsPlugin',
-            'org.quartz.core',
-            'org.codehaus.groovy.grails.scaffolding',
-            'metridoc.utils.CamelUtils'
-
-
-    //logs all job output
-    info jobLog: "metridoc.job"
+        'ShiroGrailsPlugin',
+        'org.quartz.core',
+        'org.codehaus.groovy.grails.scaffolding',
+        'metridoc.utils.CamelUtils'
 
     root {
         info 'stdout', 'file'
@@ -196,32 +193,3 @@ grails.doc.title = "MetriDoc User Manual"
 //sets the layout for all pages
 metridoc.style.layout = "main"
 
-/**
- * here is a scheduling example for a workflow named FooWorkflow.  Workflows are currently deprecated, uses grail's
- * job plugin instead which should be installed by default
- */
-metridoc {
-    scheduling {
-        workflows {
-            //camel case version of the workflow, fo if a workflow is named FooWorkflow, this would be named foo.
-            //If the name of the workflow is FooBarWorkflow, this would be fooBar if you want it to be scheduled.  For
-            //now a new schedule can only be created here and the server must restart for it to take affect.
-            foo {
-                schedule = simpleSchedule().withIntervalInMinutes(5).repeatForever()
-            }
-        }
-    }
-}
-
-/**
- * home page configuration to determine how a link is displayed on the home page.  these properties can ne set within
- * the controller as well.
- */
-metridoc {
-    homePage {
-        accessFromConfig = [
-            title: "Access From Config",
-            description:"Access is determined by config file for home page"
-        ]
-    }
-}

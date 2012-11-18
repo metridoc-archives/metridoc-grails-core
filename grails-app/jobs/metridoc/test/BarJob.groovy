@@ -12,7 +12,7 @@ class BarJob extends MetridocJob{
 
     def someProperty = "somePropertyValue"
     static triggers = {
-      simple name:  "basic trigger", repeatInterval: 360000l// execute job once every hour
+        cron name: "bar job", cronExpression: "0 0 0 * * ?"
     }
 
     @Override
