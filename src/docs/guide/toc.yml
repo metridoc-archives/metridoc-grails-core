@@ -15,6 +15,7 @@ metridocPlugins:
   availablePlugins: Available Plugins
   overridingPluginArtifacts: Overriding Plugin Artifacts
   writingYourOwnPlugin: Writing Your Own Plugin
+  creatingJobs: Creating and running jobs
 metridocSecurity:
   title: Metridoc Security
   securityBasics: Security Basics

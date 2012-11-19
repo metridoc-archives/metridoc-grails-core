@@ -95,6 +95,7 @@ class QuartzController {
         def trigger = TriggerBuilder.newTrigger().forJob(params.jobName, params.jobGroup).startAt(new Date())
                 .endAt(end).withIdentity(triggerId).withSchedule(schedule).build()
         quartzScheduler.scheduleJob(trigger)
+        Thread.sleep(1000) //sleep for 2 seconds to allow for the job to actually start
 
         if (params.containsKey("returnTriggerId")) {
             render triggerId

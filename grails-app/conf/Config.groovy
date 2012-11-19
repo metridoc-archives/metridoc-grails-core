@@ -14,6 +14,7 @@
  */
 
 import org.apache.commons.lang.SystemUtils
+import org.slf4j.LoggerFactory
 
 // config files can either be Java properties files or ConfigSlurper scripts
 
@@ -37,7 +38,7 @@ if (driverDirectory.exists() && driverDirectory.isDirectory()) {
         driverDirectory.eachFile {
             if (it.name.endsWith(".jar")) {
                 def url = it.toURI().toURL()
-                log.info "adding driver ${url}"
+                LoggerFactory.getLogger("config.Config").info "adding driver ${url}" as String
                 rootLoader.addURL(url)
             }
         }
