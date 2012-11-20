@@ -33,17 +33,17 @@ class CamelRoutingTest {
     def job = new CamelRoutingJob()
 
     @Test
-    def void testBasicRouteCall() {
+    void testBasicRouteCall() {
         job.executeTarget("mockBasic")
     }
 
     @Test
-    def void testFullRoute() {
+    void testFullRoute() {
         job.executeTarget("fullRoute")
     }
 
     @Test
-    def void hitJobLater() {
+    void hitJobLater() {
         job.executeTarget("hitMeLater")
     }
 

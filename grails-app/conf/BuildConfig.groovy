@@ -60,10 +60,7 @@ grails.project.dependency.resolution = {
         compile("org.apache.poi:poi:3.8-beta3")
         //eventually will be used for xlsx files.  Right now xmlbeans is causing classpath problems.  Looks like
         //these issues have been taken care of as of grails 2.1.1
-        compile("org.apache.poi:poi-ooxml:3.8-beta3") {
-            //TODO: remove this after upgrading to something later than grails 2.1.0
-            excludes "xmlbeans"
-        }
+        compile("org.apache.poi:poi-ooxml:3.8-beta3")
         //helpful library to embed gant
         compile("com.googlecode.gant-ext:gant-ext:0.5") {
             excludes 'logback-classic'
