@@ -16,7 +16,11 @@ package metridoc.utils
 
 import org.slf4j.LoggerFactory
 
-
+/**
+ * we are using grails to deal weith properties and dependency injection
+ *
+ * @deprecated
+ */
 class PropertyUtils {
 
     private final static DEFAULT_METRIDOC_BASE = ".metridoc"

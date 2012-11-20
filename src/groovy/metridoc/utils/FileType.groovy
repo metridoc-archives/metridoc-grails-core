@@ -14,6 +14,9 @@
  */
 package metridoc.utils
 
+/**
+ * @deprecated
+ */
 public enum FileType {
     DEFAULT,
     HOME,

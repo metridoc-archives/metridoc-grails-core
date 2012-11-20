@@ -2,8 +2,6 @@ package metridoc.admin
 
 import grails.test.mixin.TestFor
 import org.junit.Test
-import org.quartz.Trigger
-import metridoc.workflows.FooWorkflow
 
 /**
  * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
@@ -73,11 +71,5 @@ class QuartzServiceTests {
         workflowsList = service.listWorkflowsWithOffsetAndMax(params, workflows)
         assert 1 == workflowsList.size()
         workflowsList [0] == workflows[0]
-    }
-
-    @Test
-    void "test cloning a workflow"() {
-        def original = new FooWorkflow()
-
     }
 }
