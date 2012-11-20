@@ -70,11 +70,11 @@ abstract class MetridocJob {
         }
     }
 
-    def executeCli() {
+    def executeTarget() {
          execute(buildJobContextFacade())
     }
 
-    def executeCli(String target) {
+    def executeTarget(String target) {
         execute(buildJobContextFacade(target))
     }
 

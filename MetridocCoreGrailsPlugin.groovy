@@ -1,5 +1,4 @@
 import metridoc.utils.ShiroBootupUtils
-import metridoc.workflows.WorkflowArtefactHandler
 import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.grails.commons.GrailsClass
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean
@@ -22,7 +21,6 @@ import grails.plugin.quartz2.QuartzFactoryBean
 */
 class MetridocCoreGrailsPlugin {
 
-    def artefacts = [WorkflowArtefactHandler]
     // the plugin version
     def version = "0.52-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
@@ -34,8 +32,6 @@ class MetridocCoreGrailsPlugin {
     def loadBefore = ["shiro"]
 
     def watchedResources = [
-        "file:./grails-app/workflows/**/*Workflow.groovy",
-        "file:./plugins/*/grails-app/workflows/**/*Workflow.groovy",
     ]
 
     def pluginExcludes = [
@@ -72,13 +68,6 @@ class MetridocCoreGrailsPlugin {
 
     def doWithSpring = {
 
-        def workflowClasses = application.workflowClasses
-
-        workflowClasses.each {GrailsClass workflowClass ->
-            configureWorkflowBeans.delegate = delegate
-            configureWorkflowBeans(workflowClass)
-        }
-
         def shiroConfig = application.config.security.shiro
 
         def disableQuartz = Boolean.valueOf(System.getProperty("metridoc.quartz.disabled", "false"))
@@ -109,52 +98,9 @@ class MetridocCoreGrailsPlugin {
     }
 
     def onChange = { event ->
-        if (application.isArtefactOfType(WorkflowArtefactHandler.TYPE, event.source)) {
-            def context = event.ctx
-            def scheduler = context?.getBean("quartzScheduler")
-            def quartzService = context?.getBean("quartzService")
-            // get quartz scheduler
-            if (context && scheduler) {
-                // if job already exists, delete it from scheduler
-                //just stop all jobs
-                scheduler.clear()
-
-                // add job artefact to application
-                def workflowClass = application.addArtefact(WorkflowArtefactHandler.TYPE, event.source)
-
-                def shortName = StringUtils.uncapitalise(workflowClass.shortName)
-                def beans = beans {
-                    configureWorkflowBeans.delegate = delegate
-                    configureWorkflowBeans(workflowClass)
-                }
-
-                context.registerBeanDefinition("${shortName}Class", beans.getBeanDefinition("${shortName}Class"))
-                context.registerBeanDefinition("${shortName}", beans.getBeanDefinition("${shortName}"))
-
-                quartzService.scheduleJobs()
-            } else {
-                log.error("Application context or Quartz Scheduler not found. Can't reload Quartz plugin.")
-            }
-        }
     }
 
     def configureWorkflowBeans = {workflowClass ->
-        if (!workflowClass.isAbstract()) {
-            def fullName = workflowClass.fullName
-            def shortName = StringUtils.uncapitalise(workflowClass.shortName)
-
-            "${shortName}Class"(MethodInvokingFactoryBean) {
-                targetObject = ref("grailsApplication", true)
-                targetMethod = "getArtefact"
-                arguments = [WorkflowArtefactHandler.TYPE, fullName]
-            }
-
-            "${shortName}"(ref("${shortName}Class")) { bean ->
-                bean.scope = "prototype"
-                bean.factoryMethod = "newInstance"
-                bean.autowire = "byName"
-            }
-        }
     }
 
     def onConfigChange = { event ->

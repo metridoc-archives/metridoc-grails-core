@@ -12,14 +12,12 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package metridoc.targets
+package metridoc.core
 
-import metridoc.dsl.JobBuilder
-import org.apache.camel.ProducerTemplate
 import org.apache.commons.lang.ObjectUtils
 import org.junit.Test
 import org.apache.camel.component.file.GenericFile
-import metridoc.core.MetridocJob
+
 import org.apache.camel.component.mock.MockEndpoint
 import org.apache.camel.component.file.GenericFileFilter
 import org.apache.commons.lang.SystemUtils
@@ -36,17 +34,17 @@ class CamelRoutingTest {
 
     @Test
     def void testBasicRouteCall() {
-        job.executeCli("mockBasic")
+        job.executeTarget("mockBasic")
     }
 
     @Test
     def void testFullRoute() {
-        job.executeCli("fullRoute")
+        job.executeTarget("fullRoute")
     }
 
     @Test
     def void hitJobLater() {
-        job.executeCli("hitMeLater")
+        job.executeTarget("hitMeLater")
     }
 
 }

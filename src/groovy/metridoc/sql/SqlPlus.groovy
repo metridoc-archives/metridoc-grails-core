@@ -15,9 +15,6 @@
 package metridoc.sql
 
 import groovy.sql.Sql
-import groovy.util.logging.Slf4j
-import metridoc.tools.BulkSql
-import metridoc.utils.PropertyUtils
 
 import java.sql.Connection
 import java.sql.PreparedStatement
@@ -76,42 +73,6 @@ class SqlPlus extends Sql {
         def sql = getBulkSqlCalls().getNoDuplicateBulkInsert(from, to, noDupColumn, columnMap)
         slfLog.debug("executing bulk sql: {}", sql)
         super.executeUpdate(sql)
-    }
-
-    void runBatchFile(LinkedHashMap args) {
-        assert args.fileName: "SqlPlus requires a fileName to runBatchFile"
-        ConfigObject file = new PropertyUtils().getConfig(args.fileName)
-        def phases = getPhases(file)
-        phases.each {order, phase ->
-            long beginPhaseTime = new Date().getTime()
-            def phaseName = phase.phaseName
-            slfLog.info "starting phase ${phaseName}"
-            if (!exclude(args.exclude, phaseName)) {
-                phase.each {sqlName, value ->
-                    def fullSqlName = "${phaseName}.${sqlName}"
-                    if (!exclude(args.exclude, fullSqlName)) {
-
-                        if (!IGNORED_KEYS.contains(sqlName)) {
-                            slfLog.info("running ${fullSqlName}")
-                            long startTime = new Date().getTime()
-                            int updateCount = executeUpdate(value.sql)
-                            long endTime = new Date().getTime()
-                            long totalTime = endTime - startTime
-                            slfLog.info("finished running ${fullSqlName} with ${updateCount} updates, took ${totalTime} milliseconds")
-                        }
-                    } else {
-                        slfLog.info("skipping sql ${fullSqlName}")
-                    }
-
-                }
-            } else {
-                slfLog.info("skipping phase ${phaseName}")
-            }
-
-            long endPhaseTime = new Date().getTime()
-            long totalPhaseTime = endPhaseTime - beginPhaseTime
-            slfLog.info "finished ${phaseName}, took ${totalPhaseTime} milliseconds"
-        }
     }
 
     private static boolean exclude(exclude, String value) {

@@ -65,9 +65,6 @@ class BarJob extends MetridocJob{
             }
         }
 
-        includeTargets(BarScript)
-        depends("runBar")
-
         target(directRun: "not called by default, but could be called via url with 'target' set") {
             log.info "directRun target called in BarJob"
         }
