@@ -10,6 +10,7 @@ import org.quartz.TriggerBuilder
 import org.apache.commons.lang.math.RandomUtils
 import org.quartz.ScheduleBuilder
 import org.quartz.SimpleScheduleBuilder
+import org.quartz.core.QuartzScheduler
 
 class QuartzController {
     static homePage = [
@@ -83,6 +84,8 @@ class QuartzController {
 
     def runNow() {
         def dataMap = new JobDataMap(params)
+        def triggerKey = new TriggerKey(params.triggerName)
+        dataMap.oldTrigger = quartzScheduler.getTrigger(triggerKey)
         def now = new Date()
 
         def end = now + 365 * 5 //5 years in the future
@@ -91,10 +94,10 @@ class QuartzController {
         //the 5 year and 4 year number are arbitrary, basically we are tricking oracle to keep the job around so we can
         //continue to retrieve statistics from it
         def schedule = SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(1 * 24 * 56 * 4).repeatForever()
-        def triggerId = "manualRun-${RandomUtils.nextInt(10000)}"
         def trigger = TriggerBuilder.newTrigger().forJob(params.jobName, params.jobGroup).startAt(new Date())
-                .endAt(end).withIdentity(triggerId).withSchedule(schedule).build()
-        quartzScheduler.scheduleJob(trigger)
+                .endAt(end).withIdentity(triggerKey).withSchedule(schedule).usingJobData(dataMap).build()
+
+        quartzScheduler.rescheduleJob(triggerKey, trigger)
         Thread.sleep(1000) //sleep for 2 seconds to allow for the job to actually start
 
         if (params.containsKey("returnTriggerId")) {

@@ -66,27 +66,40 @@ public class QuartzMonitorJobFactory extends GrailsJobFactory {
         }
 
         public void execute(final JobExecutionContext context) throws JobExecutionException {
-            jobDetails.clear();
-            jobDetails.put("lastRun", new Date());
-            jobDetails.put("status", "running");
-            long start = System.currentTimeMillis();
-            String error = null;
             try {
-                job.execute(context);
-                sessionFactory.getCurrentSession().flush();
-            } catch (Throwable e) {
-                error = e.getMessage();
-                jobDetails.put("error", error);
-                jobDetails.put("status", "error");
-                addDurationAndToolTip(jobDetails, start);
-                log.error("error occurred running job " + context.getJobDetail().getKey() + " with trigger " + context.getTrigger().getKey(), e);
-                if (e instanceof JobExecutionException) {
-                    throw (JobExecutionException) e;
+                jobDetails.clear();
+                jobDetails.put("lastRun", new Date());
+                jobDetails.put("status", "running");
+                long start = System.currentTimeMillis();
+                String error = null;
+                try {
+                    job.execute(context);
+                    sessionFactory.getCurrentSession().flush();
+                } catch (Throwable e) {
+                    error = e.getMessage();
+                    jobDetails.put("error", error);
+                    jobDetails.put("status", "error");
+                    addDurationAndToolTip(jobDetails, start);
+                    log.error("error occurred running job " + context.getJobDetail().getKey() + " with trigger " + context.getTrigger().getKey(), e);
+                    if (e instanceof JobExecutionException) {
+                        throw (JobExecutionException) e;
+                    }
+                    throw new JobExecutionException(e.getMessage(), e);
                 }
-                throw new JobExecutionException(e.getMessage(), e);
+                jobDetails.put("status", "complete");
+                addDurationAndToolTip(jobDetails, start);
+            } finally {
+                Trigger currentTrigger = context.getTrigger();
+                JobDataMap jobData = currentTrigger.getJobDataMap();
+                if(jobData.containsKey("oldTrigger")) {
+                    try {
+                        Trigger oldTrigger = (Trigger) jobData.get("oldTrigger");
+                        context.getScheduler().rescheduleJob(context.getTrigger().getKey(), oldTrigger);
+                    } catch (SchedulerException e) {
+                        log.error("Could not reschedule trigger " + currentTrigger.getKey().getName(), e);
+                    }
+                }
             }
-            jobDetails.put("status", "complete");
-            addDurationAndToolTip(jobDetails, start);
 
         }
 

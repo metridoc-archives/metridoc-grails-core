@@ -55,8 +55,8 @@
                         <g:if test="${scheduler.isInStandbyMode() || job.triggerStatus == Trigger.TriggerState.PAUSED}">
                             <td class="hasCountdown countdown_amount">Paused</td>
                         </g:if>
-                        <g:elseif test="${job.trigger?.name.startsWith("manual")}">
-                            <td>NA</td>
+                        <g:elseif test="${job.status == "running"}">
+                            <td>Running</td>
                         </g:elseif>
                         <g:else>
                             <td class="quartz-countdown"
@@ -89,7 +89,7 @@
                                     </a>
                                 </g:else>
                                 <a href="<g:createLink action="runNow"
-                                                       params="[jobName: job.name, jobGroup: job.group]"/>"><img
+                                                       params="[jobName: job.name, jobGroup: job.group, triggerName: job.trigger?.key?.name, triggerGroup: job.trigger?.key?.group]"/>"><img
                                         class="quartz-tooltip" data-tooltip="Run now"
                                         src="<g:resource dir="quartz/images" file="run.png" plugin="metridoc-core"/>">
                                 </a>
