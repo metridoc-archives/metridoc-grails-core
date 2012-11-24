@@ -49,7 +49,12 @@
                 <g:each in="${jobs}" status="i" var="job">
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         <td>${job.name}</td>
-                        <td>${job.trigger?.name}</td>
+                        <g:if test="${job.trigger?.key?.name.startsWith("manual")}">
+                            <td>Manual Job</td>
+                        </g:if>
+                        <g:else>
+                            <td>${job.trigger?.name}</td>
+                        </g:else>
                         <td class="quartz-tooltip quartz-status ${job.status ?: "not-run"}" data-tooltip="${job.tooltip}">${job.lastRun}</td>
                         <td class="quartz-to-hide">${job.tooltip}</td>
                         <g:if test="${scheduler.isInStandbyMode() || job.triggerStatus == Trigger.TriggerState.PAUSED}">
@@ -58,12 +63,15 @@
                         <g:elseif test="${job.status == "running"}">
                             <td>Running</td>
                         </g:elseif>
+                        <g:elseif test="${job.trigger?.key?.name.startsWith("manual")}">
+                            <td>NA</td>
+                        </g:elseif>
                         <g:else>
                             <td class="quartz-countdown"
                                 data-next-run="${job.trigger?.nextFireTime?.time ?: ""}">${job.trigger?.nextFireTime}</td>
                         </g:else>
                         <td class="quartz-actions">
-                            <g:if test="${job.status != 'running'  && !job.trigger.key.name.startsWith("manual")}">
+                            <g:if test="${job.status != 'running'}">
                                 <g:if test="${job.trigger}">
                                     <g:if test="${job.triggerStatus == Trigger.TriggerState.PAUSED}">
                                         <a href="<g:createLink action="resume"

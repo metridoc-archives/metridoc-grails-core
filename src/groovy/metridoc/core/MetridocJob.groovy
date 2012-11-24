@@ -1,27 +1,30 @@
 package metridoc.core
 
-import org.apache.camel.builder.RouteBuilder
-import org.quartz.JobExecutionContext
-
-import org.apache.camel.ProducerTemplate
-import org.apache.camel.CamelContext
-import org.apache.camel.impl.DefaultCamelContext
-import org.apache.camel.spi.Registry
 import metridoc.camel.GroovyRouteBuilder
-import org.apache.camel.impl.DefaultCamelContextNameStrategy
 import metridoc.camel.SqlPlusComponent
 import metridoc.utils.CamelUtils
-import org.quartz.JobExecutionException
-import org.quartz.JobDetail
-import org.quartz.JobKey
-import org.quartz.TriggerKey
-import org.quartz.Trigger
-import org.quartz.JobDataMap
+import org.apache.camel.CamelContext
+import org.apache.camel.ProducerTemplate
+import org.apache.camel.builder.RouteBuilder
+import org.apache.camel.impl.DefaultCamelContext
+import org.apache.camel.impl.DefaultCamelContextNameStrategy
+import org.apache.camel.spi.Registry
+
+import java.util.concurrent.TimeUnit
+
+import org.quartz.*
 
 abstract class MetridocJob {
 
     def concurrent = false
     def grailsApplication
+
+    private static final MANUAL_RUN_ID_PREFIX = "manual-run"
+    static final MANUAL_RUN_TRIGGER = {
+        def uuid = UUID.randomUUID().toString()
+        def twentyYears = TimeUnit.DAYS.toMillis(365 * 20)
+        simple name: "$MANUAL_RUN_ID_PREFIX-$uuid", repeatInterval: 1000, startDelay: twentyYears
+    }
 
     private final static ThreadLocal<ProducerTemplate> _producerJobTemplate = new ThreadLocal<ProducerTemplate>()
 
