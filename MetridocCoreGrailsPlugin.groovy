@@ -1,9 +1,7 @@
-import metridoc.utils.ShiroBootupUtils
-import org.apache.commons.lang.StringUtils
-import org.codehaus.groovy.grails.commons.GrailsClass
-import org.springframework.beans.factory.config.MethodInvokingFactoryBean
-import metridoc.core.QuartzMonitorJobFactory
 import grails.plugin.quartz2.QuartzFactoryBean
+import metridoc.core.HttpBasicShiroFilter
+import metridoc.core.QuartzMonitorJobFactory
+import metridoc.utils.ShiroBootupUtils
 
 /*
 * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
@@ -71,7 +69,7 @@ class MetridocCoreGrailsPlugin {
         def shiroConfig = application.config.security.shiro
 
         def disableQuartz = Boolean.valueOf(System.getProperty("metridoc.quartz.disabled", "false"))
-        if(disableQuartz) {
+        if (disableQuartz) {
             def quartzProps = loadQuartzConfig(application.mergedConfig)
             quartzScheduler(QuartzFactoryBean) {
                 quartzProperties = quartzProps
@@ -87,6 +85,9 @@ class MetridocCoreGrailsPlugin {
         quartzJobFactory(QuartzMonitorJobFactory) {
             sessionFactory = ref("sessionFactory")
         }
+
+        //overrides the authcBasic provided by shiro so we can use rememberMe
+        authcBasic(HttpBasicShiroFilter)
     }
 
     def doWithDynamicMethods = { ctx ->

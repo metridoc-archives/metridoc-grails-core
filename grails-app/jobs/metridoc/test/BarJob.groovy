@@ -1,19 +1,15 @@
 package metridoc.test
 
 import metridoc.core.MetridocJob
-import org.apache.commons.lang.ObjectUtils
-import org.apache.camel.builder.RouteBuilder
-import org.apache.camel.Processor
 import org.apache.camel.Exchange
+import org.apache.camel.Processor
+import org.apache.camel.builder.RouteBuilder
+import org.apache.commons.lang.ObjectUtils
 
-
-
-class BarJob extends MetridocJob{
+class BarJob extends MetridocJob {
 
     def someProperty = "somePropertyValue"
-    static triggers = {
-        cron name: "bar job", cronExpression: "0 0 0 * * ?"
-    }
+    static triggers = MIDNIGHT_TRIGGER("bar job")
 
     @Override
     def doExecute() {
@@ -41,7 +37,7 @@ class BarJob extends MetridocJob{
 
                 @Override
                 void configure() {
-                    final processor = new Processor(){
+                    final processor = new Processor() {
 
                         @Override
                         void process(Exchange exchange) {

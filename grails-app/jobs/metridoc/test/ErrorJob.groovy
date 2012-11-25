@@ -1,5 +1,7 @@
 package metridoc.test
 
+import metridoc.core.MetridocJob
+
 /**
  * Created with IntelliJ IDEA.
  * User: tbarker
@@ -9,9 +11,7 @@ package metridoc.test
  */
 class ErrorJob {
 
-    static triggers = {
-        cron name: "error job", cronExpression: "0 0 0 * * ?"
-    }
+    static triggers = MetridocJob.MIDNIGHT_TRIGGER
 
     def execute() {
         log.error "about to throw an error from ErrorJob"

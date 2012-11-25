@@ -9,13 +9,14 @@ import org.apache.camel.builder.RouteBuilder
 import org.apache.camel.impl.DefaultCamelContext
 import org.apache.camel.impl.DefaultCamelContextNameStrategy
 import org.apache.camel.spi.Registry
+import org.slf4j.LoggerFactory
 
 import java.util.concurrent.TimeUnit
 
 import org.quartz.*
 
 abstract class MetridocJob {
-
+    private static final jobLogger = LoggerFactory.getLogger(MetridocJob)
     def concurrent = false
     def grailsApplication
 
@@ -26,16 +27,34 @@ abstract class MetridocJob {
         simple name: "$MANUAL_RUN_ID_PREFIX-$uuid", repeatInterval: 1000, startDelay: twentyYears
     }
 
+    static final MIDNIGHT_TRIGGER = {
+        def triggerName = it
+        def trigger = {
+            def params = [:]
+            if (triggerName) {
+                params.name = triggerName
+            }
+            params.cronExpression = "0 0 0 * * ?"
+            cron params
+        }
+
+        if (triggerName) {
+            return trigger
+        } else {
+            trigger.call()
+        }
+    }
+
     private final static ThreadLocal<ProducerTemplate> _producerJobTemplate = new ThreadLocal<ProducerTemplate>()
 
-    private final static ThreadLocal<ProducerTemplate> _camelJobRegistry = new ThreadLocal<Registry>()
+    private final static ThreadLocal<Registry> _camelJobRegistry = new ThreadLocal<Registry>()
 
     private final static ThreadLocal<CamelContext> _camelJobContext = new ThreadLocal<CamelContext>()
 
-    private final static ThreadLocal<Map> targetMap = new ThreadLocal<Map>() {
+    private final static ThreadLocal<Map<String, Closure>> targetMap = new ThreadLocal<Map<String, Closure>>() {
         @Override
         protected Map initialValue() {
-            [:]
+            [:] as Map<String, Closure>
         }
     }
 
@@ -51,7 +70,7 @@ abstract class MetridocJob {
             refreshThreadLocalVariables()
             doExecute(context)
             doExecute()
-            def targetFromJobDataMap = context?.trigger?.jobDataMap?.get("target")
+            String targetFromJobDataMap = context?.trigger?.jobDataMap?.get("target")
             if (targetFromJobDataMap) {
                 depends(targetFromJobDataMap)
             } else {
@@ -61,20 +80,20 @@ abstract class MetridocJob {
                 }
             }
         } catch (Throwable t) {
-            log.error("error occurred running job " + context.getJobDetail().getKey().getName() + " with trigger " + context.getTrigger().getKey().getName(), t);
+            jobLogger.error("error occurred running job " + context.getJobDetail().getKey().getName() + " with trigger " + context.getTrigger().getKey().getName(), t);
             throw new JobExecutionException(t)
         } finally {
             try {
                 getCamelJobContext().stop()
             } catch (Throwable throwable) {
                 //ignore
-                log.warn("exception while shutting down camel", throwable)
+                jobLogger.warn("exception while shutting down camel", throwable)
             }
         }
     }
 
     def executeTarget() {
-         execute(buildJobContextFacade())
+        execute(buildJobContextFacade())
     }
 
     def executeTarget(String target) {
@@ -83,25 +102,25 @@ abstract class MetridocJob {
 
     JobExecutionContext buildJobContextFacade(String target = null) {
         [
-                getJobDetail: {
-                    [
-                            getKey: {
-                                new JobKey(this.class.name)
-                            }
-                    ] as JobDetail
-                },
-                getTrigger: {
-                    [
-                            getKey:  {
-                                new TriggerKey("manual-cli")
-                            },
-                            getJobDataMap: {
-                                def jobDataMap = new JobDataMap()
-                                jobDataMap.put("target", target)
-                                return jobDataMap
-                            }
-                    ] as Trigger
-                }
+            getJobDetail: {
+                [
+                    getKey: {
+                        new JobKey(this.class.name)
+                    }
+                ] as JobDetail
+            },
+            getTrigger: {
+                [
+                    getKey: {
+                        new TriggerKey("manual-cli")
+                    },
+                    getJobDataMap: {
+                        def jobDataMap = new JobDataMap()
+                        jobDataMap.put("target", target)
+                        return jobDataMap
+                    }
+                ] as Trigger
+            }
 
         ] as JobExecutionContext
     }
@@ -128,7 +147,7 @@ abstract class MetridocJob {
         if (data.size() != 1) {
             throw new JobExecutionException("the map in target can only have one variable, which is the name and the description of the target")
         }
-        def key = (data.keySet() as List)[0]
+        def key = (data.keySet() as List<String>)[0]
         targetMap.get().put(key, closure)
     }
 
@@ -155,10 +174,10 @@ abstract class MetridocJob {
      */
     def profile(String description, Closure closure) {
         def start = System.currentTimeMillis()
-        log.info "profiling [$description] start"
+        jobLogger.info "profiling [$description] start"
         closure.call()
         def end = System.currentTimeMillis()
-        log.info "profiling [$description] finished ${end - start} ms"
+        jobLogger.info "profiling [$description] finished ${end - start} ms"
     }
 
     def includeTargets(Class<Script> scriptClass) {
@@ -213,7 +232,8 @@ abstract class MetridocJob {
                 try {
                     return job."${s}"
                 } catch (MissingPropertyException e) {
-                    return job.grailsApplication.mainContext."${s}"
+                    jobLogger.debug "Job is missing property $s, will search for property in application context", e
+                    return job.grailsApplication?.mainContext?."${s}"
                 }
             }
 
@@ -226,6 +246,7 @@ abstract class MetridocJob {
                         return tClass.cast(o);
                     }
                 } catch (ClassCastException ex) {
+                    jobLogger.warn "Could not convert object $s to ${tClass.name}, lookup will return null instead of the object value", ex
                 }
 
                 return null
