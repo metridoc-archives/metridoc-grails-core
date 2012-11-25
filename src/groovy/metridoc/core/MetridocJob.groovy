@@ -45,20 +45,20 @@ abstract class MetridocJob {
         }
     }
 
-    private final static ThreadLocal<ProducerTemplate> _producerJobTemplate = new ThreadLocal<ProducerTemplate>()
+    private final ThreadLocal<ProducerTemplate> _producerJobTemplate = new ThreadLocal<ProducerTemplate>()
 
-    private final static ThreadLocal<Registry> _camelJobRegistry = new ThreadLocal<Registry>()
+    private final ThreadLocal<Registry> _camelJobRegistry = new ThreadLocal<Registry>()
 
-    private final static ThreadLocal<CamelContext> _camelJobContext = new ThreadLocal<CamelContext>()
+    private final ThreadLocal<CamelContext> _camelJobContext = new ThreadLocal<CamelContext>()
 
-    private final static ThreadLocal<Map<String, Closure>> targetMap = new ThreadLocal<Map<String, Closure>>() {
+    private final ThreadLocal<Map<String, Closure>> _targetMap = new ThreadLocal<Map<String, Closure>>() {
         @Override
         protected Map initialValue() {
             [:] as Map<String, Closure>
         }
     }
 
-    private final static ThreadLocal<Set> targetsRan = new ThreadLocal<Set>() {
+    private final ThreadLocal<Set> _targetsRan = new ThreadLocal<Set>() {
         @Override
         protected Set initialValue() {
             [] as Set
@@ -74,7 +74,7 @@ abstract class MetridocJob {
             if (targetFromJobDataMap) {
                 depends(targetFromJobDataMap)
             } else {
-                def containsDefault = targetMap.get().containsKey("default")
+                def containsDefault = targetMap.containsKey("default")
                 if (containsDefault) {
                     depends("default")
                 }
@@ -129,7 +129,8 @@ abstract class MetridocJob {
         _producerJobTemplate.set(null)
         _camelJobContext.set(null)
         _camelJobRegistry.set(null)
-        targetMap.set([:])
+        _targetMap.set([:])
+        _targetsRan.set([])
     }
 
     def runRoute(Closure closure) {
@@ -148,30 +149,33 @@ abstract class MetridocJob {
             throw new JobExecutionException("the map in target can only have one variable, which is the name and the description of the target")
         }
         def key = (data.keySet() as List<String>)[0]
-        targetMap.get().put(key, closure)
+        targetMap.put(key, closure)
     }
 
     def depends(String... targetNames) {
         targetNames.each {targetName ->
-            Closure target = targetMap.get().get(targetName)
+            Closure target = targetMap.get(targetName)
             if (!target) {
                 throw new JobExecutionException("target $targetName does not exist")
             }
-            def targetHasNotBeenCalled = !targetsRan.get().contains(targetName)
+            def targetHasNotBeenCalled = !targetsRan.contains(targetName)
             if (targetHasNotBeenCalled) {
                 target.delegate = this
                 target.resolveStrategy = Closure.DELEGATE_FIRST
                 target.call()
-                targetsRan.get().add(targetName)
+                targetsRan.add(targetName)
             }
         }
     }
 
-    /**
-     * profiles a chunk of code stating when it starts and finishes
-     * @param description description of the chunk of code
-     * @param closure the code to run
-     */
+    Set getTargetsRan() {
+        return _targetsRan.get()
+    }
+/**
+ * profiles a chunk of code stating when it starts and finishes
+ * @param description description of the chunk of code
+ * @param closure the code to run
+ */
     def profile(String description, Closure closure) {
         def start = System.currentTimeMillis()
         jobLogger.info "profiling [$description] start"
@@ -230,7 +234,9 @@ abstract class MetridocJob {
             @Override
             Object lookup(String s) {
                 try {
-                    return job."${s}"
+                    def propertyValue = job."${s}"
+
+                    return propertyValue
                 } catch (MissingPropertyException e) {
                     jobLogger.debug "Job is missing property $s, will search for property in application context", e
                     return job.grailsApplication?.mainContext?."${s}"
@@ -246,7 +252,7 @@ abstract class MetridocJob {
                         return tClass.cast(o);
                     }
                 } catch (ClassCastException ex) {
-                    jobLogger.warn "Could not convert object $s to ${tClass.name}, lookup will return null instead of the object value", ex
+                    jobLogger.debug "Could not convert object $s to ${tClass.name}, lookup will return null instead of the object value", ex
                 }
 
                 return null
@@ -269,5 +275,9 @@ abstract class MetridocJob {
 
         _camelJobRegistry.set(camelJobRegistry)
         return _camelJobRegistry.get()
+    }
+
+    Map<String, Closure> getTargetMap() {
+        return _targetMap.get()
     }
 }
