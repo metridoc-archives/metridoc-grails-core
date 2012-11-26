@@ -1,5 +1,3 @@
-import metridoc.core.MetridocJob
-
 /*
  runs a job restfully.  By default it constructs a url to local host with user name admin and password password.
 */
@@ -37,13 +35,13 @@ target(main: "The description of the script goes here!") {
         depends(packageApp, loadApp, configureApp)
         def job = appCtx."${runJobArguments.job}"
         def MetridocJob = classLoader.loadClass("metridoc.core.MetridocJob")
-        if(job) {
-            if(MetridocJob.isAssignableFrom(job.class)) {
+        if (job) {
+            if (MetridocJob.isAssignableFrom(job.class)) {
                 grailsConsole.info "running as MetridocJob"
-                if(runJobArguments.target) {
-                    job.executeCli(runJobArguments.target)
+                if (runJobArguments.target) {
+                    job.executeTarget(runJobArguments.target)
                 } else {
-                    job.executeCli()
+                    job.executeTarget()
                 }
             } else {
                 job.execute()
@@ -65,7 +63,7 @@ target(main: "The description of the script goes here!") {
             }.text
             grailsConsole.info "triger id is: $triggerId"
             def status = "running"
-            while(status == "running") {
+            while (status == "running") {
                 def statusUrl = "${baseUrl}status/${triggerId}"
                 status = restBuilder.get(statusUrl) {
                     auth(runJobArguments.user, runJobArguments.password)
@@ -73,7 +71,7 @@ target(main: "The description of the script goes here!") {
                 Thread.sleep(500)
             }
 
-            if(status != "complete") {
+            if (status != "complete") {
                 grailsConsole.error "Job ended with status ${status}, some error occurred, if it wasn't logged to console, look in file logs"
             }
         }
