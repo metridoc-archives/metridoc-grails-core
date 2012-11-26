@@ -137,6 +137,11 @@ abstract class MetridocJob {
         def routeBuilder = new GroovyRouteBuilder()
         routeBuilder.setRoute(closure)
         runRoute(routeBuilder)
+        if(routeBuilder.firstException) {
+            throw routeBuilder.firstException
+        }
+
+        return routeBuilder
     }
 
     def runRoute(RouteBuilder builder) {

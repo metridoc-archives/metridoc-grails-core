@@ -79,6 +79,7 @@ grails.project.dependency.resolution = {
 
     //grails based plugins
     plugins {
+        runtime ":database-migration:1.2"
         compile ":plugin-config:0.1.5"
         compile ":quartz2:0.2.3"
         compile ":mail:1.0"

@@ -1,6 +1,13 @@
 package metridoc.core
 
 import org.junit.Test
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
+import org.junit.Before
+import org.junit.After
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase
+import groovy.sql.Sql
+import java.sql.BatchUpdateException
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,6 +19,41 @@ import org.junit.Test
 class MetridocJobTest {
 
     def helper = new MetridocJobTestHelper()
+
+    @Before
+    void "add table to embedded data source"() {
+        def sql = new Sql(helper.dataSource)
+        sql.execute("create table foo (bar int unique)")
+        sql.execute("create table bar (bar int)")
+
+        sql.execute("insert into bar values (10)")
+        sql.execute("insert into bar values (10)")
+    }
+
+    @After
+    void "shutdown embedded data source"() {
+        try {
+            helper.dataSource.shutdown()
+            helper.refreshThreadLocalVariables()
+        } catch (Exception e) {
+            //do nothing
+        }
+
+    }
+
+    @Test
+    void "test routing failures"() {
+        def routeBuilder
+        try {
+            routeBuilder = helper.runRoute {
+                from("sqlplus:bar?dataSource=dataSource").to("sqlplus:foo?dataSource=dataSource")
+            }
+
+            assert false : "exception should have occurred"
+        } catch (BatchUpdateException e) {
+
+        }
+    }
 
     @Test
     void "the job execution facade has a job key that is equal to the class"() {
@@ -29,19 +71,8 @@ class MetridocJobTest {
     void "if target is not supplied, then target is null in job data map"() {
         assert null == helper.buildJobContextFacade().trigger.jobDataMap.target
     }
-
-    @Test
-    void "the registry can lookup up a local property"() {
-        def registry = helper.camelJobRegistry
-        assert "foo bar" == registry.lookup("someProperty")
-        assert null == registry.lookup("someProperty", BigInteger)
-        assert null == registry.lookup("nonExistentProperty", String)
-        assert null == registry.lookup("nonExistentProperty")
-        assert 2 == registry.lookupByType(String).size()
-    }
 }
 
 class MetridocJobTestHelper extends MetridocJob {
-    String someProperty = "foo bar"
-    String someOtherProperty = "bar foo"
+     EmbeddedDatabase dataSource = new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build()
 }
