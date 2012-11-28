@@ -46,6 +46,9 @@ target(main: "The description of the script goes here!") {
             } else {
                 job.execute()
             }
+        } else {
+            grailsConsole.error "The job ${runJobArguments.job} does not exist"
+            exit(-1)
         }
 
     } else {
