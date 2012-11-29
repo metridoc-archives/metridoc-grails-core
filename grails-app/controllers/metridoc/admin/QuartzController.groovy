@@ -84,7 +84,18 @@ class QuartzController {
 
     def runNow() {
         def dataMap = new JobDataMap(params)
-        def triggerKey = new TriggerKey(params.triggerName)
+        def triggerKey
+
+
+        if (params.triggerName) {
+            triggerKey = new TriggerKey(params.triggerName)
+
+        } else {
+            def jobKey = new JobKey(params.jobName, params.jobGroup)
+            def triggers = quartzScheduler.getTriggersOfJob(jobKey)
+            triggerKey = triggers[0].key
+        }
+
         dataMap.oldTrigger = quartzScheduler.getTrigger(triggerKey)
         def now = new Date()
 
@@ -100,16 +111,19 @@ class QuartzController {
         quartzScheduler.rescheduleJob(triggerKey, trigger)
         Thread.sleep(1000) //sleep for 2 seconds to allow for the job to actually start
 
+
         if (params.containsKey("returnTriggerId")) {
-            render triggerId
+            render trigger.key.name
         } else {
             redirect(action: "list")
         }
     }
 
     def status() {
-        if(params.id) {
-            render QuartzMonitorJobFactory.jobRuns[params.id]?.status ?: "unknown"
+        if (params.id) {
+            def jobId = params.id
+            def monitoredJobs = QuartzMonitorJobFactory.jobRuns
+            render monitoredJobs[jobId]?.status ?: "unknown"
         } else {
             render(status: 400, text: "no id provided")
         }

@@ -9,6 +9,10 @@ import org.apache.commons.lang.StringUtils
  */
 class ShiroBootupUtils {
 
+    static final DEFAULT_MAP = [
+                    
+    ]
+    
     static addDefaultParameters(ConfigObject configObject) {
         //if not set by the user in Config.groovy or elsewhere
         def filter = configObject.filter
@@ -18,16 +22,27 @@ class ShiroBootupUtils {
         def currentFilterChainDefinitions = filter.filterChainDefinitions
 
         filter.filterChainDefinitions = currentFilterChainDefinitions + """
-                /*Admin/* = user,roles[ROLE_ADMIN]
-                /whoami = authcBasic
-                /admin/* = user,roles[ROLE_ADMIN]
-                /log/* = user,roles[ROLE_ADMIN]
-                /profile/* = user
-                /quartz/runNow = authcBasic,roles[ROLE_ADMIN]
-                /quartz/* = user,roles[ROLE_ADMIN]
-                /role/* = user,roles[ROLE_ADMIN]
-                /status/* = user,roles[ROLE_ADMIN]
-                /user/* = user,roles[ROLE_ADMIN]
+
+                /rest/*Admin/** = authcBasic,roles[ROLE_ADMIN]
+                /rest/whoami = authcBasic
+                /rest/admin/** = authcBasic,roles[ROLE_ADMIN]
+                /rest/log/** = authcBasic,roles[ROLE_ADMIN]
+                /rest/profile/** = authcBasic
+                /rest/quartz/** = authcBasic,roles[ROLE_ADMIN]
+                /rest/role/** = authcBasic,roles[ROLE_ADMIN]
+                /rest/status/** = authcBasic,roles[ROLE_ADMIN]
+                /rest/user/** = authcBasic,roles[ROLE_ADMIN]
+
+                /*Admin/** = user,roles[ROLE_ADMIN]
+                /whoami = user
+                /admin/** = user,roles[ROLE_ADMIN]
+                /log/** = user,roles[ROLE_ADMIN]
+                /profile/** = user
+                /quartz/** = user,roles[ROLE_ADMIN]
+                /role/** = user,roles[ROLE_ADMIN]
+                /status/** = user,roles[ROLE_ADMIN]
+                /user/** = user,roles[ROLE_ADMIN]
+                /logout = logout
             """
     }
 }

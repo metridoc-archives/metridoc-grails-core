@@ -49,7 +49,7 @@
                 <g:each in="${jobs}" status="i" var="job">
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         <td>${job.name}</td>
-                        <g:if test="${job.trigger?.key?.name.startsWith("manual")}">
+                        <g:if test="${job.trigger?.key?.name?.startsWith("manual")}">
                             <td>Manual Job</td>
                         </g:if>
                         <g:else>
@@ -63,7 +63,7 @@
                         <g:elseif test="${job.status == "running"}">
                             <td>Running</td>
                         </g:elseif>
-                        <g:elseif test="${job.trigger?.key?.name.startsWith("manual")}">
+                        <g:elseif test="${job.trigger?.key?.name?.startsWith("manual")}">
                             <td>NA</td>
                         </g:elseif>
                         <g:else>

@@ -18,6 +18,7 @@ class HttpBasicShiroFilter extends BasicHttpAuthenticationFilter {
 
     @Override
     protected boolean isRememberMe(ServletRequest request) {
-        return WebUtils.isTrue(request, REMEMBER_ME);
+        def isRememberMe = WebUtils.isTrue(request, REMEMBER_ME);
+        return isRememberMe
     }
 }

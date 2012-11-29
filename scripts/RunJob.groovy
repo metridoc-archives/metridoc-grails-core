@@ -12,12 +12,15 @@ grails run-job [options] <job name>
 
 Options:
 
-  h: displays this message
+         h: displays this message
   protocol: http or https, http by default
-  host: supplies the host for the job call, by default this is localhost:8080
+      host: supplies the host for the job call, by default this is localhost:8080
   test-run: prints the url used to run the job without actually calling it
-  cli: bootstrap application and call job directly
-  target: the target to call in job dsl
+       cli: bootstrap application and call job directly
+    target: the target to call in job dsl
+      user: user name to use (default 'admin')
+  password: password to use (default 'password')
+
 """
 
 runJobArguments = [:]
@@ -53,7 +56,7 @@ target(main: "The description of the script goes here!") {
 
     } else {
 
-        def baseUrl = "${runJobArguments.protocol}://${runJobArguments.host}/${grailsAppName}/quartz/"
+        def baseUrl = "${runJobArguments.protocol}://${runJobArguments.host}/${grailsAppName}/rest/quartz/"
         def url = "${baseUrl}runNow?jobGroup=DEFAULT&jobName=${argsMap.params[0]}${runJobArguments.targetQuery}&returnTriggerId"
 
         if (runJobArguments.testRun) {
@@ -76,6 +79,7 @@ target(main: "The description of the script goes here!") {
 
             if (status != "complete") {
                 grailsConsole.error "Job ended with status ${status}, some error occurred, if it wasn't logged to console, look in file logs"
+                exit(-1)
             }
         }
     }

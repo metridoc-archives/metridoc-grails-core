@@ -9,7 +9,7 @@ import org.apache.commons.lang.ObjectUtils
 class BarJob extends MetridocJob {
 
     def someProperty = "somePropertyValue"
-    static triggers = MIDNIGHT_TRIGGER("bar job")
+    static triggers = MIDNIGHT
 
     @Override
     def doExecute() {

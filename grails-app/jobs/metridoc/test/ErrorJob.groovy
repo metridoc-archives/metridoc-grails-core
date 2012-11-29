@@ -11,7 +11,7 @@ import metridoc.core.MetridocJob
  */
 class ErrorJob {
 
-    static triggers = MetridocJob.MIDNIGHT_TRIGGER
+    static triggers = MetridocJob.MIDNIGHT
 
     def execute() {
         log.error "about to throw an error from ErrorJob"

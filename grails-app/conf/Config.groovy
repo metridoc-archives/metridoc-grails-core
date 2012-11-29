@@ -194,3 +194,5 @@ grails.doc.title = "MetriDoc User Manual"
 //sets the layout for all pages
 metridoc.style.layout = "main"
 
+grails.plugin.databasemigration.changelogFileName = "metridocCoreSchema.xml"
+

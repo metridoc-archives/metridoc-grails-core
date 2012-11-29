@@ -40,20 +40,22 @@ class HomeService {
      */
     def getControllerMetaData(Closure closure) {
         def result = [:] as TreeMap
-        def securityConfig = grailsApplication.mergedConfig.metridoc.homePage
+        def homePageConfig = grailsApplication.mergedConfig.metridoc.homePage
         grailsApplication.controllerClasses.each {controller ->
             def dataField = GrailsClassUtils.getStaticFieldValue(controller.clazz, HOME_DATA_FIELD)
-            def homePageMetaData = dataField ? dataField : [:]
+            def homePageMetaData = dataField ?: [:]
             def uncapControllerName = StringUtils.uncapitalise(controller.name)
-            def homePageInfoFromConfig = securityConfig[uncapControllerName] ? securityConfig[uncapControllerName] : [:]
+            def homePageInfoFromConfig = homePageConfig[uncapControllerName] ? homePageConfig[uncapControllerName] : [:]
             homePageMetaData.putAll(homePageInfoFromConfig)
             if (closure.call(homePageMetaData)) {
-                if(!homePageMetaData || !homePageMetaData.title) {
-                    homePageMetaData.title = controller.naturalName
+                if (homePageMetaData) {
+                    if(!homePageMetaData.title) {
+                        homePageMetaData.title = controller.naturalName
+                    }
+                    homePageMetaData.put("controllerName", controller.name)
+                    def title = homePageMetaData.title
+                    result.put(title, homePageMetaData)
                 }
-                homePageMetaData.put("controllerName", controller.name)
-                def title = homePageMetaData.title
-                result.put(title, homePageMetaData)
             }
         }
 

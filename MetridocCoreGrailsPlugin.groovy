@@ -66,6 +66,8 @@ class MetridocCoreGrailsPlugin {
 
     def doWithSpring = {
 
+
+
         def shiroConfig = application.config.security.shiro
 
         def disableQuartz = Boolean.valueOf(System.getProperty("metridoc.quartz.disabled", "false"))
@@ -87,7 +89,7 @@ class MetridocCoreGrailsPlugin {
         }
 
         //overrides the authcBasic provided by shiro so we can use rememberMe
-        authcBasic(HttpBasicShiroFilter)
+//        authcBasic(HttpBasicShiroFilter)
     }
 
     def doWithDynamicMethods = { ctx ->

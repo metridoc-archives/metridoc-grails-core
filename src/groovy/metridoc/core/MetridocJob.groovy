@@ -27,22 +27,8 @@ abstract class MetridocJob {
         simple name: "$MANUAL_RUN_ID_PREFIX-$uuid", repeatInterval: 1000, startDelay: twentyYears
     }
 
-    static final MIDNIGHT_TRIGGER = {
-        def triggerName = it
-        def trigger = {
-            def params = [:]
-            if (triggerName) {
-                params.name = triggerName
-            }
-            params.cronExpression = "0 0 0 * * ?"
-            cron params
-        }
-
-        if (triggerName) {
-            return trigger
-        } else {
-            trigger.call()
-        }
+    static final MIDNIGHT = {
+        cron cronExpression : "0 0 0 * * ?"
     }
 
     private final ThreadLocal<ProducerTemplate> _producerJobTemplate = new ThreadLocal<ProducerTemplate>()
@@ -102,25 +88,25 @@ abstract class MetridocJob {
 
     JobExecutionContext buildJobContextFacade(String target = null) {
         [
-            getJobDetail: {
-                [
-                    getKey: {
-                        new JobKey(this.class.name)
-                    }
-                ] as JobDetail
-            },
-            getTrigger: {
-                [
-                    getKey: {
-                        new TriggerKey("manual-cli")
-                    },
-                    getJobDataMap: {
-                        def jobDataMap = new JobDataMap()
-                        jobDataMap.put("target", target)
-                        return jobDataMap
-                    }
-                ] as Trigger
-            }
+                getJobDetail: {
+                    [
+                            getKey: {
+                                new JobKey(this.class.name)
+                            }
+                    ] as JobDetail
+                },
+                getTrigger: {
+                    [
+                            getKey: {
+                                new TriggerKey("manual-cli")
+                            },
+                            getJobDataMap: {
+                                def jobDataMap = new JobDataMap()
+                                jobDataMap.put("target", target)
+                                return jobDataMap
+                            }
+                    ] as Trigger
+                }
 
         ] as JobExecutionContext
     }
@@ -137,7 +123,7 @@ abstract class MetridocJob {
         def routeBuilder = new GroovyRouteBuilder()
         routeBuilder.setRoute(closure)
         runRoute(routeBuilder)
-        if(routeBuilder.firstException) {
+        if (routeBuilder.firstException) {
             throw routeBuilder.firstException
         }
 
