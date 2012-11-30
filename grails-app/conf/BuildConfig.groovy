@@ -52,42 +52,25 @@ grails.project.dependency.resolution = {
 
         //by default metridoc is tested on mysql
         compile("mysql:mysql-connector-java:5.1.20")
-        //used to add targets to the workflow api
-//        compile("org.codehaus.gant:gant_groovy1.8:1.9.8")
         //used for handling xls files
         compile("org.apache.poi:poi:3.8-beta3")
-        //eventually will be used for xlsx files.  Right now xmlbeans is causing classpath problems.  Looks like
-        //these issues have been taken care of as of grails 2.1.1
         compile("org.apache.poi:poi-ooxml:3.8-beta3")
-        //helpful library to embed gant
-//        compile("com.googlecode.gant-ext:gant-ext:0.5") {
-//            excludes 'logback-classic'
-//            excludes 'slf4j-api'
-//            excludes 'gant_groovy1.8'
-//        }
-        //helpful for exposing data as json, csv, or jsonp objects according to the google wire protocol
-//        compile("com.google.visualization:visualization-datasource:1.1.1") {
-//            excludes "commons-lang"
-//            excludes "commons-logging"
-//            excludes "opencsv"
-//        }
-        //Helps with csv data
         compile 'net.sf.opencsv:opencsv:2.3'
     }
 
     //grails based plugins
     plugins {
         provided ":database-migration:1.2"
+        runtime ":jquery:1.8.0"
         compile ":plugin-config:0.1.5"
         compile ":quartz2:0.2.3"
         compile ":mail:1.0"
-        compile (":routing:1.2.2") {
+        compile(":routing:1.2.2") {
             excludes 'slf4j-api'
         }
         runtime ":hibernate:$grailsVersion"
-        runtime ":jquery:1.7.2"
         runtime ":resources:1.1.6"
-        runtime (":shiro:1.1.4") {
+        runtime(":shiro:1.1.4") {
             excludes "shiro-quartz"
         }
         compile ":jquery-ui:1.8.24"

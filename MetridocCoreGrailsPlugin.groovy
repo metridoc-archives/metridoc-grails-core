@@ -1,5 +1,4 @@
 import grails.plugin.quartz2.QuartzFactoryBean
-import metridoc.core.HttpBasicShiroFilter
 import metridoc.core.QuartzMonitorJobFactory
 import metridoc.utils.ShiroBootupUtils
 
@@ -33,11 +32,12 @@ class MetridocCoreGrailsPlugin {
     ]
 
     def pluginExcludes = [
-        "scripts/_Events.groovy",
-        "grails-app/workflows/metridoc/test/**/*",
-        "grails-app/controllers/metridoc/test/**/*",
-        "grails-app/domain/metridoc/test/**/*",
-        "grails-app/jobs/metridoc/test/**/*"
+            "scripts/_Events.groovy",
+            "grails-app/workflows/metridoc/test/**/*",
+            "grails-app/controllers/metridoc/test/**/*",
+            "grails-app/domain/metridoc/test/**/*",
+            "grails-app/jobs/metridoc/test/**/*",
+            "grails-app/conf/MetridocConfig.groovy"
     ]
 
     def title = "Metridoc Core Plugin" // Headline display name of the plugin
@@ -65,7 +65,6 @@ class MetridocCoreGrailsPlugin {
 
 
     def doWithSpring = {
-
 
 
         def shiroConfig = application.config.security.shiro

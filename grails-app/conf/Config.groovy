@@ -56,6 +56,7 @@ grails.config.locations = []
 if (new File("${metridoc.home}/MetridocConfig.groovy").exists()) {
     log.info "found MetridocConfig.groovy, will add to configuration"
 }
+grails.config.locations << "classpath:MetridocConfig.groovy"
 grails.config.locations << "file:${metridoc.home}/MetridocConfig.groovy"
 
 
@@ -67,19 +68,19 @@ grails.project.groupId = appName // change this to alter the default package nam
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
 grails.mime.use.accept.header = false
 grails.mime.types = [html: ['text/html', 'application/xhtml+xml'],
-    xml: ['text/xml', 'application/xml'],
-    text: 'text/plain',
-    js: 'text/javascript',
-    rss: 'application/rss+xml',
-    atom: 'application/atom+xml',
-    css: 'text/css',
-    csv: 'text/csv',
-    all: '*/*',
-    json: ['application/json', 'text/json'],
-    form: 'application/x-www-form-urlencoded',
-    multipartForm: 'multipart/form-data',
-    xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    xls: "application/vnd.ms-excel"
+        xml: ['text/xml', 'application/xml'],
+        text: 'text/plain',
+        js: 'text/javascript',
+        rss: 'application/rss+xml',
+        atom: 'application/atom+xml',
+        css: 'text/css',
+        csv: 'text/csv',
+        all: '*/*',
+        json: ['application/json', 'text/json'],
+        form: 'application/x-www-form-urlencoded',
+        multipartForm: 'multipart/form-data',
+        xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        xls: "application/vnd.ms-excel"
 ]
 
 // URL Mapping Cache Max Size, defaults to 5000
@@ -137,62 +138,55 @@ log4j = {
         println "INFO: logs will be stored at ${config.metridoc.home}/logs"
 
         rollingFile name: "file",
-            maxBackupIndex: 10,
-            maxFileSize: "1MB",
-            file: "${config.metridoc.home}/logs/metridoc.log"
+                maxBackupIndex: 10,
+                maxFileSize: "1MB",
+                file: "${config.metridoc.home}/logs/metridoc.log"
 
         rollingFile name: "stacktrace",
-            maxFileSize: "1MB",
-            maxBackupIndex: 10,
-            file: "${config.metridoc.home}/logs/metridoc-stacktrace.log"
+                maxFileSize: "1MB",
+                maxBackupIndex: 10,
+                file: "${config.metridoc.home}/logs/metridoc-stacktrace.log"
 
         rollingFile name: "jobLog",
-            maxFileSize: "1MB",
-            maxBackupIndex: 10,
-            file: "${config.metridoc.home}/logs/metridoc-job.log"
+                maxFileSize: "1MB",
+                maxBackupIndex: 10,
+                file: "${config.metridoc.home}/logs/metridoc-job.log"
     }
 
     error 'org.codehaus.groovy.grails.web.servlet',  //  controllers
-        'org.codehaus.groovy.grails.web.pages', //  GSP
-        'org.codehaus.groovy.grails.web.sitemesh', //  layouts
-        'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-        'org.codehaus.groovy.grails.web.mapping', // URL mapping
-        'org.codehaus.groovy.grails.commons', // core / classloading
-        'org.codehaus.groovy.grails.plugins', // plugins
-        'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
-        'org.springframework',
-        'org.hibernate',
-        'net.sf.ehcache.hibernate',
-        'org.apache',
-        'grails.util.GrailsUtil',
-        'org.grails.plugin.resource',
-        'grails.plugin.webxml.WebxmlGrailsPlugin',
-        'org.quartz',
-        'grails.plugin.quartz2',
-        'metridoc.core.DevelopmentWorkflowRunnerService'
+            'org.codehaus.groovy.grails.web.pages', //  GSP
+            'org.codehaus.groovy.grails.web.sitemesh', //  layouts
+            'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
+            'org.codehaus.groovy.grails.web.mapping', // URL mapping
+            'org.codehaus.groovy.grails.commons', // core / classloading
+            'org.codehaus.groovy.grails.plugins', // plugins
+            'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
+            'org.springframework',
+            'org.hibernate',
+            'net.sf.ehcache.hibernate',
+            'org.apache',
+            'grails.util.GrailsUtil',
+            'org.grails.plugin.resource',
+            'grails.plugin.webxml.WebxmlGrailsPlugin',
+            'org.quartz',
+            'grails.plugin.quartz2',
+            'metridoc.core.DevelopmentWorkflowRunnerService'
 
 
 
     warn 'metridoc.camel',
-        'ShiroGrailsPlugin',
-        'org.quartz.core',
-        'org.codehaus.groovy.grails.scaffolding',
-        'metridoc.utils.CamelUtils'
+            'ShiroGrailsPlugin',
+            'org.quartz.core',
+            'org.codehaus.groovy.grails.scaffolding',
+            'metridoc.utils.CamelUtils'
 
     root {
         info 'stdout', 'file'
     }
 }
 
-//change the document parameters if creating a user manual for a plugin
-grails.doc.authors = "Thomas Barker, Weizhuo Wu"
-
-grails.doc.subtitle = " "
-
-grails.doc.title = "MetriDoc User Manual"
-
 //sets the layout for all pages
 metridoc.style.layout = "main"
 
-grails.plugin.databasemigration.changelogFileName = "metridocCoreSchema.xml"
+
 
