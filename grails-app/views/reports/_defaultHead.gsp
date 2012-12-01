@@ -6,6 +6,6 @@
 </g:else>
 
 <g:if test="${hasModule}">
-    <r:require module="${module}"/>
+    <r:require module="${module}" strict="false"/>
 </g:if>
 
