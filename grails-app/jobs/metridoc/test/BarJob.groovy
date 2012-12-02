@@ -10,6 +10,7 @@ class BarJob extends MetridocJob {
 
     def someProperty = "somePropertyValue"
     static triggers = MIDNIGHT
+    def dataSource
 
     @Override
     def doExecute() {
