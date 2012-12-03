@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
 
 import org.quartz.*
+import org.apache.camel.ServiceStatus
 
 abstract class MetridocJob {
     private static final jobLogger = LoggerFactory.getLogger(MetridocJob)
@@ -31,37 +32,26 @@ abstract class MetridocJob {
         cron cronExpression : "0 0 0 * * ?"
     }
 
-    private final ThreadLocal<ProducerTemplate> _producerJobTemplate = new ThreadLocal<ProducerTemplate>()
-
-    private final ThreadLocal<Registry> _camelJobRegistry = new ThreadLocal<Registry>()
-
-    private final ThreadLocal<CamelContext> _camelJobContext = new ThreadLocal<CamelContext>()
-
-    private final ThreadLocal<Map<String, Closure>> _targetMap = new ThreadLocal<Map<String, Closure>>() {
-        @Override
-        protected Map initialValue() {
-            [:] as Map<String, Closure>
-        }
-    }
-
-    private final ThreadLocal<Set> _targetsRan = new ThreadLocal<Set>() {
-        @Override
-        protected Set initialValue() {
-            [] as Set
-        }
-    }
+    private ProducerTemplate _producerJobTemplate
+    private Registry _camelJobRegistry
+    private CamelContext _camelJobContext
+    def Map targetMap = Collections.synchronizedMap([:])
+    private Set _targetsRan = [] as Set
+    def Map jobDataMap = [:]
 
     def execute(JobExecutionContext context) {
         try {
-            refreshThreadLocalVariables()
+            jobDataMap = context?.trigger?.jobDataMap
             doExecute(context)
             doExecute()
             String targetFromJobDataMap = context?.trigger?.jobDataMap?.get("target")
             if (targetFromJobDataMap) {
                 depends(targetFromJobDataMap)
             } else {
+                jobLogger.info("target map is $targetMap")
                 def containsDefault = targetMap.containsKey("default")
                 if (containsDefault) {
+                    jobLogger.info "running default"
                     depends("default")
                 }
             }
@@ -70,13 +60,16 @@ abstract class MetridocJob {
             throw new JobExecutionException(t)
         } finally {
             try {
-                getCamelJobContext().stop()
+                if (_camelJobContext && _camelJobContext.status == !ServiceStatus.Stopped) {
+                    getCamelJobContext().stop()
+                }
             } catch (Throwable throwable) {
                 //ignore
                 jobLogger.warn("exception while shutting down camel", throwable)
             }
         }
     }
+
 
     def executeTarget() {
         execute(buildJobContextFacade())
@@ -111,14 +104,6 @@ abstract class MetridocJob {
         ] as JobExecutionContext
     }
 
-    def refreshThreadLocalVariables() {
-        _producerJobTemplate.set(null)
-        _camelJobContext.set(null)
-        _camelJobRegistry.set(null)
-        _targetMap.set([:])
-        _targetsRan.set([])
-    }
-
     def runRoute(Closure closure) {
         def routeBuilder = new GroovyRouteBuilder()
         routeBuilder.setRoute(closure)
@@ -140,7 +125,11 @@ abstract class MetridocJob {
             throw new JobExecutionException("the map in target can only have one variable, which is the name and the description of the target")
         }
         def key = (data.keySet() as List<String>)[0]
-        targetMap.put(key, closure)
+        def description = data[key]
+        def closureToRun = {
+            profile(description, closure)
+        }
+        targetMap.put(key, closureToRun)
     }
 
     def depends(String... targetNames) {
@@ -160,7 +149,7 @@ abstract class MetridocJob {
     }
 
     Set getTargetsRan() {
-        return _targetsRan.get()
+        return _targetsRan
     }
 /**
  * profiles a chunk of code stating when it starts and finishes
@@ -191,34 +180,39 @@ abstract class MetridocJob {
         return binding
     }
 
+    /**
+     * eventually this will be turned into an abstract method
+     */
     def doExecute() {
         //override this
     }
 
+    /**
+     *
+     * @deprecated will be deprecated in the future so we can just run doExecute
+     */
     def doExecute(JobExecutionContext context) {
         //override this if job details are required
     }
 
-    ProducerTemplate getProducerJobTemplate() {
-        if (_producerJobTemplate.get()) return _producerJobTemplate.get()
+    synchronized ProducerTemplate getProducerJobTemplate() {
+        if (_producerJobTemplate) return _producerJobTemplate
 
-        _producerJobTemplate.set(getCamelJobContext().createProducerTemplate())
-        return _producerJobTemplate.get()
+        _producerJobTemplate = getCamelJobContext().createProducerTemplate()
     }
 
-    CamelContext getCamelJobContext() {
-        if (_camelJobContext.get()) return _camelJobContext.get()
+    synchronized CamelContext getCamelJobContext() {
+        if (_camelJobContext) return _camelJobContext
         def camelJobContext = new DefaultCamelContext(getCamelJobRegistry())
         camelJobContext.nameStrategy = new DefaultCamelContextNameStrategy("metridocCamelJob")
         camelJobContext.setLazyLoadTypeConverters(true)
         camelJobContext.addComponent("sqlplus", new SqlPlusComponent(camelJobContext))
         camelJobContext.start()
-        _camelJobContext.set(camelJobContext)
-        return _camelJobContext.get()
+        _camelJobContext = camelJobContext
     }
 
-    def getCamelJobRegistry() {
-        if (_camelJobRegistry.get()) return _camelJobRegistry.get()
+    synchronized Registry getCamelJobRegistry() {
+        if (_camelJobRegistry) return _camelJobRegistry
         final job = this
         def camelJobRegistry = new Registry() {
 
@@ -264,11 +258,7 @@ abstract class MetridocJob {
             }
         }
 
-        _camelJobRegistry.set(camelJobRegistry)
-        return _camelJobRegistry.get()
+        _camelJobRegistry = camelJobRegistry
     }
 
-    Map<String, Closure> getTargetMap() {
-        return _targetMap.get()
-    }
 }

@@ -16,9 +16,12 @@ class BarJob extends MetridocJob {
     def doExecute() {
         profile("running bar") {
             assert grailsApplication
-            Thread.sleep(20000)
+            Thread.sleep(1000)
         }
 
+        log.info "targets ran $targetsRan"
+        log.info "this identifying hash is ${System.identityHashCode(this)}"
+        log.info "camelContext identifying hash is ${System.identityHashCode(getCamelJobContext())}"
         assert camelJobContext: "camel context not loaded"
         assert camelJobContext.registry.lookup("someProperty"): "property not found"
         assert !camelJobContext.registry.lookup("blah")
@@ -57,13 +60,21 @@ class BarJob extends MetridocJob {
         assert camelRouteWithRouteBuilderWorked
 
         target(default: "the default target for job bar") {
+
             profile("profiling the default target for bar") {
+                depends("barDependency")
                 log.info "running the default target for bar"
             }
+        }
+
+        target(barDependency: "a target dependency that bar will run") {
+            log.info "dependency ran"
         }
 
         target(directRun: "not called by default, but could be called via url with 'target' set") {
             log.info "directRun target called in BarJob"
         }
+
+        log.info "target map is ${targetMap}"
     }
 }
