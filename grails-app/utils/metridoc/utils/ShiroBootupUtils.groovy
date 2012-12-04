@@ -1,6 +1,7 @@
 package metridoc.utils
 
 import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang.text.StrBuilder
 
 /**
  * @author Tommy Barker
@@ -19,30 +20,45 @@ class ShiroBootupUtils {
         if (!filter.filterChainDefinitions) {
             filter.filterChainDefinitions = StringUtils.EMPTY
         }
-        def currentFilterChainDefinitions = filter.filterChainDefinitions
+        def currentFilterChainDefinitions = filter.filterChainDefinitions.trim()
 
-        filter.filterChainDefinitions = currentFilterChainDefinitions + """
+        if (!currentFilterChainDefinitions) {
+            filter.filterChainDefinitions = """
+                    /*Admin/** = user,roles[ROLE_ADMIN]
+                    /whoami = user
+                    /admin/** = user,roles[ROLE_ADMIN]
+                    /log/** = user,roles[ROLE_ADMIN]
+                    /profile/** = user
+                    /quartz/** = user,roles[ROLE_ADMIN]
+                    /role/** = user,roles[ROLE_ADMIN]
+                    /status/** = user,roles[ROLE_ADMIN]
+                    /user/** = user,roles[ROLE_ADMIN]
+                    /logout = logout
+                """
+        }
 
-                /rest/*Admin/** = authcBasic,roles[ROLE_ADMIN]
-                /rest/whoami = authcBasic
-                /rest/admin/** = authcBasic,roles[ROLE_ADMIN]
-                /rest/log/** = authcBasic,roles[ROLE_ADMIN]
-                /rest/profile/** = authcBasic
-                /rest/quartz/** = authcBasic,roles[ROLE_ADMIN]
-                /rest/role/** = authcBasic,roles[ROLE_ADMIN]
-                /rest/status/** = authcBasic,roles[ROLE_ADMIN]
-                /rest/user/** = authcBasic,roles[ROLE_ADMIN]
+        filter.filterChainDefinitions = addRestDefinitions(filter.filterChainDefinitions)
+    }
 
-                /*Admin/** = user,roles[ROLE_ADMIN]
-                /whoami = user
-                /admin/** = user,roles[ROLE_ADMIN]
-                /log/** = user,roles[ROLE_ADMIN]
-                /profile/** = user
-                /quartz/** = user,roles[ROLE_ADMIN]
-                /role/** = user,roles[ROLE_ADMIN]
-                /status/** = user,roles[ROLE_ADMIN]
-                /user/** = user,roles[ROLE_ADMIN]
-                /logout = logout
-            """
+    static addRestDefinitions(String currentConfiguration) {
+        StrBuilder builder = new StrBuilder()
+        builder.appendln(currentConfiguration)
+
+        currentConfiguration.eachLine {
+            def prefix = "/rest"
+            def trimmed = it.trim()
+            if(trimmed) {
+                def currentLine = "${prefix}${trimmed}"
+                currentLine = currentLine.replaceAll("authc", "authcBasic")
+                currentLine = currentLine.replaceAll("user", "authcBasic")
+                if(!currentLine.contains("authcBasic")) {
+                    currentLine = currentLine.replaceAll("=", "= authcBasic,")
+                }
+
+                builder.appendln(currentLine)
+            }
+        }
+
+        return builder.toString()
     }
 }
