@@ -24,8 +24,13 @@ class ShiroDbRealm {
 
     def credentialMatcher
     def shiroPermissionResolver
+    def initAuthService
 
     def authenticate(authToken) {
+        if (authToken.username.trim() == "admin") {
+            //in case the admin user has been deleted or does not exist
+            initAuthService.initAdminUser()
+        }
         log.info "Attempting to authenticate ${authToken.username} in DB realm..."
         def username = authToken.username
 

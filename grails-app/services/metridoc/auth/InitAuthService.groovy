@@ -68,7 +68,7 @@ class InitAuthService {
                 adminUser.addToRoles(adminRole)
                 adminUser.save()
             } else {
-                log.info "admin user exists, the default admin does not need to be created"
+                log.debug "admin user exists, the default admin does not need to be created"
             }
         }
     }
@@ -80,7 +80,7 @@ class InitAuthService {
             }
 
             if (anonymousUser) {
-                log.info "anonymous user found, don't need to create a default one"
+                log.debug "anonymous user found, don't need to create a default one"
 
             } else {
                 anonymousUser = new ShiroUser(
