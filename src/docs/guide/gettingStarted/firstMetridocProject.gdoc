@@ -4,19 +4,13 @@ worth the effort anymore.  Using the standard grails create-app method gets you 
 h3. Installing via Commandline
 
 {code}
-grails create-app metridoc
-curl http://metridoc.googlecode.com/svn/trunk/buildconfig/BuildConfig.groovy > metridoc/grails-app/conf/BuildConfig.groovy
-curl http://metridoc.googlecode.com/svn/trunk/urlmappings/UrlMappings.groovy > metridoc/grails-app/conf/UrlMappings.groovy
-rm -rf metridoc/grails-app/views/*
+curl -s https://metridoc.googlecode.com/svn/trunk/startup/createMetridocProject.sh | sh
 cd metridoc
 grails run-app
 {code}
 
-The script above is available in trunk, so you can also do:
-
-{code}
-curl -s http://metridoc.googlecode.com/svn/trunk/startup/createMetridocProject.sh | sh
-{code}
+The script above installs the gvm if it is not already installed, along with grails.  You just need java.  The gvm
+does inspect your environment and may require you to set various path variables such as JAVA_HOME
 
 If all goes well, you should see this page:
 
@@ -25,107 +19,19 @@ If all goes well, you should see this page:
 h3. Installing Manually
 
 After installing grails via the methods mentioned [here|http://metridoc.googlecode.com/svn/trunk/metridoc-core/target/docs/guide/gettingStarted.html#requiredSoftware],
-run @grails create-app metridoc@ on the command line.  After this is done you will need to change 2 files and delete the contents
-of a directory to get metridoc
-core up and running.  Open metridoc/grails-app/conf/BuildConfig.groovy, and add the following within the @repository@ block:
+run @grails create-app metridoc@ on the command line.  After this is done you will need to change a few files and delete the contents
+of a directory to get metridoc core up and running.
 
-{code}
-grailsRepo "https://metridoc.googlecode.com/svn/plugins/", "metridocRepo"
-{code}
+Below is a table of files that need to be replaced:
 
-then add the following in the @plugins@ block:
+{table}
+*Local File* | *Replace With*
+metridoc/grails-app/conf/BuildConfig.groovy | [BuildConfig.groovy|http://metridoc.googlecode.com/svn/trunk/startup/BuildConfig.groovy]
+metridoc/grails-app/conf/Config.groovy | [Config.groovy|http://metridoc.googlecode.com/svn/trunk/metridoc-core/grails-app/conf/Config.groovy]
+metridoc/grails-app/conf/UrlMappings.groovy | [UrlMappings|http://metridoc.googlecode.com/svn/trunk/metridoc-core/grails-app/conf/UrlMappings.groovy]
+{table}
 
-{code}
-compile (":metridoc-core:latest.integration") {
-    exclude "xmlbeans"
-}
-{code}
-
-The finished @BuildConfig.groovy@ file should look something like:
-
-{code}
-grails.servlet.version = "2.5" // Change depending on target container compliance (2.5 or 3.0)
-grails.project.class.dir = "target/classes"
-grails.project.test.class.dir = "target/test-classes"
-grails.project.test.reports.dir = "target/test-reports"
-grails.project.target.level = 1.6
-grails.project.source.level = 1.6
-//grails.project.war.file = "target/${appName}-${appVersion}.war"
-
-grails.project.dependency.resolution = {
-    // inherit Grails' default dependencies
-    inherits("global") {
-        // specify dependency exclusions here; for example, uncomment this to disable ehcache:
-        // excludes 'ehcache'
-    }
-    log "error" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
-    checksums true // Whether to verify checksums on resolve
-
-    repositories {
-        inherits true // Whether to inherit repository definitions from plugins
-
-        grailsPlugins()
-        grailsHome()
-        grailsCentral()
-
-        mavenLocal()
-        mavenCentral()
-        grailsRepo "https://metridoc.googlecode.com/svn/plugins/", "metridocRepo"
-
-
-        // uncomment these (or add new ones) to enable remote dependency resolution from public Maven repositories
-        //mavenRepo "http://snapshots.repository.codehaus.org"
-        //mavenRepo "http://repository.codehaus.org"
-        //mavenRepo "http://download.java.net/maven/2/"
-        //mavenRepo "http://repository.jboss.com/maven2/"
-    }
-    dependencies {
-        // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
-
-        // runtime 'mysql:mysql-connector-java:5.1.20'
-    }
-
-    plugins {
-        runtime ":hibernate:$grailsVersion"
-        runtime ":jquery:1.7.2"
-        runtime ":resources:1.1.6"
-
-        // Uncomment these (or add new ones) to enable additional resources capabilities
-        //runtime ":zipped-resources:1.0"
-        //runtime ":cached-resources:1.0"
-        //runtime ":yui-minify-resources:0.1.4"
-
-        build ":tomcat:$grailsVersion"
-
-        runtime ":database-migration:1.1"
-
-        compile ':cache:1.0.0'
-        compile (":metridoc-core:latest.integration") {
-            exclude "xmlbeans"
-        }
-    }
-}
-{code}
-
-Next we need to change the file @UrlMappings.groovy@ at @grails-app/conf/UrlMappings.groovy@.  Delete the line @"/"(view:"/index")@.
-The @UrlMappings.groovy@ file should look something like:
-
-{code}
-class UrlMappings {
-
-    static mappings = {
-        "/$controller/$action?/$id?" {
-            constraints {
-                // apply constraints here
-            }
-        }
-
-        "500"(view: '/error')
-    }
-}
-{code}
-
-After @BuildConfig.groovy@ has been updated, delete the contents of the directory grails-app/views
+After the files have been updated, delete the contents of the directory grails-app/views
 and navigate to the metridoc directory and run @grails run-app@
 
 If all goes well, you should see this page:

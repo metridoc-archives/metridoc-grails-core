@@ -9,7 +9,6 @@ gettingStarted:
   upgradingMetridoc: Upgrading MetriDoc
 configuration:
   title: Configuration
-  settingUpDataSources: Setting Up Data Sources
 metridocPlugins:
   title: Metridoc Plugins
   availablePlugins: Available Plugins

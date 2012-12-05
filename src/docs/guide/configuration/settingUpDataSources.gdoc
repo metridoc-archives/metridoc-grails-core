@@ -1,6 +1,0 @@
-To setup data sources, edit the DataSources.groovy file located at grails-app/conf/DataSources.groovy.  At bare
-minimum you will need a user name, password, database url and driver class name.  In production, metridoc
-targets MySql in production.  For testing, many times MetriDoc will use H2, but H2 is not guaranteed to work in
-production.  Most of the time a separate data source needs to be configured on a per plugin basis.  If a user wants,
-they can put all the data into the same database.  To figure out how the data source should be configured, look at the
-documentation for the plugin.
