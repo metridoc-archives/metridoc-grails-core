@@ -9,6 +9,8 @@ gettingStarted:
   upgradingMetridoc: Upgrading MetriDoc
 configuration:
   title: Configuration
+metridocJobApi:
+  title: Job Api
 metridocPlugins:
   title: Metridoc Plugins
   availablePlugins: Available Plugins

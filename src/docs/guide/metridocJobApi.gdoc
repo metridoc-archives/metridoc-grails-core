@@ -1,0 +1,10 @@
+The metridoc job api is essentially a collection of existing technologies.  It tries to merge the simplicity of
+scripting and the maintainability of java.  Writing data migration jobs in java is overkill, and using one off
+scripts tends to lead to maintainability issues.  MetriDoc attempts to combine the best of both worlds by leveraging
+groovy and grails.
+
+A job can either be embedded and scheduled in a grails application, or it can be run via the command line and scheduled
+through some other mechanism such as cron.
+
+
+
