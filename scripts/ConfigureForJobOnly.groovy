@@ -1,4 +1,5 @@
 includeTargets << grailsScript("_GrailsInit")
+includeTargets << new File("$metridocCorePluginDir/scripts/_DownloadMetridocFiles.groovy")
 
 target(main: "deletes all unused files to make a cleaner project for creating job scripts only") {
 
@@ -20,10 +21,17 @@ target(main: "deletes all unused files to make a cleaner project for creating jo
     ant.delete(dir: "grails-app/i18n")
     ant.delete(dir: "grails-app/taglib")
     ant.delete(dir: "grails-app/views")
+    ant.delete(dir: "grails-app/routes")
+    ant.delete(dir: "grails-app/realms")
+
     ant.delete(dir: "lib")
     ant.delete(dir: "scripts")
     ant.delete(dir: "src")
-    ant.delete(dir: "web-app")
+    ant.delete(dir: "web-app/css")
+    ant.delete(dir: "web-app/js")
+    ant.delete(dir: "web-app/META-INF")
+
+    depends(downloadMetridocFiles)
 }
 
 setDefaultTarget(main)
