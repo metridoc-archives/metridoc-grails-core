@@ -30,6 +30,19 @@ target(main: "deletes all unused files to make a cleaner project for creating jo
     ant.delete(dir: "web-app/css")
     ant.delete(dir: "web-app/js")
     ant.delete(dir: "web-app/META-INF")
+    def applicationPropertiesPath = "application.properties"
+
+    def propertyFile = new File(applicationPropertiesPath)
+
+    if (propertyFile.exists()) {
+        Properties properties = new Properties()
+        properties.load(propertyFile.newInputStream())
+        properties.setProperty("metridoc.jobOnly", "true")
+        def output = propertyFile.newOutputStream()
+        def description = "Grails Metadata file"
+        properties.store(output, description)
+    }
+
 
     depends(downloadMetridocFiles)
 }

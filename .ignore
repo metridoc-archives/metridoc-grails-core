@@ -2,6 +2,10 @@
 classes
 grails-metridoc-core*
 plugin.xml
-pom.xml
+pom.xml*
 test-classes
 test-reports
+*.iml
+*.ipr
+*.iws
+
