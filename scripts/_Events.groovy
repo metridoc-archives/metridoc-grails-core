@@ -2,11 +2,8 @@ eventPackagingEnd = { msg ->
 
     Properties properties = new Properties()
     properties.load(new File("application.properties").newInputStream())
-
-    def jobOnly = properties.hasProperty("metridoc.jobOnly") ? Boolean.valueOf(properties.getProperty("metridoc.jobOnly")) : false
-
+    def jobOnly = properties.'metridoc.jobOnly' ? Boolean.valueOf(properties.getProperty("metridoc.jobOnly")) : false
     if (jobOnly) {
-
         deleteDir = { String path ->
             def directory = new File(path)
             if (!directory.listFiles()) {
