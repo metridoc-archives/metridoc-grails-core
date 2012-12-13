@@ -72,8 +72,7 @@ grails.project.dependency.resolution = {
         runtime ":resources:1.1.6"
         runtime(":shiro:1.1.4") {
             excludes (
-                    [name:"shiro-quartz", group:"org.apache.shiro"],
-                    [name:"shiro-cas", group:"org.apache.shiro"],
+                    [name:"shiro-quartz", group:"org.apache.shiro"]
             )
         }
         compile ":jquery-ui:1.8.24"
