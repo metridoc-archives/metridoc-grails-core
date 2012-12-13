@@ -59,6 +59,7 @@ grails.project.dependency.resolution = {
             excludes 'spring-context', 'spring-aop', 'spring-tx', 'groovy-all'
         }
         compile('org.apache.camel:camel-stream:2.9.2')
+        compile('org.apache.camel:camel-ftp:2.9.2')
     }
 
     //grails based plugins

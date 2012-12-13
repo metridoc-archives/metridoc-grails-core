@@ -4,7 +4,24 @@ scripts tends to lead to maintainability issues.  MetriDoc attempts to combine t
 groovy and grails.
 
 A job can either be embedded and scheduled in a grails application, or it can be run via the command line and scheduled
-through some other mechanism such as cron.
+through some other mechanism such as cron.  To create a job, first run @grails create-plugin <plugin name>@.
+To add the metridoc libraries we need to add a couple lines to the BuildConfig.groovy file.  In the repositories section
+put:
+
+{code}
+repositories {
+    ...
+    grailsRepo "https://metridoc.googlecode.com/svn/plugins/"
+}
+{code}
+
+In the plugins section put:
+
+{code}
+plugins {
+    compile(":metridoc-core:0.52-SNAPSHOT")
+}
+{code}
 
 
 
