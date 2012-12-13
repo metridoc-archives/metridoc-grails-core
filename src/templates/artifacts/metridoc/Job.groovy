@@ -7,7 +7,7 @@ class @artifact.name@ extends MetridocJob{
         simple repeatInterval: 5000l // execute job once in 5 seconds
     }
 
-    def execute() {
+    def doExecute() {
         // execute job
     }
 }

@@ -19,9 +19,15 @@ In the plugins section put:
 
 {code}
 plugins {
-    compile(":metridoc-core:0.52-SNAPSHOT")
+    compile(\":metridoc-core:0.52-SNAPSHOT\")
 }
 {code}
 
+After adding the necessary information to the BuildConfig.groovy file, run @grails compile@ to download all the metridoc
+libraries.
 
+Grails creates a lot of files and folders to create a full blown web application.  If you just need to create a job
+without a web application, you can run @grails configure-for-job-only@.  The script will remove all unnecessary files
+and folders in addition to prompting for a job name.  After running the script, you will have an infrastructure to
+create metridoc jobs without the clutter.
 

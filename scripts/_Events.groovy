@@ -21,7 +21,6 @@ eventPackagingEnd = { msg ->
         deleteDir("grails-app/taglib")
         deleteDir("grails-app/views/layouts")
         deleteDir("grails-app/views")
-        deleteDir("grails-app/i18n")
         deleteDir("lib")
         deleteDir("scripts")
         deleteDir("src/groovy")
