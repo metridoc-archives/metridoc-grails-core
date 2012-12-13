@@ -45,17 +45,20 @@ grails.project.dependency.resolution = {
     dependencies {
         //used for testing camel routes
         test("org.apache.camel:camel-test:2.9.2")
-        //not explicitely used, but can be helpful for transfering files in workflows
-        compile("org.apache.camel:camel-ftp:2.9.2") {
-            excludes "slf4j-api"
-        }
-
         //by default metridoc is tested on mysql
         compile("mysql:mysql-connector-java:5.1.20")
         //used for handling xls files
         compile("org.apache.poi:poi:3.8-beta3")
         compile("org.apache.poi:poi-ooxml:3.8-beta3")
+        //used for handling csv easily
         compile 'net.sf.opencsv:opencsv:2.3'
+        compile('org.apache.camel:camel-core:2.9.2') {
+            excludes "slf4j-api"
+        }
+        compile('org.apache.camel:camel-groovy:2.9.2') {
+            excludes 'spring-context', 'spring-aop', 'spring-tx', 'groovy-all'
+        }
+        compile('org.apache.camel:camel-stream:2.9.2')
     }
 
     //grails based plugins
@@ -65,13 +68,13 @@ grails.project.dependency.resolution = {
         compile ":plugin-config:0.1.5"
         compile ":quartz2:0.2.3"
         compile ":mail:1.0"
-        compile(":routing:1.2.2") {
-            excludes 'slf4j-api'
-        }
         runtime ":hibernate:$grailsVersion"
         runtime ":resources:1.1.6"
         runtime(":shiro:1.1.4") {
-            excludes ([name:"shiro-quartz", group:"org.apache.shiro"])
+            excludes (
+                    [name:"shiro-quartz", group:"org.apache.shiro"],
+                    [name:"shiro-cas", group:"org.apache.shiro"],
+            )
         }
         compile ":jquery-ui:1.8.24"
         runtime ":webxml:1.4.1"
