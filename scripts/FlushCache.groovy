@@ -1,6 +1,6 @@
 includeTargets << grailsScript("_GrailsCompile")
 
-target(main: "Deletes the cached metridoc dependencies") {
+target(main: "Deletes all cached dependencies") {
     depends(parseArguments)
     def toDelete = []
     new File(grailsWorkDir).parentFile.eachDirRecurse {
@@ -17,7 +17,8 @@ target(main: "Deletes the cached metridoc dependencies") {
         ant.delete(dir: file)
     }
 
-    grailsConsole.info "since caches can get currupt, we will exit the grails shell if we are in interactive mode"
+    grailsConsole.info "since caches can get corrupt, we will exit the grails shell if we are in interactive mode"
+    grailsConsole.info "please run grails --refresh-dependencies compile to re-download all dependencies"
     System.exit(0)
 }
 
