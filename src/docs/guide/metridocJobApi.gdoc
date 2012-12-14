@@ -25,26 +25,64 @@ plugins {
 }
 {code}
 
+{note}
+Do not add the dependency to the @dependency {...}@ block.  You will get an error if you do this
+{note}
+
 After adding the necessary information to the BuildConfig.groovy file, run @grails compile@ to download all the metridoc
 libraries.
 
 Grails creates a lot of files and folders.  If you just need to create a job
 without a web application, you can run @grails configure-for-job-only@.  The script will remove all unnecessary files
 and folders in addition to prompting for a job name.  After running the script, you will have an infrastructure to
-create metridoc jobs without the clutter.  Running @grails create-metridoc-job@ will create new metridoc jobs that
-extend the helper class MetridocJob, while running create-job will create a basic groovy job without the extra
-functionality.
+create metridoc jobs without the clutter.  If you named the job @foo@, your file structure should look something like:
+
+{code}
+|── FooGrailsPlugin.groovy
+├── application.properties
+├── grails-app
+│   ├── conf
+│   │   ├── BuildConfig.groovy
+│   │   ├── Config.groovy
+│   │   ├── DataSource.groovy
+│   │   └── UrlMappings.groovy
+│   ├── i18n
+│   │   └── shiro.properties
+│   ├── jobs
+│   │   └── foo
+│   │       └── FooJob.groovy
+│   └── migrations
+├── target
+├── test
+│   ├── integration
+│   └── unit
+└── web-app
+    ├── META-INF
+    └── WEB-INF
+        ├── applicationContext.xml
+        ├── sitemesh.xml
+        └── tld
+            ├── c.tld
+            ├── fmt.tld
+            ├── grails.tld
+            └── spring.tld
+{code}
+
+all information under @web-app@ is grails specific.  Most everything you will work with is under the @jobs@ and @config@
+folders.  From this point forward, running @grails create-metridoc-job@ will create new metridoc jobs that
+extend the helper class MetridocJob, while running @create-job@ will create a basic groovy job without the extra
+metridoc functionality.
 
 To schedule the job, create a static triggers field and add appropriate values as described [here|http://grails-plugins.github.com/grails-quartz/guide/scheduling.html],
-and implement doExecute(), or execute() depending on whether you are creating a MetridocJob or just a plain vanilla one
+and implement doExecute(), or execute() depending on whether you are creating a MetridocJob or just a normal Grails Job
 
 {note}
-The documentation is for the grails job plugin which depends on quartz 1.  MetriDoc actually uses the [https://github.com/9ci/grails-quartz2|quartz2 grails plugin]
+The documentation is for the grails job plugin which depends on quartz 1.  MetriDoc actually uses the quartz2 grails plugin
 which is more or less compatible with the quartz 1 version.  Just referencing the older one since the documentation
 is a little better
 {note}
 
-While implementing doExecute you can enjoy the power of groovy, which has fantastic tools for sql, and structured text
+While implementing doExecute you can enjoy the power of groovy, which has tools for sql, and structured text
 parsing among other things.  In addition MetridJob provides a couple of helpful methods and workflows
 
 h3. targets
