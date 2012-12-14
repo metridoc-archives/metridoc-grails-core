@@ -104,7 +104,7 @@ abstract class MetridocJob {
     }
 
     /**
-     * creates a fake
+     * creates a fake ${@link JobExecutionContext} to help with command line only jobs
      *
      * @param target
      * @return
