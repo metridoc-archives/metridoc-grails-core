@@ -254,7 +254,7 @@ function windowTitle()
 <dt><a href="metridoc/camel/aggregator/BodyAggregator.html#BodyAggregator()" title="Constructor in BodyAggregator"><b>BodyAggregator</b>()</b></a> - Constructor in <a href="metridoc/camel/aggregator/BodyAggregator.html">BodyAggregator</a>
 </dt><dd></dd>
 <dt><a href="metridoc/core/MetridocJob.html#buildJobContextFacade(java.lang.String)" title="Method in MetridocJob"><b>buildJobContextFacade</b>(String)</b></a> - Method in <a href="metridoc/core/MetridocJob.html">MetridocJob</a>
-</dt><dd></dd>
+</dt><dd>creates a fake</dd>
 <dt><a href="metridoc/sql/SqlPlus.html#bulkInsert(java.lang.String, java.lang.String, java.util.Map)" title="Method in SqlPlus"><b>bulkInsert</b>(String, String, Map)</b></a> - Method in <a href="metridoc/sql/SqlPlus.html">SqlPlus</a>
 </dt><dd></dd>
 <dt><a href="metridoc/sql/SqlPlus.html#bulkInsertNoDup(java.lang.String, java.lang.String, java.lang.String, java.util.Map)" title="Method in SqlPlus"><b>bulkInsertNoDup</b>(String, String, String, Map)</b></a> - Method in <a href="metridoc/sql/SqlPlus.html">SqlPlus</a>
@@ -351,7 +351,7 @@ function windowTitle()
 <dt><a href="metridoc/camel/SqlPlusEndpoint.html#columns" title="Property in SqlPlusEndpoint"><b>columns</b></a> - Property in <a href="metridoc/camel/SqlPlusEndpoint.html">SqlPlusEndpoint</a>
 </dt><dd></dd>
 <dt><a href="metridoc/core/MetridocJob.html#concurrent" title="Property in MetridocJob"><b>concurrent</b></a> - Property in <a href="metridoc/core/MetridocJob.html">MetridocJob</a>
-</dt><dd></dd>
+</dt><dd>all metridoc jobs are not concurrent by default.  </dd>
 <dt><a href="metridoc/camel/ManagedExceptionRouteBuilder.html#configure()" title="Method in ManagedExceptionRouteBuilder"><b>configure</b>()</b></a> - Method in <a href="metridoc/camel/ManagedExceptionRouteBuilder.html">ManagedExceptionRouteBuilder</a>
 </dt><dd></dd>
 <dt><a href="DefaultPackage/MetridocCoreGrailsPlugin.html#configureWorkflowBeans" title="Property in MetridocCoreGrailsPlugin"><b>configureWorkflowBeans</b></a> - Property in <a href="DefaultPackage/MetridocCoreGrailsPlugin.html">MetridocCoreGrailsPlugin</a>
@@ -480,7 +480,7 @@ function windowTitle()
 <dt><a href="metridoc/iterators/DelimitedLineIterator.html#delimitTill" title="Property in DelimitedLineIterator"><b>delimitTill</b></a> - Property in <a href="metridoc/iterators/DelimitedLineIterator.html">DelimitedLineIterator</a>
 </dt><dd></dd>
 <dt><a href="metridoc/core/MetridocJob.html#depends(java.lang.String)" title="Method in MetridocJob"><b>depends</b>(String)</b></a> - Method in <a href="metridoc/core/MetridocJob.html">MetridocJob</a>
-</dt><dd></dd>
+</dt><dd>fires off a target by name if it has not been run yet.  </dd>
 <dt><a href="DefaultPackage/MetridocCoreGrailsPlugin.html#dependsOn" title="Property in MetridocCoreGrailsPlugin"><b>dependsOn</b></a> - Property in <a href="DefaultPackage/MetridocCoreGrailsPlugin.html">MetridocCoreGrailsPlugin</a>
 </dt><dd></dd>
 <dt><a href="DefaultPackage/MetridocCoreGrailsPlugin.html#description" title="Property in MetridocCoreGrailsPlugin"><b>description</b></a> - Property in <a href="DefaultPackage/MetridocCoreGrailsPlugin.html">MetridocCoreGrailsPlugin</a>
@@ -512,7 +512,7 @@ function windowTitle()
 <dt><a href="metridoc/test/BarJob.html#doExecute()" title="Method in BarJob"><b>doExecute</b>()</b></a> - Method in <a href="metridoc/test/BarJob.html">BarJob</a>
 </dt><dd></dd>
 <dt><a href="metridoc/core/MetridocJob.html#doExecute(org.quartz.JobExecutionContext)" title="Method in MetridocJob"><b>doExecute</b>(JobExecutionContext)</b></a> - Method in <a href="metridoc/core/MetridocJob.html">MetridocJob</a>
-</dt><dd>@deprecated will be deprecated in the future so we can just run doExecute</dd>
+</dt><dd>since each execution is in a new job and the job data map is stored, this is completely unnecessary</dd>
 <dt><a href="metridoc/test/NeverRunJob.html#doExecute()" title="Method in NeverRunJob"><b>doExecute</b>()</b></a> - Method in <a href="metridoc/test/NeverRunJob.html">NeverRunJob</a>
 </dt><dd></dd>
 <dt><a href="metridoc/iterators/CsvIterator.html#doNext()" title="Method in CsvIterator"><b>doNext</b>()</b></a> - Method in <a href="metridoc/iterators/CsvIterator.html">CsvIterator</a>
@@ -591,7 +591,7 @@ function windowTitle()
 <dt><a href="metridoc/test/ErrorJob.html#execute()" title="Method in ErrorJob"><b>execute</b>()</b></a> - Method in <a href="metridoc/test/ErrorJob.html">ErrorJob</a>
 </dt><dd></dd>
 <dt><a href="metridoc/core/MetridocJob.html#execute(org.quartz.JobExecutionContext)" title="Method in MetridocJob"><b>execute</b>(JobExecutionContext)</b></a> - Method in <a href="metridoc/core/MetridocJob.html">MetridocJob</a>
-</dt><dd></dd>
+</dt><dd>necessary method that the grails job artifact that quartz will trigger</dd>
 <dt><a href="metridoc/core/QuartzMonitorJobFactory.QuartzDisplayJob.html#execute(org.quartz.JobExecutionContext)" title="Method in QuartzMonitorJobFactory.QuartzDisplayJob"><b>execute</b>(JobExecutionContext)</b></a> - Method in <a href="metridoc/core/QuartzMonitorJobFactory.QuartzDisplayJob.html">QuartzMonitorJobFactory.QuartzDisplayJob</a>
 </dt><dd></dd>
 <dt><a href="metridoc/core/MetridocJob.html#executeTarget(java.lang.String)" title="Method in MetridocJob"><b>executeTarget</b>(String)</b></a> - Method in <a href="metridoc/core/MetridocJob.html">MetridocJob</a>
@@ -783,7 +783,7 @@ function windowTitle()
 <dt><a href="metridoc/camel/SqlPlusEndpoint.html#getTableQuery()" title="Method in SqlPlusEndpoint"><b>getTableQuery</b>()</b></a> - Method in <a href="metridoc/camel/SqlPlusEndpoint.html">SqlPlusEndpoint</a>
 </dt><dd></dd>
 <dt><a href="metridoc/core/MetridocJob.html#getTargetsRan()" title="Method in MetridocJob"><b>getTargetsRan</b>()</b></a> - Method in <a href="metridoc/core/MetridocJob.html">MetridocJob</a>
-</dt><dd></dd>
+</dt><dd>@return all targets that have run</dd>
 <dt><a href="metridoc/iterators/XlsxIterator.html#getToNextRow(javax.xml.stream.XMLStreamReader)" title="Method in XlsxIterator"><b>getToNextRow</b>(XMLStreamReader)</b></a> - Method in <a href="metridoc/iterators/XlsxIterator.html">XlsxIterator</a>
 </dt><dd></dd>
 <dt><a href="metridoc/admin/AuthService.html#getUserById(def)" title="Method in AuthService"><b>getUserById</b>(def)</b></a> - Method in <a href="metridoc/admin/AuthService.html">AuthService</a>
@@ -914,7 +914,8 @@ function windowTitle()
 <dt><a href="metridoc/sql/SqlPlus.html#IGNORED_KEYS" title="Property in SqlPlus"><b>IGNORED_KEYS</b></a> - Property in <a href="metridoc/sql/SqlPlus.html">SqlPlus</a>
 </dt><dd></dd>
 <dt><a href="metridoc/core/MetridocJob.html#includeTargets(java.lang.Class, groovy.lang.Binding)" title="Method in MetridocJob"><b>includeTargets</b>(Class, Binding)</b></a> - Method in <a href="metridoc/core/MetridocJob.html">MetridocJob</a>
-</dt><dd></dd>
+</dt><dd>the same as <a href='#includeTargets(java.lang.Class)'>includeTargets(java.lang.Class)</a>, but a binding can be passed so more global variables can
+ be loaded</dd>
 <dt><a href="metridoc/test/AccessFromConfigController.html#index()" title="Method in AccessFromConfigController"><b>index</b>()</b></a> - Method in <a href="metridoc/test/AccessFromConfigController.html">AccessFromConfigController</a>
 </dt><dd></dd>
 <dt><a href="metridoc/test/AdminControllerNoDescriptionController.html#index()" title="Method in AdminControllerNoDescriptionController"><b>index</b>()</b></a> - Method in <a href="metridoc/test/AdminControllerNoDescriptionController.html">AdminControllerNoDescriptionController</a>
@@ -1182,7 +1183,7 @@ function windowTitle()
 <dt><a href="metridoc/core/MetridocJob.html#MANUAL_RUN_ID_PREFIX" title="Field in MetridocJob"><b>MANUAL_RUN_ID_PREFIX</b></a> - Field in <a href="metridoc/core/MetridocJob.html">MetridocJob</a>
 </dt><dd></dd>
 <dt><a href="metridoc/core/MetridocJob.html#MANUAL_RUN_TRIGGER" title="Property in MetridocJob"><b>MANUAL_RUN_TRIGGER</b></a> - Property in <a href="metridoc/core/MetridocJob.html">MetridocJob</a>
-</dt><dd></dd>
+</dt><dd>unfortunately for quartz to actually register a job, it must have some fire time in the future.  </dd>
 <dt><a href="metridoc/admin/ApplicationProperties.html#mapping" title="Property in ApplicationProperties"><b>mapping</b></a> - Property in <a href="metridoc/admin/ApplicationProperties.html">ApplicationProperties</a>
 </dt><dd></dd>
 <dt><a href="metridoc/reports/ShiroRole.html#mapping" title="Property in ShiroRole"><b>mapping</b></a> - Property in <a href="metridoc/reports/ShiroRole.html">ShiroRole</a>
@@ -1221,7 +1222,7 @@ function windowTitle()
 <dt><a href="DefaultPackage/MetridocCoreGrailsPlugin.html#MetridocCoreGrailsPlugin()" title="Constructor in MetridocCoreGrailsPlugin"><b>MetridocCoreGrailsPlugin</b>()</b></a> - Constructor in <a href="DefaultPackage/MetridocCoreGrailsPlugin.html">MetridocCoreGrailsPlugin</a>
 </dt><dd></dd>
 <dt><a href="metridoc/core/MetridocJob.html" title="Class in metridoc.core"><b>MetridocJob</b></a> - Class in <a href="./metridoc/core/package-summary.html">metridoc.core</a>
-</dt><dd></dd>
+</dt><dd>This is the primary class used for running MetriDoc jobs.  </dd>
 <dt><a href="metridoc/core/MetridocJob.html#MetridocJob()" title="Constructor in MetridocJob"><b>MetridocJob</b>()</b></a> - Constructor in <a href="metridoc/core/MetridocJob.html">MetridocJob</a>
 </dt><dd></dd>
 <dt><a href="metridoc/camel/MetridocSimpleRegistry.html" title="Class in metridoc.camel"><b>MetridocSimpleRegistry</b></a> - Class in <a href="./metridoc/camel/package-summary.html">metridoc.camel</a>
@@ -1234,7 +1235,7 @@ function windowTitle()
 <dt><a href="DefaultPackage/MetridocUrlMappings.html#MetridocUrlMappings()" title="Constructor in MetridocUrlMappings"><b>MetridocUrlMappings</b>()</b></a> - Constructor in <a href="DefaultPackage/MetridocUrlMappings.html">MetridocUrlMappings</a>
 </dt><dd></dd>
 <dt><a href="metridoc/core/MetridocJob.html#MIDNIGHT" title="Property in MetridocJob"><b>MIDNIGHT</b></a> - Property in <a href="metridoc/core/MetridocJob.html">MetridocJob</a>
-</dt><dd></dd>
+</dt><dd>represents a midnight trigger</dd>
 <dt><a href="metridoc/utils/MultipleResourcesException.html#MULTIPLE_RESOURCES" title="Property in MultipleResourcesException"><b>MULTIPLE_RESOURCES</b></a> - Property in <a href="metridoc/utils/MultipleResourcesException.html">MultipleResourcesException</a>
 </dt><dd></dd>
 <dt><a href="metridoc/utils/MultipleResourcesException.html" title="Class in metridoc.utils"><b>MultipleResourcesException</b></a> - Class in <a href="./metridoc/utils/package-summary.html">metridoc.utils</a>
@@ -1489,7 +1490,7 @@ function windowTitle()
 <dt><a href="metridoc/camel/CamelPlugin.html#runRoute(groovy.lang.Script, java.lang.String, def, java.util.Map)" title="Method in CamelPlugin"><b>runRoute</b>(Script, String, def, Map)</b></a> - Method in <a href="metridoc/camel/CamelPlugin.html">CamelPlugin</a>
 </dt><dd>Calls a route and gets the result</dd>
 <dt><a href="metridoc/core/MetridocJob.html#runRoute(org.apache.camel.builder.RouteBuilder)" title="Method in MetridocJob"><b>runRoute</b>(RouteBuilder)</b></a> - Method in <a href="metridoc/core/MetridocJob.html">MetridocJob</a>
-</dt><dd></dd>
+</dt><dd>instead of using runRoute with a closure, you can pass a RouteBuilder instead.  </dd>
 </dl>
 
     
@@ -1689,7 +1690,7 @@ function windowTitle()
 <dt><a href="metridoc/camel/ClosureProcessor.html#target" title="Field in ClosureProcessor"><b>target</b></a> - Field in <a href="metridoc/camel/ClosureProcessor.html">ClosureProcessor</a>
 </dt><dd></dd>
 <dt><a href="metridoc/core/MetridocJob.html#target(java.util.Map, groovy.lang.Closure)" title="Method in MetridocJob"><b>target</b>(Map, Closure)</b></a> - Method in <a href="metridoc/core/MetridocJob.html">MetridocJob</a>
-</dt><dd></dd>
+</dt><dd>creates a target for later execution.  </dd>
 <dt><a href="metridoc/core/MetridocJob.html#targetMap" title="Property in MetridocJob"><b>targetMap</b></a> - Property in <a href="metridoc/core/MetridocJob.html">MetridocJob</a>
 </dt><dd></dd>
 <dt><a href="DefaultPackage/MetridocCoreGrailsPlugin.html#title" title="Property in MetridocCoreGrailsPlugin"><b>title</b></a> - Property in <a href="DefaultPackage/MetridocCoreGrailsPlugin.html">MetridocCoreGrailsPlugin</a>
