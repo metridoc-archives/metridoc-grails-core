@@ -34,6 +34,7 @@ target(main: "The description of the script goes here!") {
         grailsConsole.error "1 job must be specified, run grails run-job -h for more info"
     } else if (argsMap.cli) {
         System.setProperty("metridoc.quartz.disabled", "true")
+        System.setProperty("metridoc.job.cliOnly", "true")
         grailsConsole.info "running the job ${runJobArguments.job} directly"
         depends(packageApp, loadApp, configureApp)
         def job = appCtx."${runJobArguments.job}"

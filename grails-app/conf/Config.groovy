@@ -135,7 +135,7 @@ log4j = {
 
     appenders {
 
-        println "INFO: logs will be stored at ${config.metridoc.home}/logs"
+
 
         rollingFile name: "file",
                 maxBackupIndex: 10,
@@ -147,6 +147,7 @@ log4j = {
                 maxBackupIndex: 10,
                 file: "${config.metridoc.home}/logs/metridoc-stacktrace.log"
 
+        //not used yet... this will be where we log cli jobs
         rollingFile name: "jobLog",
                 maxFileSize: "1MB",
                 maxBackupIndex: 10,
@@ -170,9 +171,8 @@ log4j = {
             'grails.plugin.webxml.WebxmlGrailsPlugin',
             'org.quartz',
             'grails.plugin.quartz2',
-            'metridoc.core.DevelopmentWorkflowRunnerService'
-
-
+            'metridoc.core.DevelopmentWorkflowRunnerService',
+            'org.codehaus.groovy.grails.web.context'
 
     warn 'metridoc.camel',
             'ShiroGrailsPlugin',
@@ -180,8 +180,20 @@ log4j = {
             'org.codehaus.groovy.grails.scaffolding',
             'metridoc.utils.CamelUtils'
 
-    root {
-        info 'stdout', 'file'
+    //since it it running via commandline, it is assumed that standard out is only needed
+    if ("true" == System.getProperty("metridoc.job.cliOnly")) {
+        root {
+            info 'stdout'
+        }
+    } else {
+        if ("false" == System.getProperty("metridoc.job.loggedLogLocation", "false")) {
+            println "INFO: logs will be stored at ${config.metridoc.home}/logs"
+            //avoids duplicate logging
+            System.setProperty("metridoc.job.loggedLogLocation", "true")
+        }
+        root {
+            info 'stdout', 'file'
+        }
     }
 }
 

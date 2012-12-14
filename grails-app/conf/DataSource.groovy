@@ -27,7 +27,9 @@ environments {
 inMemoryDataSource = {
     dbCreate = "create-drop" // one of 'create', 'create-drop', 'update', 'validate', ''
     url = "jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
-    logSql = true
+
+//uncomment this out if you want to have sql logged
+//    logSql = true
 }
 
 allInMememoryDataSource = {
