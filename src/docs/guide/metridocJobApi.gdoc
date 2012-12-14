@@ -85,7 +85,7 @@ is a little better
 While implementing doExecute you can enjoy the power of groovy, which has tools for sql, and structured text
 parsing among other things.  In addition MetridJob provides a couple of helpful methods and workflows
 
-h3. targets
+h3. Targets
 
 A target is a unit of work that should only occur once.  It can depend on other targets as well to construct a pipeline
 of work.  Generally a MetridocJob will be executed once to gather all targets, and then again to actually execute the
@@ -150,3 +150,5 @@ class HelloWorldJob extends MetridocJob {
 order of logging would be @runA -> runB -> default@.  Despite @default@ depending on @runA@, since @runA@ was already called
 we will not call it again.  @depends@ creates task dependencies while guarantying that none of them run more than once.
 If you need to run a target regardless of whether it was ran before or not, do @targetMap.<target name>.call()@.
+
+
