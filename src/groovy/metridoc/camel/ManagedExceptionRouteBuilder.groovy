@@ -20,7 +20,7 @@ abstract class ManagedExceptionRouteBuilder extends RouteBuilder{
     @Override
     void configure() {
 
-        use(CamelExtensionPlugin) {
+        use(CamelExtensions) {
 
             onException(Throwable.class).process {Exchange exchange ->
                 def exception = exchange.getException()

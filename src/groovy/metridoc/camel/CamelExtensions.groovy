@@ -30,34 +30,83 @@ import metridoc.iterators.LineIterator
  * Date: 9/12/11
  * Time: 10:12 AM
  */
-class CamelExtensionPlugin {
+class CamelExtensions {
+
+    /**
+     * You can process exchanges using a Closure
+     *
+     * @param self
+     * @param process
+     * @return
+     */
     static ProcessorDefinition process(ProcessorDefinition self, Closure process) {
         return self.process(new ClosureProcessor(process))
     }
 
+    /**
+     *
+     * You can process a filter with a closure
+     *
+     * @param self
+     * @param filter
+     * @return
+     */
     static FilterDefinition filter(ProcessorDefinition self, Closure filter) {
         return CamelGroovyMethods.filter(self, filter)
     }
 
+    /**
+     *
+     * Process a condition with a closure
+     *
+     * @param self
+     * @param filter
+     * @return
+     */
     static ChoiceDefinition when(ChoiceDefinition self, Closure filter) {
         return CamelGroovyMethods.when(self, filter)
     }
 
+    /**
+     * splits a text file by line
+     *
+     * @param self
+     * @return
+     */
     static SplitDefinition splitByLine(ProcessorDefinition self) {
         Expression bean = ExpressionBuilder.beanExpression(LineIterator.class, "create");
         return self.split(bean).streaming()
     }
 
+    /**
+     * Aggregates the body of a message with a default completion size of 500, and a completion timeout of 500 milliseconds
+     *
+     * @param self
+     * @return
+     */
     static AggregateDefinition aggregateBody(ProcessorDefinition self) {
         def expression = ExpressionBuilder.constantExpression(true)
         return self.aggregate(expression, new InflightAggregationWrapper(new BodyAggregator())).completionSize(500).completionTimeout(500)
     }
 
+    /**
+     * Aggregates the body of a message with a default completion timeout of 500 milliseconds
+     * @param self
+     * @param size aggregation size
+     * @return
+     */
     static AggregateDefinition aggregateBody(ProcessorDefinition self, int size) {
         def expression = ExpressionBuilder.constantExpression(true)
         return self.aggregate(expression, new InflightAggregationWrapper(new BodyAggregator())).completionSize(size).completionTimeout(500)
     }
 
+    /**
+     * Aggregates the body of a message with a default completion timeout of 500 milliseconds
+     * @param self
+     * @param size aggregation size
+     * @param timeout aggregation timeout
+     * @return
+     */
     static AggregateDefinition aggregateBody(ProcessorDefinition self, int size, long timeout) {
         def expression = ExpressionBuilder.constantExpression(true)
         return self.aggregate(expression, new InflightAggregationWrapper(new BodyAggregator())).completionSize(size).completionTimeout(timeout)

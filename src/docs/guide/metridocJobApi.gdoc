@@ -149,6 +149,70 @@ class HelloWorldJob extends MetridocJob {
 
 order of logging would be @runA -> runB -> default@.  Despite @default@ depending on @runA@, since @runA@ was already called
 we will not call it again.  @depends@ creates task dependencies while guarantying that none of them run more than once.
-If you need to run a target regardless of whether it was ran before or not, do @targetMap.<target name>.call()@.
+If you need to run a target regardless of whether it was ran before or not, do @targetMap.<target name>.call()@.  To
+reuse targets across jobs you can store the targets in scripts and import them using @includeTargets@.
 
+h3. Routing
+
+MetridocJob also provides a couple of routing features from Apache Camel.  To run a route, use
+the @runRoute@ method and everything contained within the passed closure will be the body of the configure method in
+[RouteBuilder|http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/builder/RouteBuilder.html].
+MetridocJob will create a CamelContext instance, add the route, and wait until all messages are
+processed by the route.  Below are some examples
+
+h4. Migrating a table to another table
+
+
+{code}
+class MigrationJob extends MetridocJob {
+    def doExecute() {
+        runRoute {
+            from("sqlplus:tableA?dataSource=dataSourceA").to("sqlplus:tableB?dataSource=dataSourceB")
+        }
+    }
+}
+{code}
+
+dataSources or services will be available to the apache camel route.  Even any fields you set within MetridocJob.
+For instance, say you want to consume some files from a directory, you can create a file filter as a field and use it
+
+{code}
+class FileJob extends MetridocJob {
+    def fooFilter = [
+        accept: {GenericFile file ->
+            return file.fileName.contains("foo")
+        }
+    ]
+
+    def doExecute() {
+        runRoute {
+            from("file:/user/foo/files?filter=#fooFilter").process{Exchange exchange ->
+                def fileName = excange.in.body.name
+                log.info "processing file $fileName"
+            }
+        }
+    }
+}
+{code}
+
+h4. Metridoc additions to Apache Camel
+
+We added the @sqlplus@ component to easily migrate data between tables.  The from part does a select * on the whatever
+table is provided and transfers a @ResultSet@ within the exchange.  The @to@ component can accept a list of maps,
+a ResultSet or just a map, and inserts the data into the destination table.
+
+If you are using runRoute with a closure, there are a few additions to the Apache Camel DSL worth mentioning
+
+*process* - You can process an Exchange with a Closure instead of implementing a Processor
+
+*filter* - You can process a filter with a Closure instead of implementing a Predicate
+
+*when* - process a condition with a closure
+
+*splitByLine* - splits a text file by line
+
+*aggregateByBody* - aggregates the body of incoming exchanges into one exchange who has a list of all incoming exchanges
+in its body
+
+The javadoc for the extension is [here|http://metridoc.googlecode.com/svn/trunk/metridoc-core/target/docs/gapi/metridoc/camel/CamelExtensions.html]
 
