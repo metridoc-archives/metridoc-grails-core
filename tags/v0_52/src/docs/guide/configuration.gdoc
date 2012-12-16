@@ -1,0 +1,18 @@
+h3.  Setting up the DataSource
+
+To setup data sources, edit the DataSources.groovy file located at grails-app/conf/DataSources.groovy.  At bare
+minimum you will need a user name, password, database url and driver class name.  In general it is recommended that
+you use MySql, going forward MetriDoc plugins will abstract database operations as much as possible so any database
+supported by GORM can be used.  To the extent a plugin requires MySql, the documentation will indicate this.
+
+h3.  Downloading Config.groovy, BuildConfig.groovy, and UrlMappings.groovy
+
+If you created a project from the [Getting Started|guide:gettingStarted/firstMetridocProject] section, this is already
+done for you.  If not please follow the instructions there or if you have access to bash, just run
+
+{code}
+curl -s http://metridoc.googlecode.com/svn/trunk/startup/createConfigFiles.sh | sh
+{code}
+
+You must be within the project for the curl call to work
+
