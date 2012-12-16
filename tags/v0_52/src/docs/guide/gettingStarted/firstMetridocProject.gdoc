@@ -1,0 +1,44 @@
+We used to have a starter project available, but as we have continued to streamline MetriDoc, this really didn't seem
+worth the effort anymore.  Using the standard grails create-app method gets you started just fine
+
+h3. Installing via Commandline
+
+{code}
+curl -s https://metridoc.googlecode.com/svn/trunk/startup/createMetridocProject.sh | sh
+cd metridoc
+grails run-app
+{code}
+
+The script above installs the gvm if it is not already installed, along with grails.  You just need java.  The gvm
+does inspect your environment and may require you to set various path variables such as JAVA_HOME
+
+If all goes well, you should see this page:
+
+!http://metridoc.googlecode.com/svn/trunk/metridoc-core/src/docs/images/MetriDocHome.png!
+
+h3. Installing Manually
+
+After installing grails via the methods mentioned [here|http://metridoc.googlecode.com/svn/trunk/metridoc-core/target/docs/guide/gettingStarted.html#requiredSoftware],
+run @grails create-app metridoc@ on the command line.  After this is done you will need to change a few files and delete the contents
+of a directory to get metridoc core up and running.
+
+Below is a table of files that need to be replaced:
+
+{table}
+*Local File* | *Replace With*
+metridoc/grails-app/conf/BuildConfig.groovy | [BuildConfig.groovy|http://metridoc.googlecode.com/svn/trunk/startup/BuildConfig.groovy]
+metridoc/grails-app/conf/Config.groovy | [Config.groovy|http://metridoc.googlecode.com/svn/trunk/metridoc-core/grails-app/conf/Config.groovy]
+metridoc/grails-app/conf/UrlMappings.groovy | [UrlMappings|http://metridoc.googlecode.com/svn/trunk/metridoc-core/grails-app/conf/UrlMappings.groovy]
+{table}
+
+After the files have been updated, delete the contents of the directory grails-app/views
+and navigate to the metridoc directory and run @grails run-app@
+
+If all goes well, you should see this page:
+
+!http://metridoc.googlecode.com/svn/trunk/metridoc-core/src/docs/images/MetriDocHome.png!
+
+{note}
+The plugin may fail saying that there is a corrupt cache.  If this happens, run
+@grails --refresh-dependencies compile@ and try @grails run-app@ again
+{note}
