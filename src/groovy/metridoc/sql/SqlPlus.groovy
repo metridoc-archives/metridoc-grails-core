@@ -133,7 +133,7 @@ class SqlPlus extends Sql {
         def result = new TreeMap()
         int defaultOrder = 1000
         ConfigObject sqlPhases = configObject.sql
-        sqlPhases.each {key, value ->
+        sqlPhases.each { key, value ->
             try {
                 value[PHASE_NAMES] = key
                 value.order = value.containsKey("order") ? value.order : defaultOrder
@@ -174,7 +174,7 @@ class SqlPlus extends Sql {
         PreparedStatement preparedStatement
         int[] result
         try {
-            withTransaction {Connection connection ->
+            withTransaction { Connection connection ->
                 Map firstRecord = batch.get(0)
                 def sql = getInsertStatement(insertOrTable, firstRecord)
 
@@ -185,7 +185,7 @@ class SqlPlus extends Sql {
                     sortedParams = orderedParamsFromInsert(insertOrTable)
                 }
 
-                batch.each {record ->
+                batch.each { record ->
                     logRecordInsert(record)
                     if (record == null) {
                         throw new IllegalArgumentException("a record must be a none null Map to use batch inserting")
@@ -227,18 +227,16 @@ class SqlPlus extends Sql {
      * @return an array of integers that indicate the number of updates for each statement
      */
     private static logBatch(int[] result, boolean logEachBatch) {
-        if (shouldLog(logEachBatch)) {
+
+        if (slfLog.isDebugEnabled()) {
+
             int recordCount = result.size()
             int totalUpdates = 0
             result.each {
                 totalUpdates += it
             }
             String message = "processed ${recordCount} records with ${totalUpdates} updates"
-            if (logEachBatch) {
-                slfLog.info(message)
-            } else {
-                slfLog.debug(message)
-            }
+            slfLog.debug(message)
         }
     }
 
@@ -290,7 +288,7 @@ class SqlPlus extends Sql {
         PreparedStatement preparedStatement
         int[] result
         try {
-            withTransaction {Connection connection ->
+            withTransaction { Connection connection ->
                 Map firstRecord = batch.get(0)
                 def sql = getInsertStatement(insertOrTable, firstRecord)
 
@@ -301,7 +299,7 @@ class SqlPlus extends Sql {
                     sortedParams = orderedParamsFromInsert(insertOrTable)
                 }
 
-                batch.each {record ->
+                batch.each { record ->
                     logRecordInsert(record)
                     if (record == null) {
                         throw new IllegalArgumentException("a record must be a none null Map to use batch inserting")
@@ -354,7 +352,7 @@ class SqlPlus extends Sql {
         StringBuffer valuesToInsert = new StringBuffer("values (")
         insert.append(table)
         insert.append(" (")
-        sortedSet.each {key ->
+        sortedSet.each { key ->
             insert.append(key)
             insert.append(", ")
             valuesToInsert.append("?")
