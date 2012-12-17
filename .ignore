@@ -9,4 +9,5 @@ test-reports
 *.ipr
 *.iws
 projectFilesBackup
+out
 

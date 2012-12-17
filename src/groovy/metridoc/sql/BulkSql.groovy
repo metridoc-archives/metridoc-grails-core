@@ -14,8 +14,6 @@
  */
 package metridoc.sql
 
-import org.codehaus.gant.GantBinding
-
 /**
  * Created by IntelliJ IDEA.
  * User: tbarker
@@ -23,15 +21,6 @@ import org.codehaus.gant.GantBinding
  * Time: 2:37 PM
  */
 class BulkSql {
-
-    GantBinding binding
-
-    BulkSql(GantBinding binding) {
-        this.binding = binding
-    }
-
-    BulkSql() {
-    }
 
     String getBulkInsert(String from, String to, Map<String, String> columnMap) {
 

@@ -43,6 +43,12 @@ class SqlPlus extends Sql {
         super(dataSource)
     }
 
+    /**
+     * Not going to support local bulk migrations anymore
+     *
+     * @deprecated
+     * @return
+     */
     def getBulkSqlCalls() {
         if (bulkSqlCalls) {
             return bulkSqlCalls
@@ -51,38 +57,78 @@ class SqlPlus extends Sql {
         bulkSqlCalls = new BulkSql()
     }
 
+    /**
+     *
+     * Used to be used for complex no dup bulk inserts... not really helpful anymore
+     *
+     * @deprecated
+     * @param from
+     * @param to
+     * @param columns
+     * @return
+     */
     int bulkInsert(String from, String to, List<String> columns) {
         def sql = getBulkSqlCalls().getBulkInsert(from, to, columns)
         slfLog.debug("executing bulk sql: {}", sql)
         super.executeUpdate(sql)
     }
 
+    /**
+     *
+     * Used to be used for complex no dup bulk inserts... not really helpful anymore
+     *
+     * @deprecated
+     * @param from
+     * @param to
+     * @param columnMap
+     * @return
+     */
     int bulkInsert(String from, String to, Map<String, String> columnMap) {
         def sql = getBulkSqlCalls().getBulkInsert(from, to, columnMap)
         slfLog.debug("executing bulk sql: {}", sql)
         super.executeUpdate(sql)
     }
 
+    /**
+     *
+     * Used to be used for complex no dup bulk inserts... not really helpful anymore
+     *
+     * @deprecated
+     * @param from
+     * @param to
+     * @param noDupColumn
+     * @param columns
+     * @return
+     */
     int bulkInsertNoDup(String from, String to, String noDupColumn, List columns) {
         def sql = getBulkSqlCalls().getNoDuplicateBulkInsert(from, to, noDupColumn, columns)
         slfLog.debug("executing bulk sql: {}", sql)
         super.executeUpdate(sql)
     }
 
+    /**
+     * Used to be used for complex no dup bulk inserts... not really helpful anymore
+     *
+     * @deprecated
+     * @param from
+     * @param to
+     * @param noDupColumn
+     * @param columnMap
+     * @return
+     */
     int bulkInsertNoDup(String from, String to, String noDupColumn, Map<String, String> columnMap) {
         def sql = getBulkSqlCalls().getNoDuplicateBulkInsert(from, to, noDupColumn, columnMap)
         slfLog.debug("executing bulk sql: {}", sql)
         super.executeUpdate(sql)
     }
 
-    private static boolean exclude(exclude, String value) {
-        if (exclude) {
-            return exclude.contains(value)
-        }
-
-        return false
-    }
-
+    /**
+     * Used to be used to run sql scripts stored in config files, not really needed anymore
+     *
+     * @deprecated
+     * @param configObject
+     * @return
+     */
     private static SortedMap getPhases(ConfigObject configObject) {
         def result = new TreeMap()
         int defaultOrder = 1000
@@ -100,6 +146,14 @@ class SqlPlus extends Sql {
         return result
     }
 
+    /**
+     * Supports the sqlplus camel component on to endpoints
+     *
+     * @param insertOrTable
+     * @param batch
+     * @param logEachBatch should each batch be logged at info level
+     * @return
+     */
     int[] runBatch(String insertOrTable, Map<String, Object> batch, boolean logEachBatch) {
         if (batch == null) {
             throw new IllegalArgumentException("a record must be a none null Map to use batch inserting")
@@ -109,7 +163,7 @@ class SqlPlus extends Sql {
             throw new IllegalArgumentException("record ${batch} must be of type Map to use batch inserting")
         }
 
-        runListBatch([batch], insertOrTable)
+        runListBatch([batch], insertOrTable, logEachBatch)
     }
 
     int[] runBatch(String insertOrTable, Map<String, Object> batch) {
@@ -152,6 +206,7 @@ class SqlPlus extends Sql {
                 }
                 slfLog.debug("finished adding {} records to batch, now the batch will be executed", batch.size())
                 result = preparedStatement.executeBatch()
+                logBatch(result, logEachBatch)
             }
         } finally {
             closeResources(null, preparedStatement)
@@ -185,22 +240,6 @@ class SqlPlus extends Sql {
                 slfLog.debug(message)
             }
         }
-    }
-
-    private static boolean shouldLog(boolean logEachBatch) {
-        if (logEachBatch) {
-            return slfLog.isInfoEnabled()
-        }
-
-        return slfLog.isDebugEnabled()
-    }
-
-    private static void logFailedRecord(record) {
-        slfLog.error("record {} failed to be executed in batch", record)
-    }
-
-    private static boolean failed(int update) {
-        return update == Statement.EXECUTE_FAILED
     }
 
     private def runMapBatch(String insertOrTable, Map batch) {
@@ -242,8 +281,11 @@ class SqlPlus extends Sql {
         return results
     }
 
-
     private runListBatch(List batch, String insertOrTable) {
+        return runListBatch(batch, insertOrTable, false)
+    }
+
+    private runListBatch(List batch, String insertOrTable, boolean logEachBatch) {
 
         PreparedStatement preparedStatement
         int[] result
@@ -280,6 +322,7 @@ class SqlPlus extends Sql {
                 }
                 slfLog.debug("finished adding {} records to batch, now the batch will be executed", batch.size())
                 result = preparedStatement.executeBatch()
+                logBatch(result, logEachBatch)
             }
         } finally {
             closeResources(null, preparedStatement)
