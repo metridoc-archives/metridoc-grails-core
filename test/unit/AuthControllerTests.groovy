@@ -1,4 +1,5 @@
 import grails.test.mixin.TestFor
+import metridoc.core.AuthController
 import org.junit.Test
 /**
  * Created with IntelliJ IDEA.
