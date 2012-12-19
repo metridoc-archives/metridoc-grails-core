@@ -12,9 +12,5 @@ class LogController {
     ]
 
     def index() {
-        if (params.containsKey('checkAccess')) {
-            render 'ACCESS_GRANTED'
-            return
-        }
     }
 }
