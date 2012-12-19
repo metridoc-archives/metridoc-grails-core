@@ -1,8 +1,21 @@
 Upgrading is simple.  Just go into your BuildConfig.groovy file and change the version of metridoc that you are using.
 For instance, say you see something like
 {code}
-compile (\":metridoc-core:0.52-SNAPSHOT\") {
-    exclude "shiro-quartz"
-}
+compile (\":metridoc-core:0.52.1")
 {code}
-in your @BuildConfig.groovy@.  You can change to version @0.52@ by just replacing @0.52-SNAPSHOT@ with @0.52@
+in your @BuildConfig.groovy@.
+
+When upgrading grails, I would recommend *NOT* using @grails upgrade@.  @grails upgrade@ does a bunch of magic, which
+generally creates a ton of unwanted files and folders.  Instead, go to application.properties in your project and
+change the @app.grails.version@ property.
+
+{note}
+Using a package manager for grails can help manage different versions of
+grails easily instead of manually downloading grails.  [gvm|http://gvmtool.net/] is probably the best tool for this.
+{note}
+
+{note}
+If you are creating a plugin that someone else might use, consider using @grails wrapper@.  This command will create bat
+and bash scripts that can force grails versions for a project build.  View the grails [documentation|http://grails.org/doc/latest/guide/single.html#wrapper]
+for more information
+{note}
