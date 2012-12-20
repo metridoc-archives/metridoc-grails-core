@@ -25,9 +25,9 @@ class AuthService {
     }
 
     def canReset(id) {
-        canReset(id, new Date().getTime())
+        canDoReset(id, new Date().getTime())
     }
-    private canReset(id, now) {
+    private canDoReset(id, now) {
         def date = dateById.remove(id)
 
         if (date) {

@@ -167,7 +167,7 @@ class XlsxIterator extends BaseExcelIterator {
         return result
     }
 
-    private static String getSheetReference(XMLStreamReader workbookReader, Closure closure) {
+    static String getSheetReference(XMLStreamReader workbookReader, Closure closure) {
         def run = true
 
         try {

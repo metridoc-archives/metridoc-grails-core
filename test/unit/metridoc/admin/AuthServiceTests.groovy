@@ -29,7 +29,7 @@ class AuthServiceTests {
         def id = service.addResetLink()
         def twentyMinutes = 1000 * 60 * 20
         def now = new Date().time + twentyMinutes
-        assert !service.canReset(id, now)
+        assert !service.canDoReset(id, now)
     }
 
     @Test

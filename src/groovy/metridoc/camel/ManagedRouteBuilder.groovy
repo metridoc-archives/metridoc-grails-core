@@ -73,6 +73,15 @@ class ScheduledPollEndpointWrapper {
         def consumerToWrap = scheduledPollEndpoint.createConsumer(delegationProcessor) as ScheduledPollConsumer
         return new ScheduledPollConsumerWrapper(scheduledPollEndpoint, processor, consumerToWrap)
     }
+
+    boolean isSingleton() {
+        scheduledPollEndpoint.isSingleton()
+    }
+
+    SqlPlusProducer createProducer() {
+        scheduledPollEndpoint.createProducer()
+    }
+
 }
 
 class ScheduledPollConsumerWrapper extends DefaultConsumer {
