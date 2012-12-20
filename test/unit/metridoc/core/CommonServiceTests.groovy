@@ -29,7 +29,7 @@ class CommonServiceTests {
     ]
 
     @Test
-    void "if the property grails.mail.username is not set, then email service is NOT configured"() {
+    void "if the property grails_mail_username is not set, then email service is NOT configured"() {
         assert !service.doEmailIsConfigured(configMockWith_NO_Username)
         assert !service.doEmailIsConfigured(configMockWithUsername)
     }
