@@ -7,9 +7,6 @@
     display: none;
 }
 
-#quartz-jobs .quartz-actions {
-    padding: 0;
-}
 #quartz-jobs .quartz-actions img {
     padding: 1px 1px 0 3px;
 }
@@ -38,4 +35,19 @@
     position: absolute;
     top: -5px;
     margin-left: 5px;
+}
+
+.md-email-alert span {
+    float: left;
+    margin-right: .3em;
+}
+
+.md-email-alert p {
+    line-height: 18px;
+    font-size: 75%;
+}
+
+#quartz-jobs td {
+    font-size: 80%;
+    vertical-align: middle;
 }

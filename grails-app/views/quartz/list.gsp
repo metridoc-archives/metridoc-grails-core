@@ -8,6 +8,13 @@
 
 <%@ page import="org.quartz.Trigger" contentType="text/html;charset=UTF-8" %>
 <md:report>
+    %{--<div class="ui-widget, md-email-alert">--}%
+        %{--<div class="ui-state-error ui-corner-all">--}%
+            %{--<p>--}%
+                %{--<span class="ui-icon ui-icon-alert" ></span>Email has not been set up properly, no notifications will be sent on job failures--}%
+            %{--</p>--}%
+        %{--</div>--}%
+    %{--</div>--}%
     <div class="body">
         <h1 id="quartz-title">
             Quartz Jobs
