@@ -1,16 +1,7 @@
 package metridoc.core
 
-import metridoc.core.QuartzMonitorJobFactory
-import org.quartz.JobKey
-import org.quartz.Trigger
-import org.quartz.TriggerKey
+import org.quartz.*
 import org.quartz.impl.matchers.GroupMatcher
-import org.quartz.JobDataMap
-import org.quartz.TriggerBuilder
-import org.apache.commons.lang.math.RandomUtils
-import org.quartz.ScheduleBuilder
-import org.quartz.SimpleScheduleBuilder
-import org.quartz.core.QuartzScheduler
 
 class QuartzController {
 

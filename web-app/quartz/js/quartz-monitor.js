@@ -83,4 +83,15 @@ if (jQuery) {
 		$(init);
 
 	}(jQuery, this));
+
+
+    /**
+     * adds dialog functionality for changing admin settings on quartz jobs
+     */
+    $('#quartz-settings').click (function(){
+            $('#dialog').dialog('open');
+        }
+    );
 }
+
+

@@ -17,6 +17,9 @@
             </div>
         </div>
     </g:if>
+    <div id="dialog">
+        Quartz settings coming soon!
+    </div>
     <div class="body">
         <h1 id="quartz-title">
             Quartz Jobs
