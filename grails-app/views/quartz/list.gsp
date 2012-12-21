@@ -8,16 +8,19 @@
 
 <%@ page import="org.quartz.Trigger" contentType="text/html;charset=UTF-8" %>
 <md:report>
-    %{--<div class="ui-widget, md-email-alert">--}%
-        %{--<div class="ui-state-error ui-corner-all">--}%
-            %{--<p>--}%
-                %{--<span class="ui-icon ui-icon-alert" ></span>Email has not been set up properly, no notifications will be sent on job failures--}%
-            %{--</p>--}%
-        %{--</div>--}%
-    %{--</div>--}%
+    <g:if test="${!emailIsConfigured}">
+        <div class="ui-widget, md-email-alert">
+            <div class="ui-state-error ui-corner-all">
+                <p>
+                    <span class="ui-icon ui-icon-alert"></span>Email has not been set up properly, no notifications will be sent on job failures
+                </p>
+            </div>
+        </div>
+    </g:if>
     <div class="body">
         <h1 id="quartz-title">
             Quartz Jobs
+            <span id="quartz-actions">
             <g:if test="${scheduler.isInStandbyMode()}">
                 <a href="<g:createLink action="startScheduler"/>"><img class="quartz-tooltip"
                                                                        data-tooltip="Start scheduler"
@@ -32,7 +35,13 @@
                                                                                        file="pause-all.png"
                                                                                        plugin="metridoc-core"/>"></a>
             </g:else>
+            <a id="quartz-settings" class="quartz-tooltip" data-tooltip="Quartz settings" href="#" style="padding-left: 32px; padding-top: 10px">
+                <r:img style="padding-top: 5px" dir="images/skin" file="applications-system.png" plugin="metridoc-core"/>
+            </a>
+
+            </span>
         </h1>
+
         <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
         </g:if>

@@ -8,7 +8,7 @@ class CommonService {
     def grailsApplication
 
     def emailIsConfigured() {
-        return doEmailIsCnofigured(grailsApplication.config)
+        return doEmailIsConfigured(grailsApplication.config)
     }
 
     private doEmailIsConfigured(Map configObject) {

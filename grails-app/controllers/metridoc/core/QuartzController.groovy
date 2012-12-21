@@ -13,6 +13,9 @@ import org.quartz.SimpleScheduleBuilder
 import org.quartz.core.QuartzScheduler
 
 class QuartzController {
+
+    def commonService
+
     static homePage = [
             title: "Job List",
             adminOnly: true,
@@ -63,7 +66,9 @@ class QuartzController {
                 }
             }
         }
-        [jobs: jobsList, now: new Date(), scheduler: quartzScheduler]
+
+
+        [jobs: jobsList, now: new Date(), scheduler: quartzScheduler, emailIsConfigured: commonService.emailIsConfigured()]
     }
 
     def start() {
