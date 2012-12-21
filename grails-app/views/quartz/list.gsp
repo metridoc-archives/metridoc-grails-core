@@ -17,9 +17,7 @@
             </div>
         </div>
     </g:if>
-    <div id="dialog">
-        Quartz settings coming soon!
-    </div>
+    <g:render template="quartzSettings" plugin="metridoc-core"/>
     <div class="body">
         <h1 id="quartz-title">
             Quartz Jobs

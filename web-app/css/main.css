@@ -17,7 +17,7 @@
     float: right;
 }
 
-body, input, select, textarea {
+body, input, select, textarea, .ui-widget {
     font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Arial Unicode MS', Helvetica, sans-serif;
 }
 
@@ -37,6 +37,9 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 1.1;
 }
 
+.ui-widget {
+    font-size: 1em;
+}
 /* BASE LAYOUT */
 
 html {
@@ -731,12 +734,31 @@ p {
 
 #dialog {
     display: none;
+    text-align: left;
+
+}
+
+#dialog .textContainer {
+    padding-top: 0.25em;
+
+}
+#dialog textarea {
+    font-size: 0.8em;
+    width:550px;
+}
+
+.ui-dialog-titlebar {
+    font-weight: 700;
 }
 
 #dialog ul li {
     font-size: small;
     padding-bottom: 10px;
-    text-align: left;
+}
+
+#dialog fieldset {
+    padding-left: 0em;
+    margin-left: 0em;
 }
 
 /*Style for all input boxes*/

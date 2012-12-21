@@ -20,6 +20,11 @@ class QuartzController {
 
     def quartzScheduler
 
+    def saveSettings() {
+        redirect(action: "index")
+    }
+
+
     def index() {
         redirect(action: "list")
     }
