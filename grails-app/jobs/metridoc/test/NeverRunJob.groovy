@@ -6,7 +6,7 @@ import metridoc.core.MetridocJob
 
 class NeverRunJob extends MetridocJob{
 
-    static triggers = MANUAL_RUN_TRIGGER
+    static triggers = MetridocJob.MANUAL_RUN_TRIGGER
 
     def doExecute() {
         log.info "I should never run!"

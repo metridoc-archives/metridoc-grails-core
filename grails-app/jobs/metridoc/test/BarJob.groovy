@@ -9,7 +9,7 @@ import org.apache.commons.lang.ObjectUtils
 class BarJob extends MetridocJob {
 
     def someProperty = "somePropertyValue"
-    static triggers = MIDNIGHT
+    static triggers = MetridocJob.MIDNIGHT
     def dataSource
 
     @Override
