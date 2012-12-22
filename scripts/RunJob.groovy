@@ -35,11 +35,11 @@ target(main: "The description of the script goes here!") {
         grailsConsole.error "1 job must be specified, run grails run-job -h for more info"
     } else if (argsMap.cli) {
         depends(packageApp, loadApp, configureApp)
-        includeTargets << new File("$basedir/scripts/_RunJobHelper.groovy")
+        includeTargets << new File("$metridocCorePluginDir/scripts/_RunJobHelper.groovy")
         doCliCall()
     } else {
         depends(packageApp)
-        includeTargets << new File("$basedir/scripts/_RunJobHelper.groovy")
+        includeTargets << new File("$metridocCorePluginDir/scripts/_RunJobHelper.groovy")
         if (!doRestCall()) {
             depends(loadApp, configureApp)
             doCliCall()
