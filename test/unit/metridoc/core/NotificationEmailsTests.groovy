@@ -35,4 +35,16 @@ class NotificationEmailsTests {
         assert "foo@blam.com${newLine}bar@blam.com${newLine}baz@blam.com${newLine}" as String ==
                 NotificationEmails.convertListToString(notifications)
     }
+
+    @Test
+    void "test retrieving emails"() {
+        new NotificationEmails(scope: "foo", email: "foo@foo.com").save(flush: true, failOnError: true)
+        new NotificationEmails(scope: "foo", email: "bar@foo.com").save(flush: true, failOnError: true)
+
+        def emails = NotificationEmails.getEmailsByScope("foo")
+        assert 2 == emails.size()
+        assert emails.contains("foo@foo.com")
+        assert emails.contains("bar@foo.com")
+    }
+
 }

@@ -1,6 +1,5 @@
 package metridoc.core
 
-import org.apache.commons.lang.SystemUtils
 import org.apache.commons.lang.text.StrBuilder
 
 /**
@@ -19,8 +18,19 @@ class NotificationEmails {
         scope blank: false
     }
 
-    def storeEmails(String emails) {
+    static void storeEmails(String scope, String emails) {
 
+    }
+
+    static List<String> getEmailsByScope(String scope) {
+        List<String> result = []
+        def notificationEmails = NotificationEmails.findAllByScope(scope)
+        if(notificationEmails) {
+            notificationEmails.each {
+                result << it.email
+            }
+        }
+        return result
     }
 
     private static String[] convertEmailsToList(String emails) {
