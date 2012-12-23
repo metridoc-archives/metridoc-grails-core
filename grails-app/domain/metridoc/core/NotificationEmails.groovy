@@ -1,5 +1,6 @@
 package metridoc.core
 
+import org.apache.commons.lang.StringUtils
 import org.apache.commons.lang.text.StrBuilder
 
 /**
@@ -19,7 +20,12 @@ class NotificationEmails {
     }
 
     static void storeEmails(String scope, String emails) {
-
+        withNewTransaction {
+            def emailsInList = convertEmailsToList(emails)
+            emailsInList.each {
+                new NotificationEmails(email: it, scope: scope).save()
+            }
+        }
     }
 
     static List<String> getEmailsByScope(String scope) {
@@ -34,7 +40,14 @@ class NotificationEmails {
     }
 
     private static String[] convertEmailsToList(String emails) {
-        emails.trim().split(/\s+/)
+        if (emails) {
+            def trimmed = emails.trim()
+            if (trimmed) {
+                return trimmed.split(/\s+/)
+            }
+        }
+
+        return [] as String[]
     }
 
     private static String convertListToString(List<NotificationEmails> emails) {

@@ -12,16 +12,27 @@ import org.junit.*
 @TestFor(NotificationEmails)
 class NotificationEmailsTests {
 
-    @Test
-    void "given a string of emails separated by white space, they can be converted into a list"() {
-        def emails = """
+    def emailsAsString = """
         foo@fam.com bar@blam.com
         foobar@bar.com
         """
-        def emailList = NotificationEmails.convertEmailsToList(emails)
+
+    @Test
+    void "given a string of emails separated by white space, they can be converted into a list"() {
+        def emailList = NotificationEmails.convertEmailsToList(emailsAsString)
         assert "foo@fam.com" == emailList[0]
         assert "bar@blam.com" == emailList[1]
         assert "foobar@bar.com" == emailList[2]
+    }
+
+    @Test
+    void "blank or nulll emails will return an empty list if conwverted to a list"() {
+        def emailList = NotificationEmails.convertEmailsToList("")
+        assert 0 == emailList.size()
+        emailList = NotificationEmails.convertEmailsToList(null)
+        assert 0 == emailList.size()
+        emailList = NotificationEmails.convertEmailsToList("   ")
+        assert 0 == emailList.size()
     }
 
     @Test
@@ -45,6 +56,13 @@ class NotificationEmailsTests {
         assert 2 == emails.size()
         assert emails.contains("foo@foo.com")
         assert emails.contains("bar@foo.com")
+    }
+
+    @Test
+    void "test storing emails as string"() {
+        NotificationEmails.storeEmails("foo", emailsAsString)
+        def emails = NotificationEmails.getEmailsByScope("foo")
+        assert 3 == emails.size()
     }
 
 }
