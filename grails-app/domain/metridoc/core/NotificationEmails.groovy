@@ -21,9 +21,19 @@ class NotificationEmails {
 
     static void storeEmails(String scope, String emails) {
         withNewTransaction {
-            def emailsInList = convertEmailsToList(emails)
-            emailsInList.each {
-                new NotificationEmails(email: it, scope: scope).save()
+            def emailList = convertEmailsToList(emails) as Set
+            emailList.each {
+                def email = NotificationEmails.findByEmailAndScope(it, scope)
+
+                if (email == null) {
+                    new NotificationEmails(email: it, scope: scope).save()
+                }
+            }
+
+            NotificationEmails.findAllByScope(scope).each {
+                if(!emailList.contains(it.email)) {
+                    NotificationEmails.get(it.id).delete()
+                }
             }
         }
     }

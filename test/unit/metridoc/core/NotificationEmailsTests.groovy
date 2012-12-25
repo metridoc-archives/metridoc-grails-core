@@ -65,4 +65,12 @@ class NotificationEmailsTests {
         assert 3 == emails.size()
     }
 
+    @Test
+    void "storing emails by scope overwrites previously stored information"() {
+        NotificationEmails.storeEmails("foo", emailsAsString)
+        NotificationEmails.storeEmails("foo", "foo@blam.com")
+        assert 1 == NotificationEmails.findAllByScope("foo").size()
+        assert "foo@blam.com" == NotificationEmails.findAllByScope("foo").get(0).email
+    }
+
 }
