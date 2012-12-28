@@ -20,7 +20,6 @@ import org.apache.camel.processor.aggregate.AggregationStrategy;
 import org.apache.camel.spi.Synchronization;
 
 /**
- *
  * @author tbarker
  */
 public class InflightAggregationWrapper implements AggregationStrategy {
@@ -36,10 +35,14 @@ public class InflightAggregationWrapper implements AggregationStrategy {
 
     public Exchange aggregate(Exchange oldExchange, Exchange newExchange) {
         Exchange aggExchange = wrappedStrategy.aggregate(oldExchange, newExchange);
-
         if (aggExchange != null) {
             if (aggExchange != currentExchange) {
-                aggExchange.getContext().getInflightRepository().add(aggExchange);
+                String routeId = aggExchange.getFromRouteId();
+                if (routeId != null) {
+                    aggExchange.getContext().getInflightRepository().add(aggExchange, routeId);
+                } else {
+                    aggExchange.getContext().getInflightRepository().add(aggExchange);
+                }
                 Synchronization synchronizor;
                 if (currentExchange != null) {
                     synchronizor = currentExchange.getProperty(METRIDOC_SYNCHRONIZOR, Synchronization.class);

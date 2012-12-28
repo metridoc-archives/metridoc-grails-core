@@ -1,6 +1,5 @@
 package metridoc.core
 
-import org.apache.commons.lang.StringUtils
 import org.apache.commons.lang.text.StrBuilder
 
 /**
@@ -15,23 +14,29 @@ class NotificationEmails {
 
 
     static constraints = {
-        email email: true, blank:false, unique: ['scope']
+        email email: true, blank: false, unique: ['scope']
         scope blank: false
     }
 
-    static void storeEmails(String scope, String emails) {
-        withNewTransaction {
-            def emailList = convertEmailsToList(emails) as Set
-            emailList.each {
-                def email = NotificationEmails.findByEmailAndScope(it, scope)
+    static List<NotificationEmails> convertToEmails(String scope, String emails) {
+        def emailList = convertEmailsToList(emails)
+        def result = []
+        emailList.each {
+            result << new NotificationEmails(email: it, scope: scope)
+        }
 
-                if (email == null) {
-                    new NotificationEmails(email: it, scope: scope).save()
-                }
+        return result
+    }
+
+    static void storeEmails(String scope, String emails) {
+        NotificationEmails.withNewTransaction {
+            convertToEmails(scope, emails).each {
+                it.save(failOnError: true)
             }
 
+            def emailList = convertEmailsToList(emails) as Set
             NotificationEmails.findAllByScope(scope).each {
-                if(!emailList.contains(it.email)) {
+                if (!emailList.contains(it.email)) {
                     NotificationEmails.get(it.id).delete()
                 }
             }
@@ -41,7 +46,7 @@ class NotificationEmails {
     static List<String> getEmailsByScope(String scope) {
         List<String> result = []
         def notificationEmails = NotificationEmails.findAllByScope(scope)
-        if(notificationEmails) {
+        if (notificationEmails) {
             notificationEmails.each {
                 result << it.email
             }

@@ -12,25 +12,23 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package metridoc.camel.aggregator;
+package metridoc.camel.aggregator
 
-import metridoc.utils.CamelUtils;
-import org.apache.camel.CamelExecutionException;
-import org.apache.camel.EndpointInject;
-import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
-import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.mock.MockEndpoint;
-import org.apache.camel.impl.DefaultExchange;
-import org.apache.camel.model.RouteDefinition;
-import org.apache.camel.model.RoutesDefinition;
-import org.apache.camel.test.junit4.CamelTestSupport;
-import org.apache.commons.lang.ObjectUtils;
-import org.junit.Test;
+import metridoc.utils.CamelUtils
+import org.apache.camel.CamelExecutionException
+import org.apache.camel.EndpointInject
+import org.apache.camel.Exchange
+import org.apache.camel.Processor
+import org.apache.camel.builder.RouteBuilder
+import org.apache.camel.component.mock.MockEndpoint
+import org.apache.camel.impl.DefaultExchange
+import org.apache.camel.model.RouteDefinition
+import org.apache.camel.model.RoutesDefinition
+import org.apache.camel.test.junit4.CamelTestSupport
+import org.apache.commons.lang.ObjectUtils
+import org.junit.Test
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeUnit
 
 /**
  *
@@ -38,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class BodyAggregatorTest extends CamelTestSupport {
 
-    @EndpointInject(uri="mock:end")
+    @EndpointInject(uri = "mock:end")
     private MockEndpoint mockEnd;
 
     @Test
@@ -67,7 +65,7 @@ public class BodyAggregatorTest extends CamelTestSupport {
         mockEnd.assertIsSatisfied();
     }
 
-    @Test(timeout=5000)
+    @Test(timeout = 5000L)
     public void canShutDownDuringException() throws Exception {
         context.addRoutes(aggRoute);
         try {
@@ -80,7 +78,7 @@ public class BodyAggregatorTest extends CamelTestSupport {
             context.stopRoute(route.getId(), 2, TimeUnit.SECONDS, true);
         }
     }
-    
+
     RouteBuilder aggRoute = new RouteBuilder() {
 
         @Override

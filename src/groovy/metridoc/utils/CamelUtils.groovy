@@ -21,11 +21,11 @@ import org.apache.camel.Route
 import org.apache.camel.component.seda.SedaEndpoint
 import org.apache.camel.spi.ShutdownAware
 import org.apache.camel.util.StopWatch
+import org.apache.commons.lang.StringUtils
 import org.slf4j.LoggerFactory
 
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
-import org.apache.commons.lang.StringUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -65,7 +65,7 @@ class CamelUtils {
         Closure work = {
 
             while (notDone) {
-                int size
+                int size = 0
                 for (Route route : camelContext.routes) {
                     Consumer consumer = route.consumer
 
@@ -76,7 +76,7 @@ class CamelUtils {
                     }
 
                     if (checkIfNotDone(size)) break
-                    size = camelContext.inflightRepository.size(consumer.endpoint)
+                    size = camelContext.inflightRepository.size(route.id)
 
                     log.debug("inflight repository found {} exchanges for consumer {}", size, consumer)
                     if (checkIfNotDone(size)) break
@@ -91,11 +91,6 @@ class CamelUtils {
                             log.debug("seda endpoint {} has {} exchanges pending", endpoint, size)
 
                             if (checkIfNotDone(size)) break
-
-                            size = camelContext.inflightRepository.size(endpoint)
-                            log.debug("endpoint {} has {} inflight exchanges pending", endpoint, size)
-
-                            if (checkIfNotDone(size)) break
                         }
                     }
                 }
@@ -106,7 +101,7 @@ class CamelUtils {
         }
 
         def executor =
-            camelContext.getExecutorServiceStrategy().newSingleThreadExecutor(CamelUtils.class, "WaitForCamelToFinish")
+            camelContext.getExecutorServiceManager().newSingleThreadExecutor(CamelUtils.class, "WaitForCamelToFinish")
         def future = executor.submit(work)
 
         boolean finished = true
@@ -121,7 +116,7 @@ class CamelUtils {
         long seconds = TimeUnit.MILLISECONDS.toSeconds(taken)
         long minutes = TimeUnit.MILLISECONDS.toMinutes(taken)
 
-        def template = {unit, type -> "${camelContext} took ${unit} ${type} to process messages"}
+        def template = { unit, type -> "${camelContext} took ${unit} ${type} to process messages" }
 
         if (minutes) {
             log.info(template(minutes, "minutes"))
@@ -234,15 +229,11 @@ class CamelUtils {
 
         //uri based
         if (m.find()) {
-            return Boolean.valueOf(m[0][1])
+            return Boolean.valueOf(m[0][1] as String)
         }
 
         //defaults
-        if (uri.startsWith("seda") || uri.startsWith("direct")) {
-            return false
-        } else {
-            return true
-        }
+        return !(uri.startsWith("seda") || uri.startsWith("direct"))
     }
 }
 

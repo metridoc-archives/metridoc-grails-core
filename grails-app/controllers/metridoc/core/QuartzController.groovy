@@ -6,6 +6,8 @@ import org.quartz.impl.matchers.GroupMatcher
 class QuartzController {
 
     def commonService
+    static final String JOB_FAILURE_SCOPE = "jobFailure"
+
 
     static homePage = [
             title: "Job List",
@@ -21,23 +23,39 @@ class QuartzController {
     def quartzScheduler
 
     def saveSettings() {
+        String emails = params.emails
+        def badEmails = []
+        if (emails) {
+            try {
+                NotificationEmails.storeEmails(JOB_FAILURE_SCOPE, emails)
+            } catch (Exception ex) {
+                badEmails = []
+                NotificationEmails.convertToEmails(JOB_FAILURE_SCOPE, emails).each {
+                    def valid = it.validate()
+                    if (!valid) {
+                        badEmails << it.email
+                    }
+                }
+            }
+        }
 
-        redirect(action: "index")
+        redirect(action: "index", params: [badEmails: badEmails])
     }
 
 
     def index() {
-        redirect(action: "list")
+        redirect(action: "list", params: params)
     }
 
     def list() {
+        log.info params as String
         def jobsList = []
         def listJobGroups = quartzScheduler.getJobGroupNames()
-        listJobGroups?.each {jobGroup ->
-            quartzScheduler.getJobKeys(GroupMatcher.groupEquals(jobGroup))?.each {jobKey ->
+        listJobGroups?.each { jobGroup ->
+            quartzScheduler.getJobKeys(GroupMatcher.groupEquals(jobGroup))?.each { jobKey ->
                 def triggers = quartzScheduler.getTriggersOfJob(jobKey)
                 if (triggers) {
-                    triggers.each {Trigger trigger ->
+                    triggers.each { Trigger trigger ->
                         def name = trigger.key.name
                         def unScheduled = false
                         def status = QuartzMonitorJobFactory.jobRuns[name]?.status ?: "complete"

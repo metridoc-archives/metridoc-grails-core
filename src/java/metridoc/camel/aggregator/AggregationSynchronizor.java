@@ -19,26 +19,28 @@ import org.apache.camel.Exchange;
 import org.apache.camel.spi.Synchronization;
 
 /**
- *
  * @author tbarker
  */
-public class AggregationSynchronizor implements Synchronization{
+public class AggregationSynchronizor implements Synchronization {
 
     private boolean haveNotCalledCompletion = true;
 
-    @Override
     public void onComplete(Exchange exchange) {
         synchronize(exchange);
     }
 
-    @Override
     public void onFailure(Exchange exchange) {
         synchronize(exchange);
     }
 
     private void synchronize(Exchange exchange) {
         if (haveNotCalledCompletion) {
-            exchange.getContext().getInflightRepository().remove(exchange);
+            String routeId = exchange.getFromRouteId();
+            if (routeId != null) {
+                exchange.getContext().getInflightRepository().remove(exchange, routeId);
+            } else {
+                exchange.getContext().getInflightRepository().remove(exchange);
+            }
             haveNotCalledCompletion = false;
         }
     }

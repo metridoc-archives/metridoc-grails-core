@@ -1,10 +1,8 @@
 package metridoc.core
 
-
-
-import grails.test.mixin.*
+import grails.test.mixin.TestFor
 import org.apache.commons.lang.SystemUtils
-import org.junit.*
+import org.junit.Test
 
 /**
  * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
@@ -73,4 +71,9 @@ class NotificationEmailsTests {
         assert "foo@blam.com" == NotificationEmails.findAllByScope("foo").get(0).email
     }
 
+    @Test
+    void "convert to emails test"() {
+        assert 3 == NotificationEmails.convertToEmails("foo", emailsAsString).size()
+
+    }
 }
