@@ -1,5 +1,6 @@
 package metridoc.camel
 
+import org.junit.Before
 import org.junit.Test
 
 /**
@@ -11,7 +12,15 @@ import org.junit.Test
  */
 class CamelScriptRegistryTest {
 
-    def registry = new CamelScriptRegistry(owner: new SampleOwner(), delegate: new SampleDelegate())
+    def registry = new CamelScriptRegistry()
+
+    @Before
+    void setupRegistry() {
+        def c = new SampleClosure(new SampleOwner())
+        c.delegate = new SampleDelegate()
+        registry.closure = c
+    }
+
 
     @Test
     void "propertiesMap is built on owner properties"() {
@@ -30,7 +39,7 @@ class CamelScriptRegistryTest {
 
     @Test
     void "if set to delegate first, the delegate properties override owner properties"() {
-        registry.resolutionStrategy = Closure.DELEGATE_FIRST
+        registry.closure.resolveStrategy = Closure.DELEGATE_FIRST
         assert "foo" == registry.propertiesMap.foo
     }
 
@@ -42,7 +51,7 @@ class CamelScriptRegistryTest {
 
     @Test
     void "owner only has no delegate properties"() {
-        registry.resolutionStrategy = Closure.OWNER_ONLY
+        registry.closure.resolveStrategy = Closure.OWNER_ONLY
         assert null == registry.lookup("delegateOnlyProperty")
     }
 
@@ -52,7 +61,14 @@ class CamelScriptRegistryTest {
         assert 0 == registry.lookupByType(Integer).size()
     }
 
-
+    @Test
+    void "closwure must not be null"() {
+        registry.closure = null
+        try {
+            registry.propertiesMap
+        } catch (AssertionError error) {
+        }
+    }
 }
 
 class SampleOwner {
@@ -64,4 +80,18 @@ class SampleDelegate {
     def foo = "foo"
     def bar = "foobar"
     def delegateOnlyProperty = "delegate"
+}
+
+class SampleClosure extends Closure {
+
+    /**
+     *  Constructor used when the "this" object for the Closure is null.
+     *  This is rarely the case in normal Groovy usage.
+     *
+     * @param owner the Closure owner
+     */
+
+    SampleClosure(Object owner) {
+        super(owner)
+    }
 }

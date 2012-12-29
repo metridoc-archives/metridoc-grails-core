@@ -12,15 +12,15 @@ import org.apache.camel.spi.Registry
  */
 @Slf4j
 class CamelScriptRegistry implements Registry {
-    int resolutionStrategy = Closure.OWNER_FIRST
-    def owner
-    def delegate
+    Closure closure
     private Map<String, Object> _propertiesMap = [:]
 
     Map<String, Object> getPropertiesMap() {
         if (_propertiesMap) return _propertiesMap
-
-        switch (resolutionStrategy) {
+        assert closure: "closure must not be null"
+        def owner = closure.owner
+        def delegate = closure.delegate
+        switch (closure.resolveStrategy) {
             case Closure.DELEGATE_FIRST:
                 loadPropertyMap(owner, delegate)
                 break
