@@ -62,7 +62,7 @@ class CamelScriptRegistryTest {
     }
 
     @Test
-    void "closwure must not be null"() {
+    void "closure must not be null"() {
         registry.closure = null
         try {
             registry.propertiesMap

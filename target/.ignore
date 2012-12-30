@@ -1,0 +1,5 @@
+classes
+test-classes
+pom.xml
+*.war
+test-reports
