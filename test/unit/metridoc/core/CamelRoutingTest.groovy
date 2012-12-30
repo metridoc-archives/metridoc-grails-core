@@ -41,12 +41,6 @@ class CamelRoutingTest {
     void testFullRoute() {
         job.executeTarget("fullRoute")
     }
-
-    @Test
-    void hitJobLater() {
-        job.executeTarget("hitMeLater")
-    }
-
 }
 
 class CamelRoutingJob extends MetridocJob {
@@ -69,29 +63,18 @@ class CamelRoutingJob extends MetridocJob {
         }
 
         target(fullRoute: "a more complicated route") {
-            MockEndpoint mock = camelJobContext.getEndpoint("mock:endFull")
-            mock.reset()
-            mock.expectedMessageCount(1)
-            createTempDirectoryAndFiles()
 
+            createTempDirectoryAndFiles()
+            MockEndpoint mock
             runRoute {
+                mock = context.getEndpoint("mock:endFull")
+                mock.reset()
+                mock.expectedMessageCount(1)
                 from("file://${tmpDirectory.path}?noop=true&initialDelay=0&filter=#fileFilter").threads(4).aggregateBody(4, 2000).to("mock:endFull")
             }
 
             mock.assertIsSatisfied()
-
             deleteTempDirectoryAndFiles()
-        }
-
-        target(hitMeLater: "run a test to see if we can hit a job later on") {
-            runRoute {
-                from("direct:hitMeLater").to("mock:gettingDataFromLaterHit")
-            }
-
-            MockEndpoint mock = camelJobContext.getEndpoint("mock:gettingDataFromLaterHit")
-            mock.expectedMessageCount = 1
-            producerJobTemplate.requestBody("direct:hitMeLater", ObjectUtils.NULL)
-            mock.assertIsSatisfied()
         }
     }
 

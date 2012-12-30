@@ -60,7 +60,7 @@ class CamelScriptRegistry implements Registry {
                 return type.cast(o);
             }
         } catch (ClassCastException ex) {
-            log.debug "Could not convert object $o to ${type.name}, lookup will return null instead of the object value", ex
+            log.debug "Could not convert object with name $name and type ${o.getClass()} to ${type.name}, lookup will return null instead of the object value", ex
         }
 
         return null

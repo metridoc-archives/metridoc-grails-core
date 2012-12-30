@@ -1,26 +1,27 @@
 package metridoc.core
 
+import metridoc.camel.CamelScript
+import metridoc.camel.CamelScriptRegistry
 import metridoc.camel.GroovyRouteBuilder
 import metridoc.camel.SqlPlusComponent
-import metridoc.utils.CamelUtils
 import org.apache.camel.CamelContext
 import org.apache.camel.ProducerTemplate
+import org.apache.camel.ServiceStatus
 import org.apache.camel.builder.RouteBuilder
 import org.apache.camel.impl.DefaultCamelContext
 import org.apache.camel.impl.DefaultCamelContextNameStrategy
 import org.apache.camel.spi.Registry
+import org.quartz.*
 import org.slf4j.LoggerFactory
 
 import java.util.concurrent.TimeUnit
-
-import org.quartz.*
-import org.apache.camel.ServiceStatus
 
 /**
  * This is the primary class used for running MetriDoc jobs.  Although unnecessary to actually create a periodic job,
  * it contains helpful methods for routing and profiling tasks, in addition to common triggers.
  */
 abstract class MetridocJob {
+
     private static final jobLogger = LoggerFactory.getLogger(MetridocJob)
     /**
      * all metridoc jobs are not concurrent by default.  Any needed concurrency should be incorporated into the job \
@@ -142,14 +143,8 @@ abstract class MetridocJob {
      * @return
      */
     def runRoute(Closure closure) {
-        def routeBuilder = new GroovyRouteBuilder()
-        routeBuilder.setRoute(closure)
-        runRoute(routeBuilder)
-        if (routeBuilder.firstException) {
-            throw routeBuilder.firstException
-        }
-
-        return routeBuilder
+        CamelScript.components.put("sqlplus", SqlPlusComponent)
+        CamelScript.runRoute(closure)
     }
 
     /**
@@ -159,8 +154,11 @@ abstract class MetridocJob {
      * @param builder
      */
     def runRoute(RouteBuilder builder) {
-        getCamelJobContext().addRoutes(builder)
-        CamelUtils.waitTillDone(getCamelJobContext())
+        CamelScript.components.put("sqlplus", SqlPlusComponent)
+        def mockClosure = {}
+        mockClosure.delegate = builder
+        def registry = new CamelScriptRegistry(closure: mockClosure)
+        CamelScript.runRouteBuilders(registry, builder)
     }
 
     /**

@@ -39,6 +39,9 @@ abstract class ManagedRouteBuilder extends ManagedExceptionRouteBuilder {
 
     @Override
     RouteDefinition from(String uri) {
+        if (!uri.contains(":")) {
+            uri = "direct:${uri}"
+        }
         def formattedUri = uri.replaceAll("maxMessages=", "maxMessagesPerPoll=")
         def endpoint = getContext().getEndpoint(formattedUri)
 

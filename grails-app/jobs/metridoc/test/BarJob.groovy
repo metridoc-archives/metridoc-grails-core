@@ -30,7 +30,7 @@ class BarJob extends MetridocJob {
 
         def camelRouteWorked = false
         runRoute {
-            from("direct:startBarRoute").process {
+            from("direct:start").process {
                 camelRouteWorked = true
             }
         }
@@ -48,13 +48,10 @@ class BarJob extends MetridocJob {
                             camelRouteWithRouteBuilderWorked = true
                         }
                     }
-                    from("direct:startBarRouteRouteBuilder").process(processor)
+                    from("direct:start").process(processor)
                 }
             }
         )
-
-        producerJobTemplate.requestBody("direct:startBarRoute", ObjectUtils.NULL)
-        producerJobTemplate.requestBody("direct:startBarRouteRouteBuilder", ObjectUtils.NULL)
 
         assert camelRouteWorked
         assert camelRouteWithRouteBuilderWorked

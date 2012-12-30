@@ -45,11 +45,10 @@ class MetridocJobTest {
     void "test routing failures"() {
         def routeBuilder
         try {
-            routeBuilder = helper.runRoute {
-                from("sqlplus:bar?dataSource=dataSource").to("sqlplus:foo?dataSource=dataSource")
-            }
 
-            assert false : "exception should have occurred"
+            routeBuilder = helper.runRoute helper.routeFailure
+
+            assert false: "exception should have occurred"
         } catch (BatchUpdateException e) {
 
         }
@@ -74,5 +73,12 @@ class MetridocJobTest {
 }
 
 class MetridocJobTestHelper extends MetridocJob {
-     EmbeddedDatabase dataSource = new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build()
+    EmbeddedDatabase dataSource = new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build()
+
+    /**
+     * put the closure here to force the helper as the closure owner
+     */
+    def routeFailure = {
+        from("sqlplus:bar?dataSource=dataSource").to("sqlplus:foo?dataSource=dataSource")
+    }
 }

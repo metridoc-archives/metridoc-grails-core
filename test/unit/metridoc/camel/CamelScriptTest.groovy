@@ -15,10 +15,10 @@ class CamelScriptTest {
     def ownerProperty = true
 
     @Test
-    void "test some basic routing"() {
+    void "test some basic routing, default route called is direct:start"() {
 
         def calledMe = false
-        CamelScript.runRoute("direct:start") {
+        CamelScript.runRoute {
             from("direct:start").process {
                 calledMe = true
             }
@@ -29,7 +29,7 @@ class CamelScriptTest {
 
     @Test
     void "property from owner should exist in registry"() {
-        CamelScript.runRoute("direct:start") {
+        CamelScript.runRoute {
             from("direct:start").process {Exchange exchange ->
                 assert exchange.context.registry.lookup("ownerProperty")
             }
