@@ -48,7 +48,7 @@ class InflightExperimentsTests extends CamelTestSupport {
         def final processor = new Processor() {
             void process(Exchange exchange) throws Exception {
                 oneCount.countDown()
-                Thread.sleep(500)
+                Thread.sleep(1000)
             }
         }
 
