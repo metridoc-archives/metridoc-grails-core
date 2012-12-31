@@ -19,7 +19,8 @@ import org.apache.commons.lang.ObjectUtils
 @Slf4j
 class CamelScript {
 
-    static Map<String, Class<Component>> components = Collections.synchronizedMap([:])
+    static Map<String, Class<? extends Component>> components = Collections.synchronizedMap([:])
+
     static RouteBuilder runRoute(Closure closure) {
         runRoute(null, closure)
     }
@@ -53,7 +54,7 @@ class CamelScript {
                 camelContext.addComponent(it.key, it.value.newInstance(camelContext))
             }
             builders.each {
-                camelContext.addRoutes (it)
+                camelContext.addRoutes(it)
             }
             camelContext.start()
             if (start) {
@@ -67,13 +68,13 @@ class CamelScript {
                         callStart = true
                     }
                 }
-                if(callStart) {
+                if (callStart) {
                     camelContext.createProducerTemplate().requestBody("direct://start", ObjectUtils.NULL)
                 }
             }
             CamelUtils.waitTillDone(camelContext)
             builders.each {
-                if(it instanceof ManagedRouteBuilder) {
+                if (it instanceof ManagedExceptionRouteBuilder) {
                     if (it.firstException) {
                         throw it.firstException
                     }

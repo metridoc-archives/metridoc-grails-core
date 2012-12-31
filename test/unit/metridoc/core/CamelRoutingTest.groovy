@@ -14,13 +14,11 @@
  */
 package metridoc.core
 
-import org.apache.commons.lang.ObjectUtils
-import org.junit.Test
 import org.apache.camel.component.file.GenericFile
-
-import org.apache.camel.component.mock.MockEndpoint
 import org.apache.camel.component.file.GenericFileFilter
+import org.apache.camel.component.mock.MockEndpoint
 import org.apache.commons.lang.SystemUtils
+import org.junit.Test
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,12 +30,7 @@ class CamelRoutingTest {
 
     def job = new CamelRoutingJob()
 
-    @Test
-    void testBasicRouteCall() {
-        job.executeTarget("mockBasic")
-    }
-
-    @Test
+    @Test(timeout = 5000L)
     void testFullRoute() {
         job.executeTarget("fullRoute")
     }
@@ -45,32 +38,28 @@ class CamelRoutingTest {
 
 class CamelRoutingJob extends MetridocJob {
 
+    def filesProcessed = 0
     def fileFilter = [
-            accept: {GenericFile file ->
-                def response = file.fileName.startsWith("file")
-                return response
+            accept: { GenericFile file ->
+                def correctFileName = file.fileName.startsWith("file")
+                def noMoreThanFourFilesProcessed = filesProcessed < 4
+                filesProcessed++
+                return correctFileName && noMoreThanFourFilesProcessed
             }
     ] as GenericFileFilter
 
     @Override
     def doExecute() {
-        target(mockBasic: "a very simple camel routing test") {
-            MockEndpoint mock = camelJobContext.getEndpoint("mock:endBasic")
-            mock.reset()
-            mock.expectedMessageCount(1)
-            producerJobTemplate.requestBody("mock:endBasic", ObjectUtils.NULL)
-            mock.assertIsSatisfied()
-        }
 
         target(fullRoute: "a more complicated route") {
 
             createTempDirectoryAndFiles()
-            MockEndpoint mock
+            MockEndpoint mock = null
             runRoute {
                 mock = context.getEndpoint("mock:endFull")
                 mock.reset()
                 mock.expectedMessageCount(1)
-                from("file://${tmpDirectory.path}?noop=true&initialDelay=0&filter=#fileFilter").threads(4).aggregateBody(4, 2000).to("mock:endFull")
+                from("file://${tmpDirectory.path}?noop=true&initialDelay=0&filter=#fileFilter&maxMessagesPerPoll=4").threads(4).aggregateBody(4, 2000).to("mock:endFull")
             }
 
             mock.assertIsSatisfied()
@@ -106,5 +95,7 @@ class CamelRoutingJob extends MetridocJob {
         File.createTempFile("file2", "metridocTest", tempDirectory)
         File.createTempFile("file3", "metridocTest", tempDirectory)
         File.createTempFile("file4", "metridocTest", tempDirectory)
+        File.createTempFile("file5", "metridocTest", tempDirectory)
+        File.createTempFile("file6", "metridocTest", tempDirectory)
     }
 }

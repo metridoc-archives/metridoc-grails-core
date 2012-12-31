@@ -1,12 +1,13 @@
 package metridoc.core
 
+import groovy.sql.Sql
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
-import org.junit.Before
-import org.junit.After
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase
-import groovy.sql.Sql
+
 import java.sql.BatchUpdateException
 
 /**
@@ -44,11 +45,8 @@ class MetridocJobTest {
 
     @Test
     void "test routing failures"() {
-        def routeBuilder
         try {
-
-            routeBuilder = helper.runRoute helper.routeFailure
-
+            helper.runRoute helper.routeFailure
             assert false: "exception should have occurred"
         } catch (BatchUpdateException e) {
 

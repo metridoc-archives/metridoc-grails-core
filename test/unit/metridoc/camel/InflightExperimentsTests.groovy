@@ -2,6 +2,7 @@ package metridoc.camel
 
 import metridoc.camel.aggregator.BodyAggregator
 import metridoc.camel.aggregator.InflightAggregationWrapper
+import metridoc.utils.CamelUtils
 import org.apache.camel.EndpointInject
 import org.apache.camel.Exchange
 import org.apache.camel.Processor
@@ -33,13 +34,14 @@ class InflightExperimentsTests extends CamelTestSupport {
         mockEndpoint.setExpectedMessageCount(1)
         template.requestBody("direct:inflightTest", ObjectUtils.NULL)
         assert context.inflightRepository.size("foo") == 1
-        template.asyncRequestBody("direct:inflightTest", ObjectUtils.NULL)
+        template.requestBody("direct:inflightTest", ObjectUtils.NULL)
         template.asyncRequestBody("direct:inflightTest", ObjectUtils.NULL)
         enteredProcessor.await()
         //it should be two since the the wrapper creates work and the aggregator creates work
         assert context.inflightRepository.size("foo") == 2
         exitingProcessor.countDown()
         mockEndpoint.assertIsSatisfied()
+        CamelUtils.waitTillDone(context)
         assert context.inflightRepository.size("foo") == 0
         assert mockEndpoint.getExchanges().get(0).getFromEndpoint().getEndpointUri().contains("inflightTest")
         assert "foo" == mockEndpoint.getExchanges().get(0).getFromRouteId()

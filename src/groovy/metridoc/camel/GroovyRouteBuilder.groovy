@@ -19,7 +19,7 @@ package metridoc.camel
  *
  * @author Tommy Barker
  */
-class GroovyRouteBuilder extends ManagedRouteBuilder {
+class GroovyRouteBuilder extends ManagedExceptionRouteBuilder {
 
     Closure route
 
