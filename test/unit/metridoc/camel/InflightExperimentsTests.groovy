@@ -24,7 +24,8 @@ class InflightExperimentsTests extends CamelTestSupport {
 
     @EndpointInject(uri = "mock:inflightTest")
     MockEndpoint mockEndpoint
-    def oneCount = new CountDownLatch(1)
+    def enteredProcessor = new CountDownLatch(1)
+    def exitingProcessor = new CountDownLatch(1)
 
     @Test
     void "test origin"() {
@@ -34,9 +35,10 @@ class InflightExperimentsTests extends CamelTestSupport {
         assert context.inflightRepository.size("foo") == 1
         template.asyncRequestBody("direct:inflightTest", ObjectUtils.NULL)
         template.asyncRequestBody("direct:inflightTest", ObjectUtils.NULL)
-        oneCount.await()
+        enteredProcessor.await()
         //it should be two since the the wrapper creates work and the aggregator creates work
         assert context.inflightRepository.size("foo") == 2
+        exitingProcessor.countDown()
         mockEndpoint.assertIsSatisfied()
         assert context.inflightRepository.size("foo") == 0
         assert mockEndpoint.getExchanges().get(0).getFromEndpoint().getEndpointUri().contains("inflightTest")
@@ -47,8 +49,8 @@ class InflightExperimentsTests extends CamelTestSupport {
     protected RouteBuilder createRouteBuilder() throws Exception {
         def final processor = new Processor() {
             void process(Exchange exchange) throws Exception {
-                oneCount.countDown()
-                Thread.sleep(1000)
+                enteredProcessor.countDown()
+                exitingProcessor.await()
             }
         }
 
