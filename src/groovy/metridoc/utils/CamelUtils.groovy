@@ -18,7 +18,9 @@ import org.apache.camel.CamelContext
 import org.apache.camel.Consumer
 import org.apache.camel.Endpoint
 import org.apache.camel.Route
+import org.apache.camel.component.mock.MockEndpoint
 import org.apache.camel.component.seda.SedaEndpoint
+import org.apache.camel.spi.BrowsableEndpoint
 import org.apache.camel.spi.ShutdownAware
 import org.apache.camel.util.StopWatch
 import org.apache.commons.lang.StringUtils
@@ -85,9 +87,12 @@ class CamelUtils {
                 if (size == 0) {
                     def endpoints = camelContext.endpoints
                     for (Endpoint endpoint : endpoints) {
-                        if (endpoint instanceof SedaEndpoint) {
-                            def seda = endpoint as SedaEndpoint
-                            size = seda.exchanges.size()
+                        def notAMockEndpoint = !(endpoint instanceof MockEndpoint)
+                        def isBrowsableEndpoint = endpoint instanceof BrowsableEndpoint
+                        def shouldCheck =  isBrowsableEndpoint && notAMockEndpoint
+                        if (shouldCheck) {
+                            def browsable = endpoint as BrowsableEndpoint
+                            size = browsable.exchanges.size()
                             log.debug("seda endpoint {} has {} exchanges pending", endpoint, size)
 
                             if (checkIfNotDone(size)) break

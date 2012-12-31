@@ -25,6 +25,7 @@ class MetridocJobTest {
         def sql = new Sql(helper.dataSource)
         sql.execute("create table foo (bar int unique)")
         sql.execute("create table bar (bar int)")
+        sql.execute("create table foobar (bar int)")
 
         sql.execute("insert into bar values (10)")
         sql.execute("insert into bar values (10)")
@@ -70,15 +71,37 @@ class MetridocJobTest {
     void "if target is not supplied, then target is null in job data map"() {
         assert null == helper.buildJobContextFacade().trigger.jobDataMap.target
     }
+
+    @Test
+    void "when profiling, the properties should still propogate to the routing"() {
+        //just run the helper, no errors should occur
+        helper.doExecute()
+        assert helper.doExecuteRouteRan
+    }
 }
 
 class MetridocJobTestHelper extends MetridocJob {
     EmbeddedDatabase dataSource = new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build()
-
+    boolean doExecuteRouteRan = false
     /**
      * put the closure here to force the helper as the closure owner
      */
     def routeFailure = {
         from("sqlplus:bar?dataSource=dataSource").to("sqlplus:foo?dataSource=dataSource")
+    }
+
+    /**
+     * we were having troubles when profiling a route.  The properties of the underlying class were not propogating to the
+     * route
+     */
+    def doExecute() {
+        profile("profiling the route") {
+            runRoute {
+                from("direct:start").process {
+                    doExecuteRouteRan = true
+                }
+                from("sqlplus:bar?dataSource=dataSource").to("sqlplus:foobar?dataSource=dataSource")
+            }
+        }
     }
 }

@@ -54,7 +54,7 @@ public class BodyAggregatorTest extends CamelTestSupport {
         assertEquals(2, aggExchange.getIn().getBody(List.class).size());
     }
 
-    @Test
+    @Test(timeout = 5000L)
     public void shutDownShouldDefer() throws Exception {
         context.addRoutes(aggRoute);
 
