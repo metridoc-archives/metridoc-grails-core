@@ -4,7 +4,6 @@ import metridoc.core.MetridocJob
 import org.apache.camel.Exchange
 import org.apache.camel.Processor
 import org.apache.camel.builder.RouteBuilder
-import org.apache.commons.lang.ObjectUtils
 
 class BarJob extends MetridocJob {
 
@@ -20,13 +19,6 @@ class BarJob extends MetridocJob {
         }
 
         log.info "targets ran $targetsRan"
-        log.info "this identifying hash is ${System.identityHashCode(this)}"
-        log.info "camelContext identifying hash is ${System.identityHashCode(getCamelJobContext())}"
-        assert camelJobContext: "camel context not loaded"
-        assert camelJobContext.registry.lookup("someProperty"): "property not found"
-        assert !camelJobContext.registry.lookup("blah")
-        assert camelJobContext.registry.lookup("quartzScheduler")
-        assert producerJobTemplate
 
         def camelRouteWorked = false
         runRoute {
@@ -37,20 +29,20 @@ class BarJob extends MetridocJob {
 
         def camelRouteWithRouteBuilderWorked = false
         runRoute(
-            new RouteBuilder() {
+                new RouteBuilder() {
 
-                @Override
-                void configure() {
-                    final processor = new Processor() {
+                    @Override
+                    void configure() {
+                        final processor = new Processor() {
 
-                        @Override
-                        void process(Exchange exchange) {
-                            camelRouteWithRouteBuilderWorked = true
+                            @Override
+                            void process(Exchange exchange) {
+                                camelRouteWithRouteBuilderWorked = true
+                            }
                         }
+                        from("direct:start").process(processor)
                     }
-                    from("direct:start").process(processor)
                 }
-            }
         )
 
         assert camelRouteWorked
