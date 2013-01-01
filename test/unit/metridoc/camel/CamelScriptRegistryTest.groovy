@@ -21,7 +21,6 @@ class CamelScriptRegistryTest {
         registry.closure = c
     }
 
-
     @Test
     void "propertiesMap is built on owner properties"() {
         assert "bar" == registry.propertiesMap.foo
@@ -69,6 +68,14 @@ class CamelScriptRegistryTest {
         } catch (AssertionError error) {
         }
     }
+
+    @Test
+    void "test extracting data from a script binding"() {
+        def scriptDelegate = new SampleScriptDelegate()
+        scriptDelegate.run()
+        registry.closure.delegate = scriptDelegate
+        assert "fromScript" == registry.lookup("scriptProp")
+    }
 }
 
 class SampleOwner {
@@ -82,14 +89,15 @@ class SampleDelegate {
     def delegateOnlyProperty = "delegate"
 }
 
-class SampleClosure extends Closure {
+class SampleScriptDelegate extends Script {
 
-    /**
-     *  Constructor used when the "this" object for the Closure is null.
-     *  This is rarely the case in normal Groovy usage.
-     *
-     * @param owner the Closure owner
-     */
+    @Override
+    Object run() {
+        scriptProp = "fromScript"
+    }
+}
+
+class SampleClosure extends Closure {
 
     SampleClosure(Object owner) {
         super(owner)

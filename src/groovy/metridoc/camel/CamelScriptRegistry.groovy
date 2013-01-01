@@ -43,6 +43,12 @@ class CamelScriptRegistry implements Registry {
     private loadPropertyMap(Object... objects) {
         objects.each {
             if (it) {
+                if (it instanceof Script) {
+                    def binding = it.binding
+                    if (binding) {
+                        _propertiesMap.putAll(binding.variables)
+                    }
+                }
                 _propertiesMap.putAll(it.properties)
             }
         }
