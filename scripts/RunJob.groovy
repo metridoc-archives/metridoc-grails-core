@@ -34,6 +34,8 @@ target(main: "The description of the script goes here!") {
     } else if (argsMap.params.size != 1) {
         grailsConsole.error "1 job must be specified, run grails run-job -h for more info"
     } else if (argsMap.cli) {
+        System.setProperty("metridoc.quartz.disabled", "true")
+        System.setProperty("metridoc.job.cliOnly", "true")
         depends(packageApp, loadApp, configureApp)
         includeTargets << new File("$metridocCorePluginDir/scripts/_RunJobHelper.groovy")
         doCliCall()
@@ -41,6 +43,8 @@ target(main: "The description of the script goes here!") {
         depends(packageApp)
         includeTargets << new File("$metridocCorePluginDir/scripts/_RunJobHelper.groovy")
         if (!doRestCall()) {
+            System.setProperty("metridoc.quartz.disabled", "true")
+            System.setProperty("metridoc.job.cliOnly", "true")
             depends(loadApp, configureApp)
             doCliCall()
         }

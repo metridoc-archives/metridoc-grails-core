@@ -1,15 +1,11 @@
 includeTargets << grailsScript("_GrailsInit")
 
 doCliCall = {
-    System.setProperty("metridoc.quartz.disabled", "true")
-    System.setProperty("metridoc.job.cliOnly", "true")
-    grailsConsole.info "running the job ${runJobArguments.job} directly"
 
     def job = appCtx."${runJobArguments.job}"
     if (job) {
         def MetridocJob = classLoader.loadClass("metridoc.core.MetridocJob")
         if (MetridocJob.isAssignableFrom(job.class)) {
-            grailsConsole.info "running as MetridocJob"
             if (runJobArguments.target) {
                 job.executeTarget(runJobArguments.target)
             } else {
