@@ -28,10 +28,22 @@ class NotificationEmails {
         return result
     }
 
-    static void storeEmails(String scope, String emails) {
+    /**
+     *
+     * @param scope scope of the notification
+     * @param emails emails separated by whitespace to store
+     * @return all failed emails
+     */
+    static String[] storeEmails(String scope, String emails) {
+        def failures = []
         NotificationEmails.withNewTransaction {
             convertToEmails(scope, emails).each {
-                it.save(failOnError: true)
+                def alreadyStored = NotificationEmails.findByScopeAndEmail(scope, it.email)
+                if (!alreadyStored) {
+                    if (!it.save()) {
+                        failures << it.email
+                    }
+                }
             }
 
             def emailList = convertEmailsToList(emails) as Set
@@ -41,6 +53,8 @@ class NotificationEmails {
                 }
             }
         }
+
+        return failures as String[]
     }
 
     static List<String> getEmailsByScope(String scope) {

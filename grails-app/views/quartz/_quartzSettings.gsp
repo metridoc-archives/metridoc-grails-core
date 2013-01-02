@@ -3,19 +3,11 @@
         <div>
             <div>Email on Failures (Does not work yet)</div>
 
-            <div class="ui-widget, md-email-alert" id="emailErrorContainer">
-                <div class="ui-state-error ui-corner-all">
-                    <p>
-                        <span class="ui-icon ui-icon-alert"></span>Email has not been set up properly, no notifications will be sent on job failures
-                    </p>
-                </div>
-            </div>
-
             <div class="textContainer">
-                <g:textArea name="emails"/>
+                <g:textArea name="emails">${notificationEmails}</g:textArea>
             </div>
             <fieldset class="buttons">
-                <input type="button" value="Save" id="saveSettingsButton" class="save" onclick="alert('hey')"/>
+                <input type="submit" value="Save" id="saveSettingsButton" class="save"/>
             </fieldset>
         </div>
     </g:form>

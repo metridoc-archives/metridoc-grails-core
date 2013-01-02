@@ -74,6 +74,28 @@ class NotificationEmailsTests {
     @Test
     void "convert to emails test"() {
         assert 3 == NotificationEmails.convertToEmails("foo", emailsAsString).size()
+    }
 
+    @Test
+    void "if emails is null or empty string, then all emails for the provided scope are deleted"() {
+        new NotificationEmails(email: "blah@blah.com", scope: "blah").save(flush: true)
+        new NotificationEmails(email: "blah@blah.com", scope: "foo").save(flush: true)
+        assert 2 == NotificationEmails.count()
+        assert NotificationEmails.findByScope("blah")
+        NotificationEmails.storeEmails("blah", "  \n ")
+        assert !NotificationEmails.findByScope("blah")
+        assert NotificationEmails.findByScope("foo")
+        NotificationEmails.storeEmails("foo", null)
+        assert !NotificationEmails.findByScope("foo")
+    }
+
+    @Test
+    void "can't store emails if a scope is not provided"() {
+        try {
+            NotificationEmails.storeEmails(null, "blah")
+            assert false: "failure should have occurred"
+        } catch (AssertionError assertionError) {
+
+        }
     }
 }

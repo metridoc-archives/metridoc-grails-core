@@ -1,5 +1,7 @@
 package metridoc.core
 
+import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang.text.StrBuilder
 import org.quartz.*
 import org.quartz.impl.matchers.GroupMatcher
 
@@ -22,33 +24,25 @@ class QuartzController {
 
     def quartzScheduler
 
-    def saveSettings() {
+    /**
+     * saves all settings.  Synchronized to avoid any weird behavior from multiple editors submitting at the same time
+     */
+    synchronized saveSettings() {
         String emails = params.emails
         def badEmails = []
         if (emails) {
-            try {
-                NotificationEmails.storeEmails(JOB_FAILURE_SCOPE, emails)
-            } catch (Exception ex) {
-                badEmails = []
-                NotificationEmails.convertToEmails(JOB_FAILURE_SCOPE, emails).each {
-                    def valid = it.validate()
-                    if (!valid) {
-                        badEmails << it.email
-                    }
-                }
-            }
+            badEmails = NotificationEmails.storeEmails(JOB_FAILURE_SCOPE, emails)
         }
 
         redirect(action: "index", params: [badEmails: badEmails])
     }
 
-
     def index() {
         redirect(action: "list", params: params)
     }
 
+    //TODO: reduce the size of this method, this is getting out of hand
     def list() {
-        log.info params as String
         def jobsList = []
         def listJobGroups = quartzScheduler.getJobGroupNames()
         listJobGroups?.each { jobGroup ->
@@ -82,8 +76,40 @@ class QuartzController {
             }
         }
 
+        def notificationEmails = new StrBuilder()
+        NotificationEmails.list().collect { it.email }.each {
+            notificationEmails.appendln(it)
+        }
 
-        [jobs: jobsList, now: new Date(), scheduler: quartzScheduler, emailIsConfigured: commonService.emailIsConfigured()]
+        def badEmailMessage = null
+        if (params.badEmails) {
+            def badEmailMessageBuilder = new StrBuilder("The following emails could not be stored: ")
+            if (params.badEmails instanceof String) {
+                badEmailMessageBuilder.append(params.badEmails)
+                badEmailMessage = badEmailMessageBuilder.toString()
+            } else {
+                params.badEmails.each {
+                    badEmailMessageBuilder.append(it)
+                    badEmailMessageBuilder.append(", ")
+                }
+                badEmailMessage = badEmailMessageBuilder.toString()
+                badEmailMessage = StringUtils.chop(badEmailMessage)
+                badEmailMessage = StringUtils.chop(badEmailMessage)
+            }
+        }
+
+        if (NotificationEmails.count() == 0) {
+            badEmailMessage = "No emails have been set, no one will be notified of job failures"
+        }
+
+        return [
+                jobs: jobsList,
+                now: new Date(),
+                scheduler: quartzScheduler,
+                emailIsConfigured: commonService.emailIsConfigured(),
+                notificationEmails: notificationEmails,
+                badEmailMessage: badEmailMessage,
+        ]
     }
 
     def start() {
@@ -121,9 +147,10 @@ class QuartzController {
 
         def end = now + 365 * 5 //5 years in the future
 
+        //TODO: can we do something else here?  This is a horrendous hack
         //next run will be 4 years in the future, clearly this won't run by then and the job will be unscheduled
-        //the 5 year and 4 year number are arbitrary, basically we are tricking oracle to keep the job around so we can
-        //continue to retrieve statistics from it
+        //the 5 year and 4 year number are arbitrary, basically we are tricking quartz to keep the job around so we can
+        //continue to retrieve statistics from it.
         def schedule = SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(1 * 24 * 56 * 4).repeatForever()
         def trigger = TriggerBuilder.newTrigger().forJob(params.jobName, params.jobGroup).startAt(new Date())
                 .endAt(end).withIdentity(triggerKey).withSchedule(schedule).usingJobData(dataMap).build()

@@ -9,11 +9,11 @@ import metridoc.core.MetridocJob
  * Time: 8:09 PM
  * To change this template use File | Settings | File Templates.
  */
-class ErrorJob {
+class ErrorJob extends MetridocJob {
 
     static triggers = MetridocJob.MIDNIGHT
 
-    def execute() {
+    def doExecute() {
         log.error "about to throw an error from ErrorJob"
         throw new RuntimeException("I meant to do that")
     }

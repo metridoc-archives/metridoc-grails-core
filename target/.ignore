@@ -1,5 +1,6 @@
 classes
 test-classes
-pom.xml
+pom.xml*
 *.war
 test-reports
+*.sha1

@@ -9,10 +9,19 @@
 <%@ page import="org.quartz.Trigger" contentType="text/html;charset=UTF-8" %>
 <md:report>
     <g:if test="${!emailIsConfigured}">
-        <div class="ui-widget, md-email-alert">
+        <div class="ui-widget md-email-alert">
             <div class="ui-state-error ui-corner-all">
                 <p>
                     <span class="ui-icon ui-icon-alert"></span>Email has not been set up properly, no notifications will be sent on job failures
+                </p>
+            </div>
+        </div>
+    </g:if>
+    <g:if test="${badEmailMessage}">
+        <div class="ui-widget md-email-alert">
+            <div class="ui-state-error ui-corner-all">
+                <p>
+                    <span class="ui-icon ui-icon-alert"></span>${badEmailMessage}
                 </p>
             </div>
         </div>
@@ -22,23 +31,27 @@
         <h1 id="quartz-title">
             Quartz Jobs
             <span id="quartz-actions">
-            <g:if test="${scheduler.isInStandbyMode()}">
-                <a href="<g:createLink action="startScheduler"/>"><img class="quartz-tooltip"
-                                                                       data-tooltip="Start scheduler"
-                                                                       src="<g:resource dir="quartz/images"
-                                                                                        file="play-all.png"
-                                                                                        plugin="metridoc-core"/>"></a>
-            </g:if>
-            <g:else>
-                <a href="<g:createLink action="stopScheduler"/>"><img class="quartz-tooltip"
-                                                                      data-tooltip="Pause scheduler"
-                                                                      src="<g:resource dir="quartz/images"
-                                                                                       file="pause-all.png"
-                                                                                       plugin="metridoc-core"/>"></a>
-            </g:else>
-            <a id="quartz-settings" class="quartz-tooltip" data-tooltip="Quartz settings" href="#" style="padding-left: 32px; padding-top: 10px">
-                <r:img style="padding-top: 5px" dir="images/skin" file="applications-system.png" plugin="metridoc-core"/>
-            </a>
+                <g:if test="${scheduler.isInStandbyMode()}">
+                    <a href="<g:createLink action="startScheduler"/>"><img class="quartz-tooltip"
+                                                                           data-tooltip="Start scheduler"
+                                                                           src="<g:resource dir="quartz/images"
+                                                                                            file="play-all.png"
+                                                                                            plugin="metridoc-core"/>">
+                    </a>
+                </g:if>
+                <g:else>
+                    <a href="<g:createLink action="stopScheduler"/>"><img class="quartz-tooltip"
+                                                                          data-tooltip="Pause scheduler"
+                                                                          src="<g:resource dir="quartz/images"
+                                                                                           file="pause-all.png"
+                                                                                           plugin="metridoc-core"/>">
+                    </a>
+                </g:else>
+                <a id="quartz-settings" class="quartz-tooltip" data-tooltip="Quartz settings" href="#"
+                   style="padding-left: 32px; padding-top: 10px">
+                    <r:img style="padding-top: 5px" dir="images/skin" file="applications-system.png"
+                           plugin="metridoc-core"/>
+                </a>
 
             </span>
         </h1>
@@ -72,7 +85,8 @@
                         <g:else>
                             <td>${job.trigger?.name}</td>
                         </g:else>
-                        <td class="quartz-tooltip quartz-status ${job.status ?: "not-run"}" data-tooltip="${job.tooltip}">${job.lastRun}</td>
+                        <td class="quartz-tooltip quartz-status ${job.status ?: "not-run"}"
+                            data-tooltip="${job.tooltip}">${job.lastRun}</td>
                         <td class="quartz-to-hide">${job.tooltip}</td>
                         <g:if test="${scheduler.isInStandbyMode() || job.triggerStatus == Trigger.TriggerState.PAUSED}">
                             <td class="hasCountdown countdown_amount">Paused</td>

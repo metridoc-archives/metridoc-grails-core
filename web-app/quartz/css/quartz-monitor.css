@@ -10,27 +10,35 @@
 #quartz-jobs .quartz-actions img {
     padding: 1px 1px 0 3px;
 }
+
 #quartz-jobs .quartz-status {
     padding-left: 25px;
 }
+
 #quartz-jobs .not-run {
     background: url(../images/not-run.gif) 5px 50% no-repeat;
 }
+
 #quartz-jobs .running {
     background: url(../images/running.gif) 5px 50% no-repeat;
 }
+
 #quartz-jobs .complete {
     background: url(../images/complete.gif) 5px 50% no-repeat;
 }
+
 #quartz-jobs .error {
     background: url(../images/error.gif) 5px 50% no-repeat;
 }
+
 .list {
     clear: both;
 }
+
 #quartz-title {
     position: relative;
 }
+
 #quartz-title img {
     position: absolute;
     top: -5px;
@@ -50,4 +58,8 @@
 #quartz-jobs td {
     font-size: 80%;
     vertical-align: middle;
+}
+
+.md-email-alert {
+    padding-top: 2px;
 }

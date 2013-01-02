@@ -5,6 +5,7 @@ import metridoc.camel.CamelScriptRegistry
 import metridoc.camel.GroovyRouteBuilder
 import metridoc.camel.SqlPlusComponent
 import org.apache.camel.builder.RouteBuilder
+import org.apache.commons.lang.exception.ExceptionUtils
 import org.quartz.*
 import org.slf4j.LoggerFactory
 
@@ -23,6 +24,8 @@ abstract class MetridocJob {
      */
     def concurrent = false
     def grailsApplication
+    def mailService
+    def commonService
 
     private static final MANUAL_RUN_ID_PREFIX = "manual-run"
 
@@ -71,7 +74,31 @@ abstract class MetridocJob {
                 }
             }
         } catch (Throwable t) {
-            jobLogger.error("error occurred running job " + context.getJobDetail().getKey().getName() + " with trigger " + context.getTrigger().getKey().getName(), t);
+            String jobName = context.getJobDetail().getKey().getName()
+            String shortErrorMessage = "error occurred running job ${jobName} with trigger " + context.getTrigger().getKey().getName() + " will notify interested users by email"
+            //TODO: maybe we don't need to do this?  Does quartz already handle this?
+            jobLogger.error(shortErrorMessage, t);
+
+            def emails = NotificationEmails.findByScope(QuartzController.JOB_FAILURE_SCOPE).collect { it.email }
+            jobLogger.info "about to send out emails for ${jobName} failure to ${emails}"
+            def emailIsConfigured = commonService.emailIsConfigured() && emails
+            if (emailIsConfigured) {
+                emails.each { email ->
+                    try {
+                        jobLogger.info "sending email to ${email} about ${jobName} failure"
+                        mailService.sendMail {
+                            subject shortErrorMessage
+                            text ExceptionUtils.getFullStackTrace(t)
+                            to email
+                        }
+                    } catch (Throwable throwable) {
+                        jobLogger.error("could not send email to ${email}", throwable)
+                    }
+                }
+
+            } else {
+                jobLogger.warn "could not send email abotu ${jobName} failure since email is not properly configured"
+            }
             throw new JobExecutionException(t)
         }
     }

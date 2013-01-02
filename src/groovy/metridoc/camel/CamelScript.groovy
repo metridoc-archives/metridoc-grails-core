@@ -1,6 +1,5 @@
 package metridoc.camel
 
-import groovy.util.logging.Slf4j
 import metridoc.utils.CamelUtils
 import org.apache.camel.Component
 import org.apache.camel.builder.RouteBuilder
@@ -8,6 +7,7 @@ import org.apache.camel.impl.DefaultCamelContext
 import org.apache.camel.impl.SimpleRegistry
 import org.apache.camel.spi.Registry
 import org.apache.commons.lang.ObjectUtils
+import org.slf4j.LoggerFactory
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,15 +16,33 @@ import org.apache.commons.lang.ObjectUtils
  * Time: 12:10 PM
  * To change this template use File | Settings | File Templates.
  */
-@Slf4j
 class CamelScript {
 
+    /**
+     * components that shuld be added when instantiating the camel context
+     */
     static Map<String, Class<? extends Component>> components = Collections.synchronizedMap([:])
+    static final log = LoggerFactory.getLogger(CamelScript)
 
+    /**
+     * runs a route constructed from the passed closure.  A camel {@link Registry} will be built upon the properties
+     * provided by the closure's owner and delegate.  If a direct endpoint with the name <code>direct:start</code>
+     * exists, it will be called after the route is loaded.
+     *
+     * @param closure
+     * @return
+     */
     static RouteBuilder runRoute(Closure closure) {
         runRoute(null, closure)
     }
 
+    /**
+     *
+     *
+     * @param start
+     * @param closure
+     * @return
+     */
     static RouteBuilder runRoute(String start, Closure closure) {
         def routeBuilder = new GroovyRouteBuilder(route: closure)
         def registry = new CamelScriptRegistry(closure: closure)

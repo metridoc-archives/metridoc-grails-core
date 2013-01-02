@@ -1,9 +1,7 @@
 package metridoc.core
 
-
-
-import grails.test.mixin.*
-import org.junit.*
+import grails.test.mixin.TestFor
+import org.junit.Test
 
 /**
  * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
@@ -13,6 +11,7 @@ class NotificationEmailsServiceTests {
 
     @Test
     void "whether mail is enable or not depends on the existence of the property grails_mail"() {
+        disableMail()
         assert !service.mailIsEnabled()
         enableMail()
         assert service.mailIsEnabled()
@@ -20,6 +19,7 @@ class NotificationEmailsServiceTests {
 
     @Test
     void "mail is sent if mail is enabled, otherwise not"() {
+        disableMail()
         def mailHelper = new MailHelper()
         service.mailService = mailHelper
         service.doSendEmail(["foo"] as String[], "foo", "foo")
@@ -31,11 +31,18 @@ class NotificationEmailsServiceTests {
 
     void enableMail() {
         def grailsApplication = [
-                config : [
-                        grails : [
+                config: [
+                        grails: [
                                 mail: "mail mock"
                         ]
                 ]
+        ]
+        service.grailsApplication = grailsApplication
+    }
+
+    void disableMail() {
+        def grailsApplication = [
+                config: new ConfigObject()
         ]
         service.grailsApplication = grailsApplication
     }
@@ -54,11 +61,11 @@ class MailHelper {
 
     }
 
-    def subject (String subject) {
+    def subject(String subject) {
 
     }
 
-    def body (String body) {
+    def body(String body) {
 
     }
 }
