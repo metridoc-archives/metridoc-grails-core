@@ -6,9 +6,26 @@ class ReportTagLib {
     static namespace = 'md'
     def logService
 
-    def report = {attrs, body ->
-        def layoutInConfig = grailsApplication.config.metridoc.style.layout?grailsApplication.config.metridoc.style.layout:"main"
-        def layout = attrs.layout ? attrs.layout :layoutInConfig
+    def errorAlert = { attrs, body ->
+
+        if (!attrs) {
+            attrs = [:]
+        }
+
+        if (!attrs.containsKey("showAlertIf")) {
+            attrs.showAlertIf = attrs.alertMessage
+        }
+
+        out << render(
+                template: "/reports/errorAlert",
+                plugin: "metridoc-core",
+                model: attrs
+        )
+    }
+
+    def report = { attrs, body ->
+        def layoutInConfig = grailsApplication.config.metridoc.style.layout ? grailsApplication.config.metridoc.style.layout : "main"
+        def layout = attrs.layout ? attrs.layout : layoutInConfig
         def model = [layout: layout, body: body]
 
         if (attrs.module) {
@@ -18,35 +35,34 @@ class ReportTagLib {
         }
 
         model.hasModule = true
-        if("none" == attrs.module) {
+        if ("none" == attrs.module) {
             model.hasModule = false
         }
 
         out << render(
-            template: "/reports/defaultReport",
-            plugin: "metridoc-core",
-            model: model
+                template: "/reports/defaultReport",
+                plugin: "metridoc-core",
+                model: model
         )
     }
 
-    def header = {attrs, body ->
+    def header = { attrs, body ->
         out << "<strong>${body()}</strong><hr/>"
     }
 
-    def outputLogFile = {attrs, body ->
-        def path = attrs.filePath
+    def outputLogFile = { attrs, body ->
+        String path = attrs.filePath
         log.info "outputting logs from ${path}"
         def file = new File(path)
         logService.renderLog(out, file)
     }
 
-    def logMsg = {  attrs, body ->
+    def logMsg = { attrs, body ->
         if (attrs['level'] != null) {
             String logLevel =
-                Level.toLevel(attrs['level']).toString().toLowerCase()
+                Level.toLevel(attrs['level'] as String).toString().toLowerCase()
             log."$logLevel"(body())
-        }
-        else {
+        } else {
             log.debug(body())
         }
     }

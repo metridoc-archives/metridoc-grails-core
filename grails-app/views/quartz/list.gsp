@@ -8,24 +8,9 @@
 
 <%@ page import="org.quartz.Trigger" contentType="text/html;charset=UTF-8" %>
 <md:report>
-    <g:if test="${!emailIsConfigured}">
-        <div class="ui-widget md-email-alert">
-            <div class="ui-state-error ui-corner-all">
-                <p>
-                    <span class="ui-icon ui-icon-alert"></span>Email has not been set up properly, no notifications will be sent on job failures
-                </p>
-            </div>
-        </div>
-    </g:if>
-    <g:if test="${badEmailMessage}">
-        <div class="ui-widget md-email-alert">
-            <div class="ui-state-error ui-corner-all">
-                <p>
-                    <span class="ui-icon ui-icon-alert"></span>${badEmailMessage}
-                </p>
-            </div>
-        </div>
-    </g:if>
+    <md:errorAlert showAlertIf="${!emailIsConfigured}" alertClass="md-email-alert"
+                   alertMessage="Email has not been set up properly, no notifications will be sent on job failures"/>
+    <md:errorAlert alertClass="md-email-alert" alertMessage="${badEmailMessage}"/>
     <g:render template="quartzSettings" plugin="metridoc-core"/>
     <div class="body">
         <h1 id="quartz-title">

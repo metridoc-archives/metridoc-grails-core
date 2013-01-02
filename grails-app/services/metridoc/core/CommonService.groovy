@@ -11,7 +11,7 @@ class CommonService {
         return doEmailIsConfigured(grailsApplication.config)
     }
 
-    private doEmailIsConfigured(Map configObject) {
+    private static doEmailIsConfigured(Map configObject) {
         configObject.grails?.mail ? true : false
     }
 }
