@@ -1,7 +1,7 @@
 <div id="dialog" title="Settings">
     <g:form action="saveSettings">
         <div>
-            <div>Email on Failures (Does not work yet)</div>
+            <div>Email on Failures</div>
 
             <div class="textContainer">
                 <g:textArea name="emails">${notificationEmails}</g:textArea>
