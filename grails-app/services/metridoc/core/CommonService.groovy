@@ -12,6 +12,6 @@ class CommonService {
     }
 
     private doEmailIsConfigured(Map configObject) {
-        configObject.grails?.mail?.username ? true : false
+        configObject.grails?.mail ? true : false
     }
 }
