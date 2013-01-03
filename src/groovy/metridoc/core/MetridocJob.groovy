@@ -152,6 +152,7 @@ abstract class MetridocJob {
      */
     def runRoute(Closure closure) {
         CamelScript.components.put("sqlplus", SqlPlusComponent)
+        closure.delegate = this
         CamelScript.runRoute(closure)
     }
 

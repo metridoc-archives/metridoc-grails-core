@@ -76,6 +76,13 @@ class CamelScriptRegistryTest {
         registry.closure.delegate = scriptDelegate
         assert "fromScript" == registry.lookup("scriptProp")
     }
+
+    @Test
+    void "properties from delegate override are loaded AFTER the delegate"() {
+        registry.delegateOverride = [delegateOnlyProperty: "fooOverride"]
+        def value = registry.lookup("delegateOnlyProperty")
+        assert "fooOverride" == value
+    }
 }
 
 class SampleOwner {

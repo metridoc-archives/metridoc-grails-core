@@ -82,6 +82,12 @@ class MetridocJobTest {
         helper.includeTargets(MetridocJobTestTargetHelper)
         helper.depends("bar")
     }
+
+    @Test
+    void "checking that property propogation works properly to routes in imported targets"() {
+        helper.includeTargets(MetridocJobTestTargetHelper)
+        helper.depends("doRoute")
+    }
 }
 
 class MetridocJobTestHelper extends MetridocJob {
@@ -120,6 +126,12 @@ class MetridocJobTestTargetHelper extends Script {
 
         target(bar: "runs bar") {
             depends("foo")
+        }
+
+        target(doRoute: "runs a basic route to test that property propogation works properly") {
+            runRoute {
+                from("sqlplus:bar?dataSource=dataSource").to("sqlplus:foobar?dataSource=dataSource")
+            }
         }
     }
 }

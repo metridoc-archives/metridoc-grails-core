@@ -13,6 +13,7 @@ import org.apache.camel.spi.Registry
 @Slf4j
 class CamelScriptRegistry implements Registry {
     Closure closure
+    def delegateOverride
     private Map<String, Object> _propertiesMap = [:]
 
     Map<String, Object> getPropertiesMap() {
@@ -22,13 +23,13 @@ class CamelScriptRegistry implements Registry {
         def delegate = closure.delegate
         switch (closure.resolveStrategy) {
             case Closure.DELEGATE_FIRST:
-                loadPropertyMap(owner, delegate)
+                loadPropertyMap(owner, delegate, delegateOverride)
                 break
             case Closure.DELEGATE_ONLY:
-                loadPropertyMap(delegate)
+                loadPropertyMap(delegate, delegateOverride)
                 break
             case Closure.OWNER_FIRST:
-                loadPropertyMap(delegate, owner)
+                loadPropertyMap(delegate, delegateOverride, owner)
                 break
             case Closure.OWNER_ONLY:
                 loadPropertyMap([owner] as Object[])
@@ -49,7 +50,13 @@ class CamelScriptRegistry implements Registry {
                         _propertiesMap.putAll(binding.variables)
                     }
                 }
-                _propertiesMap.putAll(it.properties)
+                if (it.properties) {
+                    _propertiesMap.putAll(it.properties)
+                }
+
+                if (it instanceof Map) {
+                    _propertiesMap.putAll(it)
+                }
             }
         }
     }

@@ -44,8 +44,9 @@ class CamelScript {
      * @return
      */
     static RouteBuilder runRoute(String start, Closure closure) {
+        def delegateOverride = closure.delegate
         def routeBuilder = new GroovyRouteBuilder(route: closure)
-        def registry = new CamelScriptRegistry(closure: closure)
+        def registry = new CamelScriptRegistry(closure: closure, delegateOverride: delegateOverride)
         runRouteBuilders(start, registry, routeBuilder)
 
         return routeBuilder
