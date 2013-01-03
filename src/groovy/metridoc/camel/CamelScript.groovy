@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory
 class CamelScript {
 
     /**
-     * components that shuld be added when instantiating the camel context
+     * components that should be added when instantiating the camel context
      */
     static Map<String, Class<? extends Component>> components = Collections.synchronizedMap([:])
     static final log = LoggerFactory.getLogger(CamelScript)
