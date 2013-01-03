@@ -178,6 +178,7 @@ abstract class MetridocJob {
      * @return
      */
     def target(Map data, Closure closure) {
+        closure.delegate = this //required for imported targets
         if (data.size() != 1) {
             throw new JobExecutionException("the map in target can only have one variable, which is the name and the description of the target")
         }

@@ -76,6 +76,12 @@ class MetridocJobTest {
         helper.doExecute()
         assert helper.doExecuteRouteRan
     }
+
+    @Test
+    void "checking that depends within an imported target can run (see METCORE-188)"() {
+        helper.includeTargets(MetridocJobTestTargetHelper)
+        helper.depends("bar")
+    }
 }
 
 class MetridocJobTestHelper extends MetridocJob {
@@ -100,6 +106,20 @@ class MetridocJobTestHelper extends MetridocJob {
                 }
                 from("sqlplus:bar?dataSource=dataSource").to("sqlplus:foobar?dataSource=dataSource")
             }
+        }
+    }
+}
+
+class MetridocJobTestTargetHelper extends Script {
+
+    @Override
+    Object run() {
+        target(foo: "runs foo") {
+
+        }
+
+        target(bar: "runs bar") {
+            depends("foo")
         }
     }
 }
