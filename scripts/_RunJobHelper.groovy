@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 includeTargets << grailsScript("_GrailsInit")
 
 doCliCall = {
@@ -33,16 +35,16 @@ doRestCall = {
                 auth(runJobArguments.user, runJobArguments.password)
             }
 
-            grailsConsole.info "response returned with a response status of $response.status"
-
             def triggerId = response.text
-            grailsConsole.info "triger id is: $triggerId"
             def status = "running"
             while (status == "running") {
                 def statusUrl = "${baseUrl}status/${triggerId}"
-                status = restBuilder.get(statusUrl) {
+                def statusResponse = restBuilder.get(statusUrl) {
                     auth(runJobArguments.user, runJobArguments.password)
-                }.text
+                }
+                assert statusResponse.status == 200 : "error occurred checking job status:\n$statusResponse.text"
+                status = statusResponse.json.status
+
                 Thread.sleep(500)
             }
 

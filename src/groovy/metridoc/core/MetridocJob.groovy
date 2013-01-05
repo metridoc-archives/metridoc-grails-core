@@ -27,18 +27,13 @@ abstract class MetridocJob {
     def mailService
     def commonService
 
-    private static final MANUAL_RUN_ID_PREFIX = "manual-run"
-
     /**
-     * unfortunately for quartz to actually register a job, it must have some fire time in the future.  This trigger is
-     * meant to represent a job that is meant to be manually fired off in the scheduling view.  To get quartz to
-     * register the job, t is actually a simple trigger that will wait an arbitrarily long time to fire off, in this
-     * case 20 years.  This will reset everytime the application is restarted
+     * unfortunately for quartz to actually register a job, it must have some fire time in the future.  This trigger
+     * has an arbitrarily long start up delay (50 years).  By doing this the job can be managed via the quartzscheduler.
      */
     static final MANUAL_RUN_TRIGGER = {
-        def uuid = UUID.randomUUID().toString()
-        def twentyYears = TimeUnit.DAYS.toMillis(365 * 20)
-        simple name: "$MANUAL_RUN_ID_PREFIX-$uuid", repeatInterval: 1000, startDelay: twentyYears
+        def fiftyYears = TimeUnit.DAYS.toMillis(365 * 50)
+        simple repeatInterval: 1000, startDelay: fiftyYears
     }
 
     /**

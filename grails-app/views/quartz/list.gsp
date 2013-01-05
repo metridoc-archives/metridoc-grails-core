@@ -79,7 +79,7 @@
                         <g:elseif test="${job.status == "running"}">
                             <td>Running</td>
                         </g:elseif>
-                        <g:elseif test="${job.trigger?.key?.name?.startsWith("manual")}">
+                        <g:elseif test="${job.manualJob}">
                             <td>NA</td>
                         </g:elseif>
                         <g:else>

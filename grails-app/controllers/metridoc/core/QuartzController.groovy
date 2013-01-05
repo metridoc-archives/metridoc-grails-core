@@ -1,5 +1,6 @@
 package metridoc.core
 
+import grails.converters.JSON
 import org.apache.commons.lang.StringUtils
 import org.apache.commons.lang.text.StrBuilder
 import org.quartz.*
@@ -9,6 +10,7 @@ class QuartzController {
 
     def commonService
     static final String JOB_FAILURE_SCOPE = "jobFailure"
+    long NEXT_FIRE_TIME_WHERE_JOB_CONSIDERED_MANUAL = 1000 * 60 * 60 * 24 * 356 * 2
 
 
     static homePage = [
@@ -45,30 +47,22 @@ class QuartzController {
     def list() {
         def jobsList = []
         def listJobGroups = quartzScheduler.getJobGroupNames()
+        def manualJob = false
         listJobGroups?.each { jobGroup ->
             quartzScheduler.getJobKeys(GroupMatcher.groupEquals(jobGroup))?.each { jobKey ->
                 def triggers = quartzScheduler.getTriggersOfJob(jobKey)
                 if (triggers) {
                     triggers.each { Trigger trigger ->
                         def name = trigger.key.name
-                        def unScheduled = false
                         def status = QuartzMonitorJobFactory.jobRuns[name]?.status ?: "complete"
-                        def running = status != "running"
-
-                        if (name.startsWith("manual") && trigger.previousFireTime && !running) {
-                            def previousFireTime = trigger.previousFireTime.time
-                            def now = new Date().time
-                            if (now - previousFireTime > 1000 * 60 * 60 * 24) {
-                                quartzScheduler.unScheduleJob(trigger.key)
-                                unScheduled = true
-                            }
+                        def currentJob = createJob(jobGroup, jobKey.name, jobsList, trigger.key.name)
+                        currentJob.trigger = trigger
+                        currentJob.triggerStatus = quartzScheduler.getTriggerState(trigger.key)
+                        long timeToNextFireTime = trigger.getNextFireTime().time - new Date().time
+                        if(timeToNextFireTime > NEXT_FIRE_TIME_WHERE_JOB_CONSIDERED_MANUAL) {
+                            manualJob = true
                         }
-
-                        if (!unScheduled) {
-                            def currentJob = createJob(jobGroup, jobKey.name, jobsList, trigger.key.name)
-                            currentJob.trigger = trigger
-                            currentJob.triggerStatus = quartzScheduler.getTriggerState(trigger.key)
-                        }
+                        currentJob.manualJob = manualJob
                     }
                 } else {
                     createJob(jobGroup, jobKey.name, jobsList)
@@ -102,6 +96,9 @@ class QuartzController {
             badEmailMessage = "No emails have been set, no one will be notified of job failures"
         }
 
+
+
+
         return [
                 jobs: jobsList,
                 now: new Date(),
@@ -109,6 +106,7 @@ class QuartzController {
                 emailIsConfigured: commonService.emailIsConfigured(),
                 notificationEmails: notificationEmails,
                 badEmailMessage: badEmailMessage,
+
         ]
     }
 
@@ -167,12 +165,16 @@ class QuartzController {
     }
 
     def status() {
-        if (params.id) {
-            def jobId = params.id
-            def monitoredJobs = QuartzMonitorJobFactory.jobRuns
-            render monitoredJobs[jobId]?.status ?: "unknown"
+        String triggerId = params.id
+        if (triggerId) {
+            def jobInfo = QuartzMonitorJobFactory.jobRuns[triggerId]
+            if (jobInfo) {
+                render jobInfo as JSON
+            } else {
+                render(status: 404, text: "job with trigger $triggerId does not exist")
+            }
         } else {
-            render(status: 400, text: "no id provided")
+            render QuartzMonitorJobFactory.jobRuns as JSON
         }
     }
 
