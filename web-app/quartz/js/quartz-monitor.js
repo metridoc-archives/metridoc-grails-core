@@ -93,9 +93,41 @@ if (jQuery) {
         }
     );
 
-    /**
-     * adds functionality to save settings
-     */
+    var today = new Date();
+    var time = today.getTime();
+
+    $("#quartz-jobs tr").each(function(index){
+        if(index != 0) {
+            var row = $(this).find("td");
+            var countDown = row[4];
+            var nextRun = $(countDown).attr("data-next-run");
+            if (nextRun) {
+                var delay = nextRun - time;
+                var nextRefresh = Math.max(0, delay);
+                reloadWindow(nextRefresh);
+            }
+
+            var status = row[2];
+            var running = $(status).hasClass("running");
+            if(running) {
+                var duration = $(countDown).attr("data-last-runtime");
+                var usedDuration = 1000 * 60 * 5; //five minutes
+                if(duration) {
+                    /*
+                     * TODO: we need to fine tune this a bit.  We do have enough information to
+                     */
+                    usedDuration = duration / 2;
+                }
+                reloadWindow(usedDuration);
+            }
+
+        }
+    });
 }
 
-
+function reloadWindow(delay) {
+    var fifteenSeconds = 1000 * 15;
+    var usedDelay = Math.max(delay, fifteenSeconds);
+    console.log("Window refresh will occur in " + usedDelay + " milliseconds");
+    setTimeout(function(){location.reload()}, usedDelay);
+}

@@ -26,6 +26,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>MetriDoc</title>
+    <!-- make sure console works in any browser -->
+    <script type="text/javascript">
+        if (!console) console = {log: function() {}};
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <g:javascript library="jquery"/>
     <r:require module="application"/>
@@ -34,6 +38,7 @@
 </head>
 
 <body>
+
 <div id="doc4" class="shadow">
     <div id="metridocBanner" role="banner">
         <a id="metridocLogo" href="http://metridoc.googlecode.com">

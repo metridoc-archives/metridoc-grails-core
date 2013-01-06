@@ -77,7 +77,7 @@
                             <td class="hasCountdown countdown_amount">Paused</td>
                         </g:if>
                         <g:elseif test="${job.status == "running"}">
-                            <td>Running</td>
+                            <td data-last-runtime="${job.lastDuration}">Running</td>
                         </g:elseif>
                         <g:elseif test="${job.manualJob}">
                             <td>NA</td>

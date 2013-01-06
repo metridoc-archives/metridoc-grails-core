@@ -67,7 +67,11 @@ public class QuartzMonitorJobFactory extends GrailsJobFactory {
 
         public void execute(final JobExecutionContext context) throws JobExecutionException {
             try {
+                Object lastDuration = jobDetails.get("duration");
                 jobDetails.clear();
+                if(lastDuration != null) {
+                    jobDetails.put("lastDuration", lastDuration);
+                }
                 jobDetails.put("lastRun", new Date());
                 jobDetails.put("status", "running");
                 long start = System.currentTimeMillis();
