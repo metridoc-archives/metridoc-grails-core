@@ -1,10 +1,7 @@
-@artifact.package@
-
-import metridoc.core.MetridocJob
-
-class @artifact.name@ extends MetridocJob{
+@artifact.package @
+class @artifact.name @extends MetridocJob {
     static triggers = {
-        simple repeatInterval: 5000l // execute job once in 5 seconds
+        simple repeatInterval: 60000l // execute job once in 60 seconds
     }
 
     def doExecute() {
