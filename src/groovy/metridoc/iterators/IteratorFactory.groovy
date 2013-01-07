@@ -14,10 +14,10 @@
  */
 package metridoc.iterators
 
-import liquibase.util.file.FilenameUtils
 import org.apache.camel.Body
 import org.apache.camel.Header
 import org.apache.camel.component.file.GenericFile
+import org.apache.commons.io.FileUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,8 +27,11 @@ import org.apache.camel.component.file.GenericFile
  */
 class IteratorFactory implements IteratorCreator<GenericFile, List> {
 
+    public static final char EXTENSION_SEPARATOR = '.';
+
     private FileIteratorCreator chooseIterator(GenericFile genericFile) {
-        String extension = FilenameUtils.getExtension(genericFile.fileNameOnly);
+        FileUtils.file
+        String extension = getExtension(genericFile.fileNameOnly);
 
         if ("gz" == extension) {
             def m = genericFile.fileNameOnly =~ /.*\.(\w+)\.gz$/
@@ -55,5 +58,26 @@ class IteratorFactory implements IteratorCreator<GenericFile, List> {
 
     Iterator<List> create(GenericFile file) {
         create(file, [:])
+    }
+
+    private static int indexOfExtension(String filename) {
+        if (filename == null) {
+            return -1;
+        }
+        int extensionPos = filename.lastIndexOf(EXTENSION_SEPARATOR);
+        int lastSeparator = indexOfLastSeparator(filename);
+        return (lastSeparator > extensionPos ? -1 : extensionPos);
+    }
+
+    private static String getExtension(String filename) {
+        if (filename == null) {
+            return null;
+        }
+        int index = indexOfExtension(filename);
+        if (index == -1) {
+            return "";
+        } else {
+            return filename.substring(index + 1);
+        }
     }
 }
