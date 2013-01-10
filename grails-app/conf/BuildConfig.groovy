@@ -79,7 +79,7 @@ grails.project.dependency.resolution = {
         runtime ":webxml:1.4.1"
         build ":tomcat:$grailsVersion"
         build ":rest-client-builder:1.0.2"
-        build ":release:2.0.3"
+        build ":release:$grailsVersion"
         build ":svn:1.0.2"
     }
 }
