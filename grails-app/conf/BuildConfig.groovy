@@ -22,7 +22,7 @@ grails.project.source.level = 1.6
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
 //location of the release repository
-grails.project.repos.metridocRepo.url = "https://metridoc.googlecode.com/svn/plugins"
+grails.project.repos.metridocRepo.url = new File("../maven/repository").toURI().toURL().toString()
 //name of the repository
 grails.project.repos.default = "metridocRepo"
 
