@@ -16,24 +16,22 @@
 #template {
     padding-top: 50px;
     padding-bottom: 50px;
-    padding-left: 30px;
 }
 
-.message{
+.message {
     margin: 10px;
     z-index: 1;
 }
 
 form {
-    padding-right: 400px;
     padding-top: 20px;
 }
 
-form div{
+form div {
     padding-bottom: 10px;
 }
 
-label{
+label {
     float: left;
     width: 300px;
     text-align: right;
@@ -42,43 +40,42 @@ label{
     top: 5px;
 }
 
-
-#usernameInput{
+#usernameInput {
     width: 190px;
     margin-bottom: 10px;
 }
 
-#passwordInput{
-    width:110px;
+#passwordInput {
+    width: 110px;
     margin-bottom: 10px;
 }
 
-#emailInput{
+#emailInput {
     width: 200px;
     margin-bottom: 10px;
 }
 
-.buttons{
+.buttons {
     text-align: right;
 }
 
-button{
+button {
     padding-top: 20px;
-    margin-left: 0px;
+    margin-left: 0;
     margin-top: 15px;
 }
 
-#upPasswordButton{
+#upPasswordButton {
     margin-right: 40px;
     float: right;
 }
 
-#rememberLabel{
+#rememberLabel {
     font-size: 0.8em;
-    top:2px
+    top: 2px
 }
 
-#forgetPW{
+#forgetPW {
     font-size: 0.8em;
     width: 300px;
     text-align: right;
