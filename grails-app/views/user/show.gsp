@@ -21,16 +21,25 @@
 
     <div class="nav" role="navigation">
         <ul>
-            <li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label" default="Home"/></a></li>
-            <li><g:link class="list" controller="user" action="list"><g:message code="default.list.label" args="['User']" default="User List"/></g:link></li>
-            <li><g:link class="create" controller="user" action="create"><g:message code="default.create.label" args="['User']" default="Create User"/></g:link></li>
-            <li><g:link class="list" controller="role" action="list"><g:message code="default.list.label" args="['Role']" default="Role List"/></g:link></li>
-            <li><g:link class="create" controller="role" action="create"><g:message code="default.create.label" args="['Role']" default="Create Role"/></g:link></li>
+            <li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label" default="Home"/></a>
+            </li>
+            <li><g:link class="list" controller="user" action="list"><g:message code="default.list.label"
+                                                                                args="['User']"
+                                                                                default="User List"/></g:link></li>
+            <li><g:link class="create" controller="user" action="create"><g:message code="default.create.label"
+                                                                                    args="['User']"
+                                                                                    default="Create User"/></g:link></li>
+            <li><g:link class="list" controller="role" action="list"><g:message code="default.list.label"
+                                                                                args="['Role']"
+                                                                                default="Role List"/></g:link></li>
+            <li><g:link class="create" controller="role" action="create"><g:message code="default.create.label"
+                                                                                    args="['Role']"
+                                                                                    default="Create Role"/></g:link></li>
         </ul>
     </div>
 
     <div id="show-shiroUser" class="content scaffold-show" role="main">
-        <h1><g:message code="default.show.label" args="['User']" default="Show User"/></h1>
+        <h1><g:message code="default.details.label" args="['User']" default="User Details"/></h1>
         <g:if test="${flash.message}">
             <div class="message" role="status">${flash.message}</div>
         </g:if>
@@ -75,16 +84,16 @@
         <g:form>
             <fieldset class="buttons">
                 <g:hiddenField name="id" value="${shiroUserInstance?.id}"/>
-                <g:if test="${shiroUserInstance.username!='anonymous'}">
+                <g:if test="${shiroUserInstance.username != 'anonymous'}">
                     <g:link class="edit" action="edit" id="${shiroUserInstance?.id}"><g:message
                             code="default.button.edit.label"
                             default="Edit"/></g:link>
                     <g:if test="${shiroUserInstance.username != currentUserName && shiroUserInstance.username != 'admin'}">
-                    <g:actionSubmit class="delete" action="delete"
-                                    value="${message(code: 'default.button.delete.label', default: 'Delete')}"
-                                    onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/>
+                        <g:actionSubmit class="delete" action="delete"
+                                        value="${message(code: 'default.button.delete.label', default: 'Delete')}"
+                                        onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/>
                     </g:if>
-                    </g:if>
+                </g:if>
             </fieldset>
         </g:form>
     </div>
