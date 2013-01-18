@@ -36,6 +36,9 @@ target(main: "The description of the script goes here!") {
     } else if (argsMap.cli) {
         System.setProperty("metridoc.quartz.disabled", "true")
         System.setProperty("metridoc.job.cliOnly", "true")
+        if(!argsMap.email) {
+            System.setProperty("metridoc.email.disabled", "true")
+        }
         depends(packageApp, loadApp, configureApp)
         includeTargets << new File("$metridocCorePluginDir/scripts/_RunJobHelper.groovy")
         doCliCall()

@@ -29,6 +29,11 @@ class NotificationEmailsServiceTests {
         assert 1 == mailHelper.callCount
     }
 
+    @Test
+    void "mail is enabled by default by system property"() {
+        assert !NotificationEmailsService.emailDisabledFromSystemProperty()
+    }
+
     void enableMail() {
         def grailsApplication = [
                 config: [

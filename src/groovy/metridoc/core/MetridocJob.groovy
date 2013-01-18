@@ -75,8 +75,8 @@ abstract class MetridocJob {
             jobLogger.error(shortErrorMessage, t);
 
             def emails = NotificationEmails.findByScope(QuartzController.JOB_FAILURE_SCOPE).collect { it.email }
-            jobLogger.info "about to send out emails for ${jobName} failure to ${emails}"
-            def emailIsConfigured = commonService.emailIsConfigured() && emails
+
+            def emailIsConfigured = commonService.emailIsConfigured() && emails && !NotificationEmailsService.emailDisabledFromSystemProperty()
             if (emailIsConfigured) {
                 emails.each { email ->
                     try {
@@ -92,7 +92,7 @@ abstract class MetridocJob {
                 }
 
             } else {
-                jobLogger.warn "could not send email abotu ${jobName} failure since email is not properly configured"
+                jobLogger.info "could not send email about ${jobName} failure since email is not configured or is disabled"
             }
             throw new JobExecutionException(t)
         }
