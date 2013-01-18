@@ -54,7 +54,6 @@ class QuartzController {
                 if (triggers) {
                     triggers.each { Trigger trigger ->
                         def name = trigger.key.name
-                        def status = QuartzMonitorJobFactory.jobRuns[name]?.status ?: "complete"
                         def currentJob = createJob(jobGroup, jobKey.name, jobsList, trigger.key.name)
                         currentJob.trigger = trigger
                         currentJob.triggerStatus = quartzScheduler.getTriggerState(trigger.key)
@@ -200,9 +199,5 @@ class QuartzController {
 
     private jobKey(name, group) {
         return JobKey.jobKey(name, group)
-    }
-
-    private triggerKey(name, group) {
-        return TriggerKey.triggerKey(name, group)
     }
 }

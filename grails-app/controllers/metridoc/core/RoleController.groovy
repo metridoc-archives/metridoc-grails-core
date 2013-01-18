@@ -15,7 +15,6 @@
 package metridoc.core
 
 import metridoc.reports.ShiroRole
-import org.springframework.dao.DataIntegrityViolationException
 
 class RoleController {
 

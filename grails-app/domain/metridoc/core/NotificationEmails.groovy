@@ -1,5 +1,6 @@
 package metridoc.core
 
+import groovy.transform.ToString
 import org.apache.commons.lang.text.StrBuilder
 
 /**
@@ -86,5 +87,33 @@ class NotificationEmails {
         }
 
         return result.toString()
+    }
+
+    @Override
+    public String toString() {
+        return "NotificationEmails{" +
+                "id=" + id +
+                ", scope='" + scope + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
+
+    boolean equals(o) {
+        if (this.is(o)) return true
+        if (!(o instanceof NotificationEmails)) return false
+
+        NotificationEmails that = (NotificationEmails) o
+
+        if (email != that.email) return false
+        if (scope != that.scope) return false
+
+        return true
+    }
+
+    int hashCode() {
+        int result
+        result = (scope != null ? scope.hashCode() : 0)
+        result = 31 * result + (email != null ? email.hashCode() : 0)
+        return result
     }
 }

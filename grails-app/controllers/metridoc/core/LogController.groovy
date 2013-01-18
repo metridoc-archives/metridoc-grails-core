@@ -11,6 +11,7 @@ class LogController {
             """
     ]
 
+    @SuppressWarnings('EmptyMethod')
     def index() {
     }
 }

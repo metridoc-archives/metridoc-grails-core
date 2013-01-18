@@ -6,5 +6,7 @@ class AdminControllerNoDescriptionController {
         adminOnly:true
     ]
 
-    def index() { }
+    def index() {
+        render "I am used for testing only"
+    }
 }

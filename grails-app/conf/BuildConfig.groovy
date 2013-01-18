@@ -26,6 +26,11 @@ grails.project.repos.metridocRepo.url = new File("../maven/repository").toURI().
 //name of the repository
 grails.project.repos.default = "metridocRepo"
 
+codenarc.properties = {
+    // Each property definition is of the form:  RULE.PROPERTY-NAME = PROPERTY-VALUE
+    GrailsPublicControllerMethod.enabled = false
+}
+
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies, this has to be here
     inherits("global")
@@ -81,5 +86,8 @@ grails.project.dependency.resolution = {
         build ":rest-client-builder:1.0.2"
         build ":release:$grailsVersion"
         build ":svn:1.0.2"
+        build(":codenarc:0.18") {
+            excludes "log4j", "groovy-all", "ant"
+        }
     }
 }

@@ -2,5 +2,7 @@ package metridoc.test
 
 class SimpleControllerNoDescriptionController {
 
-    def index() { }
+    def index() {
+        render "I am used for testing only"
+    }
 }
