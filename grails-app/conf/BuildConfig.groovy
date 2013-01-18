@@ -87,7 +87,7 @@ grails.project.dependency.resolution = {
         build ":release:$grailsVersion"
         build ":svn:1.0.2"
         build(":codenarc:0.18") {
-            excludes "log4j", "groovy-all", "ant"
+            excludes "log4j", "groovy-all", "ant", "junit"
         }
     }
 }
