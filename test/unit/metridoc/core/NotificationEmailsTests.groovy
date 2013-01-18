@@ -101,7 +101,6 @@ class NotificationEmailsTests {
 
     @Test
     void "test toString"() {
-        println new NotificationEmails().toString()
-        assert new NotificationEmails().toString().contains("id:")
+        assert new NotificationEmails().toString().contains("id=")
     }
 }
