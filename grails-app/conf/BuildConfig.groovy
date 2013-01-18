@@ -22,7 +22,7 @@ grails.project.source.level = 1.6
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
 //location of the release repository
-grails.project.repos.metridocRepo.url = new File("../maven/repository").toURI().toURL().toString()
+grails.project.repos.metridocRepo.url = "svn:https://metridoc.googlecode.com/svn/trunk/maven"
 //name of the repository
 grails.project.repos.default = "metridocRepo"
 
@@ -65,6 +65,7 @@ grails.project.dependency.resolution = {
         }
         compile('org.apache.camel:camel-stream:2.9.2')
         compile('org.apache.camel:camel-ftp:2.9.2')
+        build("com.google.code.maven-svn-wagon:maven-svn-wagon:1.4")
     }
 
     //grails based plugins
