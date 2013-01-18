@@ -10,8 +10,11 @@ class QuartzController {
 
     def commonService
     static final String JOB_FAILURE_SCOPE = "jobFailure"
-    long NEXT_FIRE_TIME_WHERE_JOB_CONSIDERED_MANUAL = 1000 * 60 * 60 * 24 * 356 * 2
+    long NEXT_FIRE_TIME_WHERE_JOB_CONSIDERED_MANUAL = 1000 * 60 * 60 * 24 * 356 * 2 //TWO_YEARS
 
+    static accessControl = {
+        role(name: "ROLE_ADMIN")
+    }
 
     static homePage = [
             title: "Job List",

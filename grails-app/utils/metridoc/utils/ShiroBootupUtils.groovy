@@ -23,13 +23,25 @@ class ShiroBootupUtils {
         def currentFilterChainDefinitions = filter.filterChainDefinitions.trim()
 
         if (!currentFilterChainDefinitions) {
+            //TODO: original definitions, delete this when done
+//            filter.filterChainDefinitions = """
+//                    /*Admin/** = user,roles[ROLE_ADMIN]
+//                    /whoami = user
+//                    /admin/** = user,roles[ROLE_ADMIN]
+//                    /log/** = user,roles[ROLE_ADMIN]
+//                    /profile/** = user
+//                    /quartz/** = user,roles[ROLE_ADMIN]
+//                    /role/** = user,roles[ROLE_ADMIN]
+//                    /status/** = user,roles[ROLE_ADMIN]
+//                    /user/** = user,roles[ROLE_ADMIN]
+//                    /logout = logout
+//                """
             filter.filterChainDefinitions = """
                     /*Admin/** = user,roles[ROLE_ADMIN]
                     /whoami = user
                     /admin/** = user,roles[ROLE_ADMIN]
                     /log/** = user,roles[ROLE_ADMIN]
                     /profile/** = user
-                    /quartz/** = user,roles[ROLE_ADMIN]
                     /role/** = user,roles[ROLE_ADMIN]
                     /status/** = user,roles[ROLE_ADMIN]
                     /user/** = user,roles[ROLE_ADMIN]
