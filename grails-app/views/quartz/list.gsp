@@ -49,7 +49,7 @@
         </div>
 
         <div class="list">
-            <table id="quartz-jobs">
+            <table id="quartz-jobs" class="table table-hover table-striped">
                 <thead>
                 <tr>
                     <th>Name</th>

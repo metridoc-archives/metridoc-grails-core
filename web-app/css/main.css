@@ -503,16 +503,17 @@ th.desc a {
     background-image: url(../images/skin/sorted_desc.gif);
 }
 
-.odd {
-    background: #f7f7f7;
-}
+/*TODO: remove once bootstrap is incorporated*/
+/*.odd {*/
+    /*background: #f7f7f7;*/
+/*}*/
 
-.even {
-    background: #ffffff;
-}
+/*.even {*/
+    /*background: #ffffff;*/
+/*}*/
 
-th:hover, tr:hover {
-    background: #E1F2B6;
+.table-hover tr:hover {
+    background: #f5f5f5;
 }
 
 /*NAVIGATION MENU*/
