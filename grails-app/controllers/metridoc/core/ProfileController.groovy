@@ -7,10 +7,7 @@ import org.apache.shiro.crypto.hash.Sha256Hash
 
 class ProfileController {
 
-    static final homePage = [
-            exclude: true
-    ]
-
+    static boolean isProtected = true
     static allowedMethods = [save: "POST", update: "POST", index: "GET"]
 
 

@@ -21,9 +21,6 @@ import org.apache.shiro.web.util.WebUtils
 
 class AuthController {
 
-    static final homePage = [
-            exclude: true
-    ]
     def authService
     def grailsApplication
 

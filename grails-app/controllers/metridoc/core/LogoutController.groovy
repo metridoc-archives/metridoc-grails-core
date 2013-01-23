@@ -18,10 +18,6 @@ import org.apache.shiro.SecurityUtils
 
 class LogoutController {
 
-    static final homePage = [
-            exclude: true
-    ]
-
     def index() {
         SecurityUtils.subject.logout()
         redirect(controller: "home")

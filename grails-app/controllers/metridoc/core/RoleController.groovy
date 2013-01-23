@@ -18,12 +18,12 @@ import metridoc.reports.ShiroRole
 
 class RoleController {
 
-    static final homePage = [
-            exclude: true
-    ]
-
     static allowedMethods = [save: "POST", update: "POST", delete: "DELETE", list: "GET", index: "GET"]
     def static final reportName = "Manage Roles"
+
+    static accessControl = {
+        role(name: "ROLE_ADMIN")
+    }
 
     def index() {
         chain(action: "list")
