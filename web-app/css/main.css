@@ -503,15 +503,6 @@ th.desc a {
     background-image: url(../images/skin/sorted_desc.gif);
 }
 
-/*TODO: remove once bootstrap is incorporated*/
-/*.odd {*/
-    /*background: #f7f7f7;*/
-/*}*/
-
-/*.even {*/
-    /*background: #ffffff;*/
-/*}*/
-
 .table-hover tr:hover {
     background: #f5f5f5;
 }
