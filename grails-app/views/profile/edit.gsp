@@ -2,7 +2,7 @@
 <md:report>
 
     <div id="edit-shiroUser" class="content scaffold-edit" role="main">
-        <h1><g:message code="default.edit.label" args="['Profile']" default="Edit Profile"/></h1>
+        <h1>${shiroUserInstance?.username}</h1>
         <g:if test="${flash.message}">
             <div class="message" role="status">${flash.message}</div>
         </g:if>
@@ -18,14 +18,6 @@
             <g:form method="post">
                 <g:hiddenField name="id" value="${shiroUserInstance?.id}"/>
                 <g:hiddenField name="version" value="${shiroUserInstance?.version}"/>
-
-                <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'username', 'error')} required">
-                    <label for="username">
-                        <g:message code="shiroUser.username.label" default="User Name"/>
-                        <span class="required-indicator">*</span>
-                    </label>
-                    <g:textField name="username" required="" value="${shiroUserInstance?.username}"/>
-                </div>
 
                 <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'emailAddress', 'error')} ">
                     <label for="emailAddress">

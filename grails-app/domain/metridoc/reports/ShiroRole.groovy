@@ -14,21 +14,13 @@
  */
 package metridoc.reports
 
-import grails.util.Holders
-
 class ShiroRole {
     String name
 
     static hasMany = [ users: ShiroUser, permissions: String ]
     static belongsTo = ShiroUser
     static mapping = {
-        def grailsApplication = Holders.grailsApplication
 
-        if (grailsApplication) {
-            if(grailsApplication.mergedConfig.dataSource_admin) {
-                datasource('admin')
-            }
-        }
     }
 
     static constraints = {

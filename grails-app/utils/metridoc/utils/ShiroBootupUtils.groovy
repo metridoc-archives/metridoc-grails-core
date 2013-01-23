@@ -38,18 +38,15 @@ class ShiroBootupUtils {
 //                """
             filter.filterChainDefinitions = """
                     /*Admin/** = user,roles[ROLE_ADMIN]
-                    /whoami = user
                     /admin/** = user,roles[ROLE_ADMIN]
-                    /log/** = user,roles[ROLE_ADMIN]
                     /profile/** = user
                     /role/** = user,roles[ROLE_ADMIN]
                     /status/** = user,roles[ROLE_ADMIN]
-                    /user/** = user,roles[ROLE_ADMIN]
+                    /rest/** = authcBasic, roles[ROLE_REST]
                     /logout = logout
                 """
         }
 
-        filter.filterChainDefinitions = addRestDefinitions(filter.filterChainDefinitions)
     }
 
     static addRestDefinitions(String currentConfiguration) {

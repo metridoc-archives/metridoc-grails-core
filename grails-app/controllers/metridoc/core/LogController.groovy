@@ -2,6 +2,10 @@ package metridoc.core
 
 class LogController {
 
+    static accessControl = {
+        role(name: "ROLE_ADMIN")
+    }
+
     static homePage = [
             title: "Application Log",
             adminOnly: true,

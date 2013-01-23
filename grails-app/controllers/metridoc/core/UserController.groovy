@@ -32,8 +32,9 @@ class UserController {
     ]
 
     static allowedMethods = [save: "POST", update: "POST", delete: ['DELETE', "POST"], list: "GET", index: "GET"]
-    def static final reportName = "Manage Users"
-    static final adminOnly = true
+    static accessControl = {
+        role(name: "ROLE_ADMIN")
+    }
     def userService
 
     def index() {

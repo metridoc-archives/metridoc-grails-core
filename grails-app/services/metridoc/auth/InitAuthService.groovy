@@ -18,7 +18,9 @@ class InitAuthService {
     final static ADMIN = "admin"
     final static REPORT_USER = "report_user"
     final static ROLE = "ROLE_"
-    final static DEFAULT_ROLES = [ANONYMOUS, ADMIN, REPORT_USER]
+    final static SUPER_USER = "super_user"
+    final static REST = "rest"
+    final static DEFAULT_ROLES = [ADMIN, SUPER_USER, REST, ANONYMOUS]
 
     /**
      * The dataSource that the service will build a transaction around

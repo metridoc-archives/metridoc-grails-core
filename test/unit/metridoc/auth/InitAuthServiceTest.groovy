@@ -31,6 +31,6 @@ class InitAuthServiceTest {
         def initAuthService = new InitAuthService()
         initAuthService.initDefaultRoles()
 
-        assert 3 == ShiroRole.list().size()
+        assert 4 == ShiroRole.list().size()
     }
 }

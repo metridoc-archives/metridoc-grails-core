@@ -31,14 +31,9 @@ class ShiroUser {
     static transients = ['password', 'confirm']
 
     static mapping = {
-        def grailsApplication = Holders.grailsApplication
 
-        if (grailsApplication) {
-            if(grailsApplication.mergedConfig.dataSource_admin) {
-                datasource('admin')
-            }
-        }
     }
+
     static hasMany = [roles: ShiroRole, permissions: String]
 
     static constraints = {
@@ -47,6 +42,5 @@ class ShiroUser {
         password(blank: false, size: 5..15, matches: /[\S]+/, validator: { val, obj ->
             return obj.password.equals(obj.confirm)
         })
-
     }
 }

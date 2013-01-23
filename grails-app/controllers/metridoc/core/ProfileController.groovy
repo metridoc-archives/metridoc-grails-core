@@ -19,14 +19,19 @@ class ProfileController {
     }
 
     def edit() {
+        //TODO: remove after debugging
+        log.info params
         def currentUser = SecurityUtils.getSubject().getPrincipal()
-        def shiroUserInstance = ShiroUser.findByUsername(currentUser)
+        ShiroUser shiroUserInstance = ShiroUser.findByUsername(currentUser)
 
-        if (shiroUserInstance.getUsername() == 'anonymous') {
+        if (shiroUserInstance.username == 'anonymous') {
             flash.message = message(code: 'cannot.modify.message', args: ['Anonymous User'], default: 'Anonymous User cannot be modified.')
+        } else if (params.flashMessage) {
+            flash.message = params.flashMessage
         }
+
         [
-                shiroUserInstance: shiroUserInstance
+            shiroUserInstance: shiroUserInstance
         ]
     }
 
@@ -45,27 +50,22 @@ class ProfileController {
                 return
             }
         }
-        def userInputCurrentPassword = params.get('oldPassword')
 
-        if (!shiroUserInstance.passwordHash.equals(new Sha256Hash(userInputCurrentPassword).toHex())) {
-            shiroUserInstance.errors.rejectValue('password', '', 'Current Password is not correct')
-            render(view: "/profile/edit", model: [shiroUserInstance: shiroUserInstance])
-            return
-        }
-        if (params.get('password') != params.get('confirm')) {
-            shiroUserInstance.errors.rejectValue('password', '', "New passwords don't match")
-            render(view: "/profile/edit", model: [shiroUserInstance: shiroUserInstance])
-            return
-        }
-
-        shiroUserInstance.with {
-            username = params.username
-            if (params.password) {
-                password = params.password
-                confirm = params.confirm
-                shiroUserInstance.setPasswordHash(new Sha256Hash(password).toHex())
+        if (params.changePW) {
+            log.info "password and user details for ${shiroUserInstance.username} are changing"
+            updateUserInfoAndPassword(shiroUserInstance, params)
+            def userInputCurrentPassword = params.get('oldPassword')
+            if (!shiroUserInstance.passwordHash.equals(new Sha256Hash(userInputCurrentPassword).toHex())) {
+                redirect(action: "edit", params: [flashMessage: 'Current Password is not correct'])
+                return
             }
-            emailAddress = params.emailAddress
+            if (params.get('password') != params.get('confirm')) {
+                redirect(action: "edit", params: [flashMessage:"New passwords don't match"])
+                return
+            }
+        } else {
+            log.info "user details for ${shiroUserInstance.username} are changing, password will remain the same"
+            updateUserInfo(shiroUserInstance, params)
         }
 
         if (!shiroUserInstance.save(flush: true)) {
@@ -75,12 +75,27 @@ class ProfileController {
                     log.error("Error ${error} occurred trying to update user ${shiroUserInstance}")
                 }
             }
-            render(view: "/profile/edit", model: [shiroUserInstance: shiroUserInstance])
+            redirect(action: "edit", params: [flashMessage: "There were errors trying to update user details"])
             return
         }
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'shiroUser.label', default: 'User'), SecurityUtils.getSubject().principal])
-        render(view:"/profile/edit", model: [shiroUserInstance:ShiroUser.get(params.id)])
+        def flashMessage = "User details updated"
+        redirect(action: "edit", params: [flashMessage:flashMessage])
+    }
+
+    static protected updateUserInfo(ShiroUser user, params) {
+        user.with {
+            emailAddress = params.emailAddress ?: params.emailAddress
+        }
+    }
+
+    static protected updateUserInfoAndPassword(ShiroUser user, params) {
+        updateUserInfo(user, params)
+        user.with {
+            password = params.password
+            confirm = params.confirm
+            user.setPasswordHash(new Sha256Hash(password).toHex())
+        }
     }
 
 }
