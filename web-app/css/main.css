@@ -93,6 +93,8 @@ body {
     /*width: expression(document.body.clientWidth > 960? "960px": "auto" ); *//* ie hack */
     overflow-x: hidden; /* prevents box-shadow causing a horizontal scrollbar in firefox when viewport < 960px wide */
     text-align: center;
+    /*need to override bootstrap */
+    background-color: transparent;
 }
 
 /* replace with .no-boxshadow body if you have modernizr available */
@@ -782,4 +784,20 @@ ul.undecorated {
 
 .linkContainer ul {
     margin-left: 1em;
+}
+
+hr {
+    margin: 10px 0px;
+}
+
+ul {
+    margin:10px;
+}
+
+table form {
+    margin: 0px;
+}
+
+input {
+    vertical-align: top;
 }

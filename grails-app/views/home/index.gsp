@@ -19,7 +19,6 @@
 <html>
 <head>
     <meta name="layout" content="main"/>
-    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.5.1/build/cssgrids/grids-min.css">
 </head>
 
 <body>
