@@ -66,4 +66,11 @@ class ReportTagLib {
             log.debug(body())
         }
     }
+
+    def alerts = { attrs ->
+        out << render(
+                template: "/reports/alerts",
+                plugin: "metridocCore"
+        )
+    }
 }

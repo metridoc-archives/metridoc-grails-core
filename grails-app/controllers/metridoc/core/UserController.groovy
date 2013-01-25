@@ -83,7 +83,7 @@ class UserController {
             return
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), shiroUserInstance.username])
+        flash.info = "User '${shiroUserInstance.username}' created"
         redirect(action: "show", id: shiroUserInstance.id)
     }
 
@@ -142,7 +142,6 @@ class UserController {
         }
 
         shiroUserInstance.with {
-            username = params.username
             emailAddress = params.emailAddress
             if (params.password) {
                 password = params.password
@@ -178,7 +177,7 @@ class UserController {
             return
         }
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), shiroUserInstance.username])
+        flash.info = "User '${shiroUserInstance.username}' updated"
         redirect(action: "show", id: shiroUserInstance.id)
     }
 
@@ -200,5 +199,9 @@ class UserController {
             flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), username])
             redirect(action: "show", id: params.id)
         }
+    }
+
+    def hasUser(String id) {
+        render id ? ShiroUser.findByUsername(id) != null : false
     }
 }

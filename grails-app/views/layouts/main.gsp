@@ -95,6 +95,7 @@
         </div>
     </div>
 
+    <md:alerts model="${params}"/>
     <g:layoutBody/>
 
     <div id="spinner" class="spinner" style="display:none;">

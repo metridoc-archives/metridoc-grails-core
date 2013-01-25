@@ -32,25 +32,20 @@
         </g:hasErrors>
 
 
-        <g:form method="post">
+        <g:form method="post" class="form-horizontal">
             <g:hiddenField name="id" value="${shiroUserInstance?.id}"/>
             <g:hiddenField name="version" value="${shiroUserInstance?.version}"/>
 
-            <fieldset class="form">
-                <g:render template="form"/>
-            </fieldset>
-
-            <fieldset class="buttons">
-                <g:actionSubmit class="save" action="update"
-                                value="${message(code: 'default.button.update.label', default: 'Update')}"/>
-                <g:if test="${shiroUserInstance.username != currentUserName && shiroUserInstance.username != 'admin'}">
-                    <g:actionSubmit class="delete" action="delete"
-                                    value="${message(code: 'default.button.delete.label', default: 'Delete')}"
-                                    formnovalidate=""
-                                    onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/>
-                </g:if>
-            </fieldset>
-
+            <div class="control-group">
+                <g:render template="/user/userName" plugin="metridocCore" model="[disabled:true]"></g:render>
+                <g:render template="/user/email" plugin="metridocCore"></g:render>
+                <g:render template="/user/roles" plugin="metridocCore"></g:render>
+                <div class="controls">
+                    <button class="btn" type="submit" name="_action_update">
+                        <i class="icon-edit"></i> Update
+                    </button>
+                </div>
+            </div>
         </g:form>
     </div>
 </md:report>

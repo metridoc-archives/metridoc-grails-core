@@ -21,64 +21,25 @@
 
     <g:render template="/user/tabs" plugin="metridocCore"/>
 
-    <div id="show-shiroUser" class="content scaffold-show" role="main">
-        <h1><g:message code="default.details.label" args="['User']" default="User Details"/></h1>
-        <g:if test="${flash.message}">
-            <div class="message" role="status">${flash.message}</div>
-        </g:if>
-        <ol class="property-list shiroUser">
-
-            <g:if test="${shiroUserInstance?.username}">
-                <li class="fieldcontain">
-                    <span id="username-label" class="property-label"><g:message code="shiroUser.username.label"
-                                                                                default="Username"/></span>
-
-                    <span class="property-value" aria-labelledby="username-label"><g:fieldValue
-                            bean="${shiroUserInstance}"
-                            field="username"/></span>
-
-                </li>
-            </g:if>
-
-            <g:if test="${shiroUserInstance?.emailAddress}">
-                <li class="fieldcontain">
-                    <span id="emailAddress-label" class="property-label"><g:message code="shiroUser.emailAddress.label"
-                                                                                    default="EmailAddress"/></span>
-                    <span class="property-value" aria-labelledby="emailAddress-label"><g:fieldValue field="emailAddress"
-                                                                                                    bean="${shiroUserInstance}"/></span>
-                </li>
-            </g:if>
-
-            <g:if test="${shiroUserInstance?.roles}">
-                <li class="fieldcontain">
-                    <span id="roles-label" class="property-label"><g:message code="shiroUser.roles.label"
-                                                                             default="Roles"/></span>
-
-                    <g:each in="${shiroUserInstance.roles}" var="r">
-                        <span class="property-value" aria-labelledby="roles-label"><g:link controller="Role"
-                                                                                           action="show"
-                                                                                           id="${r.id}">${r.name}</g:link></span>
-                    </g:each>
-
-                </li>
-            </g:if>
-
-        </ol>
-        <g:form>
-            <fieldset class="buttons">
-                <g:hiddenField name="id" value="${shiroUserInstance?.id}"/>
-                <g:if test="${shiroUserInstance.username != 'anonymous'}">
-                    <g:link class="edit" action="edit" id="${shiroUserInstance?.id}"><g:message
-                            code="default.button.edit.label"
-                            default="Edit"/></g:link>
-                    <g:if test="${shiroUserInstance.username != currentUserName && shiroUserInstance.username != 'admin'}">
-                        <g:actionSubmit class="delete" action="delete"
-                                        value="${message(code: 'default.button.delete.label', default: 'Delete')}"
-                                        onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/>
-                    </g:if>
+    <g:form class="form-horizontal" onsubmit="if(this.submited == '_action_delete') return window.confirm('Are you sure you want to delete the user ${shiroUserInstance?.username}?'); return true;">
+        <g:hiddenField name="id" value="${shiroUserInstance?.id}"/>
+        <div class="control-group">
+            <g:render template="/user/userName" plugin="metridocCore" model="[disabled: true]"/>
+            <g:render template="/user/email" plugin="metridocCore" model="[disabled: true]"/>
+            <g:render template="/user/roles" plugin="metridocCore" model="[disabled: true]"/>
+            <div class="controls">
+                <g:render template="/user/embeddedButton" plugin="metridocCore"
+                          model="[type: 'submit', action: '_action_edit', icon: 'icon-edit', content: 'Edit']"/>
+                <g:if test="${shiroUserInstance != null && shiroUserInstance.username != 'admin'}">
+                    <g:render template="/user/embeddedButton" plugin="metridocCore"
+                              model="[type: 'submit',
+                                      action: '_action_delete',
+                                      icon: 'icon-trash',
+                                      content: 'Delete',
+                                      buttonClass: 'btn-danger',
+                                      onClick: 'return confirm(\'Are you sure you want to delete this user?\');']"/>
                 </g:if>
-            </fieldset>
-        </g:form>
-    </div>
-
+            </div>
+        </div>
+    </g:form>
 </md:report>
