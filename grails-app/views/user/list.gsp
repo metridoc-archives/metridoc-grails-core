@@ -19,22 +19,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <md:report>
 
-    <div class="nav" role="navigation">
-        <ul>
-            <li><g:link class="home" controller="home" action="index">
-                <g:message code="default.home.label" default="Home"/>
-            </g:link></li>
-            <li><g:link class="create" controller="user" action="create"><g:message code="default.create.label"
-                                                                                    args="['User']"
-                                                                                    default="Create User"/></g:link></li>
-            <li><g:link class="list" controller="role" action="list"><g:message code="default.list.label"
-                                                                                args="['Role']"
-                                                                                default="Role List"/></g:link></li>
-            <li><g:link class="create" controller="role" action="create"><g:message code="default.create.label"
-                                                                                    args="['Role']"
-                                                                                    default="Create Role"/></g:link></li>
-        </ul>
-    </div>
+    <g:render template="/user/tabs" plugin="metridocCore"/>
 
     <div id="list-shiroUser" class="content scaffold-list" role="main">
         <g:if test="${flash.message}">
@@ -60,11 +45,11 @@
                             <span class="inCellActions">
 
                                 <a href="edit/${shiroUserInstance.id}">
-                                    <r:img dir="images/skin" file="database_edit.png" plugin="metridoc-core"/>
+                                    <i class="icon-edit"></i>
                                 </a>
                                 <g:if test="${shiroUserInstance.username != currentUserName}">
                                     <a class="delete" href="#" onclick="deleteUser(${shiroUserInstance.id})">
-                                        <r:img dir="images/skin" file="database_delete.png" plugin="metridoc-core"/>
+                                        <i class="icon-trash"></i>
                                     </a>
                                 </g:if>
                                 <g:form name="mdForm_${shiroUserInstance.id}" method="delete" action="delete"

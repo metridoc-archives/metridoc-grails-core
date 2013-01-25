@@ -19,24 +19,7 @@
 
 <md:report>
 
-    <div class="nav" role="navigation">
-        <ul>
-            <li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label" default="Home"/></a>
-            </li>
-            <li><g:link class="list" controller="user" action="list"><g:message code="default.list.label"
-                                                                                args="['User']"
-                                                                                default="User List"/></g:link></li>
-            <li><g:link class="create" controller="user" action="create"><g:message code="default.create.label"
-                                                                                    args="['User']"
-                                                                                    default="Create User"/></g:link></li>
-            <li><g:link class="list" controller="role" action="list"><g:message code="default.list.label"
-                                                                                args="['Role']"
-                                                                                default="Role List"/></g:link></li>
-            <li><g:link class="create" controller="role" action="create"><g:message code="default.create.label"
-                                                                                    args="['Role']"
-                                                                                    default="Create Role"/></g:link></li>
-        </ul>
-    </div>
+    <g:render template="/user/tabs" plugin="metridocCore"/>
 
     <div id="show-shiroUser" class="content scaffold-show" role="main">
         <h1><g:message code="default.details.label" args="['User']" default="User Details"/></h1>

@@ -17,10 +17,6 @@
     float: right;
 }
 
-body, input, select, textarea, .ui-widget {
-    font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Arial Unicode MS', Helvetica, sans-serif;
-}
-
 .centeredRadioCell, .centeredTableHeader, .centeredContent, .centeredDiv {
     text-align: center;
 }
@@ -50,7 +46,7 @@ html {
 
     background-repeat: no-repeat;
     height: 100%;
-    /*change the box model to exclude the padding from the calculation of 100% height (IE8+)*/
+    change the box model to exclude the padding from the calculation of 100% height (IE8+)
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -70,18 +66,18 @@ html.no-cssgradients {
     box-shadow: 0 3px 10px #333333;
 }
 
-#doc4 {
+.container {
     background: #ffffff;
     max-width: 1000px;
     margin: 10px auto 10px;
     text-align: left;
 }
 
-.ie6 #doc4,
-.ie7 #doc4,
-.ie8 #doc4,
-.ie9 #doc4,
-.ie10 #doc4 {
+.ie6 .container,
+.ie7 .container,
+.ie8 .container,
+.ie9 .container,
+.ie10 .container {
     width: 1000px;
 }
 
@@ -111,7 +107,7 @@ body {
 
 .md-application-content {
     padding: 30px;
-    padding-top: 50px;
+    padding-top: 10px;
 }
 
 .md-application-content div.description {
@@ -133,7 +129,7 @@ a:link, a:visited {
 }
 
 a:hover, a:active {
-    outline: none; /* prevents outline in webkit on active links but retains it for tab focus */
+    outline: none;  prevents outline in webkit on active links but retains it for tab focus
     text-decoration: none;
 }
 
@@ -144,7 +140,6 @@ a:hover {
 
 h1 {
     color: #48802c;
-    font-weight: normal;
     font-size: 1.25em;
     margin: 0.8em 0 0.3em 0;
 }
@@ -276,43 +271,6 @@ label {
     margin: 0 0.25em 0 0;
 }
 
-input, select, textarea {
-    background-color: #fcfcfc;
-    border: 1px solid #cccccc;
-    font-size: 1em;
-    padding: 0.2em 0.4em;
-}
-
-select {
-    padding: 0.2em 0.2em 0.2em 0;
-}
-
-select[multiple] {
-    vertical-align: top;
-}
-
-textarea {
-    width: 250px;
-    height: 150px;
-    overflow: auto; /* IE always renders vertical scrollbar without this */
-    vertical-align: top;
-}
-
-input[type=checkbox], input[type=radio] {
-    background-color: transparent;
-    border: 0;
-    padding: 0;
-}
-
-input:focus, select:focus, textarea:focus {
-    background-color: #ffffff;
-    border: 1px solid #eeeeee;
-    outline: 0;
-    -moz-box-shadow: 0 0 0.5em #ffffff;
-    -webkit-box-shadow: 0 0 0.5em #ffffff;
-    box-shadow: 0 0 0.5em #ffffff;
-}
-
 .required-indicator {
     color: #48802C;
     display: inline-block;
@@ -404,34 +362,6 @@ fieldset.embedded legend {
     text-indent: 2.2em;
 }
 
-/* form fields with errors */
-
-.error input, .error select, .error textarea {
-    background: #fff3f3;
-    border-color: #ffaaaa;
-    color: #cc0000;
-}
-
-.error input:focus, .error select:focus, .error textarea:focus {
-    -moz-box-shadow: 0 0 0.5em #ffaaaa;
-    -webkit-box-shadow: 0 0 0.5em #ffaaaa;
-    box-shadow: 0 0 0.5em #ffaaaa;
-}
-
-/* same effects for browsers that support HTML5 client-side validation (these have to be specified separately or IE will ignore the entire rule) */
-
-input:invalid, select:invalid, textarea:invalid {
-    background: #fff3f3;
-    border-color: #ffaaaa;
-    color: #cc0000;
-}
-
-input:invalid:focus, select:invalid:focus, textarea:invalid:focus {
-    -moz-box-shadow: 0 0 0.5em #ffaaaa;
-    -webkit-box-shadow: 0 0 0.5em #ffaaaa;
-    box-shadow: 0 0 0.5em #ffaaaa;
-}
-
 /* TABLES */
 
 table {
@@ -503,82 +433,12 @@ th.desc a {
     background-image: url(../images/skin/sorted_desc.gif);
 }
 
+.table-striped tr:nth-child(odd) {
+    background: #f9f9f9;
+}
+
 .table-hover tr:hover {
     background: #f5f5f5;
-}
-
-/*NAVIGATION MENU*/
-
-.nav {
-    background-color: #efefef;
-    padding: 0.5em 0.75em;
-    -moz-box-shadow: 0 0 3px 1px #aaaaaa;
-    -webkit-box-shadow: 0 0 3px 1px #aaaaaa;
-    box-shadow: 0 0 3px 1px #aaaaaa;
-    zoom: 1;
-}
-
-.nav ul {
-    overflow: hidden;
-    padding-left: 0;
-    zoom: 1;
-}
-
-.nav li {
-    display: block;
-    float: left;
-    list-style-type: none;
-    margin-right: 0.5em;
-    padding: 0;
-}
-
-.nav a {
-    color: #666666;
-    display: block;
-    padding: 0.25em 0.7em;
-    text-decoration: none;
-    -moz-border-radius: 0.3em;
-    -webkit-border-radius: 0.3em;
-    border-radius: 0.3em;
-}
-
-.nav a:active, .nav a:visited {
-    color: #666666;
-}
-
-.nav a:focus, .nav a:hover {
-    background-color: #999999;
-    color: #ffffff;
-    outline: none;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
-}
-
-.no-borderradius .nav a:focus, .no-borderradius .nav a:hover {
-    background-color: transparent;
-    color: #444444;
-    text-decoration: underline;
-}
-
-.nav a.home, .nav a.list, .nav a.create, .nav a.log{
-    background-position: 0.7em center;
-    background-repeat: no-repeat;
-    text-indent: 25px;
-}
-
-.nav a.home {
-    background-image: url(../images/skin/house.png);
-}
-
-.nav a.list {
-    background-image: url(../images/skin/database_table.png);
-}
-
-.nav a.create {
-    background-image: url(../images/skin/database_add.png);
-}
-
-.nav a.log {
-    background-image: url(../images/skin/text-x-generic.png);
 }
 
 /* PAGINATION */
@@ -616,92 +476,6 @@ th.desc a {
     background-color: transparent;
     color: #444444;
     text-decoration: underline;
-}
-
-/* ACTION BUTTONS */
-
-/*.buttons {*/
-/*background-color: #efefef;*/
-/*overflow: hidden;*/
-/*padding: 0.3em;*/
-/*-moz-box-shadow: 0 0 3px 1px #aaaaaa;*/
-/*-webkit-box-shadow: 0 0 3px 1px #aaaaaa;*/
-/*box-shadow: 0 0 3px 1px #aaaaaa;*/
-/*margin: 0.1em 0 0 0;*/
-/*border: none;*/
-/*}*/
-
-.buttons input,
-.buttons a {
-    background-color: #efefef;
-    border: 0;
-    -moz-box-shadow: 0 0 3px 1px #aaaaaa;
-    -webkit-box-shadow: 0 0 3px 1px #aaaaaa;
-    box-shadow: 0 0 3px 1px #aaaaaa;
-    color: #333;
-    cursor: pointer;
-    display: inline-block;
-    margin: 0 0.25em 0;
-    overflow: visible;
-    padding: 0.25em 0.7em;
-    text-decoration: none;
-
-    -moz-border-radius: 0.3em;
-    -webkit-border-radius: 0.3em;
-    border-radius: 0.3em;
-    font-size: 15px;
-}
-
-.buttons input:hover, .buttons input:focus,
-.buttons a:hover, .buttons a:focus {
-    background-color: #999999;
-    color: #ffffff;
-    outline: none;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
-    -moz-box-shadow: none;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-}
-
-.no-borderradius .buttons input:hover, .no-borderradius .buttons input:focus,
-.no-borderradius .buttons a:hover, .no-borderradius .buttons a:focus {
-    background-color: transparent;
-    color: #444444;
-    text-decoration: underline;
-}
-
-.buttons .delete, .buttons .edit, .buttons .save, .menu-item {
-    background-position: 0.7em center;
-    background-repeat: no-repeat;
-    text-indent: 25px;
-}
-
-.buttons .delete {
-    background-image: url(../images/skin/database_delete.png);
-}
-
-.buttons .edit {
-    background-image: url(../images/skin/database_edit.png);
-}
-
-.buttons .save {
-    background-image: url(../images/skin/database_save.png);
-}
-
-a.users {
-    background-image: url(../images/skin/system-users.png);
-}
-
-a.userAccount{
-    background-image: url(../images/skin/system-user.png);
-}
-
-a.log {
-    background-image: url(../images/skin/text-x-generic.png);
-}
-
-a.quartz {
-    background-image: url(../images/skin/database_table.png);
 }
 
 a.skip {
@@ -779,8 +553,12 @@ ul.undecorated {
 }
 
 hr {
-    margin: 10px 0px;
+    margin: 6px 0;
+    border: 0;
+    border-top: 1px solid rgb(146, 146, 146);
+    border-bottom: 1px solid #ffffff;
 }
+
 
 ul {
     margin:10px;
@@ -790,6 +568,34 @@ table form {
     margin: 0px;
 }
 
-input {
-    vertical-align: top;
+.navbar-inner {
+    padding-left: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+}
+
+.dropdown-menu a {
+    color: #333;
+}
+
+.dropdown-menu li > a:hover,
+.dropdown-menu li > a:focus,
+.dropdown-submenu:hover > a {
+    background-color: #25652a;
+    background-image: -moz-linear-gradient(top, #25652a, #235728);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#25652a), to(#235728));
+    background-image: -webkit-linear-gradient(top, #25652a, #235728);
+    background-image: -o-linear-gradient(top, #25652a, #235728);
+    background-image: linear-gradient(to bottom, #25652a, #235728);
+    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ff25652a', endColorstr='#ff235728', GradientType=0);
+}
+
+.controls {
+    padding-bottom: 5px;
+}
+
+
+.nav > li > a:hover {
+    background-color: #ffffff;
 }

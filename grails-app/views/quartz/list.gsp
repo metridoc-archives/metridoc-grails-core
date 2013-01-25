@@ -17,25 +17,17 @@
             Quartz Jobs
             <span id="quartz-actions">
                 <g:if test="${scheduler.isInStandbyMode()}">
-                    <a href="<g:createLink action="startScheduler"/>"><img class="quartz-tooltip"
-                                                                           data-tooltip="Start scheduler"
-                                                                           src="<g:resource dir="quartz/images"
-                                                                                            file="play-all.png"
-                                                                                            plugin="metridoc-core"/>">
+                    <a href="<g:createLink action="startScheduler"/>" class= "quartz-tooltip" data-tooltip="Start scheduler">
+                        <i class="icon-play"></i>
                     </a>
                 </g:if>
                 <g:else>
-                    <a href="<g:createLink action="stopScheduler"/>"><img class="quartz-tooltip"
-                                                                          data-tooltip="Pause scheduler"
-                                                                          src="<g:resource dir="quartz/images"
-                                                                                           file="pause-all.png"
-                                                                                           plugin="metridoc-core"/>">
+                    <a href="<g:createLink action="stopScheduler"/>"  class= "quartz-tooltip" data-tooltip="Pause scheduler">
+                        <i class="icon-pause"></i>
                     </a>
                 </g:else>
-                <a id="quartz-settings" class="quartz-tooltip" data-tooltip="Quartz settings" href="#"
-                   style="padding-left: 32px; padding-top: 10px">
-                    <r:img style="padding-top: 5px" dir="images/skin" file="applications-system.png"
-                           plugin="metridoc-core"/>
+                <a id="quartz-settings" class="quartz-tooltip" data-tooltip="Quartz settings" href="#quartzModal" data-toggle="modal">
+                    <i class="icon-cog"></i>
                 </a>
 
             </span>
@@ -98,10 +90,10 @@
                                     </g:if>
                                     <g:elseif test="${job.trigger.mayFireAgain()}">
                                         <a href="<g:createLink action="pause"
-                                                               params="[jobName: job.name, jobGroup: job.group]"/>"><img
-                                                class="quartz-tooltip" data-tooltip="Pause job schedule"
-                                                src="<g:resource dir="quartz/images" file="pause.png"
-                                                                 plugin="metridoc-core"/>"></a>
+                                                               params="[jobName: job.name, jobGroup: job.group]"/>"
+                                           class="quartz-tooltip" data-tooltip="Run now">
+                                            <i class="icon-pause"></i>
+                                        </a>
                                     </g:elseif>
                                 </g:if>
                                 <g:else>
@@ -113,9 +105,9 @@
                                     </a>
                                 </g:else>
                                 <a href="<g:createLink action="runNow"
-                                                       params="[jobName: job.name, jobGroup: job.group, triggerName: job.trigger?.key?.name, triggerGroup: job.trigger?.key?.group]"/>"><img
-                                        class="quartz-tooltip" data-tooltip="Run now"
-                                        src="<g:resource dir="quartz/images" file="run.png" plugin="metridoc-core"/>">
+                                                       params="[jobName: job.name, jobGroup: job.group, triggerName: job.trigger?.key?.name, triggerGroup: job.trigger?.key?.group]"/>"
+                                                        class="quartz-tooltip" data-tooltip="Run now">
+                                    <i class="icon-play"></i>
                                 </a>
                             </g:if>
                         </td>

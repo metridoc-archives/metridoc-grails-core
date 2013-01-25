@@ -59,12 +59,6 @@ label {
     text-align: right;
 }
 
-button {
-    padding-top: 20px;
-    margin-left: 0;
-    margin-top: 15px;
-}
-
 #upPasswordButton {
     margin-right: 40px;
     float: right;
@@ -79,7 +73,7 @@ button {
     font-size: 0.8em;
     width: 300px;
     text-align: right;
-    padding-left: 70px;
+    padding-left: 120px;
     position: relative;
 }
 
@@ -90,5 +84,8 @@ button {
 }
 
 
+.inline-password-control input{
+    width:128px;
+}
 
 

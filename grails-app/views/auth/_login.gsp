@@ -4,40 +4,34 @@
         <div class="message">${flash.message}</div>
     </g:if>
 
-    <g:form action="signIn">
+    <g:form action="signIn" class="form-horizontal">
 
         <input type="hidden" name="targetUri" value="${targetUri}"/>
 
-        <div>
+        <div class="control-group">
             <label for="username">User Name :</label>
-            <input type="text" name="username" value="${username}" id="usernameInput" class="userInput"            />
-        </div>
 
-        <div>
+            <div class="controls">
+                <input type="text" name="username" value="${username}" placeholder="User Name"/>
+            </div>
             <label for="password">Password :</label>
-            <input type="password" name="password" value="" class="userInput" id="passwordInput"/>
-            <span class="buttons">
-                <input type="submit" value="Sign in" id="button" name="submit"/>
-            </span>
-        </div>
 
-        <div>
-            <span>
-                <label for="rememberMe" id="rememberLabel">Remember Me? :</label>
+            <div class="controls inline-password-control">
+                <input type="password" name="password" value="" placeholder="Password"/>
+                <button type="submit" class="btn">
+                    Sign In
+                </button>
+            </div>
+            <label for="rememberMe" id="rememberLabel">Remember Me? :</label>
+            <div class="controls">
                 <g:checkBox name="rememberMe" value="${rememberMe}"/>
-            </span>
-
-            <g:if test="${forgotPassword}">
-                <span id="forgetPW">
-                    <g:link controller="auth" action="forgetPassword"
-                            name="forgetPW">Forgot Password ?</g:link>
-                </span>
-            </g:if>
+                <g:if test="${forgotPassword}">
+                    <span id="forgetPW">
+                        <g:link controller="auth" action="forgetPassword"
+                                name="forgetPW">Forgot Password ?</g:link>
+                    </span>
+                </g:if>
+            </div>
         </div>
-
-
-
-
-
     </g:form>
 </div>

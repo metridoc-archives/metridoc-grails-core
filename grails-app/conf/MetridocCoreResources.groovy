@@ -49,18 +49,23 @@ modules = {
         resource id: 'appJs',
                 url: [plugin: "metridocCore", dir: 'js', file: 'application.js'],
                 attrs: [type: 'js']
-        resource id: 'navBarCss',
-                url: [plugin: "metridocCore", dir: 'css', file: 'navBar.css'],
-                attrs: [type: 'css']
         resource id: 'faviconIco',
                 url: [plugin: "metridocCore", dir: 'images', file: 'favicon.ico']
         resource id: 'bootStrapCss',
                 url: [plugin: "metridocCore", dir: 'components/bootstrap.css/css', file: 'bootstrap.css'],
                 attrs: [type: 'css']
+        resource id: 'bootStrapResonsiveCss',
+                url: [plugin: "metridocCore", dir: 'components/bootstrap.css/css', file: 'bootstrap-responsive.css'],
+                attrs: [type: 'css']
+        resource id: "bootStrapJs",
+                url: [plugin: "metridocCore", dir: 'components/bootstrap.css/js', file: 'bootstrap.js'],
+                attrs: [type: 'js']
+        resource id: 'fontAwesome',
+                url: [plugin: "metridocCore", dir: 'components/font-awesome/css', file: "font-awesome.css"],
+                attrs: [type: 'css']
         resource id: 'mainCss',
                 url: [plugin: "metridocCore", dir: 'css', file: 'main.css'],
                 attrs: [type: 'css']
-
     }
 
     overrides {

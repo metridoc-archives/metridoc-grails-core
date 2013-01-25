@@ -1,11 +1,7 @@
 $('#changePW').change(function () {
     if(this.checked){
-        $('#changePassword').css({
-            display: 'block'
-        });
+        $('.changePassword').show()
     }else{
-        $('#changePassword').css({
-            display: 'none'
-        });
+        $('.changePassword').hide()
     }
 })

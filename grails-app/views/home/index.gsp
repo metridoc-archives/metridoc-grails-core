@@ -23,7 +23,7 @@
 
 <body>
 
-<div id="page-body" role="main" style="padding: 50px; padding-left: 0px">
+<div id="page-body" role="main" style="padding: 20px; padding-left: 0px">
 
     <h1>Welcome to MetriDoc</h1>
 
@@ -33,7 +33,7 @@
     </p>
 
     <div class="linkContainer">
-        <md:header>Available Applications</md:header>
+        <md:header>Available Applications <i class="icon-bar-chart"></i></md:header>
 
         <g:if test="${!applicationControllers}">
             <ul class="undecorated">
@@ -50,7 +50,7 @@
 
     <div class="linkContainer">
         <shiro:hasRole name="ROLE_ADMIN">
-            <md:header>Administration</md:header>
+            <md:header>Administration <i class="icon-cog"></i> </md:header>
             <g:each in="${adminControllers}" var="controller" status="i">
                 <ul class="undecorated">
                     <li>

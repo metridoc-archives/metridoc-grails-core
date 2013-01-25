@@ -1,14 +1,26 @@
-<div id="dialog" title="Settings">
-    <g:form action="saveSettings">
-        <div>
-            <div>Email on Failures</div>
+<div id="quartzModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 
-            <div class="textContainer">
-                <g:textArea name="emails">${notificationEmails}</g:textArea>
+        <h3 id="myModalLabel">Quartz Settings</h3>
+    </div>
+    <g:form action="saveSettings">
+        <div class="modal-body">
+
+            <div>
+                <div>Email on Failures</div>
+
+                <div class="textContainer">
+                    <g:textArea name="emails">${notificationEmails}</g:textArea>
+                </div>
             </div>
-            <fieldset class="buttons">
-                <input type="submit" value="Save" id="saveSettingsButton" class="save"/>
-            </fieldset>
+
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+            <button class="btn" type="submit" value="Save" id="saveSettingsButton">Save changes</button>
         </div>
     </g:form>
 </div>

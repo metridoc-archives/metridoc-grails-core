@@ -1,4 +1,8 @@
 
-#changePassword{
+.changePassword{
     display: none;
+}
+
+#shiroRoles {
+    padding-top: 5px;
 }

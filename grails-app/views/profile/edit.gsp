@@ -15,63 +15,59 @@
 
         <g:if test="${shiroUserInstance.username != 'anonymous'}">
 
-            <g:form method="post">
+            <g:form method="post" class="form-horizontal">
                 <g:hiddenField name="id" value="${shiroUserInstance?.id}"/>
                 <g:hiddenField name="version" value="${shiroUserInstance?.version}"/>
 
-                <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'emailAddress', 'error')} ">
-                    <label for="emailAddress">
-                        <g:message code="shiroUser.emailAddress.label" default="Email Address"/>
-                    </label>
-                    <g:textField name="emailAddress" required="" value="${shiroUserInstance?.emailAddress}"/>
-                </div>
+                <div class="control-group">
+                    <label class="control-label" for="emailAddress">Email Address</label>
 
-                <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'roles', 'error')} ">
-                    <label for="roles">
-                        <g:message code="shiroUser.roles.label" default="Roles"/>
-                    </label>
-                    <g:each in="${shiroUserInstance.roles}" var="shiroRole">
-                        <span aria-labelledby="roles-label">${shiroRole.name}</span>
-                    </g:each>
-                </div>
+                    <div class="controls">
+                        <g:textField name="emailAddress" required="" placeholder="foo@bar.com"
+                                     value="${shiroUserInstance?.emailAddress}"/>
+                    </div>
+                    <label class="control-label" for="roles">Roles</label>
 
-                <div id="ifChangePassword" class="fieldcontain">
-                    <label for="changePW">
-                        <g:message code="shiroUser.ifChangePassword.label" default="Change Password?"/>
-                    </label>
-                    <g:checkBox name="changePW" id="changePW" value="${false}">Change Password?</g:checkBox>
-                </div>
+                    <div class="controls" id="shiroRoles">
+                        <g:each in="${shiroUserInstance.roles}" var="shiroRole">
+                            <span aria-labelledby="roles-label">${shiroRole.name}</span>
+                        </g:each>
+                    </div>
+                    <label class="control-label" for="changePW">Change Password?</label>
 
-                <div id="changePassword">
-
-                    <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'password', 'error')} ">
-                        <label for="oldPassword">
-                            <g:message code="shiroUser.oldPassword.label" default="Password"/>
-                            <span class="required-indicator">*</span>
-                        </label>
-                        <g:passwordField name="oldPassword"/>
+                    <div class="controls" id="ifChangePassword">
+                        <g:checkBox name="changePW" id="changePW" value="${false}"></g:checkBox>
                     </div>
 
-                    <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'password', 'error')} ">
-                        <label for="password">
-                            <g:message code="shiroUser.password.label" default="Password"/>
-                            <span class="required-indicator">*</span>
-                        </label>
-                        <g:passwordField name="password"/>
+                </div>
+
+                <div class="control-group">
+
+                    <label class="control-label changePassword" for="oldPassword">Current Password <span
+                            class="required-indicator">*</span></label>
+                    <div class="controls changePassword">
+                        <g:passwordField name="oldPassword" placeholder="Password"/>
                     </div>
 
-                    <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'password', 'error')} ">
-                        <label for="password">
-                            <g:message code="shiroUser.confirmPassword.label" default="Confirm Password"/>
-                            <span class="required-indicator">*</span>
-                        </label>
-                        <g:passwordField name="confirm"/>
+                    <label class="control-label changePassword" for="oldPassword">New Password <span
+                            class="required-indicator">*</span></label>
+                    <div class="controls changePassword">
+                        <g:passwordField name="password" placeholder="Password"/>
                     </div>
+
+                    <label class="control-label changePassword" for="oldPassword">Confirm Password <span
+                            class="required-indicator">*</span></label>
+                    <div class="controls changePassword">
+                        <g:passwordField name="confirm" placeholder="Password"/>
+                    </div>
+
+                    <div class="controls input-prepend">
+                        <button type="submit" class="btn" name="_action_update">
+                            <i class="icon-edit"></i> Update
+                        </button>
+                    </div>
+
                 </div>
-                <fieldset class="buttons">
-                    <g:actionSubmit class="save" action="update"
-                                    value="${message(code: 'default.button.update.label', default: 'Update')}"/>
-                </fieldset>
 
             </g:form>
         </g:if>

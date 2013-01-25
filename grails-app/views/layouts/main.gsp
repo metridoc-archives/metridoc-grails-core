@@ -28,7 +28,8 @@
     <title>MetriDoc</title>
     <!-- make sure console works in any browser -->
     <script type="text/javascript">
-        if (!console) console = {log: function() {}};
+        if (!console) console = {log: function () {
+        }};
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <g:javascript library="jquery"/>
@@ -39,7 +40,7 @@
 
 <body>
 
-<div id="doc4" class="shadow">
+<div class="shadow container">
     <div id="metridocBanner" role="banner">
         <a id="metridocLogo" href="http://metridoc.googlecode.com">
             <img src="${resource(plugin: 'metridocCore', dir: 'images', file: 'MDlogo_small.png')}"
@@ -57,38 +58,43 @@
 
     </div>
 
-    <div id="metridocNavigationBar" class="ui-widget-header">
-        <ul id="metridocNavigation" class="shadow">
-            <li>
-                <a href="/<g:meta name="app.name"/>/home" class="ui-widget-header">Home</a>
-            </li>
-            <shiro:user>
-                <% if (SecurityUtils.subject.principal != "anonymous") { %>
-                <li>
-                    %{--<g:link controller="profile" action="index">Settings</g:link>--}%
-                    <a href="#">Settings</a>
-                    <ul class="shadow">
-                        <li>
-                            <g:link controller="profile" action="index" class="userAccount menu-item">Account</g:link>
-                        </li>
+    <div class="navbar navbar-inverse">
+        <div class="navbar-inner">
+            <div>
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
 
+                <div class="nav-collapse collapse">
+                    <ul class="nav">
+
+                        <g:if test="${"home" == controllerName}">
+                            <li class="active"><g:link controller="home" plugin="metridocCore"><i class="icon-home"></i> Home</g:link></li>
+                        </g:if>
+                        <g:else>
+                            <li><g:link controller="home" plugin="metridocCore"><i class="icon-home"></i> Home</g:link></li>
+                        </g:else>
                         <shiro:hasRole name="ROLE_ADMIN">
-                            <li>
-                                <g:link controller="user" action="list" class="users menu-item">Manage Users</g:link>
-                            </li>
-                            <li>
-                                <g:link controller="log" action="index" class="log menu-item">Application Log</g:link>
-                            </li>
-                            <li>
-                                <g:link controller="quartz" action="index" class="quartz menu-item">Job List</g:link>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings <b
+                                        class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><g:link controller="profile" plugin="metridocCore"><i class="icon-user"></i> Account</g:link></li>
+                                    <li><g:link controller="log" plugin="metridocCore"><i class="icon-file-alt"></i> Application Log</g:link></li>
+                                    <li><g:link controller="user" plugin="metridocCore"><i class="icon-group"></i> Manage Users</g:link></li>
+                                    <li><g:link controller="quartz" plugin="metridocCore"><i class="icon-play"></i> Jobs</g:link></li>
+                                </ul>
                             </li>
                         </shiro:hasRole>
                     </ul>
-                </li>
-                <% } %>
-            </shiro:user>
-        </ul>
+
+                </div><!--/.nav-collapse -->
+            </div>
+        </div>
     </div>
+
     <g:layoutBody/>
 
     <div id="spinner" class="spinner" style="display:none;">
