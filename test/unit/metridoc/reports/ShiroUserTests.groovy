@@ -9,6 +9,7 @@ import static metridoc.reports.ShiroUser.CONFIRM_MISMATCH
 import static metridoc.reports.ShiroUser.FIELD_CANNOT_BE_NULL_OR_BLANK
 import static metridoc.reports.ShiroUser.OLD_PASSWORD_MISMATCH
 import static metridoc.reports.ShiroUser.PASSWORD_MISMATCH
+import static metridoc.reports.ShiroUser.USERNAME_IS_NOT_UNIQUE
 import static metridoc.reports.ShiroUser.getEMAIL_ERROR
 import static metridoc.reports.ShiroUser.getFIELD_CANNOT_BE_NULL_OR_BLANK
 import static metridoc.reports.ShiroUser.getNOT_A_VALID_EMAIL
@@ -34,6 +35,34 @@ class ShiroUserTests {
         checkForError(passwordHash: "blah", username:  "barfoo", emailAddress:  StringUtils.EMPTY, "emailAddress", FIELD_CANNOT_BE_NULL_OR_BLANK("email"))
         checkForError(passwordHash: "blah", username:  "barfoo", emailAddress: "foobar", "emailAddress", NOT_A_VALID_EMAIL("foobar"))
     }
+
+    @Test
+    void "test flash messages for username errors"() {
+        def fooEmail = "foo@foo.com"
+        checkForError(
+                emailAddress: fooEmail,
+                passwordHash: "blahblah",
+                "username",
+                FIELD_CANNOT_BE_NULL_OR_BLANK("username")
+        )
+
+        checkForError(
+                username: StringUtils.EMPTY,
+                emailAddress: fooEmail,
+                passwordHash: "blahblah",
+                "username",
+                FIELD_CANNOT_BE_NULL_OR_BLANK("username")
+        )
+
+        checkForError(
+                username: "foobar",
+                emailAddress: fooEmail,
+                passwordHash: "blahblah",
+                "username",
+                USERNAME_IS_NOT_UNIQUE
+        )
+    }
+
 
     @Test
     void "test that flash message are set on bad passwords"() {

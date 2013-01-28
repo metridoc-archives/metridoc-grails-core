@@ -45,7 +45,10 @@ class ShiroUser {
     static final OLD_PASSWORD_MISMATCH = "Current password is not correct"
     static final CONFIRM_MISMATCH = "Confirm password does not match"
     static final PASSWORD_IS_INVALID = "Password is invalid"
-
+    static final USERNAME_IS_NOT_UNIQUE = "User name is associatted with another account, please choose a different one"
+    static final NOT_A_VALID_USERNAME = {String username ->
+        "'${username} is not a valid user name"
+    }
     static mapping = {
 
     }
@@ -79,6 +82,23 @@ class ShiroUser {
     static addAlertForAllErrors(ShiroUser user, Map flash) {
         addAlertsForEmailErrors(user, flash)
         addAlertForPasswordErrors(user, flash)
+        addAlertForUserNameErrors(user, flash)
+    }
+
+    static addAlertForUserNameErrors(ShiroUser user, Map flash) {
+        user.errors.getFieldError("username").each {
+            switch(it.code) {
+                case "unique":
+                    flash.alert = USERNAME_IS_NOT_UNIQUE
+                    break
+                case "nullable":
+                case "blank":
+                    flash.alert = FIELD_CANNOT_BE_NULL_OR_BLANK.call("username")
+                    break
+                default:
+                    flash.alert = NOT_A_VALID_USERNAME(user.username)
+            }
+        }
     }
 
     static addAlertsForEmailErrors(ShiroUser user, Map flash) {
