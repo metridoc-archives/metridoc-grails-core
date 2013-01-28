@@ -19,33 +19,19 @@
 
     <g:render template="/user/tabs" plugin="metridocCore"/>
 
-    <div id="edit-shiroUser" class="content scaffold-edit" role="main">
-        <h1><g:message code="default.edit.label" args="['User']" default="Edit User"/></h1>
-        <g:if test="${flash.message}">
-            <div class="message" role="status">${flash.message}</div>
-        </g:if>
+    <g:form method="post" class="form-horizontal">
+        <g:hiddenField name="id" value="${shiroUserInstance?.id}"/>
+        <g:hiddenField name="version" value="${shiroUserInstance?.version}"/>
 
-        <g:hasErrors bean="${shiroUserInstance}">
-            <ul class="errors" role="alert">
-                <g:renderErrors bean="${shiroUserInstance}" as="list" />
-            </ul>
-        </g:hasErrors>
-
-
-        <g:form method="post" class="form-horizontal">
-            <g:hiddenField name="id" value="${shiroUserInstance?.id}"/>
-            <g:hiddenField name="version" value="${shiroUserInstance?.version}"/>
-
-            <div class="control-group">
-                <g:render template="/user/userName" plugin="metridocCore" model="[disabled:true]"></g:render>
-                <g:render template="/user/email" plugin="metridocCore"></g:render>
-                <g:render template="/user/roles" plugin="metridocCore"></g:render>
-                <div class="controls">
-                    <button class="btn" type="submit" name="_action_update">
-                        <i class="icon-edit"></i> Update
-                    </button>
-                </div>
+        <div class="control-group">
+            <g:render template="/user/userName" plugin="metridocCore" model="[disabled: true]"></g:render>
+            <g:render template="/user/email" plugin="metridocCore"></g:render>
+            <g:render template="/user/roles" plugin="metridocCore"></g:render>
+            <div class="controls">
+                <button class="btn" type="submit" name="_action_update">
+                    <i class="icon-edit"></i> Update
+                </button>
             </div>
-        </g:form>
-    </div>
+        </div>
+    </g:form>
 </md:report>

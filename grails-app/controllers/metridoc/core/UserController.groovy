@@ -68,18 +68,7 @@ class UserController {
 
         if (!shiroUserInstance.save(flush: true)) {
             render(view: "/user/create", model: [shiroUserInstance: shiroUserInstance])
-            return
-        }
-        if (password.toString().length() < 5 || password.toString().length() > 15) {
-            shiroUserInstance.errors.rejectValue('password', 'blank.password', 'Password length must be within 5-15')
-            render(view: "/user/create", model: [shiroUserInstance: shiroUserInstance])
-            shiroUserInstance.delete()
-            return
-        }
-        if (password != confirm) {
-            shiroUserInstance.errors.rejectValue('password', '',"Passwords don't match")
-            render(view: "/user/create", model: [shiroUserInstance: shiroUserInstance])
-            shiroUserInstance.delete()
+            flash.alert = "Unexpected error occurred trying to save user"
             return
         }
 
@@ -104,7 +93,7 @@ class UserController {
     def edit() {
         def shiroUserInstance = ShiroUser.get(params.id)
         if (!shiroUserInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), params.id])
+            flash.alert = "Could not find user for id ${params.id}"
             redirect(action: "list")
             return
         }
@@ -117,9 +106,10 @@ class UserController {
 
     def update() {
 
+        def id = params.id
         def shiroUserInstance = ShiroUser.get(params.id)
         if (!shiroUserInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), params.id])
+            couldNotFind(id)
             redirect(action: "list")
             return
         }
@@ -127,18 +117,10 @@ class UserController {
         if (params.version) {
             def version = params.version.toLong()
             if (shiroUserInstance.version > version) {
-                shiroUserInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                        [message(code: 'shiroUser.label', default: 'ShiroUser')] as Object[],
-                        "Another user has updated this ShiroUser while you were editing")
+                flash.alert = "Another user has updated this ShiroUser while you were editing"
                 render(view: "/user/edit", model: [shiroUserInstance: shiroUserInstance])
                 return
             }
-        }
-
-        if (params.get('password') != params.get('confirm')) {
-            shiroUserInstance.errors.rejectValue('password', '',"Passwords don't match")
-            render(view: "/user/edit", model: [shiroUserInstance: shiroUserInstance])
-            return
         }
 
         shiroUserInstance.with {
@@ -167,12 +149,7 @@ class UserController {
         }
 
         if (!shiroUserInstance.save(flush: true)) {
-            if (shiroUserInstance.errors) {
-                log.error("There were errors trying to update ${shiroUserInstance}")
-                shiroUserInstance.errors.each {error ->
-                    log.error("Error ${error} occurred trying to update user ${shiroUserInstance}")
-                }
-            }
+            unexpectedError(shiroUserInstance)
             render(view: "/user/edit", model: [shiroUserInstance: shiroUserInstance])
             return
         }
@@ -185,23 +162,46 @@ class UserController {
 
         def shiroUserInstance = ShiroUser.get(params.id)
         if (!shiroUserInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), params.id])
+            couldNotFind(params.id)
             redirect(action: "list")
             return
         }
         String username = shiroUserInstance.username
         try {
             shiroUserInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), username])
+            flash.info = "User ${shiroUserInstance.username} deleted"
             redirect(action: "list")
+            return
         }
         catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), username])
+            log.error("error occurred trying to delete user ${shiroUserInstance}", e)
+            unexpectedError()
             redirect(action: "show", id: params.id)
+            return
         }
     }
 
     def hasUser(String id) {
         render id ? ShiroUser.findByUsername(id) != null : false
+    }
+
+    def hasEmail(String id) {
+        //TODO:remove this when done debugging
+        log.info id
+        render id ? ShiroUser.findByEmailAddress(id) != null : false
+    }
+
+    private couldNotFind(id) {
+        log.error("could not find user with id ${id}")
+        flash.alert = "Could not find user with id ${id}"
+    }
+
+    private unexpectedError() {
+        flash.alert = "Unexpected error occurred"
+    }
+
+    private unexpectedError(ShiroUser user) {
+        log.error("Unexpected error(s) occurred trying to store $user: \n${user.errors}")
+        unexpectedError()
     }
 }

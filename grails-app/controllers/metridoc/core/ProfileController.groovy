@@ -16,8 +16,6 @@ class ProfileController {
     }
 
     def edit() {
-        //TODO: remove after debugging
-        log.info params
         def currentUser = SecurityUtils.getSubject().getPrincipal()
         ShiroUser shiroUserInstance = ShiroUser.findByUsername(currentUser)
 
@@ -34,15 +32,16 @@ class ProfileController {
 
 
     def update() {
-
         def shiroUserInstance = ShiroUser.get(params.id)
+        if (!shiroUserInstance) {
+            flash.alert = "Could not find user with id ${params.id}"
+            return
+        }
 
         if (params.version) {
             def version = params.version.toLong()
             if (shiroUserInstance.version > version) {
-                shiroUserInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                        [message(code: 'shiroUser.label', default: 'User')] as Object[],
-                        "Another user has updated this ShiroUser while you were editing")
+                flash.alert = "Another user has updated this ShiroUser while you were editing"
                 render(view: "/profile/edit", model: [shiroUserInstance: shiroUserInstance])
                 return
             }
@@ -53,6 +52,7 @@ class ProfileController {
             updateUserInfoAndPassword(shiroUserInstance, params)
             def userInputCurrentPassword = params.get('oldPassword')
             if (!shiroUserInstance.passwordHash.equals(new Sha256Hash(userInputCurrentPassword).toHex())) {
+
                 redirect(action: "edit", params: [flashMessage: 'Current Password is not correct'])
                 return
             }

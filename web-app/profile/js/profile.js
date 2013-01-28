@@ -1,7 +1,8 @@
 $('#changePW').change(function () {
     if(this.checked){
-        $('.changePassword').show()
+        $('.password').show()
     }else{
-        $('.changePassword').hide()
+        $('.password').hide()
     }
 })
+

@@ -1,9 +1,5 @@
 <div id="template">
 
-    <g:if test="${flash.message}">
-        <div class="message">${flash.message}</div>
-    </g:if>
-
     <g:form action="signIn" class="form-horizontal">
 
         <input type="hidden" name="targetUri" value="${targetUri}"/>

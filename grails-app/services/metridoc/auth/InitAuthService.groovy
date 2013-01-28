@@ -62,7 +62,7 @@ class InitAuthService {
                 if (DEFAULT_PASSWORD == password) {
                     log.warn "Could not find user admin, creating a default one with password '${DEFAULT_PASSWORD}'.  Change this immediatelly"
                 }
-                adminUser = new ShiroUser(username: 'admin', passwordHash: new Sha256Hash(password).toHex())
+                adminUser = new ShiroUser(username: 'admin', passwordHash: new Sha256Hash(password).toHex(), emailAddress: "admin@admin.com")
 
                 def adminRole = ShiroRole.find {
                     name == createRoleName(ADMIN)

@@ -1,25 +1,20 @@
 <g:each in="${flash.alerts}" var="alertVar">
-    <div class="alert alert-block">
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
-        ${alertVar}
-    </div>
+    <g:render template="/reports/alert" plugin="metridocCore" model="[alertClass: 'alert-error']">${alertVar}</g:render>
 </g:each>
 
 <g:each in="${flash.infos}" var="infoVar">
-    <div class="alert alert-info alert-block">
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
-    ${infoVar}</div>
+    <g:render template="/reports/alert" plugin="metridocCore" model="[alertClass: 'alert-info']">${infoVar}</g:render>
 </g:each>
 
 <g:if test="${flash.alert}">
-    <div class="alert alert-block">
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
-    ${flash.alert}</div>
+    <g:render template="/reports/alert" plugin="metridocCore" model="[alertClass: 'alert-error']">${flash.alert}</g:render>
 </g:if>
 
 <g:if test="${flash.info}">
-    <div class="alert alert-info alert-block">
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
-    ${flash.info}</div>
+    <g:render template="/reports/alert" plugin="metridocCore" model="[alertClass: 'alert-info']">${flash.info}</g:render>
+</g:if>
+
+<g:if test="${flash.message}">
+    <g:render template="/reports/alert" plugin="metridocCore" model="[alertClass: 'alert-info']">${flash.message}</g:render>
 </g:if>
 

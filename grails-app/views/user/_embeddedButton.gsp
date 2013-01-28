@@ -1,5 +1,5 @@
 <g:set var="type" value="${type ?: "submit"}"/>
 
-<button class="btn ${buttonClass}" type="${type}" name="${action}" onclick="this.form.submited=this.name">
+<button class="btn ${buttonClass}" type="${type}" name="${action}">
     <i class="${icon}"></i> ${content}
 </button>

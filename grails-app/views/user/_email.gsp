@@ -4,6 +4,7 @@
 <div class="controls">
     <g:if test="${disabled}">
         <input name="emailAddress"
+               id="emailAddress"
                required=""
                type="email"
                pattern=".{7,}"
@@ -13,6 +14,7 @@
     </g:if>
     <g:else>
         <input name="emailAddress"
+                id="emailAddress"
                required=""
                type="email"
                pattern=".{7,}"

@@ -21,13 +21,13 @@ class ShiroDbRealmTest {
     @Before
     void "create some data"() {
         ShiroUser.withTransaction{
-            def adminUser = new ShiroUser(username: "admin", passwordHash: "asdasd")
+            def adminUser = new ShiroUser(username: "admin", passwordHash: "asdasd", emailAddress: "foo@foo.com")
             def adminRole = new ShiroRole(name: "ROLE_ADMIN")
 
             adminUser.addToRoles(adminRole)
             assert adminUser.save()
 
-            def fooUser = new ShiroUser(username: "foo", passwordHash: "asdasd")
+            def fooUser = new ShiroUser(username: "foo", passwordHash: "asdasd", emailAddress: "foo@bar.com")
             def fooRole = new ShiroRole(name: "ROLE_FOO")
 
             fooUser.addToRoles(fooRole)
