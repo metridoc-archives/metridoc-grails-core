@@ -49,6 +49,8 @@ class ShiroUser {
     static final NOT_A_VALID_USERNAME = {String username ->
         "'${username} is not a valid user name"
     }
+    static final ADMIN_MUST_HAVE_ROLE_ADMIN = "admin must have [ROLE_ADMIN] as a role"
+    static final ROLES_ARE_NOT_VALID = "roles are not valid"
     static mapping = {
 
     }
@@ -77,12 +79,38 @@ class ShiroUser {
 
             return true
         })
+        roles(validator: {val, obj ->
+            if ("admin" == obj.username) {
+                boolean containsAdminRole = false
+                val.each {role ->
+                    if ("ROLE_ADMIN" == role.name) {
+                        containsAdminRole = true
+                    }
+                }
+                if(!containsAdminRole) {
+                    return "role.noAdminForAdmin"
+                }
+            }
+        })
     }
 
     static addAlertForAllErrors(ShiroUser user, Map flash) {
         addAlertsForEmailErrors(user, flash)
         addAlertForPasswordErrors(user, flash)
         addAlertForUserNameErrors(user, flash)
+        addAlertsForRoleErrors(user, flash)
+    }
+
+    static addAlertsForRoleErrors(ShiroUser user, Map flash) {
+        user.errors.getFieldError("roles").each {
+            switch(it.code) {
+                case "role.noAdminForAdmin":
+                    flash.alert = ADMIN_MUST_HAVE_ROLE_ADMIN
+                    break
+                default:
+                    flash.alert = ROLES_ARE_NOT_VALID
+            }
+        }
     }
 
     static addAlertForUserNameErrors(ShiroUser user, Map flash) {

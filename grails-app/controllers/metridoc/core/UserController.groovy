@@ -149,7 +149,10 @@ class UserController {
         }
 
         if (!shiroUserInstance.save(flush: true)) {
-            unexpectedError(shiroUserInstance)
+            ShiroUser.addAlertForAllErrors(shiroUserInstance, flash)
+            if (flash.alert == null) {
+                unexpectedError(shiroUserInstance)
+            }
             render(view: "/user/edit", model: [shiroUserInstance: shiroUserInstance])
             return
         }

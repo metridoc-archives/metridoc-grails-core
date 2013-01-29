@@ -5,19 +5,12 @@ import org.apache.commons.lang.StringUtils
 import org.junit.Before
 import org.junit.Test
 
-import static metridoc.reports.ShiroUser.CONFIRM_MISMATCH
-import static metridoc.reports.ShiroUser.FIELD_CANNOT_BE_NULL_OR_BLANK
-import static metridoc.reports.ShiroUser.OLD_PASSWORD_MISMATCH
-import static metridoc.reports.ShiroUser.PASSWORD_MISMATCH
-import static metridoc.reports.ShiroUser.USERNAME_IS_NOT_UNIQUE
-import static metridoc.reports.ShiroUser.getEMAIL_ERROR
-import static metridoc.reports.ShiroUser.getFIELD_CANNOT_BE_NULL_OR_BLANK
-import static metridoc.reports.ShiroUser.getNOT_A_VALID_EMAIL
+import static metridoc.reports.ShiroUser.*
 
 /**
  * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
  */
-@Mock(ShiroUser)
+@Mock([ShiroUser, ShiroRole])
 class ShiroUserTests {
 
     static final blahEmailAddress = "blah@foo.com"
@@ -25,7 +18,20 @@ class ShiroUserTests {
 
     @Before
     void "prime the database"() {
+        def adminRole = new ShiroRole(name: "ROLE_ADMIN")
+        adminRole.save(flush: true)
         new ShiroUser(username:  "foobar", emailAddress:  blahEmailAddress, passwordHash: "blahlblah").save(flush: true, failOnError: true)
+        new ShiroUser(username:  "admin", emailAddress:  "admin@admin.com", passwordHash: "blahlblah", roles: [adminRole]).save(flush: true, failOnError: true)
+    }
+
+    @Test
+    void "user admin must always have a role admin"() {
+        def admin = ShiroUser.findByUsername("admin")
+        admin.roles = []
+        assert !admin.validate()
+        def flash = [:]
+        ShiroUser.addAlertForAllErrors(admin, flash)
+        assert ShiroUser.ADMIN_MUST_HAVE_ROLE_ADMIN == flash.alert
     }
 
     @Test
