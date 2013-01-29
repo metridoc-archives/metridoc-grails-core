@@ -15,12 +15,16 @@
 package metridoc.reports
 
 import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang.SystemUtils
 import org.apache.shiro.crypto.hash.Sha256Hash
+
+import static org.apache.commons.lang.StringUtils.EMPTY
 
 /**
  * Represents the user of the application.
  */
 class ShiroUser {
+    Boolean hashAgainstOldPassword = true
     Boolean validatePasswords
     String username
     String passwordHash
@@ -28,13 +32,13 @@ class ShiroUser {
     String oldPassword
     String confirm
     String emailAddress
-    String passwordErrorMessage
-    static transients = ['password', 'confirm', 'oldPassword', 'validatePasswords', 'passwordErrorMessage']
+
+    static transients = ['password', 'confirm', 'oldPassword', 'validatePasswords', 'hashAgainstOldPassword']
     static final EMAIL_ERROR = { String emailAddress ->
         "The email ${emailAddress} is associated with another account, please choose another"
     }
 
-    static final FIELD_CANNOT_BE_NULL_OR_BLANK = {String fieldName ->
+    static final FIELD_CANNOT_BE_NULL_OR_BLANK = { String fieldName ->
         "${fieldName} cannot be null or empty"
     }
     static final NOT_A_VALID_EMAIL = { String email ->
@@ -46,7 +50,7 @@ class ShiroUser {
     static final CONFIRM_MISMATCH = "Confirm password does not match"
     static final PASSWORD_IS_INVALID = "Password is invalid"
     static final USERNAME_IS_NOT_UNIQUE = "User name is associatted with another account, please choose a different one"
-    static final NOT_A_VALID_USERNAME = {String username ->
+    static final NOT_A_VALID_USERNAME = { String username ->
         "'${username} is not a valid user name"
     }
     static final ADMIN_MUST_HAVE_ROLE_ADMIN = "admin must have [ROLE_ADMIN] as a role"
@@ -63,31 +67,40 @@ class ShiroUser {
         passwordHash(blank: false, validator: { val, obj ->
             Boolean validatePasswords = obj.validatePasswords
             if (validatePasswords) {
-                if (obj.password == null || obj.password == StringUtils.EMPTY) {
-                    obj.passwordErrorMessage = FIELD_CANNOT_BE_NULL_OR_BLANK("password")
+                if (obj.password == null || obj.password.trim() == EMPTY) {
                     return "password.nullable"
                 }
                 if (obj.password.size() < 5) return "password.match"
-                if (obj.oldPassword) {
-                    def hash = new Sha256Hash(obj.oldPassword)
-                    if (hash != obj.passwordHash) return "oldPassword.match"
-                }
-                if (obj.confirm) {
-                    if (obj.confirm != obj.password) return "confirm.match"
+
+                if (obj.oldPassword != null && obj.oldPassword.trim() != EMPTY) {
+                    if (obj.hashAgainstOldPassword) {
+                        def hash = new Sha256Hash(obj.oldPassword).toHex()
+                        if (hash != obj.passwordHash) return "oldPassword.match"
+                    }
+                } else return "password.nullable" //oldPassword should never be null or empty
+
+                if (obj.confirm != obj.password) {
+                    return "confirm.match"
+                } else {
+                    //not sure this will ever fail
+                    if (!obj.hashAgainstOldPassword) {
+                        def hash = new Sha256Hash(obj.password).toHex()
+                        if (hash != obj.passwordHash) return "confirm.match"
+                    }
                 }
             }
 
             return true
         })
-        roles(validator: {val, obj ->
+        roles(validator: { val, obj ->
             if ("admin" == obj.username) {
                 boolean containsAdminRole = false
-                val.each {role ->
+                val.each { role ->
                     if ("ROLE_ADMIN" == role.name) {
                         containsAdminRole = true
                     }
                 }
-                if(!containsAdminRole) {
+                if (!containsAdminRole) {
                     return "role.noAdminForAdmin"
                 }
             }
@@ -95,15 +108,23 @@ class ShiroUser {
     }
 
     static addAlertForAllErrors(ShiroUser user, Map flash) {
+        if (user.errors) {
+            user.errors.each { error ->
+                log.warn("Error ${error} occurred trying to update user ${user}")
+            }
+        }
         addAlertsForEmailErrors(user, flash)
-        addAlertForPasswordErrors(user, flash)
-        addAlertForUserNameErrors(user, flash)
+        addAlertsForPasswordErrors(user, flash)
+        addAlertsForUserNameErrors(user, flash)
         addAlertsForRoleErrors(user, flash)
+        if (flash.alert == null) {
+            flash.alert "unknown error occurred trying to update user"
+        }
     }
 
     static addAlertsForRoleErrors(ShiroUser user, Map flash) {
-        user.errors.getFieldError("roles").each {
-            switch(it.code) {
+        addAlerts(user, "roles") {
+            switch (it) {
                 case "role.noAdminForAdmin":
                     flash.alert = ADMIN_MUST_HAVE_ROLE_ADMIN
                     break
@@ -113,9 +134,9 @@ class ShiroUser {
         }
     }
 
-    static addAlertForUserNameErrors(ShiroUser user, Map flash) {
-        user.errors.getFieldError("username").each {
-            switch(it.code) {
+    static addAlertsForUserNameErrors(ShiroUser user, Map flash) {
+        addAlerts(user, "username") {
+            switch (it) {
                 case "unique":
                     flash.alert = USERNAME_IS_NOT_UNIQUE
                     break
@@ -130,8 +151,8 @@ class ShiroUser {
     }
 
     static addAlertsForEmailErrors(ShiroUser user, Map flash) {
-        user.errors.getFieldErrors("emailAddress").each {
-            switch (it.code) {
+        addAlerts(user, "emailAddress") {
+            switch (it) {
                 case "unique":
                     flash.alert = EMAIL_ERROR.call(user.emailAddress)
                     break;
@@ -139,7 +160,7 @@ class ShiroUser {
                 case "blank":
                     flash.alert = FIELD_CANNOT_BE_NULL_OR_BLANK.call("email")
                     break
-                //for all other errors just say it is invalid
+            //for all other errors just say it is invalid
                 default:
                     flash.alert = NOT_A_VALID_EMAIL.call(user.emailAddress)
                     break
@@ -147,9 +168,9 @@ class ShiroUser {
         }
     }
 
-    private static addAlertForPasswordErrors(ShiroUser user, Map flash) {
-        user.errors.getFieldErrors("passwordHash").each {
-            switch (it.code) {
+    static addAlertsForPasswordErrors(ShiroUser user, Map flash) {
+        addAlerts(user, "passwordHash") {
+            switch (it) {
                 case "password.nullable":
                     flash.alert = FIELD_CANNOT_BE_NULL_OR_BLANK.call("password")
                     break
@@ -162,11 +183,17 @@ class ShiroUser {
                 case "confirm.match":
                     flash.alert = CONFIRM_MISMATCH
                     break
-                    //for all other errors just say it is invalid
                 default:
+                    //for all other errors just say it is invalid
                     flash.alert = PASSWORD_IS_INVALID
                     break
             }
+        }
+    }
+
+    private static addAlerts(ShiroUser user, String field, Closure closure) {
+        user.errors.getFieldErrors(field).each {
+            closure.call(it.code)
         }
     }
 }

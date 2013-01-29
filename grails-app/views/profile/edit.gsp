@@ -14,7 +14,7 @@
                     <div class="controls" id="ifChangePassword">
                         <g:checkBox name="changePW" id="changePW" value="${false}"></g:checkBox>
                     </div>
-                    <g:render template="/user/password" plugin="metridocCore" model="[noValidation: true, passwordId: 'oldPassword', label:'oldPassword']"/>
+                    <g:render template="/user/password" plugin="metridocCore" model="[noValidation: true, passwordId: 'oldPassword', label:'oldPassword', passwordPrepend: 'Old ']"/>
                     <g:render template="/user/passwords" plugin="metridocCore" model="[noValidation: true]"/>
                     <g:render template="/user/button" plugin="metridocCore"
                               model="[content:'Update',

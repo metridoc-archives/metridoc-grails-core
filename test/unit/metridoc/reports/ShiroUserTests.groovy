@@ -2,6 +2,7 @@ package metridoc.reports
 
 import grails.test.mixin.Mock
 import org.apache.commons.lang.StringUtils
+import org.apache.shiro.crypto.hash.Sha256Hash
 import org.junit.Before
 import org.junit.Test
 
@@ -20,8 +21,8 @@ class ShiroUserTests {
     void "prime the database"() {
         def adminRole = new ShiroRole(name: "ROLE_ADMIN")
         adminRole.save(flush: true)
-        new ShiroUser(username:  "foobar", emailAddress:  blahEmailAddress, passwordHash: "blahlblah").save(flush: true, failOnError: true)
-        new ShiroUser(username:  "admin", emailAddress:  "admin@admin.com", passwordHash: "blahlblah", roles: [adminRole]).save(flush: true, failOnError: true)
+        new ShiroUser(username: "foobar", emailAddress: blahEmailAddress, passwordHash: "blahlblah").save(flush: true, failOnError: true)
+        new ShiroUser(username: "admin", emailAddress: "admin@admin.com", passwordHash: "blahlblah", roles: [adminRole]).save(flush: true)
     }
 
     @Test
@@ -29,7 +30,6 @@ class ShiroUserTests {
         def admin = ShiroUser.findByUsername("admin")
         admin.roles = []
         assert !admin.validate()
-        def flash = [:]
         ShiroUser.addAlertForAllErrors(admin, flash)
         assert ShiroUser.ADMIN_MUST_HAVE_ROLE_ADMIN == flash.alert
     }
@@ -38,8 +38,8 @@ class ShiroUserTests {
     void "test that flash messages are set on email errors"() {
         checkForError(passwordHash: "blah", username: "barfoo", emailAddress: blahEmailAddress, "emailAddress", EMAIL_ERROR(blahEmailAddress))
         checkForError(passwordHash: "blah", username: "barfoo", "emailAddress", FIELD_CANNOT_BE_NULL_OR_BLANK("email"))
-        checkForError(passwordHash: "blah", username:  "barfoo", emailAddress:  StringUtils.EMPTY, "emailAddress", FIELD_CANNOT_BE_NULL_OR_BLANK("email"))
-        checkForError(passwordHash: "blah", username:  "barfoo", emailAddress: "foobar", "emailAddress", NOT_A_VALID_EMAIL("foobar"))
+        checkForError(passwordHash: "blah", username: "barfoo", emailAddress: StringUtils.EMPTY, "emailAddress", FIELD_CANNOT_BE_NULL_OR_BLANK("email"))
+        checkForError(passwordHash: "blah", username: "barfoo", emailAddress: "foobar", "emailAddress", NOT_A_VALID_EMAIL("foobar"))
     }
 
     @Test
@@ -83,7 +83,7 @@ class ShiroUserTests {
         checkForError(validatePasswords: true,
                 username: "barfoo",
                 emailAddress: fooEmail,
-                password:StringUtils.EMPTY,
+                password: StringUtils.EMPTY,
                 passwordHash: "blahblah",
                 "passwordHash",
                 FIELD_CANNOT_BE_NULL_OR_BLANK("password"))
@@ -91,7 +91,7 @@ class ShiroUserTests {
         checkForError(validatePasswords: true,
                 username: "barfoo",
                 emailAddress: fooEmail,
-                password:"bar",
+                password: "bar",
                 passwordHash: "blahblah",
                 "passwordHash",
                 PASSWORD_MISMATCH)
@@ -100,17 +100,18 @@ class ShiroUserTests {
                 oldPassword: "blahblah",
                 username: "barfoo",
                 emailAddress: fooEmail,
-                password:"foobar",
+                password: "foobar",
                 passwordHash: "blahblah",
                 "passwordHash",
                 OLD_PASSWORD_MISMATCH)
 
         checkForError(validatePasswords: true,
+                oldPassword:  "blahblah",
                 username: "barfoo",
                 emailAddress: fooEmail,
-                password:"foobar",
+                password: "foobar",
                 confirm: "barfoo",
-                passwordHash: "blahblah",
+                passwordHash: new Sha256Hash("blahblah").toHex(),
                 "passwordHash",
                 CONFIRM_MISMATCH)
     }

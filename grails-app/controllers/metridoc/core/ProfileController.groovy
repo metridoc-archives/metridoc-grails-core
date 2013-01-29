@@ -26,13 +26,14 @@ class ProfileController {
         }
 
         [
-            shiroUserInstance: shiroUserInstance
+                shiroUserInstance: shiroUserInstance
         ]
     }
 
 
     def update() {
         def shiroUserInstance = ShiroUser.get(params.id)
+
         if (!shiroUserInstance) {
             flash.alert = "Could not find user with id ${params.id}"
             return
@@ -47,19 +48,20 @@ class ProfileController {
             }
         }
 
-        if (params.changePW) {
-            log.info "password and user details for ${shiroUserInstance.username} are changing"
-            updateUserInfoAndPassword(shiroUserInstance, params)
-            def userInputCurrentPassword = params.get('oldPassword')
-            if (!shiroUserInstance.passwordHash.equals(new Sha256Hash(userInputCurrentPassword).toHex())) {
+        shiroUserInstance.lock()
 
-                redirect(action: "edit", params: [flashMessage: 'Current Password is not correct'])
-                return
+        if (params.changePW) {
+            shiroUserInstance.validatePasswords = true
+            shiroUserInstance.oldPassword = params.oldPassword
+            shiroUserInstance.password = params.password
+            shiroUserInstance.confirm = params.confirm
+            def valid = shiroUserInstance.validate()
+            if (valid) {
+                shiroUserInstance.passwordHash = new Sha256Hash(shiroUserInstance.password).toHex()
+                shiroUserInstance.hashAgainstOldPassword = false
             }
-            if (params.get('password') != params.get('confirm')) {
-                redirect(action: "edit", params: [flashMessage:"New passwords don't match"])
-                return
-            }
+
+            log.info "password and user details for ${shiroUserInstance.username} are changing"
         } else {
             log.info "user details for ${shiroUserInstance.username} are changing, password will remain the same"
             updateUserInfo(shiroUserInstance, params)
@@ -67,17 +69,15 @@ class ProfileController {
 
         if (!shiroUserInstance.save(flush: true)) {
             if (shiroUserInstance.errors) {
-                log.error("There were errors trying to update ${shiroUserInstance}")
-                shiroUserInstance.errors.each {error ->
-                    log.error("Error ${error} occurred trying to update user ${shiroUserInstance}")
-                }
+                ShiroUser.addAlertForAllErrors(shiroUserInstance, flash)
             }
-            redirect(action: "edit", params: [flashMessage: "There were errors trying to update user details"])
+
+            redirect(action: "edit")
             return
         }
 
-        def flashMessage = "User details updated"
-        redirect(action: "edit", params: [flashMessage:flashMessage])
+        flash.info = "User details updated"
+        redirect(action: "edit")
     }
 
     static protected updateUserInfo(ShiroUser user, params) {

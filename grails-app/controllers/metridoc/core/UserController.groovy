@@ -63,12 +63,20 @@ class UserController {
         def password = params.get('password')
         def confirm = params.get('confirm')
 
-        def shiroUserInstance = new ShiroUser(username: params.get('username'),password: password, confirm: confirm, passwordHash: new Sha256Hash(password).toHex(), emailAddress: params.get('emailAddress'))
+        def shiroUserInstance = new ShiroUser(
+                username: params.get('username'),
+                oldPassword: password,
+                validatePasswords: true,
+                password: password,
+                confirm: confirm,
+                passwordHash: new Sha256Hash(password).toHex(),
+                emailAddress: params.get('emailAddress'))
+
         userService.addRolesToUser(shiroUserInstance, params.roles)
 
         if (!shiroUserInstance.save(flush: true)) {
+            ShiroUser.addAlertForAllErrors(shiroUserInstance, flash)
             render(view: "/user/create", model: [shiroUserInstance: shiroUserInstance])
-            flash.alert = "Unexpected error occurred trying to save user"
             return
         }
 
@@ -123,9 +131,12 @@ class UserController {
             }
         }
 
+        shiroUserInstance.lock()
         shiroUserInstance.with {
             emailAddress = params.emailAddress
             if (params.password) {
+                validatePasswords = true
+                oldPassword = params.password
                 password = params.password
                 confirm = params.confirm
                 shiroUserInstance.setPasswordHash(new Sha256Hash(password).toHex())

@@ -32,7 +32,6 @@ class UserServiceTest {
     void testAddingRoles() {
         def user = new ShiroUser()
         userService.addRolesToUser(user, ["ROLE_FOO"])
-        user.save()
         assert 2 == user.roles.size()
         user.roles.each {
             assert "ROLE_FOO" == it.name || "ROLE_ANONYMOUS" == it.name
