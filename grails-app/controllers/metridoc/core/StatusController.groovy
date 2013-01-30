@@ -4,7 +4,8 @@ import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy
 
 class StatusController {
 
-    TransactionAwareDataSourceProxy dataSource
+    def  dataSource
+    def grailsApplication
 
     static accessControl = {
         role(name:  "ROLE_ADMIN")
@@ -12,7 +13,8 @@ class StatusController {
 
     def index() {
         [
-                dataSourceUrl: dataSource.connection.metaData.getURL()
+                dataSourceUrl: dataSource.connection.metaData.getURL(),
+                applicationName: grailsApplication.mergedConfig.metridoc.app.name
         ]
 
     }
