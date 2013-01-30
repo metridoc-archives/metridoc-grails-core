@@ -1,8 +1,5 @@
 <md:report>
-    <div>Workflows</div>
     <ul>
-        <g:each in="${workflows}" var="workflow">
-            <li>${workflow.name}</li>
-        </g:each>
+        <li><strong>Data source url: </strong><code>${dataSourceUrl}</code></li>
     </ul>
 </md:report>
