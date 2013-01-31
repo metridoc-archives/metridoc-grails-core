@@ -21,34 +21,13 @@
 
     <g:render template="/user/tabs" plugin="metridocCore"/>
 
-    <div id="show-shiroRole" class="content scaffold-show" role="main">
-        <h1><g:message code="default.show.label" args="['Role']" default="Show Role"/></h1>
-        <g:if test="${flash.message}">
-            <div class="message" role="status">${flash.message}</div>
-        </g:if>
-        <ol class="property-list shiroUser">
+    <g:form class="form-horizontal">
+        <div class="control-group">
+            <label for="shiro-role" class="control-label">Role</label>
 
-            <g:if test="${shiroRoleInstance?.name}">
-                <li class="fieldcontain">
-                    <span id="username-label" class="property-label">
-                        <g:message code="shiroRole.username.label" default="Rolename"/>
-                    </span>
-
-                    <span class="property-value" aria-labelledby="username-label">
-                        <g:fieldValue bean="${shiroRoleInstance}" field="name"/>
-                    </span>
-
-                </li>
-            </g:if>
-
-        </ol>
-
-        <fieldset class="buttons">
-            <g:link class="edit" action="edit" id="${shiroRoleInstance?.id}">
-                <g:message code="default.button.edit.label" default="Edit"/>
-            </g:link>
-        </fieldset>
-
-    </div>
-
+            <div class="controls">
+                <input name="shiro-role" type="text" disabled="disabled" value="${shiroRoleInstance?.name}"/>
+            </div>
+        </div>
+    </g:form>
 </md:report>

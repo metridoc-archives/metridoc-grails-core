@@ -17,32 +17,20 @@
 <%@ page import="metridoc.reports.ShiroRole" %>
 <md:report>
 
-    <g:set var="entityName" value="${'Role'}"/>
     <g:render template="/user/tabs" plugin="metridocCore"/>
 
-    <div id="create-shiroRole" class="content scaffold-create" role="main">
-        <h1><g:message code="default.create.label" args="['Role']" default="Create Role"/></h1>
-        <g:if test="${flash.message}">
-            <div class="message" role="status">${flash.message}</div>
-        </g:if>
-
-        <g:hasErrors bean="${shiroRoleInstance}">
-            <ul class="errors" role="alert">
-                <g:renderErrors bean="${shiroRoleInstance}" as="list"/>
-            </ul>
-        </g:hasErrors>
-
-        <g:form action="save">
-            <fieldset class="form">
-                <g:render template="form"/>
-            </fieldset>
-            <fieldset class="buttons">
-                <g:submitButton name="create" class="save"
-                                value="${message(code: 'default.button.create.label', default: 'Create')}"/>
-            </fieldset>
-        </g:form>
-
-    </div>
-
+    <g:form class="form-horizontal" action="save">
+        <div class="control-group">
+            <label class="control-label" for="rolename">Role Name</label>
+            <div class="controls">
+                <input name="rolename" type="text" required placeholder="ROLE_FOO"/>
+            </div>
+            <div class="controls">
+                <button class="btn" type="submit">
+                    <i class="icon-edit"></i> Create
+                </button>
+            </div>
+        </div>
+    </g:form>
 </md:report>
 

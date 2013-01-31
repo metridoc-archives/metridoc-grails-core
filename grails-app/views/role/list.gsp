@@ -39,11 +39,6 @@
                         <g:link action="show"
                                 id="${shiroRoleInstance.id}">${fieldValue(bean: shiroRoleInstance, field: "name")}
                         </g:link>
-                        <span class="inCellActions">
-                            <a href="edit/${shiroRoleInstance.id}">
-                                <r:img uri="/images/skin/database_edit.png"/>
-                            </a>
-                        </span>
                     </td>
                 </tr>
             </g:each>

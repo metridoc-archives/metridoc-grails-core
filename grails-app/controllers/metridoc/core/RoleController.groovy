@@ -15,6 +15,9 @@
 package metridoc.core
 
 import metridoc.reports.ShiroRole
+import org.apache.commons.lang.StringUtils
+
+import static org.apache.commons.lang.StringUtils.*
 
 class RoleController {
 
@@ -47,17 +50,23 @@ class RoleController {
         [shiroRoleInstance: new ShiroRole(params)]
     }
 
-    def save() {
+    def save(String rolename) {
 
-        def roleName = params.get('rolename').toString()
-        roleName = roleName.toUpperCase()
-        if (!roleName.startsWith('ROLE_')){
-           roleName = 'ROLE_'+roleName
+        if(rolename == null || rolename == EMPTY) {
+            flash.alert = "rolename has to be provided"
+            render(view: "/role/create")
         }
 
-        def shiroRoleInstance = new ShiroRole(name: roleName)
+        def usedRoleName = rolename
+        usedRoleName = usedRoleName.toUpperCase()
+        if (!usedRoleName.startsWith('ROLE_')){
+           usedRoleName = 'ROLE_'+usedRoleName
+        }
+
+        def shiroRoleInstance = new ShiroRole(name: usedRoleName)
 
         if (!shiroRoleInstance.save(flush: true)) {
+            flash.alert = "Could not save ${shiroRoleInstance}"
             render(view: "/role/create", model: [shiroRoleInstance: shiroRoleInstance])
             return
         }
