@@ -34,6 +34,15 @@
                     linkAction: 'create',
                     linkText: 'Create Role',
                     icon: 'icon-edit']"/>
+    <g:render
+            template="/user/tabLabel"
+            plugin="metridocCore"
+            model="[controllerName: controllerName,
+                    actionName: actionName,
+                    linkController: 'manageReport',
+                    linkAction: 'index',
+                    linkText: 'Report Security',
+                    icon: 'icon-bar-chart']"/>
 </ul>
 
 

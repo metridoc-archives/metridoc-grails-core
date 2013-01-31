@@ -84,10 +84,13 @@ grails.project.dependency.resolution = {
         }
         runtime ":jquery-ui:1.8.24"
         runtime ":webxml:1.4.1"
-        build ":tomcat:$grailsVersion"
-        build ":rest-client-builder:1.0.2"
-        build ":release:$grailsVersion"
-        build ":svn:1.0.2"
+        build (":tomcat:$grailsVersion") {
+            export = false
+        }
+        compile(":rest-client-builder:1.0.3")
+        build (":release:$grailsVersion") {
+            export = false
+        }
         build(":codenarc:0.18") {
             excludes "log4j", "groovy-all", "ant", "junit"
         }

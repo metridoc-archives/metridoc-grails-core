@@ -1,5 +1,6 @@
 package metridoc.auth
 
+import metridoc.admin.ManageReport
 import metridoc.reports.ShiroRole
 import metridoc.reports.ShiroUser
 import org.apache.shiro.crypto.hash.Sha256Hash
@@ -13,6 +14,7 @@ import grails.util.Holders
 class InitAuthService {
 
     def grailsApplication
+    def pluginManager
     final static DEFAULT_PASSWORD = "password"
     final static ANONYMOUS = "anonymous"
     final static ADMIN = "admin"
@@ -42,8 +44,14 @@ class InitAuthService {
      */
     def init() {
         initDefaultRoles()
+        initRoleOverides()
         initAdminUser()
         initAnonymousUser()
+    }
+
+    def initRoleOverides() {
+        Map<String, Map<String, List<String>>> roleMaps = pluginManager.getGrailsPluginForClassName("ShiroGrailsPlugin").instance.roleMaps
+        ManageReport.overrideRoleMaps(roleMaps)
     }
 
     def initAdminUser() {
