@@ -17,7 +17,7 @@
         </tr>
         <g:each in="${controllerDetails}" var="detail">
             <tr>
-                <td>${detail.key}</td>
+                <td><g:link action="show" params="[id:detail.key]">${detail.key}</g:link></td>
 
                 <td>
                     <g:if test="${detail.value.isProtected}">

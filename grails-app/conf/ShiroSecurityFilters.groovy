@@ -6,6 +6,8 @@ import org.codehaus.groovy.grails.commons.GrailsClass
  * via access control by convention.
  */
 class ShiroSecurityFilters {
+    def manageReportService
+
     def filters = {
         all(uri: "/**") {
             before = {
@@ -14,25 +16,21 @@ class ShiroSecurityFilters {
                 //this is handled by shiro's filter map
                 if (request.requestURL.contains("/rest/")) return true
 
-                def roles = getRoleMap(controllerName)
+                def details = manageReportService.getControllerDetails().get(controllerName)
+                def roles = details.roles
                 if (roles) {
                     accessControl(auth: false) {
                         def hasAccess = true
                         roles.each {
-                            String action = it.key
-                            if(action.trim() != "*") {
-                                log.warn "converting action [$action] to * since action level security is not permitted"
-                            }
-                            log.debug "checking for access to $controllerName for role ${it.value}"
-                            hasAccess = hasAccess && role(it.value)
+                            log.debug "checking for access to $controllerName for role ${it}"
+                            hasAccess = hasAccess && role(it)
                         }
 
                         return hasAccess
                     }
                 }
-                GrailsClass controllerClass = grailsApplication.getArtefactByLogicalPropertyName("Controller", controllerName)
 
-                def isProtected = controllerClass.getPropertyValue("isProtected", Boolean)
+                def isProtected = details.isProtected
                 if (isProtected) {
                     def notLoggedIn = SecurityUtils.subject.principal == null
                     if (notLoggedIn) {

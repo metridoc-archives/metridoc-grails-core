@@ -29,6 +29,9 @@ class ManageReportService {
             if (reportPermission.roles) {
                 return true
             }
+            if (reportPermission.isProtected) {
+                return true
+            }
         }
 
         if (getRolesByController(controllerName)) {
@@ -46,13 +49,14 @@ class ManageReportService {
         return false
     }
 
-    Map<String, Map<String, Set<String>>> getControllerDetails() {
+    Map<String, Map<String, Object>> getControllerDetails() {
         def result = [:]
         grailsApplication.controllerClasses.each {
             def controllerName = it.logicalPropertyName
             def controllerResult = [:]
             controllerResult.roles = getRolesByController(controllerName)
             controllerResult.isProtected = isProtected(controllerName)
+            controllerResult.controllerName = controllerName
             result[controllerName] = controllerResult
         }
 
