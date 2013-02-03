@@ -8,9 +8,6 @@
 
 <%@ page import="org.quartz.Trigger" contentType="text/html;charset=UTF-8" %>
 <md:report>
-    <md:errorAlert showAlertIf="${!emailIsConfigured}" alertClass="md-email-alert"
-                   alertMessage="Email has not been set up properly, no notifications will be sent on job failures"/>
-    <md:errorAlert alertClass="md-email-alert" alertMessage="${badEmailMessage}"/>
     <g:render template="quartzSettings" plugin="metridoc-core"/>
     <div class="body">
         <h1 id="quartz-title">

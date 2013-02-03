@@ -24,9 +24,10 @@
         <g:hiddenField name="version" value="${shiroUserInstance?.version}"/>
 
         <div class="control-group">
-            <g:render template="/user/userName" plugin="metridocCore" model="[disabled: true]"></g:render>
-            <g:render template="/user/email" plugin="metridocCore"></g:render>
-            <g:render template="/user/roles" plugin="metridocCore"></g:render>
+            <tmpl:userName disabled="${true}"></tmpl:userName>
+            %{--<g:render template="/user/userName" plugin="metridocCore" model="[disabled: true]"></g:render>--}%
+            <tmpl:email></tmpl:email>
+            <tmpl:roles></tmpl:roles>
             <div class="controls">
                 <button class="btn" type="submit" name="_action_update">
                     <i class="icon-edit"></i> Update

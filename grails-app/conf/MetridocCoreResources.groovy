@@ -14,8 +14,14 @@
  */
 modules = {
 
+    jquery {
+        resource id:'js',
+                url:[plugin:"metridocCore", dir:"components/jquery", file:"jquery.js"],
+                attrs: [type: "js"]
+    }
+
     profile {
-        dependsOn 'jquery-ui'
+        dependsOn 'jquery'
         resource id: 'css',
                 url: [plugin: "metridocCore", dir: 'profile/css', file: 'profile.css'],
                 attrs: [type: 'css']
@@ -25,7 +31,7 @@ modules = {
     }
 
     user {
-        dependsOn 'jquery-ui'
+        dependsOn 'jquery'
         resource id: 'css',
                 url: [plugin: "metridocCore", dir: 'user/css', file: 'user.css'],
                 attrs: [type: 'css']
@@ -35,7 +41,7 @@ modules = {
     }
 
     role {
-        dependsOn 'jquery-ui'
+        dependsOn 'jquery'
         resource id: 'css',
                 url: [plugin: "metridocCore", dir: 'role/css', file: 'role.css'],
                 attrs: [type: 'css']
@@ -45,7 +51,7 @@ modules = {
     }
 
     application {
-        dependsOn 'jquery-ui', 'jquery'
+        dependsOn 'jquery'
         resource id: 'appJs',
                 url: [plugin: "metridocCore", dir: 'js', file: 'application.js'],
                 attrs: [type: 'js']
@@ -76,14 +82,14 @@ modules = {
     }
 
     login {
-        dependsOn 'jquery-ui'
+        dependsOn 'jquery'
         resource id: 'loginCss',
                 url: [plugin: "metridocCore", dir: 'auth/css', file: 'login.css'],
                 attrs: [type: 'css']
     }
 
     status {
-        dependsOn 'jquery-ui'
+        dependsOn 'jquery'
     }
 
     quartz {
@@ -112,7 +118,7 @@ modules = {
     }
 
     log {
-        dependsOn 'jquery-ui'
+        dependsOn 'jquery'
         resource id: 'css', disposition: 'head',
                 url: [plugin: "metridocCore", dir: 'log/css', file: 'log.css'],
                 attrs: [type: 'css']

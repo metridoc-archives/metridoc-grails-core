@@ -76,10 +76,10 @@ class QuartzController {
         NotificationEmails.list().collect { it.email }.each {
             notificationEmails.appendln(it)
         }
-
+        def alerts = []
         def badEmailMessage = null
         if (params.badEmails) {
-            def badEmailMessageBuilder = new StrBuilder("The following emails could not be stored: ")
+            def badEmailMessageBuilder = new StrBuilder("The following emails are not valid: ")
             if (params.badEmails instanceof String) {
                 badEmailMessageBuilder.append(params.badEmails)
                 badEmailMessage = badEmailMessageBuilder.toString()
@@ -94,21 +94,24 @@ class QuartzController {
             }
         }
 
-        if (NotificationEmails.count() == 0) {
-            badEmailMessage = "No emails have been set, no one will be notified of job failures"
+        if (badEmailMessage) {
+            alerts << badEmailMessage
         }
 
-
-
-
+        if (NotificationEmails.count() == 0) {
+            alerts << "No emails have been set, no one will be notified of job failures"
+        }
+        if(!commonService.emailIsConfigured()) {
+            alerts << "Email has not been set up properly, no notifications will be sent on job failures"
+        }
+        if(alerts) {
+            flash.alerts = alerts
+        }
         return [
                 jobs: jobsList,
                 now: new Date(),
                 scheduler: quartzScheduler,
-                emailIsConfigured: commonService.emailIsConfigured(),
                 notificationEmails: notificationEmails,
-                badEmailMessage: badEmailMessage,
-
         ]
     }
 
