@@ -67,11 +67,13 @@ grails.project.dependency.resolution = {
         compile('org.apache.camel:camel-stream:2.9.2')
         compile('org.apache.camel:camel-ftp:2.9.2')
         compile('org.jasypt:jasypt:1.9.0')
+
         build("com.google.code.maven-svn-wagon:maven-svn-wagon:1.4")
     }
 
     //grails based plugins
     plugins {
+        compile ":external-config-reload:1.2.2"
         compile ":plugin-config:0.1.5"
         compile ":quartz2:0.2.3"
         runtime ":mail:1.0.1"
