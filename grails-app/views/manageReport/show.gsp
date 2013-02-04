@@ -8,17 +8,18 @@
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 <md:report>
-    <g:render template="/user/tabs" plugin="metridocCore"/>
-
+    <tmpl:manageReportHeaders/>
     <md:header>Edit Controller Security</md:header>
     <g:form class="form-horizontal" action="update">
         <g:hiddenField name="controllerName" value="${controllerDetails.controllerName}"/>
         <div class="control-group">
             <label for="controllerForSecurity" class="control-label">Controller Name:</label>
+
             <div class="controls">
                 <g:textField name="controllerForSecurity" disabled="true" value="${controllerDetails.controllerName}"/>
             </div>
             <label for="isProtected" class="control-label">Protected?</label>
+
             <div class="controls">
                 <g:checkBox name="isProtected" value="${controllerDetails.isProtected}"/>
             </div>

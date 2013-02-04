@@ -15,11 +15,16 @@
 package metridoc.core
 
 import org.apache.shiro.SecurityUtils
+import org.apache.shiro.session.SessionException
 
 class LogoutController {
 
     def index() {
-        SecurityUtils.subject.logout()
+        try {
+            SecurityUtils.subject.logout()
+        } catch (SessionException exception) {
+            log.debug("Encountered session exception during logout.  This can generally safely be ignored.", exception);
+        }
         redirect(controller: "home")
     }
 }

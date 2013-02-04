@@ -8,13 +8,17 @@ class ManageReportController {
 
     def manageReportService
     def initAuthService
+    def grailsApplication
 
     static accessControl = {
         role(name: "ROLE_ADMIN")
     }
 
     def index() {
-        [controllerDetails: manageReportService.controllerDetails]
+        [
+                controllerDetails: manageReportService.controllerDetails,
+                shiroFilters: grailsApplication.config.security.shiro.filter.filterChainDefinitions
+        ]
     }
 
     def show(@RequestParameter('id') String controllerName) {
@@ -68,9 +72,9 @@ class ManageReportController {
                 flash.alert = "errors occurred trying to save $controllerName"
             }
             //make changes to the role map
-            initAuthService.init ()
+            initAuthService.init()
         }
-        redirect (action: "show", id: controllerName)
+        redirect(action: "index")
     }
 }
 
