@@ -21,15 +21,11 @@
 
     <g:form action="save" class="form-horizontal">
         <div class="control-group">
-            <g:render template="/user/userName" plugin="metridocCore"/>
-            <g:render template="/user/passwords" plugin="metridocCore"/>
-            <g:render template="/user/email" plugin="metridocCore"/>
-            <g:render template="/user/roles" plugin="metridocCore"/>
-            <g:render template="/user/button" plugin="metridocCore"
-                      model="[content:'Create',
-                              icon:'icon-edit']"
-            />
-
+            <tmpl:userName/>
+            <tmpl:passwords/>
+            <tmpl:email/>
+            <tmpl:roles/>
+            <tmpl:button content="Create" icon="icon-edit"/>
     </g:form>
 
 </md:report>
