@@ -7,7 +7,6 @@ import org.quartz.*;
 import org.quartz.spi.TriggerFiredBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Date;
@@ -70,10 +69,10 @@ public class QuartzMonitorJobFactory extends GrailsJobFactory {
                 Object lastDuration = jobDetails.get("duration");
                 Object lastTooltip = jobDetails.get("tooltip");
                 jobDetails.clear();
-                if(lastDuration != null) {
+                if (lastDuration != null) {
                     jobDetails.put("lastDuration", lastDuration);
                 }
-                if(lastTooltip != null) {
+                if (lastTooltip != null) {
                     jobDetails.put("tooltip", lastTooltip);
                 }
                 jobDetails.put("lastRun", new Date());
@@ -99,10 +98,14 @@ public class QuartzMonitorJobFactory extends GrailsJobFactory {
             } finally {
                 Trigger currentTrigger = context.getTrigger();
                 JobDataMap jobData = currentTrigger.getJobDataMap();
-                if(jobData.containsKey("oldTrigger")) {
+                if (jobData.containsKey("oldTrigger")) {
                     try {
                         Trigger oldTrigger = (Trigger) jobData.get("oldTrigger");
-                        context.getScheduler().rescheduleJob(context.getTrigger().getKey(), oldTrigger);
+                        if (oldTrigger != null) {
+                            context.getScheduler().rescheduleJob(context.getTrigger().getKey(), oldTrigger);
+                        } else {
+                            context.getScheduler().unscheduleJob(currentTrigger.getKey());
+                        }
                     } catch (SchedulerException e) {
                         log.error("Could not reschedule trigger " + currentTrigger.getKey().getName(), e);
                     }
@@ -117,7 +120,7 @@ public class QuartzMonitorJobFactory extends GrailsJobFactory {
             jobDetails.put("duration", duration);
             String jobRunTime = "Most recent job ran in " + duration + "ms";
             String jobException = error != null ? ", with error " + error : "";
-            String tooltip =  jobRunTime + jobException;
+            String tooltip = jobRunTime + jobException;
             jobDetails.put("tooltip", tooltip);
         }
     }

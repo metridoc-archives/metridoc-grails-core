@@ -15,34 +15,34 @@
 modules = {
 
     codeMirror {
-        resource id:'coreJs',
-                url:[dir:"components/codemirror/lib", file:"codemirror.js", plugin:"metridocCore"],
+        resource id: 'coreJs',
+                url: [dir: "components/codemirror/lib", file: "codemirror.js", plugin: "metridocCore"],
                 attrs: [type: "js"]
-        resource id:'coreCss',
-                url:[dir:"components/codemirror/lib", file:"codemirror.css", plugin:"metridocCore"],
+        resource id: 'coreCss',
+                url: [dir: "components/codemirror/lib", file: "codemirror.css", plugin: "metridocCore"],
                 attrs: [type: "css"]
-        resource id:'addOnMatchBrackets',
-                url:[dir:"components/codemirror/addon/edit", file:"matchbrackets.js", plugin: "metridocCore"],
+        resource id: 'addOnMatchBrackets',
+                url: [dir: "components/codemirror/addon/edit", file: "matchbrackets.js", plugin: "metridocCore"],
                 attrs: [type: "js"]
     }
 
     codeMirrorGroovy {
         dependsOn 'codeMirror'
-        resource id:'addOnMatchBrackets',
-                url:[dir:"components/codemirror/mode/groovy", file:"groovy.js", plugin: "metridocCore"],
+        resource id: 'addOnMatchBrackets',
+                url: [dir: "components/codemirror/mode/groovy", file: "groovy.js", plugin: "metridocCore"],
                 attrs: [type: "js"]
     }
 
     manageConfig {
         dependsOn 'codeMirrorGroovy'
-        resource id:'js',
-                url:[dir:"manageConfig", file:"manageConfig.js", plugin:"metridocCore"],
+        resource id: 'js',
+                url: [dir: "manageConfig", file: "manageConfig.js", plugin: "metridocCore"],
                 attrs: [type: "js"]
     }
 
     jquery {
-        resource id:'js',
-                url:[plugin:"metridocCore", dir:"components/jquery", file:"jquery.js"],
+        resource id: 'js',
+                url: [plugin: "metridocCore", dir: "components/jquery", file: "jquery.js"],
                 attrs: [type: "js"]
     }
 

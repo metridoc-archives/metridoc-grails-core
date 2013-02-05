@@ -84,11 +84,11 @@ grails.project.dependency.resolution = {
                     [name: "shiro-quartz", group: "org.apache.shiro"]
             )
         }
-        build (":tomcat:$grailsVersion") {
+        build(":tomcat:$grailsVersion") {
             export = false
         }
         compile(":rest-client-builder:1.0.3")
-        build (":release:$grailsVersion") {
+        build(":release:$grailsVersion") {
             export = false
         }
         build(":codenarc:0.18") {

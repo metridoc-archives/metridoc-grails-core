@@ -61,7 +61,7 @@ class QuartzController {
                         currentJob.trigger = trigger
                         currentJob.triggerStatus = quartzScheduler.getTriggerState(trigger.key)
                         long timeToNextFireTime = trigger.getNextFireTime().time - new Date().time
-                        if(timeToNextFireTime > NEXT_FIRE_TIME_WHERE_JOB_CONSIDERED_MANUAL) {
+                        if (timeToNextFireTime > NEXT_FIRE_TIME_WHERE_JOB_CONSIDERED_MANUAL) {
                             manualJob = true
                         }
                         currentJob.manualJob = manualJob
@@ -101,10 +101,10 @@ class QuartzController {
         if (NotificationEmails.count() == 0) {
             alerts << "No emails have been set, no one will be notified of job failures"
         }
-        if(!commonService.emailIsConfigured()) {
+        if (!commonService.emailIsConfigured()) {
             alerts << "Email has not been set up properly, no notifications will be sent on job failures"
         }
-        if(alerts) {
+        if (alerts) {
             flash.alerts = alerts
         }
         return [
@@ -142,10 +142,17 @@ class QuartzController {
         } else {
             def jobKey = new JobKey(params.jobName, params.jobGroup)
             def triggers = quartzScheduler.getTriggersOfJob(jobKey)
-            triggerKey = triggers[0].key
+            if (triggers) {
+                triggerKey = triggers[0].key
+            }
         }
 
-        dataMap.oldTrigger = quartzScheduler.getTrigger(triggerKey)
+        if (triggerKey) {
+            dataMap.oldTrigger = quartzScheduler.getTrigger(triggerKey)
+        } else {
+            dataMap.oldTrigger = null
+            triggerKey = TriggerKey.triggerKey(params.jobName)
+        }
         def now = new Date()
 
         def end = now + 365 * 5 //5 years in the future
