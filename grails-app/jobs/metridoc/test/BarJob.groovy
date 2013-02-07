@@ -15,7 +15,7 @@ class BarJob extends MetridocJob {
     def doExecute() {
         profile("running bar") {
             assert grailsApplication
-            Thread.sleep(1000)
+            Thread.sleep(10000)
         }
 
         log.info "targets ran $targetsRan"

@@ -68,6 +68,10 @@
                         <g:if test="${scheduler.isInStandbyMode() || job.triggerStatus == Trigger.TriggerState.PAUSED}">
                             <td class="hasCountdown countdown_amount">Paused</td>
                         </g:if>
+                        <g:elseif test="${job.interrupting}">
+                            <td data-last-runtime="${job.lastDuration}">Interupting  <i class="icon-spinner icon-spin"></i>
+                            </td>
+                        </g:elseif>
                         <g:elseif test="${job.status == "running"}">
                             <td data-last-runtime="${job.lastDuration}">Running  <i class="icon-spinner icon-spin"></i>
                             </td>
@@ -104,6 +108,15 @@
                                     <i class="icon-play"></i>
                                 </a>
                             </g:if>
+
+                            <g:else>
+                                <g:if test="${!job.interrupting}">
+                                    <a href="<g:createLink action="stopJob" id="${job.trigger?.key?.name}"/>"
+                                       class="quartz-tooltip" data-tooltip="Stop Job">
+                                        <i class="icon-stop"></i>
+                                    </a>
+                                </g:if>
+                            </g:else>
                         </td>
                     </tr>
                 </g:each>

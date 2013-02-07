@@ -10,6 +10,6 @@ package metridoc.core
 class JobInteruptionException extends Exception{
 
     JobInteruptionException(String jobName) {
-        super("Job ${jobName} was manually interupted")
+        super("Job ${jobName} was manually interrupted")
     }
 }

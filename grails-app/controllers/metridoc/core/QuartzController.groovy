@@ -1,6 +1,9 @@
 package metridoc.core
 
 import grails.converters.JSON
+import grails.plugin.quartz2.GrailsArtefactJob
+import grails.plugin.quartz2.GrailsJobClass
+import grails.web.RequestParameter
 import org.apache.commons.lang.StringUtils
 import org.apache.commons.lang.text.StrBuilder
 import org.quartz.*
@@ -196,6 +199,31 @@ class QuartzController {
 
     def stopScheduler() {
         quartzScheduler.standby()
+        redirect(action: "list")
+    }
+
+    def stopJob(@RequestParameter("id") String jobName) {
+        def jobDetails = QuartzMonitorJobFactory.jobRuns.get(jobName)
+        if (jobDetails == null) {
+            flash.alert = "job $jobName does not exist"
+            redirect(action: "list")
+            return
+        }
+
+        QuartzMonitorJobFactory.QuartzDisplayJob instance = jobDetails.instance
+
+        if (instance == null) {
+            flash.alert = "Could not find instance of $jobName"
+            redirect(action: "list")
+            return
+        }
+
+        try {
+            instance.job.interrupt()
+        } catch (UnableToInterruptJobException e) {
+            flash.alert = e.message
+        }
+        jobDetails.interrupting = true
         redirect(action: "list")
     }
 

@@ -69,6 +69,7 @@ public class QuartzMonitorJobFactory extends GrailsJobFactory {
                 Object lastDuration = jobDetails.get("duration");
                 Object lastTooltip = jobDetails.get("tooltip");
                 jobDetails.clear();
+                jobDetails.put("instance", this);
                 if (lastDuration != null) {
                     jobDetails.put("lastDuration", lastDuration);
                 }
@@ -97,6 +98,7 @@ public class QuartzMonitorJobFactory extends GrailsJobFactory {
                 addDurationAndToolTip(jobDetails, start);
             } finally {
                 Trigger currentTrigger = context.getTrigger();
+                jobDetails.put("interrupting", false);
                 JobDataMap jobData = currentTrigger.getJobDataMap();
                 if (jobData.containsKey("oldTrigger")) {
                     try {

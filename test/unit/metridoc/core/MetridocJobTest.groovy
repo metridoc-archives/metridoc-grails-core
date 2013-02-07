@@ -9,6 +9,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
 
 import java.sql.BatchUpdateException
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 /**
  * Created with IntelliJ IDEA.
@@ -90,15 +92,35 @@ class MetridocJobTest {
     }
 
     @Test
-    void "profile throws exception if job was manually interupted"() {
-        helper.interupt()
+    void "profile throws exception if job was manually interrupted"() {
+        helper.interrupt()
         try {
             helper.profile("do something") {
 
             }
-            assert false : "exception should have occurred"
+            assert false: "exception should have occurred"
         } catch (JobInteruptionException e) {
         }
+    }
+
+    @Test
+    void "profile checks for interruption at end as well"() {
+        def latch = new CountDownLatch(1)
+        def catchReachedLatch = new CountDownLatch(1)
+        Thread.start {
+            try {
+                helper.profile("do something") {
+                    latch.await()
+                }
+            } catch (JobInteruptionException e) {
+                catchReachedLatch.countDown()
+            }
+        }
+        assert 1 == catchReachedLatch.count
+        helper.interrupt()
+        latch.countDown()
+        catchReachedLatch.await(1000, TimeUnit.SECONDS)
+        assert 0 == catchReachedLatch.count
     }
 }
 
