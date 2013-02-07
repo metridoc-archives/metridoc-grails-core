@@ -8,22 +8,25 @@
 
 <%@ page import="org.quartz.Trigger" contentType="text/html;charset=UTF-8" %>
 <md:report>
-    <g:render template="quartzSettings" plugin="metridoc-core"/>
+    <tmpl:quartzSettings/>
     <div class="body">
         <h1 id="quartz-title">
             Quartz Jobs
             <span id="quartz-actions">
                 <g:if test="${scheduler.isInStandbyMode()}">
-                    <a href="<g:createLink action="startScheduler"/>" class= "quartz-tooltip" data-tooltip="Start scheduler">
+                    <a href="<g:createLink action="startScheduler"/>" class="quartz-tooltip"
+                       data-tooltip="Start scheduler">
                         <i class="icon-play"></i>
                     </a>
                 </g:if>
                 <g:else>
-                    <a href="<g:createLink action="stopScheduler"/>"  class= "quartz-tooltip" data-tooltip="Pause scheduler">
+                    <a href="<g:createLink action="stopScheduler"/>" class="quartz-tooltip"
+                       data-tooltip="Pause scheduler">
                         <i class="icon-pause"></i>
                     </a>
                 </g:else>
-                <a id="quartz-settings" class="quartz-tooltip" data-tooltip="Quartz settings" href="#quartzModal" data-toggle="modal">
+                <a id="quartz-settings" class="quartz-tooltip" data-tooltip="Quartz settings" href="#quartzModal"
+                   data-toggle="modal">
                     <i class="icon-cog"></i>
                 </a>
 
@@ -66,7 +69,8 @@
                             <td class="hasCountdown countdown_amount">Paused</td>
                         </g:if>
                         <g:elseif test="${job.status == "running"}">
-                            <td data-last-runtime="${job.lastDuration}">Running</td>
+                            <td data-last-runtime="${job.lastDuration}">Running  <i class="icon-spinner icon-spin"></i>
+                            </td>
                         </g:elseif>
                         <g:elseif test="${job.manualJob}">
                             <td>NA</td>
@@ -80,30 +84,23 @@
                                 <g:if test="${job.trigger}">
                                     <g:if test="${job.triggerStatus == Trigger.TriggerState.PAUSED}">
                                         <a href="<g:createLink action="resume"
-                                                               params="[jobName: job.name, jobGroup: job.group]"/>"><img
-                                                class="quartz-tooltip" data-tooltip="Resume job schedule"
-                                                src="<g:resource dir="quartz/images" file="resume.png"
-                                                                 plugin="metridoc-core"/>"></a>
+                                                               params="[jobName: job.name, jobGroup: job.group]"/>"
+                                           class="quartz-tooltip"
+                                           data-tooltip="Schedule Job">
+                                            <i class="icon-time"></i>
+                                        </a>
                                     </g:if>
                                     <g:elseif test="${job.trigger.mayFireAgain()}">
                                         <a href="<g:createLink action="pause"
                                                                params="[jobName: job.name, jobGroup: job.group]"/>"
-                                           class="quartz-tooltip" data-tooltip="Run now">
+                                           class="quartz-tooltip" data-tooltip="Unschedule Job">
                                             <i class="icon-pause"></i>
                                         </a>
                                     </g:elseif>
                                 </g:if>
-                                <g:else>
-                                    <a href="<g:createLink action="start"
-                                                           params="[jobName: job.name, jobGroup: job.group]"/>"><img
-                                            class="quartz-tooltip" data-tooltip="Start job schedule"
-                                            src="<g:resource dir="quartz/images" file="start.png"
-                                                             plugin="metridoc-core"/>">
-                                    </a>
-                                </g:else>
                                 <a href="<g:createLink action="runNow"
                                                        params="[jobName: job.name, jobGroup: job.group, triggerName: job.trigger?.key?.name, triggerGroup: job.trigger?.key?.group]"/>"
-                                                        class="quartz-tooltip" data-tooltip="Run now">
+                                   class="quartz-tooltip" data-tooltip="Run now">
                                     <i class="icon-play"></i>
                                 </a>
                             </g:if>

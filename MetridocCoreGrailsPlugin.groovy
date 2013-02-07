@@ -1,4 +1,7 @@
+import grails.plugin.quartz2.GrailsJobClass
 import grails.plugin.quartz2.QuartzFactoryBean
+import grails.plugin.quartz2.TriggersBuilder
+import metridoc.core.MetridocJob
 import metridoc.core.QuartzMonitorJobFactory
 import metridoc.utils.ShiroBootupUtils
 
@@ -94,14 +97,28 @@ class MetridocCoreGrailsPlugin {
         //Implement registering dynamic methods to classes (optional)
     }
 
+    //adds the manual trigger to all jobs that do not have triggers
     def doWithApplicationContext = { applicationContext ->
+        def pluginManager = applicationContext.pluginManager
+        def quartzPlugin = pluginManager.getGrailsPluginForClassName("Quartz2GrailsPlugin").instance
+        application.jobClasses.each { GrailsJobClass jobClass ->
+            if (!jobClass.triggers) {
+                Closure scheduleJob = quartzPlugin.scheduleJob
+                scheduleJob.delegate = quartzPlugin
+                TriggersBuilder builder = new TriggersBuilder(jobClass.fullName)
 
+                builder.build(MetridocJob.MANUAL_RUN_TRIGGER)
+                def triggers = (Map) builder.getTriggers()
+                jobClass.triggers = triggers
+                scheduleJob.call(jobClass, applicationContext, applicationContext.quartzScheduler)
+            }
+        }
     }
 
     def onChange = { event ->
     }
 
-    def configureWorkflowBeans = {workflowClass ->
+    def configureWorkflowBeans = { workflowClass ->
     }
 
     def onConfigChange = { event ->

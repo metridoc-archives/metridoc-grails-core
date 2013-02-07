@@ -61,7 +61,7 @@ abstract class MetridocJob {
             if (targetFromJobDataMap) {
                 depends(targetFromJobDataMap)
             } else {
-                jobLogger.info("target map is $targetMap")
+                jobLogger.debug("target map is $targetMap")
                 def containsDefault = targetMap.containsKey("default")
                 if (containsDefault) {
                     jobLogger.debug "running default"

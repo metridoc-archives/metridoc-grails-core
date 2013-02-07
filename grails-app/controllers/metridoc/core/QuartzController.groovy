@@ -56,7 +56,6 @@ class QuartzController {
                 def triggers = quartzScheduler.getTriggersOfJob(jobKey)
                 if (triggers) {
                     triggers.each { Trigger trigger ->
-                        def name = trigger.key.name
                         def currentJob = createJob(jobGroup, jobKey.name, jobsList, trigger.key.name)
                         currentJob.trigger = trigger
                         currentJob.triggerStatus = quartzScheduler.getTriggerState(trigger.key)
@@ -166,7 +165,7 @@ class QuartzController {
                 .endAt(end).withIdentity(triggerKey).withSchedule(schedule).usingJobData(dataMap).build()
 
         quartzScheduler.rescheduleJob(triggerKey, trigger)
-        Thread.sleep(1000) //sleep for 2 seconds to allow for the job to actually start
+        Thread.sleep(1000) //sleep for 1 second to allow for the job to actually start
 
 
         if (params.containsKey("returnTriggerId")) {
@@ -200,7 +199,7 @@ class QuartzController {
         redirect(action: "list")
     }
 
-    private def createJob(String jobGroup, String jobName, ArrayList jobsList, triggerName = "") {
+    private static createJob(String jobGroup, String jobName, ArrayList jobsList, triggerName = "") {
         def currentJob = [:]
         currentJob.group = jobGroup
         currentJob.name = jobName
@@ -210,7 +209,7 @@ class QuartzController {
         return currentJob
     }
 
-    private jobKey(name, group) {
+    private static jobKey(name, group) {
         return JobKey.jobKey(name, group)
     }
 }
