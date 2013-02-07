@@ -4,3 +4,4 @@ pom.xml*
 *.war
 test-reports
 *.sha1
+grails-plugin-metridoc-core-*.jar
