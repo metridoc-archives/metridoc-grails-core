@@ -30,8 +30,10 @@ function chk_scroll(e) {
     var elem = $(e.currentTarget);
     var scrollHeight = elem[0].scrollHeight;
     var scrollTop = elem.scrollTop();
-    var outerHeaight = elem.outerHeight()
-    if (scrollHeight - scrollTop == outerHeaight) {
+    var outerHeaight = elem.outerHeight();
+    var difference = scrollHeight - scrollTop - outerHeaight;
+    var fudgeFactor = 20;
+    if (Math.abs(difference) < fudgeFactor) {
         isAtBottomOfLog = true
     } else {
         isAtBottomOfLog = false
@@ -44,7 +46,18 @@ function updateLog() {
     if (isStreaming && isAtBottomOfLog) {
         $("#metridocLogs").load("plain")
         $("#metridocLogs").scrollTop($('#metridocLogs').prop("scrollHeight"));
+        //make checks frequent
+        triggerNextLogUpdate(1000)
+    } else {
+        //don't need to check for awhile
+        triggerNextLogUpdate(3000)
     }
 }
 
-window.setInterval(updateLog, 1000);
+//by using set timeout instead of interval we guarantee that there is a one second break in refreshing the log
+function triggerNextLogUpdate(time) {
+    window.setTimeout(updateLog, time);
+}
+
+triggerNextLogUpdate(3000)
+
