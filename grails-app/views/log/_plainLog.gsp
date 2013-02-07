@@ -1,0 +1,1 @@
+<md:outputLogFile filePath="${grailsApplication.config.metridoc.home + "/logs/metridoc.log"}"/>

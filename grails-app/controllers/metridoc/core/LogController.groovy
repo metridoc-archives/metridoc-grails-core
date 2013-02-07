@@ -2,6 +2,8 @@ package metridoc.core
 
 class LogController {
 
+    def logService
+
     static accessControl = {
         role(name: "ROLE_ADMIN")
     }
@@ -15,7 +17,17 @@ class LogController {
             """
     ]
 
-    @SuppressWarnings('EmptyMethod')
     def index() {
+        redirect(action: "show")
+    }
+
+    @SuppressWarnings('EmptyMethod')
+    def show() {
+
+    }
+
+    @SuppressWarnings('EmptyMethod')
+    def plain() {
+
     }
 }

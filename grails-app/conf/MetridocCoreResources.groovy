@@ -145,10 +145,10 @@ modules = {
 
     log {
         dependsOn 'jquery'
-        resource id: 'css', disposition: 'head',
+        resource id: 'css',
                 url: [plugin: "metridocCore", dir: 'log/css', file: 'log.css'],
                 attrs: [type: 'css']
-        resource id: 'js', disposition: 'head',
+        resource id: 'js',
                 url: [plugin: "metridocCore", dir: 'log/js', file: 'log.js'],
                 attrs: [type: 'js']
     }

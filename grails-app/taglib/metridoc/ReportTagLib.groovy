@@ -52,7 +52,7 @@ class ReportTagLib {
 
     def outputLogFile = { attrs, body ->
         String path = attrs.filePath
-        log.info "outputting logs from ${path}"
+        log.debug "outputting logs from ${path}"
         def file = new File(path)
         logService.renderLog(out, file)
     }

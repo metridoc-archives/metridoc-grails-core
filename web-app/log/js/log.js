@@ -7,84 +7,44 @@
  */
 
 
-
+//add all the handlers for the buttons
 $(function () {
 
-    $('#typeSelector').change(function () {
-        handleLogOutput()
-        $('#lineNumText').text("Total line number: "+ ($("div:visible").length-2) );
-    });
-
-    $('a.logNameATag').click(function(){
-        var aTagClass = $(this).attr('class').split(" ")[0];
-        var divClass = aTagClass.substring( 0, aTagClass.length-4 );
-        $('.all').hide();
-        $('.'+divClass+'.'+ $('#typeSelector').val()).show();
-        $('#lineNumText').text("Total line number: "+ ($("div:visible").length-2) );
-    });
-
-    $('#showAllLogName').click(function(){
-        $('.'+$('#typeSelector').val()).show();
-        $('#lineNumText').text("Total line number: "+ ($("div:visible").length-2) );
-    });
-
-    $('#scrollTop').click(function(event){
+    $('#scrollBottom').click(function (event) {
         event.preventDefault();
-        var previousURL = window.location.toString().split("#")[0];
-        window.location.href = previousURL + "#" + $("#metridocLogs div:visible:first").attr('id');
+        $("#metridocLogs").scrollTop($('#metridocLogs').prop("scrollHeight"));
     });
 
-    $('#scrollBottom').click(function(event){
+    $('#scrollTop').click(function (event) {
         event.preventDefault();
-        var previousURL = window.location.toString().split("#")[0];
-        window.location.href = previousURL + "#" + $("#metridocLogs div:visible:last").attr('id');
+        $("#metridocLogs").scrollTop(0);
     });
 
-
-    $( '#home, #showAllLogName, #scrollTop, #scrollBottom' ).button().css({'padding' : '.1em', 'color' : 'black',
-        'height' : '1.5em', 'width' : '110px', 'font-size': '0.9em'});
+    $('#metridocLogs').bind('scroll', chk_scroll);
 
 })
 
+var isAtBottomOfLog = false
 
-function handleLogOutput() {
-    var selector = $('#typeSelector')
-    if (selector.val() == "all") {
-        $('.all').show();
+function chk_scroll(e) {
+    var elem = $(e.currentTarget);
+    var scrollHeight = elem[0].scrollHeight;
+    var scrollTop = elem.scrollTop();
+    var outerHeaight = elem.outerHeight()
+    if (scrollHeight - scrollTop == outerHeaight) {
+        isAtBottomOfLog = true
+    } else {
+        isAtBottomOfLog = false
     }
-    else if (selector.val() == "error") {
-        $('.all').hide();
-        $('.error').show();
-    }
-    else if (selector.val() == "info") {
-        $('.all').hide();
-        $('.info').show();
-    }
-    else if (selector.val() == "warn") {
-        $('.all').hide();
-        $('.warn').show();
-    }
-    else if (selector.val() == "hour") {
-        $('.all').hide();
-        $('.hour').show();
-    }
-    else if (selector.val() == "sixHours") {
-        $('.all').hide();
-        $('.sixHours').show();
-    }
-    else if (selector.val() == "twelveHours") {
-        $('.all').hide();
-        $('.twelveHours').show();
-    }
-    else if (selector.val() == "day") {
-        $('.all').hide();
-        $('.day').show();
+
+}
+
+function updateLog() {
+    var isStreaming = $('#doStreaming').is(":checked")
+    if (isStreaming && isAtBottomOfLog) {
+        $("#metridocLogs").load("plain")
+        $("#metridocLogs").scrollTop($('#metridocLogs').prop("scrollHeight"));
     }
 }
 
-$(window).load(
-    function () {
-        handleLogOutput()
-        $('#lineNumText').text("Total line number: "+ ($("div:visible").length-2) );
-    }
-)
+window.setInterval(updateLog, 1000);
