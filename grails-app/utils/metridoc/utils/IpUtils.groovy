@@ -1,13 +1,9 @@
 package metridoc.utils
-
-import sun.net.util.IPAddressUtil
-
 /**
- * Created with IntelliJ IDEA.
- * User: weizhuowu
- * Date: 9/7/12
- * Time: 10:19 AM
- * To change this template use File | Settings | File Templates.
+ *
+
+ * This was added in hopes of doing some ip authentication.  Should use an outside appliance for that instead
+  @deprecated
  */
 class IpUtils {
 

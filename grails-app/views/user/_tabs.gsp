@@ -43,6 +43,14 @@
                     linkAction: 'index',
                     linkText: 'Report Security',
                     icon: 'icon-bar-chart']"/>
+    <g:render
+            template="/user/tabLabel"
+            model="[controllerName: controllerName,
+                    actionName: actionName,
+                    linkController: 'status',
+                    linkAction: 'index',
+                    linkText: 'Status',
+                    icon: 'icon-cogs']"/>
 </ul>
 
 
