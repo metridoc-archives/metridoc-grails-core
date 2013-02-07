@@ -46,6 +46,7 @@ abstract class MetridocJob {
     def Map<String, Closure> targetMap = Collections.synchronizedMap([:])
     private Set _targetsRan = [] as Set
     def Map jobDataMap = [:]
+    boolean interupted
 
     /**
      * necessary method that the grails job artifact that quartz will trigger
@@ -221,6 +222,9 @@ abstract class MetridocJob {
      * @param closure the code to run
      */
     def profile(String description, Closure closure) {
+        if (interupted) {
+            throw new JobInteruptionException(this.getClass().name)
+        }
         def start = System.currentTimeMillis()
         jobLogger.info "profiling [$description] start"
         closure.call()
@@ -258,8 +262,9 @@ abstract class MetridocJob {
         return binding
     }
 
-    /**
-     * eventually this will be turned into an abstract method
-     */
     abstract doExecute()
+
+    void interupt() {
+        interupted = true
+    }
 }

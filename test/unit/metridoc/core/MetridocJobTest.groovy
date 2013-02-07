@@ -88,6 +88,18 @@ class MetridocJobTest {
         helper.includeTargets(MetridocJobTestTargetHelper)
         helper.depends("doRoute")
     }
+
+    @Test
+    void "profile throws exception if job was manually interupted"() {
+        helper.interupt()
+        try {
+            helper.profile("do something") {
+
+            }
+            assert false : "exception should have occurred"
+        } catch (JobInteruptionException e) {
+        }
+    }
 }
 
 class MetridocJobTestHelper extends MetridocJob {
