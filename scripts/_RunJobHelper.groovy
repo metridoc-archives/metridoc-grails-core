@@ -4,9 +4,9 @@ includeTargets << grailsScript("_GrailsInit")
 
 
 
-doCallFromAppCtx = {ApplicationContext context ->
+doCallFromAppCtx = {
 
-    def job = context."${runJobArguments.job}"
+    def job = appCtx."${runJobArguments.job}"
     if (job) {
         def MetridocJob = classLoader.loadClass("metridoc.core.MetridocJob")
         if (MetridocJob.isAssignableFrom(job.class)) {

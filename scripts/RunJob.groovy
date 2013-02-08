@@ -35,24 +35,20 @@ target(main: "The description of the script goes here!") {
         }
         depends(packageApp, loadApp, configureApp)
         includeTargets << new File("$metridocCorePluginDir/scripts/_RunJobHelper.groovy")
-        doCallFromAppCtx(appCtx)
+        doCallFromAppCtx()
     } else {
-        depends(packageApp)
         includeTargets << new File("$metridocCorePluginDir/scripts/_RunJobHelper.groovy")
         def holderContext
         try {
-            holderContext = Holders.applicationContext
+            appCtx = Holders.applicationContext
+            grailsConsole.info "running the job from the already running application"
         } catch (Exception e) {
-
-        }
-        if (!holderContext) {
             System.setProperty("metridoc.quartz.disabled", "true")
             System.setProperty("metridoc.job.cliOnly", "true")
-            depends(loadApp, configureApp)
-            holderContext = appCtx
+            depends(packageApp, loadApp, configureApp)
         }
 
-        doCallFromAppCtx(appCtx)
+        doCallFromAppCtx()
     }
 
 }
