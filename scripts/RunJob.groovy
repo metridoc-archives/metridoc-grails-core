@@ -1,3 +1,5 @@
+import grails.util.Holders
+
 /*
  runs a job restfully.  By default it constructs a url to local host with user name admin and password password.
 */
@@ -14,14 +16,6 @@ grails run-job [options] <job name>
 Options:
 
          h: displays this message
-  protocol: http or https, http by default
-      host: supplies the host for the job call, by default this is localhost:8080
-  test-run: prints the url used to run the job without actually calling it
-       cli: bootstrap application and call job directly
-    target: the target to call in job dsl
-      user: user name to use (default 'admin')
-  password: password to use (default 'password')
-
 """
 
 runJobArguments = [:]
@@ -41,16 +35,24 @@ target(main: "The description of the script goes here!") {
         }
         depends(packageApp, loadApp, configureApp)
         includeTargets << new File("$metridocCorePluginDir/scripts/_RunJobHelper.groovy")
-        doCliCall()
+        doCallFromAppCtx(appCtx)
     } else {
         depends(packageApp)
         includeTargets << new File("$metridocCorePluginDir/scripts/_RunJobHelper.groovy")
-        if (!doRestCall()) {
+        def holderContext
+        try {
+            holderContext = Holders.applicationContext
+        } catch (Exception e) {
+
+        }
+        if (!holderContext) {
             System.setProperty("metridoc.quartz.disabled", "true")
             System.setProperty("metridoc.job.cliOnly", "true")
             depends(loadApp, configureApp)
-            doCliCall()
+            holderContext = appCtx
         }
+
+        doCallFromAppCtx(appCtx)
     }
 
 }
@@ -60,13 +62,7 @@ def usage() {
 }
 
 def parseArgumentsAndSetDefaults() {
-    runJobArguments.host = argsMap.host ?: "localhost:8080"
-    runJobArguments.testRun = argsMap."test-run" ? true : false
-    runJobArguments.protocol = argsMap.protocol ?: "http"
     runJobArguments.target = argsMap.target
-    runJobArguments.targetQuery = argsMap.target ? "&target=${argsMap.target}" : ""
-    runJobArguments.user = argsMap.user ?: "admin"
-    runJobArguments.password = argsMap.password ?: "password"
     runJobArguments.job = argsMap.params ? argsMap.params[0] : null
 }
 

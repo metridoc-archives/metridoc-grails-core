@@ -17,6 +17,11 @@ class ProfileController {
 
     def edit() {
         def currentUser = SecurityUtils.getSubject().getPrincipal()
+
+//        if (!currentUser) {
+//            return
+//        }
+
         ShiroUser shiroUserInstance = ShiroUser.findByUsername(currentUser)
 
         if (shiroUserInstance.username == 'anonymous') {

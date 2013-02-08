@@ -14,7 +14,6 @@ class ShiroSecurityFilters {
                 if (!controllerName) return true
                 //this should be handled by shiro's filter map
                 if (request.requestURL.contains("/rest/")) return true
-
                 def details = manageReportService.getControllerDetails().get(controllerName)
                 def roles = details.roles
                 def isProtected = details.isProtected
@@ -24,12 +23,12 @@ class ShiroSecurityFilters {
                     if (notLoggedIn) {
                         //will force a login
                         accessControl()
-                        return
+                        return false
                     }
                 }
 
                 if (roles) {
-                    accessControl(auth: false) {
+                    return accessControl(auth: false) {
                         def hasAccess = true
                         roles.each {
                             log.debug "checking for access to $controllerName for role ${it}"
@@ -39,8 +38,6 @@ class ShiroSecurityFilters {
                         return hasAccess
                     }
                 }
-
-
             }
         }
     }

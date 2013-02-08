@@ -23,11 +23,11 @@ import org.springframework.dao.DataIntegrityViolationException
 class UserController {
 
     static homePage = [
-            title: "Manage Users",
+            title: "Manage Metridoc",
             adminOnly: true,
             description: """
-                Create, update and delete users and roles.  This does not affect external authc and authz via ldap
-                or other means.  All operations are used against MetriDoc's internal database.
+                Create, update and delete users and roles.  Change configuration, load plugins and restart the
+                application
             """
     ]
 

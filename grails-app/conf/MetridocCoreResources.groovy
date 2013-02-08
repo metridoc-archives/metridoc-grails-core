@@ -14,6 +14,12 @@
  */
 modules = {
 
+    restartRunner {
+        dependsOn("jquery")
+        resource id: 'js',
+        url: [dir: "restart", file: "restart.js", plugin: "metridocCore"]
+    }
+
     codeMirror {
         resource id: 'coreJs',
                 url: [dir: "components/codemirror/lib", file: "codemirror.js", plugin: "metridocCore"],

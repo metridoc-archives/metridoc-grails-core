@@ -18,7 +18,7 @@ class LogController {
     ]
 
     def index() {
-        redirect(action: "show")
+        chain(action: "show")
     }
 
     @SuppressWarnings('EmptyMethod')

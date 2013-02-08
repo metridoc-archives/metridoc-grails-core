@@ -21,7 +21,6 @@ class StatusController {
                 dataSourceUrl: dataSource.connection.metaData.getURL(),
                 applicationName: grailsApplication.mergedConfig.metridoc.app.name,
                 shiroFilters: grailsApplication.config.security.shiro.filter.filterChainDefinitions
-
         ]
 
     }

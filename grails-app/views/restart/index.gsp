@@ -1,0 +1,29 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: tbarker
+  Date: 2/7/13
+  Time: 4:50 PM
+  To change this template use File | Settings | File Templates.
+--%>
+
+<md:report>
+    <g:form action="run" class="form-horizontal">
+        <div class="control-group">
+            <label for="command" class="control-label" required>Command To Run:</label>
+
+            <div class="controls">
+                <g:textArea name="command" value="${command}" placeholder="grails run-war" required=""/>
+            </div>
+
+            <label for="workDirectory" class="control-label" required>Work Directory:</label>
+
+            <div class="controls">
+                <g:textField name="workDirectory" value="${workDirectory}" placeholder="/foo/bar" required=""/>
+            </div>
+
+            <div class="controls">
+                <button type="submit" class="btn"><i class="icon-refresh"></i> Restart</button>
+            </div>
+        </div>
+    </g:form>
+</md:report>
