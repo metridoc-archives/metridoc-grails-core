@@ -31,6 +31,7 @@ class QuartzController {
     static final Map triggers = [:]
 
     def quartzScheduler
+    def quartzService
 
     /**
      * saves all settings.  Synchronized to avoid any weird behavior from multiple editors submitting at the same time
@@ -78,7 +79,6 @@ class QuartzController {
         NotificationEmails.list().collect { it.email }.each {
             notificationEmails.appendln(it)
         }
-        def alerts = []
         def badEmailMessage = null
         if (params.badEmails) {
             def badEmailMessageBuilder = new StrBuilder("The following emails are not valid: ")
@@ -97,17 +97,14 @@ class QuartzController {
         }
 
         if (badEmailMessage) {
-            alerts << badEmailMessage
+            flash.alerts << badEmailMessage
         }
 
         if (NotificationEmails.count() == 0) {
-            alerts << "No emails have been set, no one will be notified of job failures"
+            flash.alerts << "No emails have been set, no one will be notified of job failures"
         }
         if (!commonService.emailIsConfigured()) {
-            alerts << "Email has not been set up properly, no notifications will be sent on job failures"
-        }
-        if (alerts) {
-            flash.alerts = alerts
+            flash.alerts << "Email has not been set up properly, no notifications will be sent on job failures"
         }
         return [
                 jobs: jobsList,
@@ -133,49 +130,28 @@ class QuartzController {
         redirect(action: "list")
     }
 
-    def runNow() {
+    def runNow(@RequestParameter("id") String triggerName) {
+        if (!triggerName) {
+            flash.alerts << "Could not run job, triggerName was not specified"
+            chain(action: "index")
+            return
+        }
+
+        def triggerKey = new TriggerKey(triggerName)
         def dataMap = new JobDataMap(params)
-        def triggerKey
 
-
-        if (params.triggerName) {
-            triggerKey = new TriggerKey(params.triggerName)
-
-        } else {
-            def jobKey = new JobKey(params.jobName, params.jobGroup)
-            def triggers = quartzScheduler.getTriggersOfJob(jobKey)
-            if (triggers) {
-                triggerKey = triggers[0].key
-            }
+        def trigger = quartzScheduler.getTrigger(triggerKey)
+        if (!trigger) {
+            flash.alerts << "Could not find trigger for trigger name ${triggerName}"
+            redirect(action: "index")
+            return
         }
 
-        if (triggerKey) {
-            dataMap.oldTrigger = quartzScheduler.getTrigger(triggerKey)
-        } else {
-            dataMap.oldTrigger = null
-            triggerKey = TriggerKey.triggerKey(params.jobName)
-        }
-        def now = new Date()
+        dataMap.oldTrigger = quartzScheduler.getTrigger(triggerKey)
+        quartzService.triggerJobFromTrigger(trigger, dataMap)
 
-        def end = now + 365 * 5 //5 years in the future
-
-        //TODO: can we do something else here?  This is a horrendous hack
-        //next run will be 4 years in the future, clearly this won't run by then and the job will be unscheduled
-        //the 5 year and 4 year number are arbitrary, basically we are tricking quartz to keep the job around so we can
-        //continue to retrieve statistics from it.
-        def schedule = SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(1 * 24 * 56 * 4).repeatForever()
-        def trigger = TriggerBuilder.newTrigger().forJob(params.jobName, params.jobGroup).startAt(new Date())
-                .endAt(end).withIdentity(triggerKey).withSchedule(schedule).usingJobData(dataMap).build()
-
-        quartzScheduler.rescheduleJob(triggerKey, trigger)
         Thread.sleep(1000) //sleep for 1 second to allow for the job to actually start
-
-
-        if (params.containsKey("returnTriggerId")) {
-            render trigger.key.name
-        } else {
-            redirect(action: "list")
-        }
+        redirect(action: "list")
     }
 
     def status() {

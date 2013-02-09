@@ -68,6 +68,12 @@ class ReportTagLib {
     }
 
     def alerts = { attrs ->
+        ["alert", "warning", "info", "message"].each {
+            def singleMessage = flash."${it}"
+            if (singleMessage) {
+                flash["${it}s"] < singleMessage
+            }
+        }
         out << render(
                 template: "/reports/alerts",
                 plugin: "metridocCore"

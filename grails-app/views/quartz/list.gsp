@@ -102,8 +102,7 @@
                                         </a>
                                     </g:elseif>
                                 </g:if>
-                                <a href="<g:createLink action="runNow"
-                                                       params="[jobName: job.name, jobGroup: job.group, triggerName: job.trigger?.key?.name, triggerGroup: job.trigger?.key?.group]"/>"
+                                <a href="<g:createLink action="runNow" id="${job.trigger?.key?.name}"/>"
                                    class="quartz-tooltip" data-tooltip="Run now">
                                     <i class="icon-play"></i>
                                 </a>
