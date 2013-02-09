@@ -1,26 +1,24 @@
-import org.springframework.context.ApplicationContext
+import org.quartz.JobDataMap
+import org.quartz.Scheduler
 
 includeTargets << grailsScript("_GrailsInit")
 
-
-
 doCallFromAppCtx = {
-
-    def job = appCtx."${runJobArguments.job}"
-    if (job) {
-        def MetridocJob = classLoader.loadClass("metridoc.core.MetridocJob")
-        if (MetridocJob.isAssignableFrom(job.class)) {
-            if (runJobArguments.target) {
-                job.executeTarget(runJobArguments.target)
-            } else {
-                job.executeTarget()
-            }
-        } else {
-            job.execute()
-        }
-    } else {
-        grailsConsole.error "The job ${runJobArguments.job} does not exist"
-        exit(-1)
+    def jobDataMap = new JobDataMap(argsMap)
+    def jobName = argsMap.params[0]
+    Scheduler scheduler = appCtx.quartzScheduler
+    def job = appCtx."$jobName"
+    try {
+        job.jobDataMap = jobDataMap
+    } catch (MissingPropertyException ex) {
+        //ignore
     }
+    try {
+        job.execute(null)
+    } catch (MissingPropertyException e) {
+        //ignore and try execute
+        job.execute()
+    }
+    grailsConsole.info "Finished running job ${jobName}"
 }
 

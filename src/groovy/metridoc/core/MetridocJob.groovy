@@ -56,9 +56,11 @@ abstract class MetridocJob {
      */
     def execute(JobExecutionContext context) {
         try {
-            jobDataMap = context?.trigger?.jobDataMap
+            if (context?.trigger?.jobDataMap) {
+                jobDataMap = context?.trigger?.jobDataMap
+            }
             doExecute()
-            String targetFromJobDataMap = context?.trigger?.jobDataMap?.get("target")
+            String targetFromJobDataMap = jobDataMap?.get("target")
             if (targetFromJobDataMap) {
                 depends(targetFromJobDataMap)
             } else {
@@ -70,10 +72,15 @@ abstract class MetridocJob {
                 }
             }
         } catch (Throwable t) {
-            String jobName = context.getJobDetail().getKey().getName()
-            String shortErrorMessage = "error occurred running job ${jobName} with trigger " + context.getTrigger().getKey().getName() + " will notify interested users by email"
-            //TODO: maybe we don't need to do this?  Does quartz already handle this?
-            jobLogger.error(shortErrorMessage, t);
+            String jobName
+            if (context) {
+                jobName = context.getJobDetail().getKey().getName()
+                String shortErrorMessage = "error occurred running job ${jobName} with trigger " + context.getTrigger().getKey().getName() + " will notify interested users by email"
+                //TODO: maybe we don't need to do this?  Does quartz already handle this?
+                jobLogger.error(shortErrorMessage, t);
+            } else {
+                jobName = this.getClass().name
+            }
 
             def emails = NotificationEmails.findByScope(QuartzController.JOB_FAILURE_SCOPE).collect { it.email }
 

@@ -8,6 +8,21 @@ class QuartzService {
 
     def quartzScheduler
 
+    TriggerKey triggerJobFromJobName(String jobName) {
+        return triggerJobFromJobName(jobName, new JobDataMap())
+    }
+
+    TriggerKey triggerJobFromJobName(String jobName, JobDataMap dataMap) {
+        def jobKey = new JobKey(jobName)
+        List<Trigger> triggers = quartzScheduler.getTriggersOfJob(jobKey)
+        if (triggers) {
+            return triggerJobFromTrigger(triggers[0], dataMap)
+        }
+
+        quartzScheduler.triggerJob(jobKey, dataMap)
+        return null
+    }
+
     TriggerKey triggerJobFromTriggerName(String triggerName) {
         triggerJobFromTriggerName(triggerName, new JobDataMap())
     }
