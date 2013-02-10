@@ -15,28 +15,33 @@
 modules = {
 
     restartRunner {
-        dependsOn("jquery")
         resource id: 'js',
         url: [dir: "restart", file: "restart.js", plugin: "metridocCore"]
     }
 
     codeMirror {
         resource id: 'coreJs',
-                url: [dir: "components/codemirror/lib", file: "codemirror.js", plugin: "metridocCore"],
-                attrs: [type: "js"]
+                url: [dir: "components/codemirror/lib", file: "codemirror.js", plugin: "metridocCore"]
         resource id: 'coreCss',
-                url: [dir: "components/codemirror/lib", file: "codemirror.css", plugin: "metridocCore"],
-                attrs: [type: "css"]
+                url: [dir: "components/codemirror/lib", file: "codemirror.css", plugin: "metridocCore"]
         resource id: 'addOnMatchBrackets',
-                url: [dir: "components/codemirror/addon/edit", file: "matchbrackets.js", plugin: "metridocCore"],
-                attrs: [type: "js"]
+                url: [dir: "components/codemirror/addon/edit", file: "matchbrackets.js", plugin: "metridocCore"]
+    }
+
+    codeMirrorShell {
+        dependsOn 'codeMirror'
+        resource id: 'shellMode',
+                url: [dir: "components/codemirror/mode/shell", file: "shell.js", plugin: "metridocCore"]
+        resource id: 'activateShell',
+                url: [dir: "shell", file: "shell.js", plugin: "metridocCore"]
+        resource id: 'styleShell',
+                url: [dir: "shell", file: "shell.css", plugin: "metridocCore"]
     }
 
     codeMirrorGroovy {
         dependsOn 'codeMirror'
-        resource id: 'addOnMatchBrackets',
-                url: [dir: "components/codemirror/mode/groovy", file: "groovy.js", plugin: "metridocCore"],
-                attrs: [type: "js"]
+        resource id: 'groovyMode',
+                url: [dir: "components/codemirror/mode/groovy", file: "groovy.js", plugin: "metridocCore"]
     }
 
     manageConfig {
@@ -49,7 +54,7 @@ modules = {
     jquery {
         resource id: 'js',
                 url: [plugin: "metridocCore", dir: "components/jquery", file: "jquery.js"],
-                attrs: [type: "js"]
+                disposition: "head"
     }
 
     profile {

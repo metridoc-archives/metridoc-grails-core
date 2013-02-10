@@ -14,3 +14,9 @@
     <g:render template="/reports/alert" plugin="metridocCore" model="[alertClass: 'alert-info']">${warningVar}</g:render>
 </g:each>
 
+<%
+    flash.alerts = []
+    flash.messages = []
+    flash.infos = []
+    flash.warnings = []
+%>

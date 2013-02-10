@@ -6,19 +6,21 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<md:report>
+<md:report module="codeMirrorShell">
     <g:form action="run" class="form-horizontal">
         <div class="control-group">
-            <label for="command" class="control-label" required>Command To Run:</label>
 
-            <div class="controls">
-                <g:textArea name="command" value="${command}" placeholder="grails run-war" required=""/>
-            </div>
 
             <label for="workDirectory" class="control-label" required>Work Directory:</label>
 
             <div class="controls">
                 <g:textField name="workDirectory" value="${workDirectory}" placeholder="/foo/bar" required=""/>
+            </div>
+
+            <label for="command" class="control-label" required>Command To Run:</label>
+
+            <div class="controls">
+                <g:textArea id="code" name="command" value="${command}" placeholder="grails run-war" required=""/>
             </div>
 
             <div class="controls">
