@@ -32,11 +32,6 @@ class AuthController {
             model = [params: params]
         }
 
-        def mailIsSet = grailsApplication.config.grails.mail.username
-        if(mailIsSet) {
-            model.forgotPassword = true
-        }
-
         return model
     }
 
@@ -46,22 +41,6 @@ class AuthController {
 
     def unauthorized() {
         render(view: 'index', model: [template: 'unauthorized'])
-    }
-
-    def forgetPassword() {
-        render(view: 'index', model: [template: 'forgetPassword'])
-    }
-
-    def resetPassword() {
-        def email = params.emailAddress
-        if (email) {
-            authService.sendResetPasswordEmail(email);
-            request.message = "An email with a reset link has been sent to ${email}"
-            render(view: 'index', model: [template: 'forgetPassword', hideInput: true])
-        } else {
-            render(view: 'index', model: [template: 'forgetPassword'])
-        }
-
     }
 
     def doResetPassword() {

@@ -71,7 +71,7 @@ class ReportTagLib {
         ["alert", "warning", "info", "message"].each {
             def singleMessage = flash."${it}"
             if (singleMessage) {
-                flash["${it}s"] < singleMessage
+                flash["${it}s"] << singleMessage
             }
         }
         out << render(
