@@ -51,6 +51,14 @@
                     linkAction: 'index',
                     linkText: 'Status',
                     icon: 'icon-cogs']"/>
+    <g:render
+            template="/user/tabLabel"
+            model="[controllerName: controllerName,
+                    actionName: actionName,
+                    linkController: 'restart',
+                    linkAction: 'index',
+                    linkText: 'Restart',
+                    icon: 'icon-refresh']"/>
 </ul>
 
 
