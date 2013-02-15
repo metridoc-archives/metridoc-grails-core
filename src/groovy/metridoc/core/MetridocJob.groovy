@@ -73,9 +73,10 @@ abstract class MetridocJob {
             }
         } catch (Throwable t) {
             String jobName
+            String shortErrorMessage = "error occurred running job ${this.getClass().name} will notify interested users by email"
             if (context) {
                 jobName = context.getJobDetail().getKey().getName()
-                String shortErrorMessage = "error occurred running job ${jobName} with trigger " + context.getTrigger().getKey().getName() + " will notify interested users by email"
+                shortErrorMessage = "error occurred running job ${jobName} with trigger " + context.getTrigger().getKey().getName() + " will notify interested users by email"
                 //TODO: maybe we don't need to do this?  Does quartz already handle this?
                 jobLogger.error(shortErrorMessage, t);
             } else {
@@ -187,7 +188,7 @@ abstract class MetridocJob {
             throw new JobExecutionException("the map in target can only have one variable, which is the name and the description of the target")
         }
         def key = (data.keySet() as List<String>)[0]
-        def description = data[key]
+        String description = data[key]
         def closureToRun = {
             profile(description, closure)
         }
