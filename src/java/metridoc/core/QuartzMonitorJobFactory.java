@@ -97,12 +97,12 @@ public class QuartzMonitorJobFactory extends GrailsJobFactory {
                 jobDetails.put("status", "complete");
                 addDurationAndToolTip(jobDetails, start);
             } finally {
-                Trigger currentTrigger = context.getTrigger();
+                org.quartz.Trigger currentTrigger = context.getTrigger();
                 jobDetails.put("interrupting", false);
                 JobDataMap jobData = currentTrigger.getJobDataMap();
                 if (jobData.containsKey("oldTrigger")) {
                     try {
-                        Trigger oldTrigger = (Trigger) jobData.get("oldTrigger");
+                        org.quartz.Trigger oldTrigger = (org.quartz.Trigger) jobData.get("oldTrigger");
                         if (oldTrigger != null) {
                             context.getScheduler().rescheduleJob(context.getTrigger().getKey(), oldTrigger);
                         } else {

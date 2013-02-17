@@ -14,7 +14,7 @@ class QuartzService {
 
     TriggerKey triggerJobFromJobName(String jobName, JobDataMap dataMap) {
         def jobKey = new JobKey(jobName)
-        List<Trigger> triggers = quartzScheduler.getTriggersOfJob(jobKey)
+        List<org.quartz.Trigger> triggers = quartzScheduler.getTriggersOfJob(jobKey)
         if (triggers) {
             return triggerJobFromTrigger(triggers[0], dataMap)
         }
@@ -34,7 +34,7 @@ class QuartzService {
         return triggerJobFromTrigger(trigger, dataMap)
     }
 
-    TriggerKey triggerJobFromTrigger(Trigger trigger, JobDataMap dataMap) {
+    TriggerKey triggerJobFromTrigger(org.quartz.Trigger trigger, JobDataMap dataMap) {
         notNull(trigger, "trigger cannot be null")
         def oldTrigger = trigger
         dataMap.oldTrigger = oldTrigger
@@ -44,11 +44,11 @@ class QuartzService {
         return newTrigger.key
     }
 
-    TriggerKey triggerJobFromTrigger(Trigger trigger) {
+    TriggerKey triggerJobFromTrigger(org.quartz.Trigger trigger) {
         triggerJobFromTrigger(trigger, new JobDataMap())
     }
 
-    Trigger getTriggerNowTrigger(Trigger trigger, JobDataMap dataMap) {
+    org.quartz.Trigger getTriggerNowTrigger(org.quartz.Trigger trigger, JobDataMap dataMap) {
         notNull(trigger, "trigger cannot be null")
         def jobKey = trigger.getJobKey()
         def schedule = SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(1 * 24 * 56 * 4).repeatForever()
@@ -58,11 +58,11 @@ class QuartzService {
                 .endAt(end).withIdentity(trigger.key).withSchedule(schedule).usingJobData(dataMap).build()
     }
 
-    Trigger getTriggerNowTrigger(Trigger trigger) {
+    org.quartz.Trigger getTriggerNowTrigger(org.quartz.Trigger trigger) {
         getTriggerNowTrigger(trigger, new JobDataMap())
     }
 
-    Trigger getTrigger(String triggerName) {
+    org.quartz.Trigger getTrigger(String triggerName) {
         def triggerKey = new TriggerKey(triggerName)
         quartzScheduler.getTrigger(triggerKey)
     }

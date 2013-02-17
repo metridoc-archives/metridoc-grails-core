@@ -45,29 +45,17 @@ grails.project.dependency.resolution = {
         grailsCentral()
         mavenCentral()
         mavenRepo "https://oss.sonatype.org/content/repositories/snapshots"
+        mavenRepo "https://metridoc.googlecode.com/svn/maven/repository"
     }
 
     //standard jar maven dependencies
     dependencies {
+        compile("com.googlecode.metridoc:metridoc-job-core:0.1-SNAPSHOT")
         //used for testing camel routes
         test("org.apache.camel:camel-test:2.9.2")
         //by default metridoc is tested on mysql
         compile("mysql:mysql-connector-java:5.1.20")
-        //used for handling xls files
-        compile("org.apache.poi:poi:3.8-beta3")
-        compile("org.apache.poi:poi-ooxml:3.8-beta3")
-        //used for handling csv easily
-        compile 'net.sf.opencsv:opencsv:2.3'
-        compile('org.apache.camel:camel-core:2.9.2') {
-            excludes "slf4j-api"
-        }
-        compile('org.apache.camel:camel-groovy:2.9.2') {
-            excludes 'spring-context', 'spring-aop', 'spring-tx', 'groovy-all'
-        }
-        compile('org.apache.camel:camel-stream:2.9.2')
-        compile('org.apache.camel:camel-ftp:2.9.2')
         compile('org.jasypt:jasypt:1.9.0')
-
         build("com.google.code.maven-svn-wagon:maven-svn-wagon:1.4")
     }
 

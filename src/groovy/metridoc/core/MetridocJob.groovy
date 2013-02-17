@@ -141,7 +141,7 @@ abstract class MetridocJob {
                                 jobDataMap.put("target", target)
                                 return jobDataMap
                             }
-                    ] as Trigger
+                    ] as org.quartz.Trigger
                 }
 
         ] as JobExecutionContext

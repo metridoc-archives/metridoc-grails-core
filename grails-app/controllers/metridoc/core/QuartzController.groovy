@@ -59,7 +59,7 @@ class QuartzController {
             quartzScheduler.getJobKeys(GroupMatcher.groupEquals(jobGroup))?.each { jobKey ->
                 def triggers = quartzScheduler.getTriggersOfJob(jobKey)
                 if (triggers) {
-                    triggers.each { Trigger trigger ->
+                    triggers.each { org.quartz.Trigger trigger ->
                         def currentJob = createJob(jobGroup, jobKey.name, jobsList, trigger.key.name)
                         currentJob.trigger = trigger
                         currentJob.triggerStatus = quartzScheduler.getTriggerState(trigger.key)
