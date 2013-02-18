@@ -32,15 +32,6 @@ class QuartzServiceTests {
         doIllegalArgumentCheck {service.getTriggerNowTrigger(null)}
     }
 
-    @Test
-    void "grab all trigger schedules"() {
-        def triggerSchedules = QuartzService.getTriggerSchedules()
-        assert triggerSchedules.contains("every 5 minutes")
-        assert triggerSchedules.contains("every 15 minutes")
-        assert triggerSchedules.contains("default")
-        assert triggerSchedules.contains("never")
-    }
-
     void doIllegalArgumentCheck(Closure closure) {
         try {
             closure.call()
