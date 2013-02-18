@@ -9,10 +9,6 @@ import org.apache.commons.lang.StringUtils
  */
 class ShiroBootupUtils {
 
-    static final DEFAULT_MAP = [
-
-    ]
-
     static addDefaultParameters(ConfigObject configObject) {
         //if not set by the user in Config.groovy or elsewhere
         def filter = configObject.filter
@@ -21,11 +17,9 @@ class ShiroBootupUtils {
         }
         def currentFilterChainDefinitions = filter.filterChainDefinitions.trim()
 
-        if (!currentFilterChainDefinitions) {
-            filter.filterChainDefinitions = """
-/admin/** = user,roles[ROLE_ADMIN]
-/rest/** = authcBasic, roles[ROLE_REST]"""
-        }
-
+        filter.filterChainDefinitions = """
+        ${currentFilterChainDefinitions}
+        /admin/** = user,roles[ROLE_ADMIN]
+        /rest/** = authcBasic, roles[ROLE_ADMIN]"""
     }
 }

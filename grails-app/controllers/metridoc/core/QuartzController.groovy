@@ -54,7 +54,7 @@ class QuartzController {
     def list() {
         def jobsList = []
         def listJobGroups = quartzScheduler.getJobGroupNames()
-        def manualJob = false
+
         listJobGroups?.each { jobGroup ->
             quartzScheduler.getJobKeys(GroupMatcher.groupEquals(jobGroup))?.each { jobKey ->
                 def triggers = quartzScheduler.getTriggersOfJob(jobKey)
@@ -64,6 +64,7 @@ class QuartzController {
                         currentJob.trigger = trigger
                         currentJob.triggerStatus = quartzScheduler.getTriggerState(trigger.key)
                         long timeToNextFireTime = trigger.getNextFireTime().time - new Date().time
+                        def manualJob = false
                         if (timeToNextFireTime > NEXT_FIRE_TIME_WHERE_JOB_CONSIDERED_MANUAL) {
                             manualJob = true
                         }
@@ -131,21 +132,11 @@ class QuartzController {
     }
 
     def runNow(@RequestParameter("id") String triggerName) {
-        if (!triggerName) {
-            flash.alerts << "Could not run job, triggerName was not specified"
-            chain(action: "index")
-            return
-        }
+        def trigger = searchForTrigger(triggerName)
+        if (!trigger) return
 
         def triggerKey = new TriggerKey(triggerName)
         def dataMap = new JobDataMap(params)
-
-        def trigger = quartzScheduler.getTrigger(triggerKey)
-        if (!trigger) {
-            flash.alerts << "Could not find trigger for trigger name ${triggerName}"
-            redirect(action: "index")
-            return
-        }
 
         dataMap.oldTrigger = quartzScheduler.getTrigger(triggerKey)
         quartzService.triggerJobFromTrigger(trigger, dataMap)
@@ -203,6 +194,35 @@ class QuartzController {
         redirect(action: "list")
     }
 
+    def show(@RequestParameter("id") String triggerName) {
+        org.quartz.Trigger trigger = searchForTrigger(triggerName)
+        def jobSchedule = JobSchedule.findByTriggerName(triggerName)
+        def currentSchedule = jobSchedule ? jobSchedule.triggerType.toString() : "DEFAULT"
+        def triggerSchedules = quartzService.triggerSchedules
+        if("DEFAULT" != currentSchedule) {
+            triggerSchedules.remove("DEFAULT")
+        }
+        if(!trigger) return
+
+        [
+                trigger: trigger,
+                currentSchedule: currentSchedule,
+                triggerName: trigger.key.name,
+                nextFireTime: trigger.nextFireTime,
+                availableSchedules: triggerSchedules
+        ]
+
+    }
+
+    def updateSchedule(@RequestParameter("id") String triggerName, String availableSchedules) {
+        org.quartz.Trigger trigger = searchForTrigger(triggerName)
+        if(!trigger) return
+
+        quartzService.rescheduleJob(triggerName, availableSchedules)
+        flash.messages << "rescheduled job $triggerName" as String
+        chain(action: "list")
+    }
+
     private static createJob(String jobGroup, String jobName, ArrayList jobsList, triggerName = "") {
         def currentJob = [:]
         currentJob.group = jobGroup
@@ -215,5 +235,24 @@ class QuartzController {
 
     private static jobKey(name, group) {
         return JobKey.jobKey(name, group)
+    }
+
+    private Trigger searchForTrigger(String triggerName) {
+        if (!triggerName) {
+            flash.alerts << "Could not run job, triggerName was not specified"
+            chain(action: "index")
+            return null
+        }
+
+        def triggerKey = new TriggerKey(triggerName)
+
+        def trigger = quartzScheduler.getTrigger(triggerKey)
+        if (!trigger) {
+            flash.alerts << "Could not find trigger for trigger name ${triggerName}"
+            redirect(action: "index")
+            return null
+        }
+
+        return trigger
     }
 }

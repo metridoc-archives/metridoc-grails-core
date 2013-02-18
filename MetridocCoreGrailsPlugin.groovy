@@ -4,6 +4,8 @@ import grails.plugin.quartz2.TriggersBuilder
 import metridoc.core.MetridocJob
 import metridoc.core.QuartzMonitorJobFactory
 import metridoc.utils.ShiroBootupUtils
+import org.apache.shiro.mgt.RememberMeManager
+import org.apache.shiro.web.mgt.CookieRememberMeManager
 
 /*
 * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
@@ -21,6 +23,7 @@ import metridoc.utils.ShiroBootupUtils
 */
 class MetridocCoreGrailsPlugin {
 
+    static DEFAULT_MAX_REMEMER_ME = 1000 * 60 * 60 //one hour
     // the plugin version
     def version = "0.53-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
@@ -28,7 +31,7 @@ class MetridocCoreGrailsPlugin {
 
     def dependsOn = [quartz2: "0.2.3 > *"]
     // the other plugins this plugin depends on
-    def loadAfter = ["rest-client-builder", "release", "hibernate", "quartz2"]
+    def loadAfter = ["rest-client-builder", "release", "hibernate", "quartz2", "shiro"]
     def loadBefore = ["shiro"]
 
     def watchedResources = [
@@ -112,6 +115,11 @@ class MetridocCoreGrailsPlugin {
                 jobClass.triggers = triggers
                 scheduleJob.call(jobClass, applicationContext, applicationContext.quartzScheduler)
             }
+        }
+
+        RememberMeManager manager = applicationContext.getBean("shiroRememberMeManager")
+        if(manager instanceof CookieRememberMeManager) {
+            manager.cookie.setMaxAge(DEFAULT_MAX_REMEMER_ME)
         }
     }
 

@@ -6,7 +6,6 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page import="org.quartz.Trigger" contentType="text/html;charset=UTF-8" %>
 <md:report>
     <tmpl:quartzSettings/>
     <div class="body">
@@ -60,12 +59,12 @@
                             <td>Manual Job</td>
                         </g:if>
                         <g:else>
-                            <td>${job.trigger?.name}</td>
+                            <td><a href="<g:createLink action="show" id="${job.trigger?.name}"/>">${job.trigger?.name}</a></td>
                         </g:else>
                         <td class="quartz-tooltip quartz-status ${job.status ?: "not-run"}"
                             data-tooltip="${job.tooltip}">${job.lastRun}</td>
                         <td class="quartz-to-hide">${job.tooltip}</td>
-                        <g:if test="${scheduler.isInStandbyMode() || job.triggerStatus == Trigger.TriggerState.PAUSED}">
+                        <g:if test="${scheduler.isInStandbyMode() || job.triggerStatus == org.quartz.Trigger.TriggerState.PAUSED}">
                             <td class="hasCountdown countdown_amount">Paused</td>
                         </g:if>
                         <g:elseif test="${job.interrupting}">
@@ -86,7 +85,7 @@
                         <td class="quartz-actions">
                             <g:if test="${job.status != 'running'}">
                                 <g:if test="${job.trigger}">
-                                    <g:if test="${job.triggerStatus == Trigger.TriggerState.PAUSED}">
+                                    <g:if test="${job.triggerStatus == org.quartz.Trigger.TriggerState.PAUSED}">
                                         <a href="<g:createLink action="resume"
                                                                params="[jobName: job.name, jobGroup: job.group]"/>"
                                            class="quartz-tooltip"

@@ -31,11 +31,11 @@ public class QuartzMonitorJobFactory extends GrailsJobFactory {
     }
 
     @Override
-    public Job newJob(TriggerFiredBundle bundle, Scheduler scheduler) throws SchedulerException {
+    public org.quartz.Job newJob(TriggerFiredBundle bundle, Scheduler scheduler) throws SchedulerException {
         //String grailsJobName = bundle.getJobDetail().getName();
         String grailsJobName = bundle.getTrigger().getKey().getName();
 
-        Job job = super.newJob(bundle, scheduler);
+        org.quartz.Job job = super.newJob(bundle, scheduler);
         if (job instanceof GrailsArtefactJob) {
             Map<String, Object> map;
             if (jobRuns.containsKey(grailsJobName)) {
@@ -52,7 +52,7 @@ public class QuartzMonitorJobFactory extends GrailsJobFactory {
     /**
      * Quartz Job implementation that invokes execute() on the GrailsTaskClassJob instance whilst recording the time
      */
-    public class QuartzDisplayJob implements Job {
+    public class QuartzDisplayJob implements org.quartz.Job {
         GrailsArtefactJob job;
         Map<String, Object> jobDetails;
         private SessionFactory sessionFactory;

@@ -1,12 +1,37 @@
 package metridoc.core
 
+import grails.plugin.quartz2.GrailsJobClass
+import grails.plugin.quartz2.TriggersBuilder
 import org.quartz.*
+
+import java.util.concurrent.TimeUnit
 
 import static org.springframework.util.Assert.notNull
 
 class QuartzService {
 
     def quartzScheduler
+    def grailsApplication
+    def pluginManager
+
+    def initializeJobs() {
+        JobSchedule.list().each {
+            rescheduleJob(it.triggerName, it.triggerType.toString())
+        }
+    }
+
+    static List<String> getTriggerSchedules() {
+        def result = []
+        metridoc.trigger.Trigger.values().each {
+            result << it.toString()
+        }
+        result << "DEFAULT"
+        return result
+    }
+
+    private static String convertTriggerName(String name) {
+        name.replaceAll("_", " ").toLowerCase()
+    }
 
     TriggerKey triggerJobFromJobName(String jobName) {
         return triggerJobFromJobName(jobName, new JobDataMap())
@@ -65,5 +90,43 @@ class QuartzService {
     org.quartz.Trigger getTrigger(String triggerName) {
         def triggerKey = new TriggerKey(triggerName)
         quartzScheduler.getTrigger(triggerKey)
+    }
+
+    void rescheduleJob(String triggerName, String triggerDescription) {
+        String jobName = getTrigger(triggerName).jobKey.name
+        GrailsJobClass jobClass = grailsApplication.getArtefact("Job", jobName)
+        def plugin = pluginManager.getGrailsPluginForClassName("Quartz2GrailsPlugin").instance
+        Closure schedulerJob = plugin.scheduleJob
+        schedulerJob.delegate = plugin
+
+        if ("DEFAULT" == triggerDescription) {
+            //do nothing.  One can only access this if it was already at default.  Otherwise DEFAULT is not an option
+            //after a time is selected
+            return
+        } else {
+            def jobSchedule = getSchedule(triggerName, triggerDescription)
+            jobSchedule.triggerType = metridoc.trigger.Trigger.valueOf(triggerDescription)
+            jobSchedule.save(flush: true, failOnError: true)
+            org.quartz.Trigger newTrigger
+            if (triggerDescription == "NEVER") {
+                long fiftyYears = TimeUnit.DAYS.toMillis(365 * 50)
+                newTrigger = jobSchedule.convertTriggerToQuartzTrigger()
+                newTrigger.startTime = new Date(new Date().time + fiftyYears)
+            } else {
+                newTrigger = jobSchedule.convertTriggerToQuartzTrigger()
+                newTrigger.startTime = new Date()
+            }
+
+            def key = new TriggerKey(triggerName)
+            newTrigger.key = key
+            quartzScheduler.rescheduleJob(key, newTrigger)
+        }
+    }
+
+    JobSchedule getSchedule(String triggerName, String description) {
+        def schedule = JobSchedule.findByTriggerName(triggerName)
+        if(schedule) return schedule
+
+        return new JobSchedule(triggerName: triggerName, triggerType: metridoc.trigger.Trigger.valueOf(description))
     }
 }
