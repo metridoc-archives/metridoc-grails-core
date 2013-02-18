@@ -30,7 +30,7 @@ class CamelRoutingTest {
 
     def job = new CamelRoutingJob()
 
-    @Test(timeout = 5000L)
+    @Test(timeout = 15000L)
     void testFullRoute() {
         job.executeTarget("fullRoute")
     }
