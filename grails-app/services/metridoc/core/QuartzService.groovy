@@ -1,5 +1,6 @@
 package metridoc.core
 
+import org.apache.commons.lang.SystemUtils
 import grails.plugin.quartz2.GrailsJobClass
 import grails.plugin.quartz2.TriggersBuilder
 import org.quartz.*
@@ -10,6 +11,8 @@ import static org.springframework.util.Assert.notNull
 
 class QuartzService {
 
+    static final GROOVY_VERSION = "2.0.5"
+    static final GROOVY_DISTRIBUTION = "http://dist.groovy.codehaus.org/distributions/groovy-binary-${GROOVY_VERSION}.zip"
     def quartzScheduler
     def grailsApplication
     def pluginManager
@@ -90,6 +93,31 @@ class QuartzService {
     org.quartz.Trigger getTrigger(String triggerName) {
         def triggerKey = new TriggerKey(triggerName)
         quartzScheduler.getTrigger(triggerKey)
+    }
+
+    /**
+     * checks if groovy has been downloaded to run jobs, if not it is downloaded under metridoc home
+     */
+    void checkForGroovyDistribution() {
+        def metridocHome = grailsApplication.mergedConfig.metridoc?.home ?: "${SystemUtils.USER_HOME}/.metridoc"
+        def groovyHome = "$metridocHome/groovy"
+        def groovyDirectoryPath = "$groovyHome/groovy-$GROOVY_VERSION"
+        def groovyDirectory = new File(groovyDirectoryPath)
+
+        if (!groovyDirectory.exists()) {
+            assert groovyDirectory.mkdirs() : "Could not create the groovy distribution directory"
+            log.info "groovy distribution is not in metridoc home, downloading now, this could take several minutes"
+            def groovyFile =  new File("${groovyDirectoryPath}.zip")
+            groovyFile.delete()
+            assert groovyFile.createNewFile() : "Could not create ${groovyFile}"
+            groovyFile << new URL(GROOVY_DISTRIBUTION).newInputStream()
+            log.info "unzipping the groovy distribution"
+            def ant = new AntBuilder()
+            ant.unzip (
+                src:groovyFile,
+                dest:groovyDirectory
+            )
+        }
     }
 
     void rescheduleJob(String triggerName, String triggerDescription) {
