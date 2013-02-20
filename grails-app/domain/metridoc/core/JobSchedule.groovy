@@ -22,7 +22,7 @@ class JobSchedule {
         triggerName(unique: true)
     }
 
-    org.quartz.Trigger convertTriggerToQuartzTrigger(TriggerKey key) {
+    org.quartz.Trigger convertTriggerToQuartzTrigger() {
 
         switch(triggerType) {
             case Trigger.NEVER:

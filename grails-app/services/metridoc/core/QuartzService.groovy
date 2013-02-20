@@ -19,7 +19,10 @@ class QuartzService {
 
     def initializeJobs() {
         JobSchedule.list().each {
-            rescheduleJob(it.triggerName, it.triggerType.toString())
+            def trigger = getTrigger(it.triggerName)
+            if (trigger) {
+                rescheduleJob(it.triggerName, it.triggerType.toString())
+            }
         }
     }
 
@@ -57,7 +60,7 @@ class QuartzService {
 
     TriggerKey triggerJobFromTriggerName(String triggerName, JobDataMap dataMap) {
         def triggerKey = new TriggerKey(triggerName)
-        def trigger = quartzScheduler.getTrigger(triggerKey)
+        org.quartz.Trigger trigger = quartzScheduler.getTrigger(triggerKey)
         notNull(trigger, "Could not find job ${triggerName}")
         return triggerJobFromTrigger(trigger, dataMap)
     }
@@ -92,7 +95,7 @@ class QuartzService {
 
     org.quartz.Trigger getTrigger(String triggerName) {
         def triggerKey = new TriggerKey(triggerName)
-        quartzScheduler.getTrigger(triggerKey)
+        quartzScheduler?.getTrigger(triggerKey)
     }
 
     /**
@@ -122,16 +125,11 @@ class QuartzService {
 
     void rescheduleJob(String triggerName, String triggerDescription) {
         String jobName = getTrigger(triggerName).jobKey.name
-        GrailsJobClass jobClass = grailsApplication.getArtefact("Job", jobName)
         def plugin = pluginManager.getGrailsPluginForClassName("Quartz2GrailsPlugin").instance
         Closure schedulerJob = plugin.scheduleJob
         schedulerJob.delegate = plugin
 
-        if ("DEFAULT" == triggerDescription) {
-            //do nothing.  One can only access this if it was already at default.  Otherwise DEFAULT is not an option
-            //after a time is selected
-            return
-        } else {
+        if ("DEFAULT" != triggerDescription) {
             def jobSchedule = getSchedule(triggerName, triggerDescription)
             jobSchedule.triggerType = metridoc.trigger.Trigger.valueOf(triggerDescription)
             jobSchedule.save(flush: true, failOnError: true)
