@@ -70,8 +70,15 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
     /**
      * Quartz Job implementation that invokes execute() on the GrailsTaskClassJob instance whilst recording the time
      */
-    public class QuartzDisplayJob implements org.quartz.Job {
+    public static class QuartzDisplayJob implements org.quartz.Job {
         private static final String DURATION = "duration";
+        private static final String INTERRUPTING = "interrupting";
+        private static final String STATUS = "status";
+        private static final String LAST_RUN = "lastRun";
+        private static final String ERROR = "error";
+        private static final String TOOLTIP = "tooltip";
+
+        public enum STATUS_ENUM {RUNNING, COMPLETE, ERROR};
         GrailsArtefactJob job;
         Map<String, Object> jobDetails;
         private SessionFactory sessionFactory;
@@ -86,17 +93,17 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
         public void execute(final JobExecutionContext context) throws JobExecutionException {
             try {
                 Long lastDuration = getDuration();
-                Object lastTooltip = jobDetails.get("tooltip");
-                jobDetails.clear();
+                String lastTooltip = getTooltip();
+                clearDetails();
                 jobDetails.put("instance", this);
                 if (lastDuration != null) {
                     jobDetails.put("lastDuration", lastDuration);
                 }
                 if (lastTooltip != null) {
-                    jobDetails.put("tooltip", lastTooltip);
+                    setTooltip(lastTooltip);
                 }
-                jobDetails.put("lastRun", new Date());
-                jobDetails.put("status", "running");
+                setLastRun(new Date());
+                setStatus(STATUS_ENUM.RUNNING);
                 long start = System.currentTimeMillis();
                 String error = null;
                 try {
@@ -104,8 +111,8 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
                     sessionFactory.getCurrentSession().flush();
                 } catch (Throwable e) {
                     error = e.getMessage();
-                    jobDetails.put("error", error);
-                    jobDetails.put("status", "error");
+                    setError(error);
+                    setStatus(STATUS_ENUM.ERROR);
                     addDurationAndToolTip(jobDetails, start);
                     log.error("error occurred running job " + context.getJobDetail().getKey() + " with trigger " + context.getTrigger().getKey(), e);
                     if (e instanceof JobExecutionException) {
@@ -113,11 +120,11 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
                     }
                     throw new JobExecutionException(e.getMessage(), e);
                 }
-                jobDetails.put("status", "complete");
+                setStatus(STATUS_ENUM.COMPLETE);
                 addDurationAndToolTip(jobDetails, start);
             } finally {
                 org.quartz.Trigger currentTrigger = context.getTrigger();
-                jobDetails.put("interrupting", false);
+                setInterrupting(false);
                 JobDataMap jobData = currentTrigger.getJobDataMap();
                 if (jobData.containsKey("oldTrigger")) {
                     try {
@@ -137,7 +144,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
 
         public void addDurationAndToolTip(Map<String, Object> jobDetails, long start) {
             long duration = System.currentTimeMillis() - start;
-            String error = (String) jobDetails.get("error");
+            String error = (String) jobDetails.get(ERROR);
             setDuration(duration);
             String jobRunTime = "Most recent job ran in " + duration + "ms";
             String jobException = error != null ? ", with error " + error : "";
@@ -151,6 +158,50 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
 
         public Long getDuration() {
             return (Long) jobDetails.get(DURATION);
+        }
+
+        public void setInterrupting(boolean interrupting) {
+            jobDetails.put(INTERRUPTING, interrupting);
+        }
+
+        public Boolean getInterrupting() {
+            return (Boolean) jobDetails.get(INTERRUPTING);
+        }
+
+        public void setStatus(STATUS_ENUM status) {
+            jobDetails.put(STATUS, status.toString().toLowerCase());
+        }
+
+        public STATUS_ENUM getStatus() {
+            return (STATUS_ENUM) jobDetails.get(STATUS);
+        }
+
+        public Date getLastRun() {
+            return (Date) jobDetails.get(LAST_RUN);
+        }
+
+        public void setLastRun(Date lastRun) {
+            jobDetails.put(LAST_RUN, lastRun);
+        }
+
+        public void clearDetails() {
+            jobDetails.clear();
+        }
+
+        public String getError() {
+            return (String) jobDetails.get(ERROR);
+        }
+
+        public void setError(String error) {
+            jobDetails.put(ERROR, error);
+        }
+
+        public String getTooltip() {
+            return (String) jobDetails.get(TOOLTIP);
+        }
+
+        public void setTooltip(String tooltip) {
+            jobDetails.put(TOOLTIP, tooltip);
         }
     }
 }
