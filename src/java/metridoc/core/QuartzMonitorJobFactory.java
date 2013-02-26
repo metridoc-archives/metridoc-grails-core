@@ -2,7 +2,6 @@ package metridoc.core;
 
 import grails.plugin.quartz2.GrailsArtefactJob;
 import grails.plugin.quartz2.GrailsArtefactJobDetailFactoryBean;
-import grails.plugin.quartz2.GrailsJobFactory;
 import groovy.lang.Script;
 import org.hibernate.SessionFactory;
 import org.quartz.*;
@@ -72,6 +71,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
      * Quartz Job implementation that invokes execute() on the GrailsTaskClassJob instance whilst recording the time
      */
     public class QuartzDisplayJob implements org.quartz.Job {
+        private static final String DURATION = "duration";
         GrailsArtefactJob job;
         Map<String, Object> jobDetails;
         private SessionFactory sessionFactory;
@@ -85,7 +85,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
 
         public void execute(final JobExecutionContext context) throws JobExecutionException {
             try {
-                Object lastDuration = jobDetails.get("duration");
+                Long lastDuration = getDuration();
                 Object lastTooltip = jobDetails.get("tooltip");
                 jobDetails.clear();
                 jobDetails.put("instance", this);
@@ -138,11 +138,19 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
         public void addDurationAndToolTip(Map<String, Object> jobDetails, long start) {
             long duration = System.currentTimeMillis() - start;
             String error = (String) jobDetails.get("error");
-            jobDetails.put("duration", duration);
+            setDuration(duration);
             String jobRunTime = "Most recent job ran in " + duration + "ms";
             String jobException = error != null ? ", with error " + error : "";
             String tooltip = jobRunTime + jobException;
             jobDetails.put("tooltip", tooltip);
+        }
+
+        public void setDuration(long duration) {
+            jobDetails.put(DURATION, duration);
+        }
+
+        public Long getDuration() {
+            return (Long) jobDetails.get(DURATION);
         }
     }
 }

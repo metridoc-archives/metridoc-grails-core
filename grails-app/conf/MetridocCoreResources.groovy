@@ -111,13 +111,6 @@ modules = {
                 attrs: [type: 'css']
     }
 
-    overrides {
-        'jquery-theme' {
-            resource id: 'theme',
-                    url: [plugin: "metridocCore", dir: '/jquery-ui/forrest-dialog/css/custom-theme', file: 'jquery-ui-1.8.23.custom.css']
-        }
-    }
-
     login {
         dependsOn 'jquery'
         resource id: 'loginCss',
