@@ -1,8 +1,10 @@
 import grails.plugin.quartz2.GrailsJobClass
+import grails.plugin.quartz2.JobArtefactHandler
 import grails.plugin.quartz2.QuartzFactoryBean
 import grails.plugin.quartz2.TriggersBuilder
 import metridoc.core.MetridocJob
 import metridoc.core.QuartzMonitorJobFactory
+import metridoc.core.ScriptJobArtefactHandler
 import metridoc.utils.ShiroBootupUtils
 import org.apache.shiro.mgt.RememberMeManager
 import org.apache.shiro.web.mgt.CookieRememberMeManager
@@ -31,8 +33,9 @@ class MetridocCoreGrailsPlugin {
 
     def dependsOn = [quartz2: "0.2.3 > *"]
     // the other plugins this plugin depends on
-    def loadAfter = ["rest-client-builder", "release", "hibernate", "quartz2", "shiro"]
-    def loadBefore = ["shiro"]
+    def loadAfter = ["rest-client-builder", "release", "hibernate", "quartz2", "resources"]
+
+    def artefacts = [new ScriptJobArtefactHandler()]
 
     def watchedResources = [
     ]
@@ -112,7 +115,7 @@ class MetridocCoreGrailsPlugin {
 
                 builder.build(MetridocJob.MANUAL_RUN_TRIGGER)
                 def triggers = (Map) builder.getTriggers()
-                jobClass.triggers = triggers
+                jobClass.triggers.putAll(triggers)
                 scheduleJob.call(jobClass, applicationContext, applicationContext.quartzScheduler)
             }
         }

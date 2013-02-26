@@ -1,13 +1,17 @@
 package metridoc.core;
 
 import grails.plugin.quartz2.GrailsArtefactJob;
+import grails.plugin.quartz2.GrailsArtefactJobDetailFactoryBean;
 import grails.plugin.quartz2.GrailsJobFactory;
+import groovy.lang.Script;
 import org.hibernate.SessionFactory;
 import org.quartz.*;
+import org.quartz.simpl.PropertySettingJobFactory;
 import org.quartz.spi.TriggerFiredBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -20,7 +24,7 @@ import java.util.Map;
  * Time: 7:43 PM
  * To change this template use File | Settings | File Templates.
  */
-public class QuartzMonitorJobFactory extends GrailsJobFactory {
+public class QuartzMonitorJobFactory extends PropertySettingJobFactory implements ApplicationContextAware{
 
     static final java.util.Map<String, Map<String, Object>> jobRuns = new HashMap<String, Map<String, Object>>();
     private SessionFactory sessionFactory;
@@ -32,21 +36,36 @@ public class QuartzMonitorJobFactory extends GrailsJobFactory {
 
     @Override
     public org.quartz.Job newJob(TriggerFiredBundle bundle, Scheduler scheduler) throws SchedulerException {
-        //String grailsJobName = bundle.getJobDetail().getName();
-        String grailsJobName = bundle.getTrigger().getKey().getName();
+        String grailsJobName = (String) bundle.getJobDetail().getJobDataMap().get(GrailsArtefactJobDetailFactoryBean.JOB_NAME_PARAMETER);
+        org.quartz.Job job = null;
+        if(grailsJobName != null) {
+            Object jobBean = applicationContext.getBean(grailsJobName);
+            if(jobBean instanceof Script) {
+                ScriptJob scriptJob = new ScriptJob((Script) jobBean);
+                job = new GrailsArtefactJob(scriptJob);
+            } else {
+                job = new GrailsArtefactJob(jobBean);
+            }
+        } else {
+            job = super.newJob(bundle,scheduler);
+        }
 
-        org.quartz.Job job = super.newJob(bundle, scheduler);
+        String triggerName = bundle.getTrigger().getKey().getName();
         if (job instanceof GrailsArtefactJob) {
             Map<String, Object> map;
-            if (jobRuns.containsKey(grailsJobName)) {
-                map = jobRuns.get(grailsJobName);
+            if (jobRuns.containsKey(triggerName)) {
+                map = jobRuns.get(triggerName);
             } else {
                 map = new HashMap<String, Object>();
-                jobRuns.put(grailsJobName, map);
+                jobRuns.put(triggerName, map);
             }
             job = new QuartzDisplayJob((GrailsArtefactJob) job, map, sessionFactory);
         }
         return job;
+    }
+
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 
     /**

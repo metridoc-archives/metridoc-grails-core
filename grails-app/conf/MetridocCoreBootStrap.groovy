@@ -6,7 +6,8 @@ class MetridocCoreBootStrap {
 
     def init = { servletContext ->
         initAuthService.init()
-        quartzService.checkForGroovyDistribution()
+//      not sure we need this anymore
+//        quartzService.checkForGroovyDistribution()
         quartzService.initializeJobs()
     }
 
