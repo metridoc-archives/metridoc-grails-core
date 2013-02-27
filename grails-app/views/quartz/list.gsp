@@ -54,7 +54,7 @@
                 <tbody>
                 <g:each in="${jobs}" status="i" var="job">
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                        <td>${job.name}</td>
+                        <td>${job.jobName}</td>
                         <g:if test="${job.trigger?.key?.name?.startsWith("manual")}">
                             <td>Manual Job</td>
                         </g:if>
@@ -68,11 +68,11 @@
                             <td class="hasCountdown countdown_amount">Paused</td>
                         </g:if>
                         <g:elseif test="${job.interrupting}">
-                            <td data-last-runtime="${job.lastDuration}">Interupting  <i class="icon-spinner icon-spin"></i>
+                            <td data-last-runtime="${job.duration}">Interupting  <i class="icon-spinner icon-spin"></i>
                             </td>
                         </g:elseif>
                         <g:elseif test="${job.status == "running"}">
-                            <td data-last-runtime="${job.lastDuration}">Running  <i class="icon-spinner icon-spin"></i>
+                            <td data-last-runtime="${job.duration}">Running  <i class="icon-spinner icon-spin"></i>
                             </td>
                         </g:elseif>
                         <g:elseif test="${job.manualJob}">
@@ -87,7 +87,7 @@
                                 <g:if test="${job.trigger}">
                                     <g:if test="${job.triggerStatus == org.quartz.Trigger.TriggerState.PAUSED}">
                                         <a href="<g:createLink action="resume"
-                                                               params="[jobName: job.name, jobGroup: job.group]"/>"
+                                                               params="[jobName: job.jobName, jobGroup: job.jobGroup]"/>"
                                            class="quartz-tooltip"
                                            data-tooltip="Schedule Job">
                                             <i class="icon-time"></i>
@@ -95,7 +95,7 @@
                                     </g:if>
                                     <g:elseif test="${job.trigger.mayFireAgain()}">
                                         <a href="<g:createLink action="pause"
-                                                               params="[jobName: job.name, jobGroup: job.group]"/>"
+                                                               params="[jobName: job.jobName, jobGroup: job.jobGroup]"/>"
                                            class="quartz-tooltip" data-tooltip="Unschedule Job">
                                             <i class="icon-pause"></i>
                                         </a>

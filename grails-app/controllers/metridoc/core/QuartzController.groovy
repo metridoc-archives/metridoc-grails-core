@@ -64,11 +64,11 @@ class QuartzController {
                         currentJob.trigger = trigger
                         currentJob.triggerStatus = quartzScheduler.getTriggerState(trigger.key)
                         long timeToNextFireTime = trigger.getNextFireTime().time - new Date().time
-                        def manualJob = false
                         if (timeToNextFireTime > NEXT_FIRE_TIME_WHERE_JOB_CONSIDERED_MANUAL) {
-                            manualJob = true
+                            currentJob.manualJob = true
+                        } else {
+                            currentJob.manualJob = false
                         }
-                        currentJob.manualJob = manualJob
                     }
                 } else {
                     createJob(jobGroup, jobKey.name, jobsList)
@@ -223,14 +223,15 @@ class QuartzController {
         chain(action: "list")
     }
 
-    private static createJob(String jobGroup, String jobName, ArrayList jobsList, triggerName = "") {
-        def currentJob = [:]
-        currentJob.group = jobGroup
-        currentJob.name = jobName
-        def map = QuartzMonitorJobFactory.jobRuns.get(triggerName)
-        if (map) currentJob << map
-        jobsList.add(currentJob)
-        return currentJob
+    private static QuartzMonitorJobFactory.QuartzDisplayJob createJob(String jobGroup, String jobName, List<QuartzMonitorJobFactory.QuartzDisplayJob> jobsList, triggerName = "") {
+        def displayJob = QuartzMonitorJobFactory.jobRuns.get(triggerName)
+        if(!displayJob) {
+            displayJob = new QuartzMonitorJobFactory.QuartzDisplayJob()
+            displayJob.setJobKey(new JobKey(jobName, jobGroup))
+        }
+
+        jobsList.add(displayJob)
+        return displayJob
     }
 
     private static jobKey(name, group) {

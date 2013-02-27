@@ -14,18 +14,13 @@ import org.springframework.context.ApplicationContextAware;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
- * User: tbarker
- * Date: 11/6/12
- * Time: 7:43 PM
- * To change this template use File | Settings | File Templates.
+ * The quartz monitor factory used to generate jobs for MetriDoc
  */
-public class QuartzMonitorJobFactory extends PropertySettingJobFactory implements ApplicationContextAware{
+public class QuartzMonitorJobFactory extends PropertySettingJobFactory implements ApplicationContextAware {
 
-    static final java.util.Map<String, Map<String, Object>> jobRuns = new HashMap<String, Map<String, Object>>();
+    static final java.util.Map<String, QuartzDisplayJob> jobRuns = new HashMap<String, QuartzDisplayJob>();
     private SessionFactory sessionFactory;
     private ApplicationContext applicationContext;
 
@@ -36,29 +31,39 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
     @Override
     public org.quartz.Job newJob(TriggerFiredBundle bundle, Scheduler scheduler) throws SchedulerException {
         String grailsJobName = (String) bundle.getJobDetail().getJobDataMap().get(GrailsArtefactJobDetailFactoryBean.JOB_NAME_PARAMETER);
-        org.quartz.Job job = null;
-        if(grailsJobName != null) {
+        org.quartz.Job job;
+        if (grailsJobName != null) {
             Object jobBean = applicationContext.getBean(grailsJobName);
-            if(jobBean instanceof Script) {
+            if (jobBean instanceof Script) {
                 ScriptJob scriptJob = new ScriptJob((Script) jobBean);
                 job = new GrailsArtefactJob(scriptJob);
             } else {
                 job = new GrailsArtefactJob(jobBean);
             }
         } else {
-            job = super.newJob(bundle,scheduler);
+            job = super.newJob(bundle, scheduler);
         }
 
         String triggerName = bundle.getTrigger().getKey().getName();
         if (job instanceof GrailsArtefactJob) {
-            Map<String, Object> map;
+            QuartzDisplayJob previousRun;
             if (jobRuns.containsKey(triggerName)) {
-                map = jobRuns.get(triggerName);
+                previousRun = jobRuns.get(triggerName);
             } else {
-                map = new HashMap<String, Object>();
-                jobRuns.put(triggerName, map);
+                previousRun = new QuartzDisplayJob();
             }
-            job = new QuartzDisplayJob((GrailsArtefactJob) job, map, sessionFactory);
+
+            QuartzDisplayJob displayJob;
+            try {
+                displayJob = (QuartzDisplayJob) previousRun.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
+            displayJob.setSessionFactory(sessionFactory);
+            displayJob.setJob((GrailsArtefactJob) job);
+            displayJob.setJobKey(bundle.getTrigger().getJobKey());
+            job = displayJob;
+            jobRuns.put(triggerName, displayJob);
         }
         return job;
     }
@@ -70,24 +75,30 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
     /**
      * Quartz Job implementation that invokes execute() on the GrailsTaskClassJob instance whilst recording the time
      */
-    public static class QuartzDisplayJob implements org.quartz.Job {
-        private static final String DURATION = "duration";
-        private static final String INTERRUPTING = "interrupting";
-        private static final String STATUS = "status";
-        private static final String LAST_RUN = "lastRun";
-        private static final String ERROR = "error";
-        private static final String TOOLTIP = "tooltip";
+    public static class QuartzDisplayJob implements org.quartz.Job, Cloneable {
+        private Long duration;
+        private boolean interrupting;
+        private STATUS_ENUM status;
+        private Date lastRun;
+        private String error;
+        private String tooltip;
+        private Trigger.TriggerState triggerStatus;
+        private Trigger trigger;
+        private boolean manualJob = false;
 
-        public enum STATUS_ENUM {RUNNING, COMPLETE, ERROR};
+        public enum STATUS_ENUM {RUNNING, COMPLETE, ERROR}
+
         GrailsArtefactJob job;
-        Map<String, Object> jobDetails;
         private SessionFactory sessionFactory;
         private final Logger log = LoggerFactory.getLogger(QuartzDisplayJob.class);
+        private JobKey jobKey;
 
-        public QuartzDisplayJob(GrailsArtefactJob job, Map<String, Object> jobDetails, SessionFactory sessionFactory) {
+        public QuartzDisplayJob(GrailsArtefactJob job, SessionFactory sessionFactory) {
             this.job = job;
-            this.jobDetails = jobDetails;
             this.sessionFactory = sessionFactory;
+        }
+
+        public QuartzDisplayJob() {
         }
 
         public void execute(final JobExecutionContext context) throws JobExecutionException {
@@ -95,17 +106,12 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
                 Long lastDuration = getDuration();
                 String lastTooltip = getTooltip();
                 clearDetails();
-                jobDetails.put("instance", this);
-                if (lastDuration != null) {
-                    jobDetails.put("lastDuration", lastDuration);
-                }
-                if (lastTooltip != null) {
-                    setTooltip(lastTooltip);
-                }
+                setDuration(lastDuration);
+                setTooltip(lastTooltip);
                 setLastRun(new Date());
                 setStatus(STATUS_ENUM.RUNNING);
                 long start = System.currentTimeMillis();
-                String error = null;
+                String error;
                 try {
                     job.execute(context);
                     sessionFactory.getCurrentSession().flush();
@@ -113,7 +119,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
                     error = e.getMessage();
                     setError(error);
                     setStatus(STATUS_ENUM.ERROR);
-                    addDurationAndToolTip(jobDetails, start);
+                    addDurationAndToolTip(start);
                     log.error("error occurred running job " + context.getJobDetail().getKey() + " with trigger " + context.getTrigger().getKey(), e);
                     if (e instanceof JobExecutionException) {
                         throw (JobExecutionException) e;
@@ -121,7 +127,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
                     throw new JobExecutionException(e.getMessage(), e);
                 }
                 setStatus(STATUS_ENUM.COMPLETE);
-                addDurationAndToolTip(jobDetails, start);
+                addDurationAndToolTip(start);
             } finally {
                 org.quartz.Trigger currentTrigger = context.getTrigger();
                 setInterrupting(false);
@@ -142,66 +148,147 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
 
         }
 
-        public void addDurationAndToolTip(Map<String, Object> jobDetails, long start) {
+        public void addDurationAndToolTip(long start) {
             long duration = System.currentTimeMillis() - start;
-            String error = (String) jobDetails.get(ERROR);
+            String error = getError();
             setDuration(duration);
             String jobRunTime = "Most recent job ran in " + duration + "ms";
             String jobException = error != null ? ", with error " + error : "";
             String tooltip = jobRunTime + jobException;
-            jobDetails.put("tooltip", tooltip);
+            setTooltip(tooltip);
         }
 
-        public void setDuration(long duration) {
-            jobDetails.put(DURATION, duration);
+        public void setDuration(Long duration) {
+            this.duration = duration;
         }
 
         public Long getDuration() {
-            return (Long) jobDetails.get(DURATION);
+            return this.duration;
         }
 
         public void setInterrupting(boolean interrupting) {
-            jobDetails.put(INTERRUPTING, interrupting);
+            this.interrupting = interrupting;
         }
 
         public Boolean getInterrupting() {
-            return (Boolean) jobDetails.get(INTERRUPTING);
+            return this.interrupting;
         }
 
         public void setStatus(STATUS_ENUM status) {
-            jobDetails.put(STATUS, status.toString().toLowerCase());
+            this.status = status;
         }
 
-        public STATUS_ENUM getStatus() {
-            return (STATUS_ENUM) jobDetails.get(STATUS);
+        public String getStatus() {
+            if(this.status != null) {
+                return this.status.toString().toLowerCase();
+            }
+
+            return null;
         }
 
         public Date getLastRun() {
-            return (Date) jobDetails.get(LAST_RUN);
+            return this.lastRun;
         }
 
         public void setLastRun(Date lastRun) {
-            jobDetails.put(LAST_RUN, lastRun);
+            this.lastRun = lastRun;
         }
 
         public void clearDetails() {
-            jobDetails.clear();
+            this.lastRun = null;
+            this.status = null;
+            this.duration = null;
+            this.error = null;
         }
 
         public String getError() {
-            return (String) jobDetails.get(ERROR);
+            return this.error;
         }
 
         public void setError(String error) {
-            jobDetails.put(ERROR, error);
+            this.error = error;
         }
 
         public String getTooltip() {
-            return (String) jobDetails.get(TOOLTIP);
+            return this.tooltip;
         }
 
         public void setTooltip(String tooltip) {
-            jobDetails.put(TOOLTIP, tooltip);
+            this.tooltip = tooltip;
+        }
+
+        public String getJobGroup() {
+            if (jobKey != null) {
+                return jobKey.getGroup();
+            }
+            return null;
+        }
+
+        public String getJobName() {
+            if (jobKey != null) {
+                return jobKey.getName();
+            }
+            return null;
+        }
+
+        public JobKey getJobKey() {
+            return jobKey;
+        }
+
+        public void setJobKey(JobKey jobKey) {
+            this.jobKey = jobKey;
+        }
+
+        public GrailsArtefactJob getJob() {
+            return job;
+        }
+
+        public void setJob(GrailsArtefactJob job) {
+            this.job = job;
+        }
+
+        public SessionFactory getSessionFactory() {
+            return sessionFactory;
+        }
+
+        public void setSessionFactory(SessionFactory sessionFactory) {
+            this.sessionFactory = sessionFactory;
+        }
+
+        public Trigger.TriggerState getTriggerStatus() {
+            return triggerStatus;
+        }
+
+        public void setTriggerStatus(Trigger.TriggerState triggerStatus) {
+            this.triggerStatus = triggerStatus;
+        }
+
+        public Trigger getTrigger() {
+            return trigger;
+        }
+
+        public void setTrigger(Trigger trigger) {
+            this.trigger = trigger;
+        }
+
+        public boolean isManualJob() {
+            return manualJob;
+        }
+
+        public void setManualJob(boolean manualJob) {
+            this.manualJob = manualJob;
+        }
+
+        @Override
+        protected Object clone() throws CloneNotSupportedException {
+            QuartzDisplayJob clone = new QuartzDisplayJob();
+            clone.duration = duration;
+            clone.status = status;
+            clone.lastRun = lastRun;
+            clone.error = error;
+            clone.interrupting = interrupting;
+
+            return clone;
         }
     }
 }
