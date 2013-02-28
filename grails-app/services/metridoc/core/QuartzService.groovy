@@ -114,17 +114,17 @@ class QuartzService {
         def groovyDirectory = new File(groovyDirectoryPath)
 
         if (!groovyDirectory.exists()) {
-            assert groovyDirectory.mkdirs() : "Could not create the groovy distribution directory"
+            assert groovyDirectory.mkdirs(): "Could not create the groovy distribution directory"
             log.info "groovy distribution is not in metridoc home, downloading now, this could take several minutes"
-            def groovyFile =  new File("${groovyDirectoryPath}.zip")
+            def groovyFile = new File("${groovyDirectoryPath}.zip")
             groovyFile.delete()
-            assert groovyFile.createNewFile() : "Could not create ${groovyFile}"
+            assert groovyFile.createNewFile(): "Could not create ${groovyFile}"
             groovyFile << new URL(GROOVY_DISTRIBUTION).newInputStream()
             log.info "unzipping the groovy distribution"
             def ant = new AntBuilder()
-            ant.unzip (
-                src:groovyFile,
-                dest:groovyDirectory
+            ant.unzip(
+                    src: groovyFile,
+                    dest: groovyDirectory
             )
         }
     }
@@ -157,7 +157,7 @@ class QuartzService {
 
     JobSchedule getSchedule(String triggerName, String description) {
         def schedule = JobSchedule.findByTriggerName(triggerName)
-        if(schedule) return schedule
+        if (schedule) return schedule
 
         return new JobSchedule(triggerName: triggerName, triggerType: metridoc.trigger.Trigger.valueOf(description))
     }
@@ -165,6 +165,14 @@ class QuartzService {
     ConfigObject getConfigByTriggerName(String triggerName) {
         def mergedConfig = grailsApplication.mergedConfig
         return getConfigurationMergedWithAppConfig(mergedConfig, triggerName)
+    }
+
+    static void addConfigToBinding(ConfigObject config, Binding binding) {
+        if (config) {
+            config.each { key, value ->
+                binding.setVariable(key, value)
+            }
+        }
     }
 
     private static ConfigObject getConfigurationMergedWithAppConfig(ConfigObject applicationConfiguration, String triggerName) {

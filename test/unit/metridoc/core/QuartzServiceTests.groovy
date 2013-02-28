@@ -77,6 +77,16 @@ class QuartzServiceTests {
         assert 10 == config.foobar
     }
 
+    @Test
+    void "test building and adding data to the binding variable"() {
+        def appConfig = new ConfigSlurper().parse("foo=2;foobar=10")
+        def binding = new Binding()
+
+        QuartzService.addConfigToBinding(appConfig, binding)
+        assert 2 == binding.foo
+        assert 10 == binding.foobar
+    }
+
     void doIllegalArgumentCheck(Closure closure) {
         try {
             closure.call()

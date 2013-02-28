@@ -46,6 +46,7 @@ abstract class MetridocJob {
     def Map<String, Closure> targetMap = Collections.synchronizedMap([:])
     private Set _targetsRan = [] as Set
     def Map jobDataMap = [:]
+    Binding binding = new Binding()
     boolean interrupted
 
     /**
@@ -59,6 +60,8 @@ abstract class MetridocJob {
             if (context?.trigger?.jobDataMap) {
                 jobDataMap = context?.trigger?.jobDataMap
             }
+            def config = jobDataMap.get("config")
+            QuartzService.addConfigToBinding(config, binding)
             doExecute()
             String targetFromJobDataMap = jobDataMap?.get("target")
             if (targetFromJobDataMap) {
@@ -250,7 +253,7 @@ abstract class MetridocJob {
      * @return returns the binding from the script in case global variables need to accessed
      */
     def includeTargets(Class<Script> scriptClass) {
-        return includeTargets(scriptClass, new Binding())
+        return includeTargets(scriptClass, binding)
     }
 
     /**
