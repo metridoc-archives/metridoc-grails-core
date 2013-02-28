@@ -65,7 +65,16 @@ class QuartzServiceTests {
     @Test
     void "test building configuration for quartz job, app config overrides provided config"() {
         def jobConfig = new JobConfig()
-        jobConfig.config = ""
+        jobConfig.config = "foo=1;bar=2"
+        jobConfig.triggerName = "bar"
+        jobConfig.save()
+
+        def appConfig = new ConfigSlurper().parse("foo=2;foobar=10")
+
+        def config = QuartzService.getConfigurationMergedWithAppConfig(appConfig, "bar")
+        assert 2 == config.foo
+        assert 2 == config.bar
+        assert 10 == config.foobar
     }
 
     void doIllegalArgumentCheck(Closure closure) {

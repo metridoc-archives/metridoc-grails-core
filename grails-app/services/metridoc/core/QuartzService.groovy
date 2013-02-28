@@ -162,7 +162,21 @@ class QuartzService {
         return new JobSchedule(triggerName: triggerName, triggerType: metridoc.trigger.Trigger.valueOf(description))
     }
 
-    private static ConfigObject getConfigurationMergedWithAppConfig(ConfigObject applicationConfiguration, String triggerName) {
+    ConfigObject getConfigByTriggerName(String triggerName) {
+        def mergedConfig = grailsApplication.mergedConfig
+        return getConfigurationMergedWithAppConfig(mergedConfig, triggerName)
+    }
 
+    private static ConfigObject getConfigurationMergedWithAppConfig(ConfigObject applicationConfiguration, String triggerName) {
+        def jobConfig = JobConfig.findByTriggerName(triggerName)
+        ConfigObject jobConfigConfig = applicationConfiguration
+        if (jobConfig) {
+            jobConfigConfig = jobConfig.generateConfigObject()
+            if (jobConfigConfig) {
+                jobConfigConfig.merge(applicationConfiguration)
+            }
+        }
+
+        return jobConfigConfig
     }
 }

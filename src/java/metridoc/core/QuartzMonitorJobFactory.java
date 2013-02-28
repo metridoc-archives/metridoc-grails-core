@@ -3,6 +3,7 @@ package metridoc.core;
 import grails.plugin.quartz2.GrailsArtefactJob;
 import grails.plugin.quartz2.GrailsArtefactJobDetailFactoryBean;
 import groovy.lang.Script;
+import groovy.util.ConfigObject;
 import org.hibernate.SessionFactory;
 import org.quartz.*;
 import org.quartz.simpl.PropertySettingJobFactory;
@@ -37,8 +38,12 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
      */
     @Override
     public org.quartz.Job newJob(TriggerFiredBundle bundle, Scheduler scheduler) throws SchedulerException {
+        String triggerName = bundle.getTrigger().getKey().getName();
+        JobDataMap jobDataMap = bundle.getJobDetail().getJobDataMap();
         QuartzService quartzService = applicationContext.getBean("quartzService", QuartzService.class);
-        String grailsJobName = (String) bundle.getJobDetail().getJobDataMap().get(GrailsArtefactJobDetailFactoryBean.JOB_NAME_PARAMETER);
+        ConfigObject config = quartzService.getConfigByTriggerName(triggerName);
+        jobDataMap.put("config", config);
+        String grailsJobName = (String) jobDataMap.get(GrailsArtefactJobDetailFactoryBean.JOB_NAME_PARAMETER);
         org.quartz.Job job;
         if (grailsJobName != null) {
             Object jobBean = applicationContext.getBean(grailsJobName);
@@ -52,7 +57,6 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
             job = super.newJob(bundle, scheduler);
         }
 
-        String triggerName = bundle.getTrigger().getKey().getName();
         if (job instanceof GrailsArtefactJob) {
             QuartzDisplayJob previousRun;
             if (jobRuns.containsKey(triggerName)) {

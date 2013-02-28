@@ -25,6 +25,12 @@ class ScriptJob implements InterruptableJob {
 
     void execute(JobExecutionContext context) throws JobExecutionException {
         script.binding.setVariable("jobExecutionContext", context)
+        def config = context.getTrigger().getJobDataMap().get("config")
+        if (config != null && config instanceof Map) {
+            config.each {key, value ->
+                script.binding.setVariable(key, value)
+            }
+        }
         script.run()
     }
 }
