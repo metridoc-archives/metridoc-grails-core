@@ -11,6 +11,7 @@ class QuartzService {
 
     static final GROOVY_VERSION = "2.0.5"
     static final GROOVY_DISTRIBUTION = "http://dist.groovy.codehaus.org/distributions/groovy-binary-${GROOVY_VERSION}.zip"
+    static long NEXT_FIRE_TIME_WHERE_JOB_CONSIDERED_MANUAL = 1000L * 60L * 60L * 24L * 365L * 2L //TWO_YEARS
     def quartzScheduler
     def grailsApplication
     def pluginManager
@@ -18,7 +19,7 @@ class QuartzService {
     static boolean isManual(Trigger trigger) {
         long nextFireTime = trigger.nextFireTime.time
         long timeToNextFire = nextFireTime - new Date().time
-        boolean isManual = timeToNextFire > QuartzController.NEXT_FIRE_TIME_WHERE_JOB_CONSIDERED_MANUAL
+        boolean isManual = timeToNextFire > NEXT_FIRE_TIME_WHERE_JOB_CONSIDERED_MANUAL
         return isManual
     }
 

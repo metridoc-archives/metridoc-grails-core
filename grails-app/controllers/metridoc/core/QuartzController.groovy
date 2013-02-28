@@ -11,7 +11,6 @@ class QuartzController {
 
     def commonService
     static final String JOB_FAILURE_SCOPE = "jobFailure"
-    static long NEXT_FIRE_TIME_WHERE_JOB_CONSIDERED_MANUAL = 1000L * 60L * 60L * 24L * 365L * 2L //TWO_YEARS
 
     static accessControl = {
         role(name: "ROLE_ADMIN")
@@ -61,12 +60,7 @@ class QuartzController {
                         def currentJob = createJob(jobGroup, jobKey.name, jobsList, trigger.key.name)
                         currentJob.trigger = trigger
                         currentJob.triggerStatus = quartzScheduler.getTriggerState(trigger.key)
-                        long timeToNextFireTime = trigger.getNextFireTime().time - new Date().time
-                        if (timeToNextFireTime > NEXT_FIRE_TIME_WHERE_JOB_CONSIDERED_MANUAL) {
-                            currentJob.manualJob = true
-                        } else {
-                            currentJob.manualJob = false
-                        }
+                        currentJob.manualJob = QuartzService.isManual(trigger)
                     }
                 } else {
                     createJob(jobGroup, jobKey.name, jobsList)
