@@ -7,11 +7,17 @@ import org.apache.commons.lang.text.StrBuilder
 import org.quartz.*
 import org.quartz.impl.matchers.GroupMatcher
 
+/**
+ * Manages the installed jobs in metridoc
+ */
 class QuartzController {
 
     def commonService
     static final String JOB_FAILURE_SCOPE = "jobFailure"
 
+    /**
+     * By default only admins can access this controller
+     */
     static accessControl = {
         role(name: "ROLE_ADMIN")
     }

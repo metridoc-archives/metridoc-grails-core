@@ -161,4 +161,8 @@ class QuartzService {
 
         return new JobSchedule(triggerName: triggerName, triggerType: metridoc.trigger.Trigger.valueOf(description))
     }
+
+    private static ConfigObject getConfigurationMergedWithAppConfig(ConfigObject applicationConfiguration, String triggerName) {
+
+    }
 }

@@ -28,8 +28,16 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
         this.sessionFactory = sessionFactory;
     }
 
+    /**
+     * creates a job based on the passed {@link TriggerFiredBundle}.
+     * @param bundle the bundle to base the job off of
+     * @param scheduler the quartz scheduler
+     * @return the job
+     * @throws SchedulerException
+     */
     @Override
     public org.quartz.Job newJob(TriggerFiredBundle bundle, Scheduler scheduler) throws SchedulerException {
+        QuartzService quartzService = applicationContext.getBean("quartzService", QuartzService.class);
         String grailsJobName = (String) bundle.getJobDetail().getJobDataMap().get(GrailsArtefactJobDetailFactoryBean.JOB_NAME_PARAMETER);
         org.quartz.Job job;
         if (grailsJobName != null) {

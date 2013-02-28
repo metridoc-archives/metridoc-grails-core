@@ -12,7 +12,7 @@ import org.quartz.core.QuartzScheduler
  * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
  */
 @TestFor(QuartzService)
-@Mock(JobSchedule)
+@Mock([JobSchedule, JobConfig])
 class QuartzServiceTests {
 
     @Test
@@ -60,6 +60,12 @@ class QuartzServiceTests {
 
         assert QuartzService.isManual(manualTrigger)
         assert !QuartzService.isManual(nonManualTrigger)
+    }
+
+    @Test
+    void "test building configuration for quartz job, app config overrides provided config"() {
+        def jobConfig = new JobConfig()
+        jobConfig.config = ""
     }
 
     void doIllegalArgumentCheck(Closure closure) {
