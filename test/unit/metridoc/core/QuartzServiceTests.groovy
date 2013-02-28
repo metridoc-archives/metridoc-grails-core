@@ -41,6 +41,27 @@ class QuartzServiceTests {
         doIllegalArgumentCheck {service.getTriggerNowTrigger(null)}
     }
 
+    @Test
+    void "test trigger check for is manual"() {
+        def manualTrigger = [
+                getNextFireTime: {
+                    long now = new Date().time
+                    long threeYearsIncrement = 1000L * 60L * 60L * 24L * 365L * 3L
+                    Date threeYears = new Date(now + threeYearsIncrement)
+                    return threeYears
+                }
+        ] as org.quartz.Trigger
+
+        def nonManualTrigger = [
+                getNextFireTime: {
+                    new Date()
+                }
+        ] as org.quartz.Trigger
+
+        assert QuartzService.isManual(manualTrigger)
+        assert !QuartzService.isManual(nonManualTrigger)
+    }
+
     void doIllegalArgumentCheck(Closure closure) {
         try {
             closure.call()

@@ -1,8 +1,6 @@
 package metridoc.core
 
 import grails.converters.JSON
-import grails.plugin.quartz2.GrailsArtefactJob
-import grails.plugin.quartz2.GrailsJobClass
 import grails.web.RequestParameter
 import org.apache.commons.lang.StringUtils
 import org.apache.commons.lang.text.StrBuilder
@@ -13,7 +11,7 @@ class QuartzController {
 
     def commonService
     static final String JOB_FAILURE_SCOPE = "jobFailure"
-    long NEXT_FIRE_TIME_WHERE_JOB_CONSIDERED_MANUAL = 1000 * 60 * 60 * 24 * 356 * 2 //TWO_YEARS
+    static long NEXT_FIRE_TIME_WHERE_JOB_CONSIDERED_MANUAL = 1000L * 60L * 60L * 24L * 365L * 2L //TWO_YEARS
 
     static accessControl = {
         role(name: "ROLE_ADMIN")
@@ -198,6 +196,10 @@ class QuartzController {
         org.quartz.Trigger trigger = searchForTrigger(triggerName)
         def jobSchedule = JobSchedule.findByTriggerName(triggerName)
         def currentSchedule = jobSchedule ? jobSchedule.triggerType.toString() : "DEFAULT"
+        boolean manual = QuartzService.isManual(trigger)
+        if (manual) {
+            currentSchedule = metridoc.trigger.Trigger.NEVER
+        }
         def triggerSchedules = quartzService.triggerSchedules
         if("DEFAULT" != currentSchedule) {
             triggerSchedules.remove("DEFAULT")

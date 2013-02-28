@@ -1,8 +1,6 @@
 package metridoc.core
 
 import org.apache.commons.lang.SystemUtils
-import grails.plugin.quartz2.GrailsJobClass
-import grails.plugin.quartz2.TriggersBuilder
 import org.quartz.*
 
 import java.util.concurrent.TimeUnit
@@ -16,6 +14,13 @@ class QuartzService {
     def quartzScheduler
     def grailsApplication
     def pluginManager
+
+    static boolean isManual(Trigger trigger) {
+        long nextFireTime = trigger.nextFireTime.time
+        long timeToNextFire = nextFireTime - new Date().time
+        boolean isManual = timeToNextFire > QuartzController.NEXT_FIRE_TIME_WHERE_JOB_CONSIDERED_MANUAL
+        return isManual
+    }
 
     def initializeJobs() {
         JobSchedule.list().each {
