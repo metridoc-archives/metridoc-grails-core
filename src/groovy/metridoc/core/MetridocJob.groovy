@@ -56,57 +56,22 @@ abstract class MetridocJob {
      * @return
      */
     def execute(JobExecutionContext context) {
-        try {
-            if (context?.trigger?.jobDataMap) {
-                jobDataMap = context?.trigger?.jobDataMap
+        if (context?.trigger?.jobDataMap) {
+            jobDataMap = context?.trigger?.jobDataMap
+        }
+        def config = jobDataMap.get("config")
+        QuartzService.addConfigToBinding(config, binding)
+        doExecute()
+        String targetFromJobDataMap = jobDataMap?.get("target")
+        if (targetFromJobDataMap) {
+            depends(targetFromJobDataMap)
+        } else {
+            jobLogger.debug("target map is $targetMap")
+            def containsDefault = targetMap.containsKey("default")
+            if (containsDefault) {
+                jobLogger.debug "running default"
+                depends("default")
             }
-            def config = jobDataMap.get("config")
-            QuartzService.addConfigToBinding(config, binding)
-            doExecute()
-            String targetFromJobDataMap = jobDataMap?.get("target")
-            if (targetFromJobDataMap) {
-                depends(targetFromJobDataMap)
-            } else {
-                jobLogger.debug("target map is $targetMap")
-                def containsDefault = targetMap.containsKey("default")
-                if (containsDefault) {
-                    jobLogger.debug "running default"
-                    depends("default")
-                }
-            }
-        } catch (Throwable t) {
-            String jobName
-            String shortErrorMessage = "error occurred running job ${this.getClass().name} will notify interested users by email"
-            if (context) {
-                jobName = context.getJobDetail().getKey().getName()
-                shortErrorMessage = "error occurred running job ${jobName} with trigger " + context.getTrigger().getKey().getName() + " will notify interested users by email"
-                //TODO: maybe we don't need to do this?  Does quartz already handle this?
-                jobLogger.error(shortErrorMessage, t);
-            } else {
-                jobName = this.getClass().name
-            }
-
-            def emails = NotificationEmails.findByScope(QuartzController.JOB_FAILURE_SCOPE).collect { it.email }
-
-            def emailIsConfigured = commonService.emailIsConfigured() && emails && !NotificationEmailsService.emailDisabledFromSystemProperty()
-            if (emailIsConfigured) {
-                emails.each { email ->
-                    try {
-                        jobLogger.info "sending email to ${email} about ${jobName} failure"
-                        mailService.sendMail {
-                            subject shortErrorMessage
-                            text ExceptionUtils.getFullStackTrace(t)
-                            to email
-                        }
-                    } catch (Throwable throwable) {
-                        jobLogger.error("could not send email to ${email}", throwable)
-                    }
-                }
-
-            } else {
-                jobLogger.info "could not send email about ${jobName} failure since email is not configured or is disabled"
-            }
-            throw new JobExecutionException(t)
         }
     }
 

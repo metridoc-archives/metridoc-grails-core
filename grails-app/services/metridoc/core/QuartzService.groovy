@@ -1,6 +1,7 @@
 package metridoc.core
 
 import org.apache.commons.lang.SystemUtils
+import org.apache.commons.lang.exception.ExceptionUtils
 import org.quartz.*
 
 import java.util.concurrent.TimeUnit
@@ -15,12 +16,41 @@ class QuartzService {
     def quartzScheduler
     def grailsApplication
     def pluginManager
+    def commonService
+    def mailService
 
     static boolean isManual(Trigger trigger) {
         long nextFireTime = trigger.nextFireTime.time
         long timeToNextFire = nextFireTime - new Date().time
         boolean isManual = timeToNextFire > NEXT_FIRE_TIME_WHERE_JOB_CONSIDERED_MANUAL
         return isManual
+    }
+
+    def mailJobError(Throwable throwable, JobExecutionContext context) {
+        def trigger = context.trigger
+        String triggerName = trigger.key.name
+        String jobName = trigger.jobKey.name
+        String shortErrorMessage = "error occurred running job ${jobName} with trigger ${triggerName} will notify interested users by email"
+
+        def emails = NotificationEmails.findByScope(QuartzController.JOB_FAILURE_SCOPE).collect { it.email }
+        def emailIsConfigured = commonService.emailIsConfigured() && emails && !NotificationEmailsService.emailDisabledFromSystemProperty()
+        if (emailIsConfigured) {
+            emails.each { email ->
+                try {
+                    log.info "sending email to ${email} about ${jobName} failure"
+                    mailService.sendMail {
+                        subject shortErrorMessage
+                        text ExceptionUtils.getFullStackTrace(throwable)
+                        to email
+                    }
+                } catch (Throwable emailError) {
+                    log.error("could not send email to ${email}", emailError)
+                }
+            }
+
+        } else {
+            log.info "could not send email about ${jobName} failure since email is not configured or is disabled"
+        }
     }
 
     def initializeJobs() {
@@ -88,10 +118,11 @@ class QuartzService {
     org.quartz.Trigger getTriggerNowTrigger(org.quartz.Trigger trigger, JobDataMap dataMap) {
         notNull(trigger, "trigger cannot be null")
         def jobKey = trigger.getJobKey()
-        def schedule = SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(1 * 24 * 56 * 4).repeatForever()
+        def schedule = SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(1 * 24 * 356 * 4).repeatForever()
         def now = new Date()
-        def end = now + 365 * 5 //5 years in the future
-        return TriggerBuilder.newTrigger().forJob(jobKey).startAt(new Date())
+        long fiveYears = 1000L * 60L * 60L * 24L * 365L * 5L + now.time
+        def end = new Date(fiveYears)
+        return TriggerBuilder.newTrigger().forJob(jobKey).startAt(now)
                 .endAt(end).withIdentity(trigger.key).withSchedule(schedule).usingJobData(dataMap).build()
     }
 

@@ -65,8 +65,8 @@ class QuartzController {
                     triggers.each { org.quartz.Trigger trigger ->
                         def currentJob = createJob(jobGroup, jobKey.name, jobsList, trigger.key.name)
                         currentJob.trigger = trigger
-                        currentJob.triggerStatus = quartzScheduler.getTriggerState(trigger.key)
                         currentJob.manualJob = QuartzService.isManual(trigger)
+                        currentJob.triggerStatus = quartzScheduler.getTriggerState(trigger.key)
                     }
                 } else {
                     createJob(jobGroup, jobKey.name, jobsList)
@@ -168,27 +168,19 @@ class QuartzController {
     }
 
     def stopJob(@RequestParameter("id") String jobName) {
-        def jobDetails = QuartzMonitorJobFactory.jobRuns.get(jobName)
-        if (jobDetails == null) {
+        def displayJob = QuartzMonitorJobFactory.jobRuns.get(jobName)
+        if (displayJob == null) {
             flash.alert = "job $jobName does not exist"
             redirect(action: "list")
             return
         }
 
-        QuartzMonitorJobFactory.QuartzDisplayJob instance = jobDetails.instance
-
-        if (instance == null) {
-            flash.alert = "Could not find instance of $jobName"
-            redirect(action: "list")
-            return
-        }
-
         try {
-            instance.job.interrupt()
+            displayJob.interrupting = true;
         } catch (UnableToInterruptJobException e) {
             flash.alert = e.message
         }
-        jobDetails.interrupting = true
+        displayJob.interrupting = true
         redirect(action: "list")
     }
 

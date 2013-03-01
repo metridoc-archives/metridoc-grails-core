@@ -121,5 +121,7 @@ function reloadWindow(delay) {
     var fifteenSeconds = 1000 * 15;
     var usedDelay = Math.max(delay, fifteenSeconds);
     console.log("Window refresh will occur in " + usedDelay + " milliseconds");
-    setTimeout(function(){location.reload()}, usedDelay);
+    setTimeout(function(){
+        location.reload()
+    }, usedDelay);
 }

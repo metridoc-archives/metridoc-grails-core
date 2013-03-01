@@ -71,6 +71,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
             } catch (CloneNotSupportedException e) {
                 throw new RuntimeException(e);
             }
+            displayJob.setQuartzService(quartzService);
             displayJob.setSessionFactory(sessionFactory);
             displayJob.setJob((GrailsArtefactJob) job);
             displayJob.setJobKey(bundle.getTrigger().getJobKey());
@@ -88,6 +89,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
      * Quartz Job implementation that invokes execute() on the GrailsTaskClassJob instance whilst recording the time
      */
     public static class QuartzDisplayJob implements org.quartz.Job, Cloneable {
+        private QuartzService quartzService;
         private Long duration;
         private boolean interrupting;
         private STATUS_ENUM status;
@@ -128,11 +130,12 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
                     job.execute(context);
                     sessionFactory.getCurrentSession().flush();
                 } catch (Throwable e) {
+                    quartzService.mailJobError(e, context);
                     error = e.getMessage();
                     setError(error);
                     setStatus(STATUS_ENUM.ERROR);
                     addDurationAndToolTip(start);
-                    log.error("error occurred running job " + context.getJobDetail().getKey() + " with trigger " + context.getTrigger().getKey(), e);
+
                     if (e instanceof JobExecutionException) {
                         throw (JobExecutionException) e;
                     }
@@ -142,7 +145,11 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
                 addDurationAndToolTip(start);
             } finally {
                 org.quartz.Trigger currentTrigger = context.getTrigger();
-                setInterrupting(false);
+                try {
+                    setInterrupting(false);
+                } catch (UnableToInterruptJobException e) {
+                    throw new JobExecutionException(e);
+                }
                 JobDataMap jobData = currentTrigger.getJobDataMap();
                 if (jobData.containsKey("oldTrigger")) {
                     try {
@@ -178,8 +185,11 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
             return this.duration;
         }
 
-        public void setInterrupting(boolean interrupting) {
+        public void setInterrupting(boolean interrupting) throws UnableToInterruptJobException {
             this.interrupting = interrupting;
+            if(interrupting) {
+                job.interrupt();
+            }
         }
 
         public Boolean getInterrupting() {
@@ -289,6 +299,14 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
 
         public void setManualJob(boolean manualJob) {
             this.manualJob = manualJob;
+        }
+
+        public QuartzService getQuartzService() {
+            return quartzService;
+        }
+
+        public void setQuartzService(QuartzService quartzService) {
+            this.quartzService = quartzService;
         }
 
         @Override
