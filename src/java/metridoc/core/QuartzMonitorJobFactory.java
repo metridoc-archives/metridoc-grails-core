@@ -7,6 +7,7 @@ import groovy.util.ConfigObject;
 import org.hibernate.SessionFactory;
 import org.quartz.*;
 import org.quartz.simpl.PropertySettingJobFactory;
+import org.quartz.spi.OperableTrigger;
 import org.quartz.spi.TriggerFiredBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,18 +32,21 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
 
     /**
      * creates a job based on the passed {@link TriggerFiredBundle}.
-     * @param bundle the bundle to base the job off of
+     *
+     * @param bundle    the bundle to base the job off of
      * @param scheduler the quartz scheduler
      * @return the job
      * @throws SchedulerException
      */
     @Override
     public org.quartz.Job newJob(TriggerFiredBundle bundle, Scheduler scheduler) throws SchedulerException {
-        String triggerName = bundle.getTrigger().getKey().getName();
+        OperableTrigger trigger = bundle.getTrigger();
+        String triggerName = trigger.getKey().getName();
         JobDataMap jobDataMap = bundle.getJobDetail().getJobDataMap();
+        JobDataMap triggerJobDataMap = trigger.getJobDataMap();
         QuartzService quartzService = applicationContext.getBean("quartzService", QuartzService.class);
         ConfigObject config = quartzService.getConfigByTriggerName(triggerName);
-        jobDataMap.put("config", config);
+        triggerJobDataMap.put("config", config);
         String grailsJobName = (String) jobDataMap.get(GrailsArtefactJobDetailFactoryBean.JOB_NAME_PARAMETER);
         org.quartz.Job job;
         if (grailsJobName != null) {
@@ -74,7 +78,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
             displayJob.setQuartzService(quartzService);
             displayJob.setSessionFactory(sessionFactory);
             displayJob.setJob((GrailsArtefactJob) job);
-            displayJob.setJobKey(bundle.getTrigger().getJobKey());
+            displayJob.setJobKey(trigger.getJobKey());
             job = displayJob;
             jobRuns.put(triggerName, displayJob);
         }
@@ -136,6 +140,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
                     setStatus(STATUS_ENUM.ERROR);
                     addDurationAndToolTip(start);
 
+
                     if (e instanceof JobExecutionException) {
                         throw (JobExecutionException) e;
                     }
@@ -187,7 +192,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
 
         public void setInterrupting(boolean interrupting) throws UnableToInterruptJobException {
             this.interrupting = interrupting;
-            if(interrupting) {
+            if (interrupting) {
                 job.interrupt();
             }
         }
@@ -201,7 +206,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
         }
 
         public String getStatus() {
-            if(this.status != null) {
+            if (this.status != null) {
                 return this.status.toString().toLowerCase();
             }
 

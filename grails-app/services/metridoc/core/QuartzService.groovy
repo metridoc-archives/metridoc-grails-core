@@ -126,6 +126,18 @@ class QuartzService {
                 .endAt(end).withIdentity(trigger.key).withSchedule(schedule).usingJobData(dataMap).build()
     }
 
+    /**
+     * gets a {@link JobConfig} if it exists, otherwise returns a new one with the trigger anme
+     * @param triggerName
+     * @return the job config associated with the trigger name
+     */
+    JobConfig getJobConfigByTrigger(String triggerName) {
+        def jobConfig = JobConfig.findByTriggerName(triggerName)
+        if (jobConfig) return jobConfig
+
+        return new JobConfig(triggerName: triggerName)
+    }
+
     org.quartz.Trigger getTriggerNowTrigger(org.quartz.Trigger trigger) {
         getTriggerNowTrigger(trigger, new JobDataMap())
     }

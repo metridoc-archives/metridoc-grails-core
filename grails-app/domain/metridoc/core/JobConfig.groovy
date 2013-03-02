@@ -43,22 +43,33 @@ class JobConfig {
                 nullable: true,
                 maxSize: Integer.MAX_VALUE,
                 validator: {
-                    if(it) {
+                    if (it) {
                         try {
                             new URL(it)
                             return true
                         } catch (MalformedURLException e) {
                         }
-                        try {
-                            new ConfigSlurper().parse(it)
-                            return true
-                        } catch (Exception e) {
+                        def exception = getConfigException(it)
+                        if (exception) {
                             return "invalid.config"
                         }
+                        return true
                     }
 
                     return true
                 }
         )
+    }
+
+    static Throwable getConfigException(String config) {
+        try {
+            new ConfigSlurper().parse(config)
+            return null
+        } catch (Throwable e) {
+            e.stackTrace.each {
+
+            }
+            return e
+        }
     }
 }

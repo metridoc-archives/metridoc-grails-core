@@ -17,6 +17,11 @@
     float: right;
 }
 
+div.alert pre {
+    overflow: scroll;
+    height: 5em;
+}
+
 .centeredRadioCell, .centeredTableHeader, .centeredContent, .centeredDiv {
     text-align: center;
 }
@@ -36,6 +41,7 @@ h1, h2, h3, h4, h5, h6 {
 .ui-widget {
     font-size: 1em;
 }
+
 /* BASE LAYOUT */
 
 html {
@@ -46,7 +52,7 @@ html {
 
     background-repeat: no-repeat;
     height: 100%;
-    change the box model to exclude the padding from the calculation of 100% height (IE8+)
+    /*change the box model to exclude the padding from the calculation of 100% height (IE8+)*/
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -129,7 +135,7 @@ a:link, a:visited {
 }
 
 a:hover, a:active {
-    outline: none;  prevents outline in webkit on active links but retains it for tab focus
+    outline: none; /*prevents outline in webkit on active links but retains it for tab focus*/
     text-decoration: none;
 }
 
@@ -510,9 +516,10 @@ p {
     padding-top: 0.25em;
 
 }
+
 #dialog textarea {
     font-size: 0.8em;
-    width:550px;
+    width: 550px;
 }
 
 .ui-dialog-titlebar {
@@ -559,9 +566,8 @@ hr {
     border-bottom: 1px solid #ffffff;
 }
 
-
 ul {
-    margin:10px;
+    margin: 10px;
 }
 
 table form {
@@ -588,13 +594,12 @@ table form {
     background-image: -webkit-linear-gradient(top, #25652a, #235728);
     background-image: -o-linear-gradient(top, #25652a, #235728);
     background-image: linear-gradient(to bottom, #25652a, #235728);
-    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ff25652a', endColorstr='#ff235728', GradientType=0);
+    filter: progid:dximagetransform.microsoft.gradient(startColorstr = '#ff25652a', endColorstr = '#ff235728', GradientType = 0);
 }
 
 .controls {
     padding-bottom: 5px;
 }
-
 
 .nav > li > a:hover {
     background-color: #ffffff;

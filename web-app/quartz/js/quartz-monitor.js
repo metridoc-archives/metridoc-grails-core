@@ -1,3 +1,5 @@
+var FIVE_MINUTES = 1000 * 60 * 5;
+
 if (jQuery) {
     (function ($, window) {
         var
@@ -88,27 +90,27 @@ if (jQuery) {
     var today = new Date();
     var time = today.getTime();
 
-    $("#quartz-jobs tr").each(function(index){
-        if(index != 0) {
+    $("#quartz-jobs tr").each(function (index) {
+        if (index != 0) {
             var row = $(this).find("td");
             var countDown = row[4];
             var nextRun = $(countDown).attr("data-next-run");
             if (nextRun) {
                 var delay = nextRun - time;
-                var nextRefresh = Math.max(0, delay);
+                var nextRefresh = Math.min(Math.max(0, delay), FIVE_MINUTES);
                 reloadWindow(nextRefresh);
             }
 
             var status = row[2];
             var running = $(status).hasClass("running");
-            if(running) {
+            if (running) {
                 var duration = $(countDown).attr("data-last-runtime");
-                var usedDuration = 1000 * 60 * 5; //five minutes
-                if(duration) {
+                var usedDuration = FIVE_MINUTES;
+                if (duration > 0) {
                     /*
                      * TODO: we need to fine tune this a bit.  We do have enough information to
                      */
-                    usedDuration = duration / 2;
+                    usedDuration = Math.min(duration / 2, FIVE_MINUTES);
                 }
                 reloadWindow(usedDuration);
             }
@@ -121,7 +123,7 @@ function reloadWindow(delay) {
     var fifteenSeconds = 1000 * 15;
     var usedDelay = Math.max(delay, fifteenSeconds);
     console.log("Window refresh will occur in " + usedDelay + " milliseconds");
-    setTimeout(function(){
+    setTimeout(function () {
         location.reload()
     }, usedDelay);
 }

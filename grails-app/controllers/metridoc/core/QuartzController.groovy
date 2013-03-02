@@ -3,6 +3,7 @@ package metridoc.core
 import grails.converters.JSON
 import grails.web.RequestParameter
 import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang.exception.ExceptionUtils
 import org.apache.commons.lang.text.StrBuilder
 import org.quartz.*
 import org.quartz.impl.matchers.GroupMatcher
@@ -12,6 +13,7 @@ import org.quartz.impl.matchers.GroupMatcher
  */
 class QuartzController {
 
+    private static final String LIST = "list"
     def commonService
     static final String JOB_FAILURE_SCOPE = "jobFailure"
 
@@ -50,7 +52,7 @@ class QuartzController {
     }
 
     def index() {
-        redirect(action: "list", params: params)
+        redirect(action: LIST, params: params)
     }
 
     //TODO: reduce the size of this method, this is getting out of hand
@@ -116,17 +118,17 @@ class QuartzController {
     def start() {
         def trigger = triggers.get(params.jobName)
         quartzScheduler.scheduleJob(trigger)
-        redirect(action: "list")
+        redirect(action: LIST)
     }
 
     def pause() {
         quartzScheduler.pauseJob(jobKey(params.jobName, params.jobGroup))
-        redirect(action: "list")
+        redirect(action: LIST)
     }
 
     def resume() {
         quartzScheduler.resumeJob(jobKey(params.jobName, params.jobGroup))
-        redirect(action: "list")
+        redirect(action: LIST)
     }
 
     def runNow(@RequestParameter("id") String triggerName) {
@@ -140,7 +142,7 @@ class QuartzController {
         quartzService.triggerJobFromTrigger(trigger, dataMap)
 
         Thread.sleep(1000) //sleep for 1 second to allow for the job to actually start
-        redirect(action: "list")
+        redirect(action: LIST)
     }
 
     def status() {
@@ -159,19 +161,19 @@ class QuartzController {
 
     def startScheduler() {
         quartzScheduler.start()
-        redirect(action: "list")
+        redirect(action: LIST)
     }
 
     def stopScheduler() {
         quartzScheduler.standby()
-        redirect(action: "list")
+        redirect(action: LIST)
     }
 
     def stopJob(@RequestParameter("id") String jobName) {
         def displayJob = QuartzMonitorJobFactory.jobRuns.get(jobName)
         if (displayJob == null) {
             flash.alert = "job $jobName does not exist"
-            redirect(action: "list")
+            redirect(action: LIST)
             return
         }
 
@@ -181,10 +183,10 @@ class QuartzController {
             flash.alert = e.message
         }
         displayJob.interrupting = true
-        redirect(action: "list")
+        redirect(action: LIST)
     }
 
-    def show(@RequestParameter("id") String triggerName) {
+    def show(@RequestParameter("id") String triggerName, String errorConfig) {
         org.quartz.Trigger trigger = searchForTrigger(triggerName)
         def jobSchedule = JobSchedule.findByTriggerName(triggerName)
         def currentSchedule = jobSchedule ? jobSchedule.triggerType.toString() : "DEFAULT"
@@ -193,12 +195,20 @@ class QuartzController {
             currentSchedule = metridoc.trigger.Trigger.NEVER
         }
         def triggerSchedules = quartzService.triggerSchedules
-        if("DEFAULT" != currentSchedule) {
+        if ("DEFAULT" != currentSchedule) {
             triggerSchedules.remove("DEFAULT")
         }
-        if(!trigger) return
+
+        def config = errorConfig
+        if (!errorConfig) {
+            //if we dont have the config then get it from teh database
+            def jobConfig = JobConfig.findByTriggerName(triggerName)
+            config = jobConfig ? jobConfig.config : null
+        }
+        if (!trigger) return
 
         [
+                config: config,
                 trigger: trigger,
                 currentSchedule: currentSchedule,
                 triggerName: trigger.key.name,
@@ -208,18 +218,40 @@ class QuartzController {
 
     }
 
-    def updateSchedule(@RequestParameter("id") String triggerName, String availableSchedules) {
+    def updateSchedule(@RequestParameter("id") String triggerName, String availableSchedules, String config) {
         org.quartz.Trigger trigger = searchForTrigger(triggerName)
-        if(!trigger) return
+        if (!trigger) return
+
+        JobConfig jobConfig
+        if (config) {
+            jobConfig = quartzService.getJobConfigByTrigger(triggerName)
+            jobConfig.config = config
+            jobConfig.save()
+        }
+
+        if (jobConfig && jobConfig.errors.errorCount) {
+            if (jobConfig.errors.getFieldError("config")) {
+                Throwable exception = JobConfig.getConfigException(config)
+                flash.alerts << "<pre>${ExceptionUtils.getStackTrace(exception)}</pre>"
+                log.error "Tried to store a bad configuration", exception
+            } else {
+                flash.alerts << "Unknown exception trying to save configuration"
+                log.error "Could not store job config: ${jobConfig.errors}"
+            }
+
+            def params = [errorConfig: config, id: triggerName]
+            redirect(action: "show", params: params)
+            return
+        }
 
         quartzService.rescheduleJob(triggerName, availableSchedules)
-        flash.messages << "rescheduled job $triggerName" as String
-        chain(action: "list")
+        flash.messages << "made updates to job $triggerName" as String
+        chain(action: LIST)
     }
 
     private static QuartzMonitorJobFactory.QuartzDisplayJob createJob(String jobGroup, String jobName, List<QuartzMonitorJobFactory.QuartzDisplayJob> jobsList, triggerName = "") {
         def displayJob = QuartzMonitorJobFactory.jobRuns.get(triggerName)
-        if(!displayJob) {
+        if (!displayJob) {
             displayJob = new QuartzMonitorJobFactory.QuartzDisplayJob()
             displayJob.setJobKey(new JobKey(jobName, jobGroup))
         }
@@ -234,7 +266,7 @@ class QuartzController {
 
     private Trigger searchForTrigger(String triggerName) {
         if (!triggerName) {
-            flash.alerts << "Could not run job, triggerName was not specified"
+            flash.alerts << "Could not perform job operation, triggerName was not specified"
             chain(action: "index")
             return null
         }

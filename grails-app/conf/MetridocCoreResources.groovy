@@ -16,7 +16,7 @@ modules = {
 
     restartRunner {
         resource id: 'js',
-        url: [dir: "restart", file: "restart.js", plugin: "metridocCore"]
+                url: [dir: "restart", file: "restart.js", plugin: "metridocCore"]
     }
 
     codeMirror {
@@ -26,6 +26,8 @@ modules = {
                 url: [dir: "components/codemirror/lib", file: "codemirror.css", plugin: "metridocCore"]
         resource id: 'addOnMatchBrackets',
                 url: [dir: "components/codemirror/addon/edit", file: "matchbrackets.js", plugin: "metridocCore"]
+        resource id: 'codeWindowCss',
+                url: [dir: "codeMirror", file: "codeMirror.css", plugin: "metridocCore"]
     }
 
     codeMirrorShell {
@@ -34,14 +36,20 @@ modules = {
                 url: [dir: "components/codemirror/mode/shell", file: "shell.js", plugin: "metridocCore"]
         resource id: 'activateShell',
                 url: [dir: "shell", file: "shell.js", plugin: "metridocCore"]
-        resource id: 'styleShell',
-                url: [dir: "shell", file: "shell.css", plugin: "metridocCore"]
     }
 
     codeMirrorGroovy {
         dependsOn 'codeMirror'
         resource id: 'groovyMode',
                 url: [dir: "components/codemirror/mode/groovy", file: "groovy.js", plugin: "metridocCore"]
+        resource id: 'activateShell',
+                url: [dir: "groovy", file: "groovy.js", plugin: "metridocCore"]
+    }
+
+    quartzShow {
+        dependsOn 'codeMirrorGroovy'
+        resource id: 'showJs',
+                url: [dir: "quartz/js", file: "show.js", plugin: "metridocCore"]
     }
 
     manageConfig {
