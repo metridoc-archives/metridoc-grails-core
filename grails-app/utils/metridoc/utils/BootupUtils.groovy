@@ -7,9 +7,11 @@ import org.apache.commons.lang.StringUtils
  *
  * Basic static class to handle some default parameters in the shiro plugin
  */
-class ShiroBootupUtils {
+class BootupUtils {
 
-    static addDefaultParameters(ConfigObject configObject) {
+    private static final String DEFAULT_LAYOUT = "main"
+
+    static addDefaultShiroConfig(ConfigObject configObject) {
         //if not set by the user in Config.groovy or elsewhere
         def filter = configObject.filter
         if (!filter.filterChainDefinitions) {
@@ -17,9 +19,8 @@ class ShiroBootupUtils {
         }
         def currentFilterChainDefinitions = filter.filterChainDefinitions.trim()
 
-        filter.filterChainDefinitions = """
-        ${currentFilterChainDefinitions}
-        /admin/** = user,roles[ROLE_ADMIN]
-        /rest/** = authcBasic, roles[ROLE_ADMIN]"""
+        filter.filterChainDefinitions = """${currentFilterChainDefinitions}
+/admin/** = user,roles[ROLE_ADMIN]
+/rest/** = authcBasic, roles[ROLE_ADMIN]"""
     }
 }

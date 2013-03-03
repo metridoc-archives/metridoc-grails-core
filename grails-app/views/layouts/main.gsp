@@ -34,6 +34,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <g:javascript library="jquery"/>
     <r:require module="application"/>
+    <r:require module="${controllerName}" strict="false"/>
     <g:layoutHead/>
     <r:layoutResources/>
 </head>

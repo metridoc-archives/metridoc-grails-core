@@ -28,13 +28,13 @@ class ReportTagLib {
         def layout = attrs.layout ? attrs.layout : layoutInConfig
         def model = [layout: layout, body: body]
 
+        model.hasModule = false
         if (attrs.module) {
             model.module = attrs.module
-        } else {
-            model.module = controllerName
+            model.hasModule = true
         }
 
-        model.hasModule = true
+        //make this work in legacy code
         if ("none" == attrs.module) {
             model.hasModule = false
         }

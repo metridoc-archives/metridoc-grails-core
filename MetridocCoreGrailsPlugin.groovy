@@ -5,7 +5,8 @@ import grails.plugin.quartz2.TriggersBuilder
 import metridoc.core.MetridocJob
 import metridoc.core.QuartzMonitorJobFactory
 import metridoc.core.ScriptJobArtefactHandler
-import metridoc.utils.ShiroBootupUtils
+import metridoc.utils.BootupUtils
+import metridoc.utils.BootupUtils
 import org.apache.shiro.mgt.RememberMeManager
 import org.apache.shiro.web.mgt.CookieRememberMeManager
 
@@ -34,6 +35,7 @@ class MetridocCoreGrailsPlugin {
     def dependsOn = [quartz2: "0.2.3 > *"]
     // the other plugins this plugin depends on
     def loadAfter = ["rest-client-builder", "release", "hibernate", "quartz2", "resources"]
+    def loadBefore = ["gsp"]
 
     def artefacts = [new ScriptJobArtefactHandler()]
 
@@ -89,7 +91,7 @@ class MetridocCoreGrailsPlugin {
         }
         //have to do it in here instead of using the plugin config plugin since the shiro plugin does not use the
         //plugin config plugin
-        ShiroBootupUtils.addDefaultParameters(shiroConfig)
+        BootupUtils.addDefaultShiroConfig(shiroConfig)
 
         quartzJobFactory(QuartzMonitorJobFactory) {
             sessionFactory = ref("sessionFactory")

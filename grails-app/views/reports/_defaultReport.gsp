@@ -1,12 +1,30 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
     <head>
-        <g:render template="/reports/defaultHead" plugin="metridoc-core"/>
+        <g:if test="${params.layout}">
+            <meta name="layout" content="${layout}"/>
+        </g:if>
+        <g:else>
+            <meta name="layout" content="main"/>
+        </g:else>
+
+        <g:if test="${hasModule}">
+            <r:require module="${module}" strict="false"/>
+        </g:if>
     </head>
 
     <body>
         <div class="md-application-content">
-            <g:render template="/reports/defaultDescription" plugin="metridoc-core"/>
+            <g:if test="${descriptionExists}">
+                <div class="description">
+                    <g:if test="${pluginName}">
+                        <g:render template="${descriptionTemplate}" plugin="${pluginName}"/>
+                    </g:if>
+                    <g:else>
+                        <g:render template="${descriptionTemplate}"/>
+                    </g:else>
+                </div>
+            </g:if>
             ${body()}
         </div>
     </body>

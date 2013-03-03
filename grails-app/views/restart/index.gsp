@@ -7,6 +7,7 @@
 --%>
 
 <md:report module="codeMirrorShell">
+    <g:render template="/user/tabs" plugin="metridocCore"/>
     <g:form action="run" class="form-horizontal">
         <div class="control-group">
 
