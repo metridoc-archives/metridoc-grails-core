@@ -1,6 +1,7 @@
 package metridoc
 
 import org.apache.log4j.Level
+import org.springframework.util.Assert
 
 class ReportTagLib {
     static namespace = 'md'
@@ -51,9 +52,16 @@ class ReportTagLib {
     }
 
     def outputLogFile = { attrs, body ->
-        String path = attrs.filePath
-        log.debug "outputting logs from ${path}"
-        def file = new File(path)
+        def file
+        if (attrs.filePath) {
+            String path = attrs.filePath
+            log.debug "outputting logs from ${path}"
+            file = new File(path)
+        } else {
+            def fileBody = attrs.fileBody
+            Assert.notNull(fileBody)
+            file = fileBody
+        }
         logService.renderLog(out, file)
     }
 

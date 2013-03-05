@@ -26,7 +26,7 @@ import org.apache.shiro.web.mgt.CookieRememberMeManager
 */
 class MetridocCoreGrailsPlugin {
 
-    static DEFAULT_MAX_REMEMER_ME = 1000 * 60 * 60 //one hour
+    static DEFAULT_MAX_REMEMER_ME = 60 * 60 //one hour
     // the plugin version
     def version = "0.53-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
@@ -35,7 +35,6 @@ class MetridocCoreGrailsPlugin {
     def dependsOn = [quartz2: "0.2.3 > *"]
     // the other plugins this plugin depends on
     def loadAfter = ["rest-client-builder", "release", "hibernate", "quartz2", "resources"]
-    def loadBefore = ["gsp"]
 
     def artefacts = [new ScriptJobArtefactHandler()]
 
@@ -68,25 +67,22 @@ class MetridocCoreGrailsPlugin {
 
     def scm = [url: "https:metridoc.googlecode.com/svn/trunk/metridoc-core"]
 
-    def doWithWebDescriptor = { xml ->
-        // Implement additions to web.xml (optional), this event occurs before
-    }
-
-
-
     def doWithSpring = {
 
 
         def shiroConfig = application.config.security.shiro
-
-        def disableQuartz = Boolean.valueOf(System.getProperty("metridoc.quartz.disabled", "false"))
-        if (disableQuartz) {
-            def quartzProps = loadQuartzConfig(application.mergedConfig)
-            quartzScheduler(QuartzFactoryBean) {
-                quartzProperties = quartzProps
-                grailsApplication = ref('grailsApplication')
-                autoStartup = false
-                globalJobListeners = [ref('jobErrorLoggerListener')]//,ref('persistenceContextJobListener')]
+        def mcfg = application.mergedConfig
+        def quartzProps = loadQuartzConfig(application.mergedConfig)
+        quartzScheduler(QuartzFactoryBean) {
+            jobFactory = quartzJobFactory
+            quartzProperties = quartzProps
+            grailsApplication = ref('grailsApplication')
+            autoStartup = false
+            globalJobListeners = [ref('jobErrorLoggerListener')]//,ref('persistenceContextJobListener')]
+            boolean waitForJobsToCompleteOnShutdown = true
+            if (mcfg.grails.plugin.quartz2.jdbcStore) {
+                dataSource = ref('dataSource')
+                transactionManager = ref('transactionManager')
             }
         }
         //have to do it in here instead of using the plugin config plugin since the shiro plugin does not use the
@@ -97,8 +93,6 @@ class MetridocCoreGrailsPlugin {
             sessionFactory = ref("sessionFactory")
         }
 
-        //overrides the authcBasic provided by shiro so we can use rememberMe
-//        authcBasic(HttpBasicShiroFilter)
     }
 
     def doWithDynamicMethods = { ctx ->
@@ -107,40 +101,10 @@ class MetridocCoreGrailsPlugin {
 
     //adds the manual trigger to all jobs that do not have triggers
     def doWithApplicationContext = { applicationContext ->
-        def pluginManager = applicationContext.pluginManager
-        def quartzPlugin = pluginManager.getGrailsPluginForClassName("Quartz2GrailsPlugin").instance
-        application.jobClasses.each { GrailsJobClass jobClass ->
-            if (!jobClass.triggers) {
-                Closure scheduleJob = quartzPlugin.scheduleJob
-                scheduleJob.delegate = quartzPlugin
-                TriggersBuilder builder = new TriggersBuilder(jobClass.fullName)
-
-                builder.build(MetridocJob.MANUAL_RUN_TRIGGER)
-                def triggers = (Map) builder.getTriggers()
-                jobClass.triggers.putAll(triggers)
-                scheduleJob.call(jobClass, applicationContext, applicationContext.quartzScheduler)
-            }
-        }
-
         RememberMeManager manager = applicationContext.getBean("shiroRememberMeManager")
-        if(manager instanceof CookieRememberMeManager) {
+        if (manager instanceof CookieRememberMeManager) {
             manager.cookie.setMaxAge(DEFAULT_MAX_REMEMER_ME)
         }
-    }
-
-    def onChange = { event ->
-    }
-
-    def configureWorkflowBeans = { workflowClass ->
-    }
-
-    def onConfigChange = { event ->
-        // Implement code that is executed when the project configuration changes.
-        // The event is the same as for 'onChange'.
-    }
-
-    def onShutdown = { event ->
-        // Implement code that is executed when the application shuts down (optional)
     }
 
     Properties loadQuartzConfig(config) {

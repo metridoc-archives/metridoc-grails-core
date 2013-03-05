@@ -2,11 +2,8 @@ package metridoc.core
 
 import grails.converters.JSON
 import grails.web.RequestParameter
-import org.apache.commons.lang.StringUtils
 import org.apache.commons.lang.exception.ExceptionUtils
-import org.apache.commons.lang.text.StrBuilder
 import org.quartz.*
-import org.quartz.impl.matchers.GroupMatcher
 
 /**
  * Manages the installed jobs in metridoc
@@ -14,7 +11,6 @@ import org.quartz.impl.matchers.GroupMatcher
 class QuartzController {
 
     private static final String LIST = "list"
-    def commonService
     static final String JOB_FAILURE_SCOPE = "jobFailure"
 
     /**
@@ -55,64 +51,8 @@ class QuartzController {
         redirect(action: LIST, params: params)
     }
 
-    //TODO: reduce the size of this method, this is getting out of hand
     def list() {
-        def jobsList = []
-        def listJobGroups = quartzScheduler.getJobGroupNames()
-
-        listJobGroups?.each { jobGroup ->
-            quartzScheduler.getJobKeys(GroupMatcher.groupEquals(jobGroup))?.each { jobKey ->
-                def triggers = quartzScheduler.getTriggersOfJob(jobKey)
-                if (triggers) {
-                    triggers.each { org.quartz.Trigger trigger ->
-                        def currentJob = createJob(jobGroup, jobKey.name, jobsList, trigger.key.name)
-                        currentJob.trigger = trigger
-                        currentJob.manualJob = QuartzService.isManual(trigger)
-                        currentJob.triggerStatus = quartzScheduler.getTriggerState(trigger.key)
-                    }
-                } else {
-                    createJob(jobGroup, jobKey.name, jobsList)
-                }
-            }
-        }
-
-        def notificationEmails = new StrBuilder()
-        NotificationEmails.list().collect { it.email }.each {
-            notificationEmails.appendln(it)
-        }
-        def badEmailMessage = null
-        if (params.badEmails) {
-            def badEmailMessageBuilder = new StrBuilder("The following emails are not valid: ")
-            if (params.badEmails instanceof String) {
-                badEmailMessageBuilder.append(params.badEmails)
-                badEmailMessage = badEmailMessageBuilder.toString()
-            } else {
-                params.badEmails.each {
-                    badEmailMessageBuilder.append(it)
-                    badEmailMessageBuilder.append(", ")
-                }
-                badEmailMessage = badEmailMessageBuilder.toString()
-                badEmailMessage = StringUtils.chop(badEmailMessage)
-                badEmailMessage = StringUtils.chop(badEmailMessage)
-            }
-        }
-
-        if (badEmailMessage) {
-            flash.alerts << badEmailMessage
-        }
-
-        if (NotificationEmails.count() == 0) {
-            flash.alerts << "No emails have been set, no one will be notified of job failures"
-        }
-        if (!commonService.emailIsConfigured()) {
-            flash.alerts << "Email has not been set up properly, no notifications will be sent on job failures"
-        }
-        return [
-                jobs: jobsList,
-                now: new Date(),
-                scheduler: quartzScheduler,
-                notificationEmails: notificationEmails,
-        ]
+        quartzService.getJobListModel(params.badEmails, flash.alerts)
     }
 
     def start() {
@@ -159,6 +99,10 @@ class QuartzController {
         }
     }
 
+    def jobTableOnly(){
+        quartzService.getJobListModel()
+    }
+
     def startScheduler() {
         quartzScheduler.start()
         redirect(action: LIST)
@@ -178,18 +122,21 @@ class QuartzController {
         }
 
         try {
-            displayJob.interrupting = true;
+            if (displayJob.canInterrupt()) {
+                displayJob.interrupting = true;
+            } else {
+                flash.infos << "Could not interrupt job $jobName, it probably finished before the stop command was issued"
+            }
         } catch (UnableToInterruptJobException e) {
             flash.alert = e.message
         }
-        displayJob.interrupting = true
         redirect(action: LIST)
     }
 
     def show(@RequestParameter("id") String triggerName, String errorConfig) {
         org.quartz.Trigger trigger = searchForTrigger(triggerName)
-        def jobSchedule = JobSchedule.findByTriggerName(triggerName)
-        def currentSchedule = jobSchedule ? jobSchedule.triggerType.toString() : "DEFAULT"
+        def jobSchedule = JobDetails.findByJobName(triggerName)
+        def currentSchedule = jobSchedule ? jobSchedule.jobTrigger.toString() : "DEFAULT"
         boolean manual = QuartzService.isManual(trigger)
         if (manual) {
             currentSchedule = metridoc.trigger.Trigger.NEVER
@@ -202,12 +149,17 @@ class QuartzController {
         def config = errorConfig
         if (!errorConfig) {
             //if we dont have the config then get it from teh database
-            def jobConfig = JobConfig.findByTriggerName(triggerName)
+            def jobConfig = JobDetails.findByJobName(triggerName)
             config = jobConfig ? jobConfig.config : null
         }
         if (!trigger) return
-
-        [
+        def jobLog = null
+        def mostRecentRun = QuartzService.getMostRecentRun(triggerName)
+        if (mostRecentRun) {
+            jobLog = new ByteArrayInputStream(mostRecentRun.jobLog)
+        }
+        return [
+                jobLog: jobLog,
                 config: config,
                 trigger: trigger,
                 currentSchedule: currentSchedule,
@@ -222,21 +174,21 @@ class QuartzController {
         org.quartz.Trigger trigger = searchForTrigger(triggerName)
         if (!trigger) return
 
-        JobConfig jobConfig
+        JobDetails jobDetails
         if (config) {
-            jobConfig = quartzService.getJobConfigByTrigger(triggerName)
-            jobConfig.config = config
-            jobConfig.save()
+            jobDetails = quartzService.getJobDetailsByTrigger(triggerName)
+            jobDetails.config = config
+            jobDetails.save()
         }
 
-        if (jobConfig && jobConfig.errors.errorCount) {
-            if (jobConfig.errors.getFieldError("config")) {
-                Throwable exception = JobConfig.getConfigException(config)
+        if (jobDetails && jobDetails.errors.errorCount) {
+            if (jobDetails.errors.getFieldError("config")) {
+                Throwable exception = JobDetails.getConfigException(config)
                 flash.alerts << "<pre>${ExceptionUtils.getStackTrace(exception)}</pre>"
                 log.error "Tried to store a bad configuration", exception
             } else {
                 flash.alerts << "Unknown exception trying to save configuration"
-                log.error "Could not store job config: ${jobConfig.errors}"
+                log.error "Could not store job config: ${jobDetails.errors}"
             }
 
             def params = [errorConfig: config, id: triggerName]
@@ -247,17 +199,6 @@ class QuartzController {
         quartzService.rescheduleJob(triggerName, availableSchedules)
         flash.messages << "made updates to job $triggerName" as String
         chain(action: LIST)
-    }
-
-    private static QuartzMonitorJobFactory.QuartzDisplayJob createJob(String jobGroup, String jobName, List<QuartzMonitorJobFactory.QuartzDisplayJob> jobsList, triggerName = "") {
-        def displayJob = QuartzMonitorJobFactory.jobRuns.get(triggerName)
-        if (!displayJob) {
-            displayJob = new QuartzMonitorJobFactory.QuartzDisplayJob()
-            displayJob.setJobKey(new JobKey(jobName, jobGroup))
-        }
-
-        jobsList.add(displayJob)
-        return displayJob
     }
 
     private static jobKey(name, group) {

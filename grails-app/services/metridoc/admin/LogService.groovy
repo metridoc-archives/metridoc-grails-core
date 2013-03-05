@@ -1,7 +1,13 @@
 package metridoc.admin
 
+import org.apache.commons.lang.SystemUtils
 import org.apache.commons.lang.text.StrBuilder
+import org.springframework.util.Assert
+
 import java.util.regex.Pattern
+
+import static org.apache.commons.lang.SystemUtils.FILE_SEPARATOR
+import static org.apache.commons.lang.SystemUtils.LINE_SEPARATOR
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,12 +18,14 @@ import java.util.regex.Pattern
  */
 class LogService {
 
+    private static final String DATE_REGEX = /(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})/
     def grailsApplication
     public static final ONE_HOUR = 1000 * 60 * 60
     public static final SIX_HOURS = ONE_HOUR * 6
     public static final TWELVE_HOURS = SIX_HOURS * 2
     public static final ONE_DAY = TWELVE_HOURS * 2
     public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
+    def commonService
 
     enum LineType {
         INFO, ERROR, WARN
@@ -111,7 +119,7 @@ class LogService {
      * @return Time range of the line in argument
      */
     private static getDateClass(line, previousDate, now) {
-        def m = line =~ /(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})/
+        def m = line =~ DATE_REGEX
         def result = "all"
         if(m.lookingAt()) {
             def date = Date.parse(DATE_FORMAT, m.group(1)).getTime()
@@ -197,5 +205,31 @@ class LogService {
 
         return [line: result, previous:type]
 
+    }
+
+    void renderDefaultLogStartingAt(response, long start) {
+        def metridocHome = commonService.metridocHome
+        def defaultLog = new File("${metridocHome}${FILE_SEPARATOR}logs${FILE_SEPARATOR}metridoc.log")
+        log.debug "Rendering metridoc.log starting at ${new Date(start)}"
+        renderLogStartingAt(response, defaultLog, start)
+    }
+
+    static void renderLogStartingAt(response, file, long start) {
+        //when formatting the date in the log, we truncate the date to the nearest second, so take a second off of
+        //the start so we can avoid chopping off logs in the beginning
+        def normalizedStart = start - 1000 //one second
+        boolean startGrabbingData = false
+        file.eachLine {String line ->
+            if(!startGrabbingData) {
+                def m = line =~ DATE_REGEX
+                if(m.lookingAt()) {
+                    def lineDate = Date.parse(DATE_FORMAT, m.group(1)).getTime()
+                    startGrabbingData = lineDate >= normalizedStart
+                }
+            }
+            if(startGrabbingData) {
+                response << line + LINE_SEPARATOR
+            }
+        }
     }
 }

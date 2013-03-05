@@ -79,6 +79,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
             displayJob.setSessionFactory(sessionFactory);
             displayJob.setJob((GrailsArtefactJob) job);
             displayJob.setJobKey(trigger.getJobKey());
+            displayJob.setTrigger(trigger);
             job = displayJob;
             jobRuns.put(triggerName, displayJob);
         }
@@ -93,10 +94,11 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
      * Quartz Job implementation that invokes execute() on the GrailsTaskClassJob instance whilst recording the time
      */
     public static class QuartzDisplayJob implements org.quartz.Job, Cloneable {
+        static final Logger displayLogger = LoggerFactory.getLogger(QuartzDisplayJob.class);
         private QuartzService quartzService;
         private Long duration;
         private boolean interrupting;
-        private STATUS_ENUM status;
+        private JOB_STATUS status;
         private Date lastRun;
         private String error;
         private String tooltip;
@@ -104,7 +106,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
         private Trigger trigger;
         private boolean manualJob = false;
 
-        public enum STATUS_ENUM {RUNNING, COMPLETE, ERROR}
+        public enum JOB_STATUS {RUNNING, COMPLETE, ERROR, INTERRUPTING}
 
         GrailsArtefactJob job;
         private SessionFactory sessionFactory;
@@ -121,33 +123,44 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
 
         public void execute(final JobExecutionContext context) throws JobExecutionException {
             try {
-                Long lastDuration = getDuration();
+                Long lastDuration = null;
+                String jobName = trigger.getKey().getName();
+                lastDuration = quartzService.getLastDuration(jobName);
+                Date lastRunUsed = new Date();
                 String lastTooltip = getTooltip();
                 clearDetails();
                 setDuration(lastDuration);
                 setTooltip(lastTooltip);
-                setLastRun(new Date());
-                setStatus(STATUS_ENUM.RUNNING);
+                setLastRun(lastRunUsed);
+                setStatus(JOB_STATUS.RUNNING);
                 long start = System.currentTimeMillis();
                 String error;
                 try {
+                    displayLogger.info("starting job {} at {}", getTrigger().getKey().getName(), getLastRun());
                     job.execute(context);
                     sessionFactory.getCurrentSession().flush();
                 } catch (Throwable e) {
                     quartzService.mailJobError(e, context);
                     error = e.getMessage();
                     setError(error);
-                    setStatus(STATUS_ENUM.ERROR);
+                    setStatus(JOB_STATUS.ERROR);
                     addDurationAndToolTip(start);
-
+                    displayLogger.error("Exception occurred running job " + getTrigger().getKey().getName(), e);
 
                     if (e instanceof JobExecutionException) {
                         throw (JobExecutionException) e;
                     }
                     throw new JobExecutionException(e.getMessage(), e);
                 }
-                setStatus(STATUS_ENUM.COMPLETE);
+                setStatus(JOB_STATUS.COMPLETE);
                 addDurationAndToolTip(start);
+            } catch (Exception e) {
+                //this is really annoying that we have to log this twice (aka quartz will log this too)!, but for the logging per job to work properly this must happen
+
+                if (e instanceof JobExecutionException) {
+                    throw (JobExecutionException) e;
+                }
+                throw new JobExecutionException(e.getMessage(), e);
             } finally {
                 org.quartz.Trigger currentTrigger = context.getTrigger();
                 try {
@@ -168,14 +181,22 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
                         log.error("Could not reschedule trigger " + currentTrigger.getKey().getName(), e);
                     }
                 }
+                try {
+                    quartzService.saveRun(this);
+                } catch (Exception e) {
+                    displayLogger.error("Could not save run", e);
+                }
             }
 
         }
 
         public void addDurationAndToolTip(long start) {
             long duration = System.currentTimeMillis() - start;
-            String error = getError();
             setDuration(duration);
+            addToolTip();
+        }
+
+        public void addToolTip() {
             String jobRunTime = "Most recent job ran in " + duration + "ms";
             String jobException = error != null ? ", with error " + error : "";
             String tooltip = jobRunTime + jobException;
@@ -190,6 +211,10 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
             return this.duration;
         }
 
+        public boolean canInterrupt() {
+            return status == JOB_STATUS.RUNNING;
+        }
+
         public void setInterrupting(boolean interrupting) throws UnableToInterruptJobException {
             this.interrupting = interrupting;
             if (interrupting) {
@@ -201,7 +226,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
             return this.interrupting;
         }
 
-        public void setStatus(STATUS_ENUM status) {
+        public void setStatus(JOB_STATUS status) {
             this.status = status;
         }
 

@@ -40,4 +40,9 @@
 
         </div>
     </g:form>
+
+    <g:if test="${jobLog}">
+        <md:header>Job Log</md:header>
+        <md:outputLogFile fileBody="${jobLog}"/>
+    </g:if>
 </md:report>

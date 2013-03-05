@@ -1,92 +1,38 @@
 var FIVE_MINUTES = 1000 * 60 * 5;
 
-if (jQuery) {
-    (function ($, window) {
-        var
-            xOffset = 10,
-            yOffset = 20,
-            init = function () {
-                $('.quartz-to-hide').hide();
-                $('.quartz-tooltip')
-                    .hover(function (e) {
-                        var tooltipData = $(this).data('tooltip');
-                        if (tooltipData === "") return;
-                        displayToolTip(tooltipData, (e.pageX + yOffset), (e.pageY - xOffset));
-                    },
-                    function () {
-                        $("#quartz-tooltip").remove();
-                    })
-                    .mousemove(function (e) {
-                        $("#quartz-tooltip")
-                            .css("top", (e.pageY - xOffset) + "px")
-                            .css("left", (e.pageX + yOffset) + "px");
-                    });
-                $('.quartz-countdown').each(function () {
-                    var item = $(this),
-                        remaining = item.data('next-run');
-                    if (remaining === "") return;
-                    countdown(item, remaining);
-                });
-                displayClock($('#clock'));
-            },
+addCountDownAndJobDetails();
+addWindowRefresh();
+addToolTips()
+addClock()
 
-            displayClock = function (item) {
-                if (item.clock !== undefined) {
-                    item.clock({"timestamp": new Date(item.data('time'))});
-                }
-            },
+function addClock() {
+    var clock = $('#clock');
+    clock.clock({"timestamp": new Date(clock.data('time'))});
+}
 
-            reloadPage = function () {
-                var original = $(this).css('color');
-                var delay = 200;
-                $(this).animate({
-                    backgroundColor: '#f00',
-                    color: '#fff'
-                }, delay, function () {
-                    $(this).animate({
-                        backgroundColor: 'transparent',
-                        color: original
-                    }, delay, function () {
-                        $(this).animate({
-                            backgroundColor: '#f00',
-                            color: '#fff'
-                        }, delay, function () {
-                            $(this).animate({
-                                backgroundColor: 'transparent',
-                                color: original
-                            }, delay, function () {
-                                location.reload(true);
-                            });
-                        });
-                    });
-                });
-            },
+function addToolTips() {
+    $('#new-job').tooltip()
+    $('#quartz-settings').tooltip()
+    $('#start-scheduler').tooltip()
+    $('#stop-scheduler').tooltip()
+}
 
-            countdown = function (item, remaining) {
-                if (item.countdown !== undefined) {
-                    item.countdown(
-                        {until: new Date(remaining),
-                            onExpiry: reloadPage,
-                            compact: true
-                        });
-                }
-            },
+function reloadWindow(delay) {
+    var fifteenSeconds = 1000 * 15;
+    var usedDelay = Math.max(delay, fifteenSeconds);
+    console.log("Job list refresh will occur in " + usedDelay + " milliseconds");
+    setTimeout(function () {
+        $.get('jobTableOnly', replaceJobTable);
+    }, usedDelay);
+}
 
-            displayToolTip = function (tooltipData, x, y) {
-                $('<p></p>')
-                    .text(tooltipData)
-                    .attr('id', 'quartz-tooltip')
-                    .css("top", y + "px")
-                    .css("left", x + "px")
-                    .appendTo('body')
-                    .fadeIn("fast");
-            };
+function replaceJobTable(data) {
+    $('#jobListTable').html(data);
+    console.log('replaced the raw data for the job list');
+    addCountDownAndJobDetails();
+}
 
-        $(init);
-
-    }(jQuery, this));
-
-
+function addWindowRefresh() {
     var today = new Date();
     var time = today.getTime();
 
@@ -118,12 +64,81 @@ if (jQuery) {
         }
     });
 }
+function addCountDownAndJobDetails() {
+    var
+        xOffset = 10,
+        yOffset = 20,
+        init = function () {
+            $('.quartz-to-hide').hide();
+            $('.quartz-tooltip')
+                .hover(function (e) {
+                    var tooltipData = $(this).data('tooltip');
+                    if (tooltipData === "") return;
+                    displayToolTip(tooltipData, (e.pageX + yOffset), (e.pageY - xOffset));
+                },
+                function () {
+                    $("#quartz-tooltip").remove();
+                })
+                .mousemove(function (e) {
+                    $("#quartz-tooltip")
+                        .css("top", (e.pageY - xOffset) + "px")
+                        .css("left", (e.pageX + yOffset) + "px");
+                });
+            $('.quartz-countdown').each(function () {
+                var item = $(this),
+                    remaining = item.data('next-run');
+                if (remaining === "") return;
+                countdown(item, remaining);
+            });
 
-function reloadWindow(delay) {
-    var fifteenSeconds = 1000 * 15;
-    var usedDelay = Math.max(delay, fifteenSeconds);
-    console.log("Window refresh will occur in " + usedDelay + " milliseconds");
-    setTimeout(function () {
-        location.reload()
-    }, usedDelay);
+        },
+
+        reloadPage = function () {
+            var original = $(this).css('color');
+            var delay = 200;
+            $(this).animate({
+                backgroundColor: '#f00',
+                color: '#fff'
+            }, delay, function () {
+                $(this).animate({
+                    backgroundColor: 'transparent',
+                    color: original
+                }, delay, function () {
+                    $(this).animate({
+                        backgroundColor: '#f00',
+                        color: '#fff'
+                    }, delay, function () {
+                        $(this).animate({
+                            backgroundColor: 'transparent',
+                            color: original
+                        }, delay, function () {
+                            location.reload(true);
+                        });
+                    });
+                });
+            });
+        },
+
+        countdown = function (item, remaining) {
+            if (item.countdown !== undefined) {
+                item.countdown(
+                    {until: new Date(remaining),
+                        onExpiry: reloadPage,
+                        compact: true
+                    });
+            }
+        },
+
+        displayToolTip = function (tooltipData, x, y) {
+            $('<p></p>')
+                .text(tooltipData)
+                .attr('id', 'quartz-tooltip')
+                .css("top", y + "px")
+                .css("left", x + "px")
+                .appendTo('body')
+                .fadeIn("fast");
+        };
+
+    $(init);
 }
+

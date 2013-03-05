@@ -2,15 +2,17 @@ package metridoc.core
 
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
-import metridoc.trigger.Trigger
+import metridoc.utils.JobTrigger
 import org.junit.Test
-import org.quartz.TriggerKey
+import org.quartz.Scheduler
+
+import static metridoc.utils.JobTrigger.NEVER
 
 /**
  * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
  */
 @TestFor(QuartzService)
-@Mock([JobSchedule, JobConfig])
+@Mock([JobDetails])
 class QuartzServiceTests {
 
     private static final String BAR_CONFIG = "http://bar.com"
@@ -18,16 +20,11 @@ class QuartzServiceTests {
     private static final String FOO = "foo"
 
     @Test
-    void "fixing bug where null pointer exception occurs if an application starts but the jobs don't exist"() {
-        new JobSchedule(triggerName: "foobarbazz", triggerType: Trigger.EVERY_10_MINUTES).save(flush: true)
-        //this should not fail
-        new QuartzService().initializeJobs()
-    }
-
-    @Test
     void "illegal argument exception thrown if trigger not found"() {
-        def quartzScheduler = new Expando()
-        quartzScheduler.getTrigger = { TriggerKey key -> null }
+        def quartzScheduler = [
+                getTrigger:{null}
+        ] as Scheduler
+
         service.quartzScheduler = quartzScheduler
 
         doIllegalArgumentCheck { service.triggerJobFromTriggerName("does not exist") }
@@ -66,10 +63,15 @@ class QuartzServiceTests {
 
     @Test
     void "test building configuration for quartz job, app config overrides provided config"() {
-        def jobConfig = new JobConfig()
-        jobConfig.config = "foo=1;bar=2"
-        jobConfig.triggerName = BAR
-        jobConfig.save()
+        def jobDetails = new JobDetails()
+
+        jobDetails.with {
+            config = "foo=1;bar=2"
+            jobName = BAR
+            template = BAR
+            jobTrigger = NEVER
+            save(failOnError: true)
+        }
 
         def appConfig = new ConfigSlurper().parse("foo=2;foobar=10")
 
@@ -92,15 +94,20 @@ class QuartzServiceTests {
     @Test
     void "getJobConfigByTriggerName returns a job config associated with the trigger, if it doesn't exist one is created"() {
         //check for creating one when one doesn't exist
-        JobConfig jobConfig = service.getJobConfigByTrigger(FOO)
-        assert jobConfig
-        assert FOO == jobConfig.triggerName
+        JobDetails jobDetails = service.getJobDetailsByTrigger(FOO)
+        assert jobDetails
+        assert FOO == jobDetails.jobName
 
         //check for the situation where it does exist
-        JobConfig barConfig = new JobConfig(triggerName: BAR, config: BAR_CONFIG)
-        barConfig.save()
-        jobConfig = service.getJobConfigByTrigger(BAR)
-        assert BAR_CONFIG == jobConfig.config
+        JobDetails barDetails = new JobDetails(
+                jobName: BAR,
+                config: BAR_CONFIG,
+                template: BAR,
+                jobTrigger: JobTrigger.NEVER,
+        )
+        barDetails.save(failOnError: true)
+        jobDetails = service.getJobDetailsByTrigger(BAR)
+        assert BAR_CONFIG == jobDetails.config
     }
 
     void doIllegalArgumentCheck(Closure closure) {

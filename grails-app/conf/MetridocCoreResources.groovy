@@ -132,9 +132,6 @@ modules = {
 
     quartz {
         dependsOn 'jquery'
-        resource id: 'quartzMonitorJs',
-                url: [plugin: "metridocCore", dir: "quartz/js", file: 'quartz-monitor.js'],
-                attrs: [type: 'js']
         resource id: 'quartzCountdownJs',
                 url: [plugin: "metridocCore", dir: "quartz/js", file: 'jquery.countdown.js'],
                 attrs: [type: 'js']
@@ -143,6 +140,9 @@ modules = {
                 attrs: [type: 'js']
         resource id: 'quartzClockJs',
                 url: [plugin: "metridocCore", dir: "quartz/js", file: 'jquery.clock.js'],
+                attrs: [type: 'js']
+        resource id: 'quartzMonitorJs',
+                url: [plugin: "metridocCore", dir: "quartz/js", file: 'quartz-monitor.js'],
                 attrs: [type: 'js']
         resource id: 'quartzClockCss',
                 url: [plugin: "metridocCore", dir: "quartz/css", file: 'jquery.clock.css'],

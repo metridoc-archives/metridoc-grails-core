@@ -1,15 +1,20 @@
 package metridoc.core
 
+import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import org.junit.Test
 
 /**
- * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
+ * Created with IntelliJ IDEA.
+ * User: tbarker
+ * Date: 3/5/13
+ * Time: 2:55 PM
+ * To change this template use File | Settings | File Templates.
  */
-@TestFor(JobConfig)
-class JobConfigTests {
+@Mock(JobDetails)
+class JobDetailsTest {
 
-    def foo = new JobConfig(triggerName: "foo")
+    def foo = new JobDetails(jobName: "foo")
 
     @Test
     void "if there is no config, then generate config will return null"() {
@@ -48,19 +53,16 @@ class JobConfigTests {
     }
 
     @Test
-    void "trigger name cannot be null"() {
-        assert !new JobConfig().validate()
-        assert foo.validate()
-    }
-
-    @Test
     void "config must either be a url or a valid config"() {
         foo.config = "http://blah.com"
-        assert foo.validate()
+        foo.validate()
+        assert null == foo.errors.getFieldError("config")
         foo.config = "foo='bar';foobar=6"
-        assert foo.validate()
+        foo.validate()
+        assert null == foo.errors.getFieldError("config")
         foo.config = "123kjahsdf(*&(*lkjasdfl"
-        assert !foo.validate()
+        foo.validate()
+        assert foo.errors.getFieldError("config")
         assert "invalid.config" == foo.errors.getFieldError("config").code
     }
 }

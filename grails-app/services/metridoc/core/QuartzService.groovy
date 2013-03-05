@@ -1,29 +1,39 @@
 package metridoc.core
 
+import metridoc.utils.JobTrigger
+import metridoc.utils.QuartzUtility
+import org.apache.commons.lang.StringUtils
 import org.apache.commons.lang.SystemUtils
 import org.apache.commons.lang.exception.ExceptionUtils
+import org.apache.commons.lang.text.StrBuilder
 import org.quartz.*
+import org.quartz.impl.matchers.GroupMatcher
 
 import java.util.concurrent.TimeUnit
 
-import static org.springframework.util.Assert.notNull
+import static metridoc.core.QuartzMonitorJobFactory.QuartzDisplayJob.JOB_STATUS.COMPLETE
+import static metridoc.core.QuartzMonitorJobFactory.QuartzDisplayJob.JOB_STATUS.ERROR
 
 class QuartzService {
 
     static final GROOVY_VERSION = "2.0.5"
     static final GROOVY_DISTRIBUTION = "http://dist.groovy.codehaus.org/distributions/groovy-binary-${GROOVY_VERSION}.zip"
-    static long NEXT_FIRE_TIME_WHERE_JOB_CONSIDERED_MANUAL = 1000L * 60L * 60L * 24L * 365L * 2L //TWO_YEARS
     def quartzScheduler
     def grailsApplication
     def pluginManager
     def commonService
     def mailService
+    def logService
 
+    /**
+     * Checks if a trigger is manual
+     *
+     * @deprecated
+     * @param trigger
+     * @return
+     */
     static boolean isManual(Trigger trigger) {
-        long nextFireTime = trigger.nextFireTime.time
-        long timeToNextFire = nextFireTime - new Date().time
-        boolean isManual = timeToNextFire > NEXT_FIRE_TIME_WHERE_JOB_CONSIDERED_MANUAL
-        return isManual
+        QuartzUtility.isManual(trigger)
     }
 
     def mailJobError(Throwable throwable, JobExecutionContext context) {
@@ -53,22 +63,8 @@ class QuartzService {
         }
     }
 
-    def initializeJobs() {
-        JobSchedule.list().each {
-            def trigger = getTrigger(it.triggerName)
-            if (trigger) {
-                rescheduleJob(it.triggerName, it.triggerType.toString())
-            }
-        }
-    }
-
     static List<String> getTriggerSchedules() {
-        def result = []
-        metridoc.trigger.Trigger.values().each {
-            result << it.toString()
-        }
-        result << "DEFAULT"
-        return result
+        QuartzUtility.triggerSchedules
     }
 
     private static String convertTriggerName(String name) {
@@ -76,79 +72,56 @@ class QuartzService {
     }
 
     TriggerKey triggerJobFromJobName(String jobName) {
-        return triggerJobFromJobName(jobName, new JobDataMap())
+        QuartzUtility.triggerJobFromJobName(quartzScheduler, jobName)
     }
 
     TriggerKey triggerJobFromJobName(String jobName, JobDataMap dataMap) {
-        def jobKey = new JobKey(jobName)
-        List<org.quartz.Trigger> triggers = quartzScheduler.getTriggersOfJob(jobKey)
-        if (triggers) {
-            return triggerJobFromTrigger(triggers[0], dataMap)
-        }
-
-        quartzScheduler.triggerJob(jobKey, dataMap)
-        return null
+        QuartzUtility.triggerJobFromJobName(jobName, dataMap)
     }
 
     TriggerKey triggerJobFromTriggerName(String triggerName) {
-        triggerJobFromTriggerName(triggerName, new JobDataMap())
+        QuartzUtility.triggerJobFromTriggerName(quartzScheduler, triggerName)
     }
 
     TriggerKey triggerJobFromTriggerName(String triggerName, JobDataMap dataMap) {
-        def triggerKey = new TriggerKey(triggerName)
-        org.quartz.Trigger trigger = quartzScheduler.getTrigger(triggerKey)
-        notNull(trigger, "Could not find job ${triggerName}")
-        return triggerJobFromTrigger(trigger, dataMap)
+        QuartzUtility.triggerJobFromTriggerName(quartzScheduler, triggerName, dataMap)
     }
 
     TriggerKey triggerJobFromTrigger(org.quartz.Trigger trigger, JobDataMap dataMap) {
-        notNull(trigger, "trigger cannot be null")
-        def oldTrigger = trigger
-        dataMap.oldTrigger = oldTrigger
-        def newTrigger = getTriggerNowTrigger(trigger, dataMap)
-        quartzScheduler.rescheduleJob(trigger.key, newTrigger)
-
-        return newTrigger.key
+        QuartzUtility.triggerJobFromTrigger(quartzScheduler, trigger, dataMap)
     }
 
     TriggerKey triggerJobFromTrigger(org.quartz.Trigger trigger) {
-        triggerJobFromTrigger(trigger, new JobDataMap())
+        QuartzUtility.triggerJobFromTrigger(quartzScheduler, trigger)
     }
 
     org.quartz.Trigger getTriggerNowTrigger(org.quartz.Trigger trigger, JobDataMap dataMap) {
-        notNull(trigger, "trigger cannot be null")
-        def jobKey = trigger.getJobKey()
-        def schedule = SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(1 * 24 * 356 * 4).repeatForever()
-        def now = new Date()
-        long fiveYears = 1000L * 60L * 60L * 24L * 365L * 5L + now.time
-        def end = new Date(fiveYears)
-        return TriggerBuilder.newTrigger().forJob(jobKey).startAt(now)
-                .endAt(end).withIdentity(trigger.key).withSchedule(schedule).usingJobData(dataMap).build()
+        QuartzUtility.getTriggerNowTrigger(trigger, dataMap)
     }
 
     /**
-     * gets a {@link JobConfig} if it exists, otherwise returns a new one with the trigger anme
+     * gets a {@link JobDetails} if it exists, otherwise returns a new one with the trigger name
      * @param triggerName
      * @return the job config associated with the trigger name
      */
-    JobConfig getJobConfigByTrigger(String triggerName) {
-        def jobConfig = JobConfig.findByTriggerName(triggerName)
-        if (jobConfig) return jobConfig
+    JobDetails getJobDetailsByTrigger(String triggerName) {
+        def jobDetails = JobDetails.findByJobName(triggerName)
+        if (jobDetails) return jobDetails
 
-        return new JobConfig(triggerName: triggerName)
+        return new JobDetails(jobName: triggerName)
     }
 
     org.quartz.Trigger getTriggerNowTrigger(org.quartz.Trigger trigger) {
-        getTriggerNowTrigger(trigger, new JobDataMap())
+        QuartzUtility.getTriggerNowTrigger(trigger)
     }
 
     org.quartz.Trigger getTrigger(String triggerName) {
-        def triggerKey = new TriggerKey(triggerName)
-        quartzScheduler?.getTrigger(triggerKey)
+        QuartzUtility.getTrigger(quartzScheduler, triggerName)
     }
 
     /**
      * checks if groovy has been downloaded to run jobs, if not it is downloaded under metridoc home
+     * Not sure we need this anymore, we may want to have this available to deal with multiple distros
      */
     void checkForGroovyDistribution() {
         def metridocHome = grailsApplication.mergedConfig.metridoc?.home ?: "${SystemUtils.USER_HOME}/.metridoc"
@@ -173,14 +146,13 @@ class QuartzService {
     }
 
     void rescheduleJob(String triggerName, String triggerDescription) {
-        String jobName = getTrigger(triggerName).jobKey.name
         def plugin = pluginManager.getGrailsPluginForClassName("Quartz2GrailsPlugin").instance
         Closure schedulerJob = plugin.scheduleJob
         schedulerJob.delegate = plugin
 
         if ("DEFAULT" != triggerDescription) {
             def jobSchedule = getSchedule(triggerName, triggerDescription)
-            jobSchedule.triggerType = metridoc.trigger.Trigger.valueOf(triggerDescription)
+            jobSchedule.jobTrigger = JobTrigger.valueOf(triggerDescription)
             jobSchedule.save(flush: true, failOnError: true)
             org.quartz.Trigger newTrigger
             if (triggerDescription == "NEVER") {
@@ -198,11 +170,11 @@ class QuartzService {
         }
     }
 
-    JobSchedule getSchedule(String triggerName, String description) {
-        def schedule = JobSchedule.findByTriggerName(triggerName)
+    JobDetails getSchedule(String triggerName, String description) {
+        def schedule = JobDetails.findByJobName(triggerName)
         if (schedule) return schedule
 
-        return new JobSchedule(triggerName: triggerName, triggerType: metridoc.trigger.Trigger.valueOf(description))
+        return new JobDetails(jobName: triggerName, triggerType: JobTrigger.valueOf(description))
     }
 
     ConfigObject getConfigByTriggerName(String triggerName) {
@@ -218,8 +190,101 @@ class QuartzService {
         }
     }
 
+    Map getJobListModel() {
+        getJobListModel(null, [] as Set)
+    }
+
+    void eachTrigger(Closure closure) {
+        QuartzUtility.eachTrigger(quartzScheduler, closure)
+    }
+
+    Map getJobListModel(badEmails, Set alerts) {
+        def jobsList = []
+        def listJobGroups = quartzScheduler.getJobGroupNames()
+
+        listJobGroups?.each { jobGroup ->
+            quartzScheduler.getJobKeys(GroupMatcher.groupEquals(jobGroup))?.each { jobKey ->
+                def triggers = quartzScheduler.getTriggersOfJob(jobKey)
+                if (triggers) {
+                    triggers.each { org.quartz.Trigger trigger ->
+                        def currentJob = createJob(jobGroup, jobKey.name, jobsList, trigger.key.name)
+                        currentJob.trigger = trigger
+                        currentJob.manualJob = QuartzService.isManual(trigger)
+                        currentJob.triggerStatus = quartzScheduler.getTriggerState(trigger.key)
+                    }
+                } else {
+                    createJob(jobGroup, jobKey.name, jobsList)
+                }
+            }
+        }
+
+        def notificationEmails = new StrBuilder()
+        NotificationEmails.list().collect { it.email }.each {
+            notificationEmails.appendln(it)
+        }
+        def badEmailMessage = null
+        if (badEmails) {
+            def badEmailMessageBuilder = new StrBuilder("The following emails are not valid: ")
+            if (badEmails instanceof String) {
+                badEmailMessageBuilder.append(badEmails)
+                badEmailMessage = badEmailMessageBuilder.toString()
+            } else {
+                badEmails.each {
+                    badEmailMessageBuilder.append(it)
+                    badEmailMessageBuilder.append(", ")
+                }
+                badEmailMessage = badEmailMessageBuilder.toString()
+                badEmailMessage = StringUtils.chop(badEmailMessage)
+                badEmailMessage = StringUtils.chop(badEmailMessage)
+            }
+        }
+
+        if (badEmailMessage) {
+            alerts << badEmailMessage
+        }
+
+        if (NotificationEmails.count() == 0) {
+            alerts << "No emails have been set, no one will be notified of job failures"
+        }
+        if (!commonService.emailIsConfigured()) {
+            alerts << "Email has not been set up properly, no notifications will be sent on job failures"
+        }
+
+        return [
+                jobs: jobsList,
+                now: new Date(),
+                scheduler: quartzScheduler,
+                notificationEmails: notificationEmails,
+        ]
+    }
+
+    private static QuartzMonitorJobFactory.QuartzDisplayJob createJob(String jobGroup, String jobName, List<QuartzMonitorJobFactory.QuartzDisplayJob> jobsList, triggerName = "") {
+        def displayJob = QuartzMonitorJobFactory.jobRuns.get(triggerName)
+        if (!displayJob) {
+            displayJob = new QuartzMonitorJobFactory.QuartzDisplayJob()
+            displayJob.setJobKey(new JobKey(jobName, jobGroup))
+            if (triggerName) {
+                def mostRecentRun = getMostRecentRun(triggerName)
+                displayJob.lastRun = getLastRun(triggerName)
+                displayJob.duration = getLastDuration(triggerName)
+                if (mostRecentRun) {
+                    displayJob.status = COMPLETE
+                    if (mostRecentRun.error) {
+                        displayJob.error = "[Unknown error occurred, look at logs]"
+                        displayJob.status = ERROR
+                    }
+                }
+                displayJob.addToolTip()
+
+            }
+        }
+
+        jobsList.add(displayJob)
+        return displayJob
+    }
+
     private static ConfigObject getConfigurationMergedWithAppConfig(ConfigObject applicationConfiguration, String triggerName) {
-        def jobConfig = JobConfig.findByTriggerName(triggerName)
+        def jobConfig = JobDetails.findByJobName(triggerName)
         ConfigObject jobConfigConfig = applicationConfiguration
         if (jobConfig) {
             jobConfigConfig = jobConfig.generateConfigObject()
@@ -229,5 +294,44 @@ class QuartzService {
         }
 
         return jobConfigConfig
+    }
+
+
+    void saveRun(QuartzMonitorJobFactory.QuartzDisplayJob displayJob) {
+        def jobRuns = JobRuns.createJobRun(displayJob)
+        def out = new ByteArrayOutputStream()
+        logService.renderDefaultLogStartingAt(out, jobRuns.start)
+        jobRuns.jobLog = out.toByteArray()
+        jobRuns.save()
+    }
+
+    static Date getLastRun(String jobName) {
+        JobRuns jobRun = getMostRecentRun(jobName)
+        if (jobRun) {
+            return new Date(jobRun.start)
+        }
+
+        return null
+    }
+
+    static Long getLastDuration(String jobName) {
+        JobRuns jobRun = getMostRecentRun(jobName)
+
+        if (jobRun) {
+            return jobRun.finish - jobRun.start
+        }
+
+        return null
+    }
+
+    static JobRuns getMostRecentRun(String jobName) {
+        List<JobRuns> runs = JobRuns.where {
+            details.jobName == jobName
+
+        }.order("start", "desc").findAll()
+
+        if (runs) {
+            return runs.get(0)
+        }
     }
 }

@@ -2,13 +2,11 @@
 class MetridocCoreBootStrap {
 
     def initAuthService
-    def quartzService
+    def initQuartzService
 
     def init = { servletContext ->
         initAuthService.init()
-//      not sure we need this anymore
-//        quartzService.checkForGroovyDistribution()
-        quartzService.initializeJobs()
+        initQuartzService.initializeScheduler()
     }
 
     def destroy = {
