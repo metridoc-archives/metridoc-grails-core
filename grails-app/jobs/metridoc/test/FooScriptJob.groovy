@@ -12,3 +12,10 @@ if (foo) {
 } else {
     log.info "Could not find the variable foo in the config"
 }
+
+if (binding.hasVariable("args")) {
+    log.info "Found arguments"
+    log.info "Arguments are: ${args}"
+} else {
+    log.info "Could not find arguments"
+}

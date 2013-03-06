@@ -27,8 +27,13 @@
             <div class="controls">
                 <g:select name="availableSchedules" from="${availableSchedules}" value="${currentSchedule}"/>
             </div>
-            <label for="config" class="control-label">Configuration (url or groovy):</label>
 
+            <label for="arguments" class="control-label">Arguments:</label>
+            <div class="controls">
+                <input id="arguments" name="arguments" type="text" value="${arguments}"/>
+            </div>
+
+            <label for="config" class="control-label">Configuration (url or groovy):</label>
             <div class="controls">
                 <g:textArea name="config" id="code" value="${config}"/>
             </div>

@@ -49,14 +49,11 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
         triggerJobDataMap.put("config", config);
         String grailsJobName = (String) jobDataMap.get(GrailsArtefactJobDetailFactoryBean.JOB_NAME_PARAMETER);
         org.quartz.Job job;
+
         if (grailsJobName != null) {
-            Object jobBean = applicationContext.getBean(grailsJobName);
-            if (jobBean instanceof Script) {
-                ScriptJob scriptJob = new ScriptJob((Script) jobBean);
-                job = new GrailsArtefactJob(scriptJob);
-            } else {
-                job = new GrailsArtefactJob(jobBean);
-            }
+            job = quartzService.buildJob(grailsJobName);
+        } else if(quartzService.isRemoteScriptJob(triggerName)) {
+            job = quartzService.buildRemoteScriptJob(triggerName);
         } else {
             job = super.newJob(bundle, scheduler);
         }
@@ -137,6 +134,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
                 String error;
                 try {
                     displayLogger.info("starting job {} at {}", getTrigger().getKey().getName(), getLastRun());
+                    quartzService.configureJob(trigger.getKey().getName(), job);
                     job.execute(context);
                     sessionFactory.getCurrentSession().flush();
                 } catch (Throwable e) {

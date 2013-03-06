@@ -3,6 +3,7 @@ function makeUpdateButtonAppear() {
     $('#updateScheduleBtn').removeAttr("disabled")
 }
 $('#availableSchedules').change(makeUpdateButtonAppear);
+$('#arguments').change(makeUpdateButtonAppear);
 
 
 function editorChange() {

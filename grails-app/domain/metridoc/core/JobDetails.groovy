@@ -23,12 +23,14 @@ class JobDetails {
     String url
     String classToRun
     String description
+    String arguments
 
     static mapping = {
         template(index: 'job_details_template_idx')
     }
 
     static constraints = {
+        arguments(nullable: true)
         config(nullable: true)
         jobName(unique: true)
         cron(nullable: true)

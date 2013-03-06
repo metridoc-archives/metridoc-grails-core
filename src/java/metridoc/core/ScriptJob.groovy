@@ -14,6 +14,7 @@ import org.quartz.UnableToInterruptJobException
  */
 class ScriptJob implements InterruptableJob {
     private Script script
+    private String arguments
 
     ScriptJob(Script script) {
         this.script = script
@@ -30,6 +31,10 @@ class ScriptJob implements InterruptableJob {
 
         if (config != null && config instanceof Map) {
             QuartzService.addConfigToBinding(config, binding)
+        }
+
+        if (arguments) {
+            script.args = arguments
         }
         script.run()
     }

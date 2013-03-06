@@ -1,9 +1,12 @@
 package metridoc.core
 
 import grails.plugin.quartz2.GrailsJobClass
+import grails.plugin.quartz2.SimpleJobDetail
 import grails.plugin.quartz2.TriggersBuilder
+import org.quartz.JobKey
 import org.quartz.Scheduler
 import org.quartz.Trigger
+import org.quartz.TriggerKey
 
 import java.util.concurrent.TimeUnit
 
@@ -34,6 +37,7 @@ class InitQuartzService {
         }
         handleUnscheduledCodeJobs()
         handleAlreadyScheduledCodeJobs()
+        handleUrlBasedScripts()
         //everything is ready to go!
         if (doResume) {
             quartzScheduler.resumeAll()
@@ -86,6 +90,26 @@ class InitQuartzService {
                 detail.classToRun = trigger.jobKey.name
                 detail.jobName = jobName
             }
+        }
+    }
+
+    def handleUrlBasedScripts() {
+        def details = JobDetails.where {
+            url != null
+        }
+        details.each {
+            def trigger = it.convertTriggerToQuartzTrigger()
+            trigger.key = new TriggerKey(it.jobName)
+            trigger.jobName = it.template
+            trigger.startTime = new Date()
+            if (it.jobTrigger == NEVER) {
+                long fiftyYears = TimeUnit.DAYS.toMillis(365 * 50)
+                trigger.startTime = new Date(new Date().time + fiftyYears)
+            }
+            SimpleJobDetail quartzDetails = new SimpleJobDetail()
+            quartzDetails.key = new JobKey(it.template)
+            quartzScheduler.addJob(quartzDetails, true)
+            quartzScheduler.scheduleJob(trigger)
         }
     }
 }

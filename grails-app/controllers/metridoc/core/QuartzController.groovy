@@ -2,6 +2,7 @@ package metridoc.core
 
 import grails.converters.JSON
 import grails.web.RequestParameter
+import metridoc.utils.JobTrigger
 import metridoc.utils.QuartzUtils
 import org.apache.commons.lang.exception.ExceptionUtils
 import org.quartz.*
@@ -104,7 +105,7 @@ class QuartzController {
 
     private void errorChain(String errorMessage) {
         flash.alerts << errorMessage
-        chain(action: LIST)
+        redirect(action: LIST)
     }
 
     def status() {
@@ -159,8 +160,8 @@ class QuartzController {
 
     def show(@RequestParameter("id") String triggerName, String errorConfig) {
         doTriggerOperation(triggerName){Trigger trigger ->
-            def jobSchedule = JobDetails.findByJobName(triggerName)
-            def currentSchedule = jobSchedule ? jobSchedule.jobTrigger.toString() : "DEFAULT"
+            def jobDetails = JobDetails.findByJobName(triggerName)
+            def currentSchedule = jobDetails ? jobDetails.jobTrigger.toString() : "DEFAULT"
             boolean manual = QuartzUtils.isManual(trigger)
             if (manual) {
                 currentSchedule = metridoc.trigger.Trigger.NEVER
@@ -172,7 +173,7 @@ class QuartzController {
 
             def config = errorConfig
             if (!errorConfig) {
-                //if we dont have the config then get it from teh database
+                //if we dont have the config then get it from the database
                 def jobConfig = JobDetails.findByJobName(triggerName)
                 config = jobConfig ? jobConfig.config : null
             }
@@ -190,18 +191,20 @@ class QuartzController {
                     currentSchedule: currentSchedule,
                     triggerName: trigger.key.name,
                     nextFireTime: trigger.nextFireTime,
-                    availableSchedules: triggerSchedules
+                    availableSchedules: triggerSchedules,
+                    arguments:jobDetails ? jobDetails.arguments : null
             ]
         }
     }
 
-    def updateSchedule(@RequestParameter("id") String triggerName, String availableSchedules, String config) {
+    def updateSchedule(@RequestParameter("id") String triggerName, String availableSchedules, String config, String arguments) {
         doTriggerOperation(triggerName){Trigger trigger ->
 
             JobDetails jobDetails
             if (config) {
                 jobDetails = quartzService.getJobDetailsByTrigger(triggerName)
                 jobDetails.config = config
+                jobDetails.arguments = arguments
                 jobDetails.save()
             }
 
@@ -224,6 +227,41 @@ class QuartzController {
             flash.messages << "made updates to job $triggerName" as String
             chain(action: LIST)
         }
+    }
+
+    def newJob(String url, String jobName) {
+        if (!url || !jobName) {
+            errorChain("url and job name must not be blank or null")
+            return
+        }
+
+        def usedUrl
+        try {
+            usedUrl = new URL(url)
+        } catch (MalformedURLException e) {
+            errorChain("url $url is not a valid url")
+            return
+        }
+
+        def scriptText = usedUrl.text
+        try {
+            new GroovyShell().parse(scriptText)
+        } catch (Throwable throwable) {
+            errorChain("Could not parse the script!<br /><pre>${ExceptionUtils.getStackTrace(throwable).encodeAsHTML()}</pre>")
+            return
+        }
+
+        def details = JobDetails.findByJobName(jobName)
+        if(details) {
+            errorChain("${jobName} already exists")
+            return
+        }
+
+        def template = url.substring(url.lastIndexOf("/") + 1)
+        details = new JobDetails(jobName: jobName, url: url, template: template, jobTrigger: JobTrigger.NEVER)
+        details.save()
+        flash.infos << "Job $jobName has been added"
+        redirect(action: LIST)
     }
 
     private static jobKey(name, group) {

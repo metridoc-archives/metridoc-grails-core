@@ -1,5 +1,6 @@
 package metridoc.core
 
+import grails.plugin.quartz2.GrailsArtefactJob
 import metridoc.utils.ConfigObjectUtils
 import metridoc.utils.JobTrigger
 import metridoc.utils.QuartzUtils
@@ -117,16 +118,16 @@ class QuartzService {
         schedulerJob.delegate = plugin
 
         if ("DEFAULT" != triggerDescription) {
-            def jobSchedule = getSchedule(triggerName, triggerDescription)
-            jobSchedule.jobTrigger = JobTrigger.valueOf(triggerDescription)
-            jobSchedule.save(flush: true, failOnError: true)
+            def jobDetails = getSchedule(triggerName, triggerDescription)
+            jobDetails.jobTrigger = JobTrigger.valueOf(triggerDescription)
+            jobDetails.save(flush: true, failOnError: true)
             org.quartz.Trigger newTrigger
             if (triggerDescription == "NEVER") {
                 long fiftyYears = TimeUnit.DAYS.toMillis(365 * 50)
-                newTrigger = jobSchedule.convertTriggerToQuartzTrigger()
+                newTrigger = jobDetails.convertTriggerToQuartzTrigger()
                 newTrigger.startTime = new Date(new Date().time + fiftyYears)
             } else {
-                newTrigger = jobSchedule.convertTriggerToQuartzTrigger()
+                newTrigger = jobDetails.convertTriggerToQuartzTrigger()
                 newTrigger.startTime = new Date()
             }
 
@@ -260,6 +261,31 @@ class QuartzService {
         return displayJob
     }
 
+    boolean isRemoteScriptJob(String jobName) {
+        return JobDetails.findByJobName(jobName)?.url != null
+    }
+
+    Job buildRemoteScriptJob(String jobName) {
+        def shell = new GroovyShell()
+        def url = JobDetails.findByJobName(jobName)
+        def script = shell.parse(url)
+        return new ScriptJob(script: script)
+    }
+
+    Job buildJob(String grailsJobName) {
+        def applicationContext = grailsApplication.mainContext
+        Object jobBean = applicationContext.getBean(grailsJobName);
+        Job job
+        if (jobBean instanceof Script) {
+            ScriptJob scriptJob = new ScriptJob((Script) jobBean);
+            job = new GrailsArtefactJob(scriptJob);
+        } else {
+            job = new GrailsArtefactJob(jobBean);
+        }
+
+        return job
+    }
+
     //ADD EVERYTHING STARTING HERE AND BELOW TO QUARTZUTILS
     static Date getLastRun(String jobName) {
         JobRuns jobRun = getMostRecentRun(jobName)
@@ -309,5 +335,16 @@ class QuartzService {
         }
 
         return null
+    }
+
+
+
+    void configureJob(String name, GrailsArtefactJob job) {
+        def jobInstance = job.job
+        if (jobInstance instanceof ScriptJob) {
+            def jobDetails = JobDetails.findByJobName(name)
+            jobInstance.arguments = jobDetails.arguments
+        }
+
     }
 }
