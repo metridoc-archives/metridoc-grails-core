@@ -5,7 +5,6 @@ import grails.test.mixin.TestFor
 import metridoc.utils.JobTrigger
 import metridoc.utils.QuartzUtils
 import org.junit.Test
-import org.quartz.Scheduler
 
 import static metridoc.utils.JobTrigger.NEVER
 
@@ -42,7 +41,7 @@ class QuartzServiceTests {
     }
 
     @Test
-    void "test building configuration for quartz job, app config overrides provided config"() {
+    void "test building configuration for quartz job, provided config overrides app config"() {
         def jobDetails = new JobDetails()
 
         jobDetails.with {
@@ -56,7 +55,7 @@ class QuartzServiceTests {
         def appConfig = new ConfigSlurper().parse("foo=2;foobar=10")
 
         def config = QuartzService.getConfigurationMergedWithAppConfig(appConfig, BAR)
-        assert 2 == config.foo
+        assert 1 == config.foo
         assert 2 == config.bar
         assert 10 == config.foobar
     }
@@ -67,8 +66,8 @@ class QuartzServiceTests {
         def binding = new Binding()
 
         QuartzService.addConfigToBinding(appConfig, binding)
-        assert 2 == binding.foo
-        assert 10 == binding.foobar
+        assert 2 == binding.config.foo
+        assert 10 == binding.config.foobar
     }
 
     @Test
