@@ -3,6 +3,7 @@ package metridoc.core
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import metridoc.utils.JobTrigger
+import metridoc.utils.QuartzUtils
 import org.junit.Test
 import org.quartz.Scheduler
 
@@ -18,16 +19,6 @@ class QuartzServiceTests {
     private static final String BAR_CONFIG = "http://bar.com"
     private static final String BAR = "bar"
     private static final String FOO = "foo"
-
-    @Test
-    void "illegal argument exception thrown if trigger is null"() {
-        doIllegalArgumentCheck { service.triggerJobFromTrigger(null) }
-    }
-
-    @Test
-    void "get trigger now throws illegal argument exception if trigger is null"() {
-        doIllegalArgumentCheck { service.getTriggerNowTrigger(null) }
-    }
 
     @Test
     void "test trigger check for is manual"() {
@@ -46,8 +37,8 @@ class QuartzServiceTests {
                 }
         ] as org.quartz.Trigger
 
-        assert QuartzService.isManual(manualTrigger)
-        assert !QuartzService.isManual(nonManualTrigger)
+        assert QuartzUtils.isManual(manualTrigger)
+        assert !QuartzUtils.isManual(nonManualTrigger)
     }
 
     @Test
@@ -97,13 +88,5 @@ class QuartzServiceTests {
         barDetails.save(failOnError: true)
         jobDetails = service.getJobDetailsByTrigger(BAR)
         assert BAR_CONFIG == jobDetails.config
-    }
-
-    void doIllegalArgumentCheck(Closure closure) {
-        try {
-            closure.call()
-            assert false: "illegal argument should have occurred"
-        } catch (IllegalArgumentException e) {
-        }
     }
 }

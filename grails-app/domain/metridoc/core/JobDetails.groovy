@@ -167,6 +167,6 @@ class JobDetails {
             return parsedConfig
         }
 
-        return null
+        return new ConfigObject()
     }
 }

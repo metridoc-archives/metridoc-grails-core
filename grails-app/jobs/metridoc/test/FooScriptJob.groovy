@@ -1,10 +1,14 @@
 package metridoc.test
 
-println "I am a script job"
+import static org.slf4j.LoggerFactory.getLogger
 
-if (binding.hasVariable("foo")) {
-    println "the variable foo exists from the config, printing now"
-    println foo
+def log = getLogger("foo.logger")
+log.info "I am a script job"
+
+def foo = config.foo
+if (foo) {
+    log.info "the variable foo exists from the config, printing now"
+    log.info foo
 } else {
-    println "Could not find the variable foo in the config"
+    log.info "Could not find the variable foo in the config"
 }

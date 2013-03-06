@@ -29,8 +29,8 @@ class ScriptJobTest {
         def scriptJob = new ScriptJob(foo)
         scriptJob.execute(jobExecutionContext)
         assert jobExecutionContext == foo.jobExecutionContext
-        assert "bar" == foo.foo
-        assert "foo" == foo.bar
+        assert "bar" == foo.config.foo
+        assert "foo" == foo.config.bar
     }
 
 }

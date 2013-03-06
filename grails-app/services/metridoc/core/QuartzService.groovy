@@ -1,7 +1,9 @@
 package metridoc.core
 
+import metridoc.utils.ConfigObjectUtils
 import metridoc.utils.JobTrigger
 import metridoc.utils.QuartzUtils
+import org.apache.commons.lang.SerializationUtils
 import org.apache.commons.lang.StringUtils
 import org.apache.commons.lang.SystemUtils
 import org.apache.commons.lang.exception.ExceptionUtils
@@ -67,18 +69,6 @@ class QuartzService {
         QuartzUtils.triggerSchedules
     }
 
-    TriggerKey triggerJobFromTrigger(org.quartz.Trigger trigger, JobDataMap dataMap) {
-        QuartzUtils.triggerJobFromTrigger(quartzScheduler, trigger, dataMap)
-    }
-
-    TriggerKey triggerJobFromTrigger(org.quartz.Trigger trigger) {
-        QuartzUtils.triggerJobFromTrigger(quartzScheduler, trigger)
-    }
-
-    org.quartz.Trigger getTriggerNowTrigger(org.quartz.Trigger trigger, JobDataMap dataMap) {
-        QuartzUtils.getTriggerNowTrigger(trigger, dataMap)
-    }
-
     /**
      * gets a {@link JobDetails} if it exists, otherwise returns a new one with the trigger name
      * @param triggerName
@@ -89,10 +79,6 @@ class QuartzService {
         if (jobDetails) return jobDetails
 
         return new JobDetails(jobName: triggerName)
-    }
-
-    org.quartz.Trigger getTriggerNowTrigger(org.quartz.Trigger trigger) {
-        QuartzUtils.getTriggerNowTrigger(trigger)
     }
 
     org.quartz.Trigger getTrigger(String triggerName) {
@@ -154,19 +140,22 @@ class QuartzService {
         def schedule = JobDetails.findByJobName(triggerName)
         if (schedule) return schedule
 
-        return new JobDetails(jobName: triggerName, triggerType: JobTrigger.valueOf(description))
+        return new JobDetails(jobName: triggerName, jobTrigger: JobTrigger.valueOf(description))
     }
 
     ConfigObject getConfigByTriggerName(String triggerName) {
-        def mergedConfig = grailsApplication.mergedConfig
-        return getConfigurationMergedWithAppConfig(mergedConfig, triggerName)
+        ConfigObject mergedConfig = grailsApplication.mergedConfig
+        ConfigObject clonedConfig = ConfigObjectUtils.clone(mergedConfig)
+        if (triggerName) {
+            return getConfigurationMergedWithAppConfig(clonedConfig, triggerName)
+        }
+
+        return mergedConfig
     }
 
     static void addConfigToBinding(ConfigObject config, Binding binding) {
         if (config) {
-            config.each { key, value ->
-                binding.setVariable(key, value)
-            }
+            binding.setVariable("config", config)
         }
     }
 
@@ -189,7 +178,7 @@ class QuartzService {
                     triggers.each { org.quartz.Trigger trigger ->
                         def currentJob = createJob(jobGroup, jobKey.name, jobsList, trigger.key.name)
                         currentJob.trigger = trigger
-                        currentJob.manualJob = QuartzService.isManual(trigger)
+                        currentJob.manualJob = QuartzUtils.isManual(trigger)
                         currentJob.triggerStatus = quartzScheduler.getTriggerState(trigger.key)
                     }
                 } else {
@@ -238,6 +227,14 @@ class QuartzService {
         ]
     }
 
+    void saveRun(QuartzMonitorJobFactory.QuartzDisplayJob displayJob) {
+        def jobRuns = JobRuns.createJobRun(displayJob)
+        def out = new ByteArrayOutputStream()
+        logService.renderDefaultLogStartingAt(out, jobRuns.start)
+        jobRuns.jobLog = out.toByteArray()
+        jobRuns.save()
+    }
+
     private static QuartzMonitorJobFactory.QuartzDisplayJob createJob(String jobGroup, String jobName, List<QuartzMonitorJobFactory.QuartzDisplayJob> jobsList, triggerName = "") {
         def displayJob = QuartzMonitorJobFactory.jobRuns.get(triggerName)
         if (!displayJob) {
@@ -263,28 +260,7 @@ class QuartzService {
         return displayJob
     }
 
-    private static ConfigObject getConfigurationMergedWithAppConfig(ConfigObject applicationConfiguration, String triggerName) {
-        def jobConfig = JobDetails.findByJobName(triggerName)
-        ConfigObject jobConfigConfig = applicationConfiguration
-        if (jobConfig) {
-            jobConfigConfig = jobConfig.generateConfigObject()
-            if (jobConfigConfig) {
-                jobConfigConfig.merge(applicationConfiguration)
-            }
-        }
-
-        return jobConfigConfig
-    }
-
-
-    void saveRun(QuartzMonitorJobFactory.QuartzDisplayJob displayJob) {
-        def jobRuns = JobRuns.createJobRun(displayJob)
-        def out = new ByteArrayOutputStream()
-        logService.renderDefaultLogStartingAt(out, jobRuns.start)
-        jobRuns.jobLog = out.toByteArray()
-        jobRuns.save()
-    }
-
+    //ADD EVERYTHING STARTING HERE AND BELOW TO QUARTZUTILS
     static Date getLastRun(String jobName) {
         JobRuns jobRun = getMostRecentRun(jobName)
         if (jobRun) {
@@ -292,6 +268,24 @@ class QuartzService {
         }
 
         return null
+    }
+
+    private static ConfigObject getConfigurationMergedWithAppConfig(ConfigObject applicationConfiguration, String triggerName) {
+        def jobConfig = JobDetails.findByJobName(triggerName)
+        if (jobConfig) {
+            return getConfigurationMergedWithAppConfig(applicationConfiguration, jobConfig.generateConfigObject())
+        } else {
+            return applicationConfiguration
+        }
+    }
+
+    private static ConfigObject getConfigurationMergedWithAppConfig(ConfigObject applicationConfiguration, ConfigObject override) {
+
+        if (override) {
+            applicationConfiguration.merge(override)
+        }
+
+        return applicationConfiguration
     }
 
     static Long getLastDuration(String jobName) {
@@ -311,7 +305,9 @@ class QuartzService {
         }.order("start", "desc").findAll()
 
         if (runs) {
-            return runs.get(0)
+            return runs.get(0) as JobRuns
         }
+
+        return null
     }
 }
