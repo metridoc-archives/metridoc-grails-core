@@ -17,7 +17,7 @@ import static org.springframework.util.Assert.notNull
 /**
  * provides various helpful utilities for quartz
  */
-class QuartzUtility {
+class QuartzUtils {
 
     static long NEXT_FIRE_TIME_WHERE_JOB_CONSIDERED_MANUAL = 1000L * 60L * 60L * 24L * 365L * 2L //TWO_YEARS
 
@@ -119,5 +119,10 @@ class QuartzUtility {
                 }
             }
         }
+    }
+
+    static Trigger searchForTrigger(Scheduler scheduler, String triggerName) {
+        def triggerKey = new TriggerKey(triggerName)
+        scheduler.getTrigger(triggerKey)
     }
 }

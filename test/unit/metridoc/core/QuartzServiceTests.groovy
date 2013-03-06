@@ -20,17 +20,6 @@ class QuartzServiceTests {
     private static final String FOO = "foo"
 
     @Test
-    void "illegal argument exception thrown if trigger not found"() {
-        def quartzScheduler = [
-                getTrigger:{null}
-        ] as Scheduler
-
-        service.quartzScheduler = quartzScheduler
-
-        doIllegalArgumentCheck { service.triggerJobFromTriggerName("does not exist") }
-    }
-
-    @Test
     void "illegal argument exception thrown if trigger is null"() {
         doIllegalArgumentCheck { service.triggerJobFromTrigger(null) }
     }

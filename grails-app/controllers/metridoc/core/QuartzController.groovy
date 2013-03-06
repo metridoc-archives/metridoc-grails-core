@@ -2,6 +2,7 @@ package metridoc.core
 
 import grails.converters.JSON
 import grails.web.RequestParameter
+import metridoc.utils.QuartzUtils
 import org.apache.commons.lang.exception.ExceptionUtils
 import org.quartz.*
 
@@ -72,17 +73,38 @@ class QuartzController {
     }
 
     def runNow(@RequestParameter("id") String triggerName) {
-        def trigger = searchForTrigger(triggerName)
-        if (!trigger) return
+        doTriggerOperation(triggerName){Trigger trigger ->
+            use(QuartzUtils) {
+                def dataMap = new JobDataMap(params)
+                quartzScheduler.triggerJobFromTrigger(trigger, dataMap)
+            }
 
-        def triggerKey = new TriggerKey(triggerName)
-        def dataMap = new JobDataMap(params)
+            Thread.sleep(1000) //sleep for 1 second to allow for the job to actually start
+            redirect(action: LIST)
+        }
+    }
 
-        dataMap.oldTrigger = quartzScheduler.getTrigger(triggerKey)
-        quartzService.triggerJobFromTrigger(trigger, dataMap)
+    private doTriggerOperation(String triggerName, Closure operation) {
+        def result = null
+        if (triggerName) {
+            use(QuartzUtils) {
+                Trigger trigger = quartzScheduler.searchForTrigger(triggerName)
+                if(trigger) {
+                    result = operation.call(trigger)
+                } else {
+                    errorChain("Could not find trigger for trigger name ${triggerName}")
+                }
+            }
+        } else {
+            errorChain("Could not perform job operation, triggerName was not specified")
+        }
 
-        Thread.sleep(1000) //sleep for 1 second to allow for the job to actually start
-        redirect(action: LIST)
+        return result
+    }
+
+    private void errorChain(String errorMessage) {
+        flash.alerts << errorMessage
+        chain(action: LIST)
     }
 
     def status() {
@@ -113,114 +135,98 @@ class QuartzController {
         redirect(action: LIST)
     }
 
-    def stopJob(@RequestParameter("id") String jobName) {
-        def displayJob = QuartzMonitorJobFactory.jobRuns.get(jobName)
-        if (displayJob == null) {
-            flash.alert = "job $jobName does not exist"
-            redirect(action: LIST)
-            return
-        }
-
-        try {
-            if (displayJob.canInterrupt()) {
-                displayJob.interrupting = true;
-            } else {
-                flash.infos << "Could not interrupt job $jobName, it probably finished before the stop command was issued"
+    def stopJob(@RequestParameter("id") String triggerName) {
+        doTriggerOperation(triggerName){
+            def displayJob = QuartzMonitorJobFactory.jobRuns.get(triggerName)
+            if (displayJob == null) {
+                flash.alert = "job $triggerName does not exist"
+                redirect(action: LIST)
+                return
             }
-        } catch (UnableToInterruptJobException e) {
-            flash.alert = e.message
+
+            try {
+                if (displayJob.canInterrupt()) {
+                    displayJob.interrupting = true;
+                } else {
+                    flash.infos << "Could not interrupt job $triggerName, it probably finished before the stop command was issued"
+                }
+            } catch (UnableToInterruptJobException e) {
+                flash.alert = e.message
+            }
         }
         redirect(action: LIST)
     }
 
     def show(@RequestParameter("id") String triggerName, String errorConfig) {
-        org.quartz.Trigger trigger = searchForTrigger(triggerName)
-        def jobSchedule = JobDetails.findByJobName(triggerName)
-        def currentSchedule = jobSchedule ? jobSchedule.jobTrigger.toString() : "DEFAULT"
-        boolean manual = QuartzService.isManual(trigger)
-        if (manual) {
-            currentSchedule = metridoc.trigger.Trigger.NEVER
-        }
-        def triggerSchedules = quartzService.triggerSchedules
-        if ("DEFAULT" != currentSchedule) {
-            triggerSchedules.remove("DEFAULT")
-        }
+        doTriggerOperation(triggerName){Trigger trigger ->
+            def jobSchedule = JobDetails.findByJobName(triggerName)
+            def currentSchedule = jobSchedule ? jobSchedule.jobTrigger.toString() : "DEFAULT"
+            boolean manual = QuartzUtils.isManual(trigger)
+            if (manual) {
+                currentSchedule = metridoc.trigger.Trigger.NEVER
+            }
+            def triggerSchedules = quartzService.triggerSchedules
+            if ("DEFAULT" != currentSchedule) {
+                triggerSchedules.remove("DEFAULT")
+            }
 
-        def config = errorConfig
-        if (!errorConfig) {
-            //if we dont have the config then get it from teh database
-            def jobConfig = JobDetails.findByJobName(triggerName)
-            config = jobConfig ? jobConfig.config : null
-        }
-        if (!trigger) return
-        def jobLog = null
-        def mostRecentRun = QuartzService.getMostRecentRun(triggerName)
-        if (mostRecentRun) {
-            jobLog = new ByteArrayInputStream(mostRecentRun.jobLog)
-        }
-        return [
-                jobLog: jobLog,
-                config: config,
-                trigger: trigger,
-                currentSchedule: currentSchedule,
-                triggerName: trigger.key.name,
-                nextFireTime: trigger.nextFireTime,
-                availableSchedules: triggerSchedules
-        ]
+            def config = errorConfig
+            if (!errorConfig) {
+                //if we dont have the config then get it from teh database
+                def jobConfig = JobDetails.findByJobName(triggerName)
+                config = jobConfig ? jobConfig.config : null
+            }
+            if (!trigger) return
+            def jobLog = null
+            def mostRecentRun = QuartzService.getMostRecentRun(triggerName)
+            if (mostRecentRun) {
+                jobLog = new ByteArrayInputStream(mostRecentRun.jobLog)
+            }
 
+            return [
+                    jobLog: jobLog,
+                    config: config,
+                    trigger: trigger,
+                    currentSchedule: currentSchedule,
+                    triggerName: trigger.key.name,
+                    nextFireTime: trigger.nextFireTime,
+                    availableSchedules: triggerSchedules
+            ]
+        }
     }
 
     def updateSchedule(@RequestParameter("id") String triggerName, String availableSchedules, String config) {
-        org.quartz.Trigger trigger = searchForTrigger(triggerName)
-        if (!trigger) return
+        doTriggerOperation(triggerName){Trigger trigger ->
 
-        JobDetails jobDetails
-        if (config) {
-            jobDetails = quartzService.getJobDetailsByTrigger(triggerName)
-            jobDetails.config = config
-            jobDetails.save()
-        }
-
-        if (jobDetails && jobDetails.errors.errorCount) {
-            if (jobDetails.errors.getFieldError("config")) {
-                Throwable exception = JobDetails.getConfigException(config)
-                flash.alerts << "<pre>${ExceptionUtils.getStackTrace(exception)}</pre>"
-                log.error "Tried to store a bad configuration", exception
-            } else {
-                flash.alerts << "Unknown exception trying to save configuration"
-                log.error "Could not store job config: ${jobDetails.errors}"
+            JobDetails jobDetails
+            if (config) {
+                jobDetails = quartzService.getJobDetailsByTrigger(triggerName)
+                jobDetails.config = config
+                jobDetails.save()
             }
 
-            def params = [errorConfig: config, id: triggerName]
-            redirect(action: "show", params: params)
-            return
-        }
+            if (jobDetails && jobDetails.errors.errorCount) {
+                if (jobDetails.errors.getFieldError("config")) {
+                    Throwable exception = JobDetails.getConfigException(config)
+                    flash.alerts << "<pre>${ExceptionUtils.getStackTrace(exception)}</pre>"
+                    log.error "Tried to store a bad configuration", exception
+                } else {
+                    flash.alerts << "Unknown exception trying to save configuration"
+                    log.error "Could not store job config: ${jobDetails.errors}"
+                }
 
-        quartzService.rescheduleJob(triggerName, availableSchedules)
-        flash.messages << "made updates to job $triggerName" as String
-        chain(action: LIST)
+                def params = [errorConfig: config, id: triggerName]
+                redirect(action: "show", params: params)
+                return
+            }
+
+            quartzService.rescheduleJob(triggerName, availableSchedules)
+            flash.messages << "made updates to job $triggerName" as String
+            chain(action: LIST)
+        }
     }
 
     private static jobKey(name, group) {
         return JobKey.jobKey(name, group)
-    }
-
-    private Trigger searchForTrigger(String triggerName) {
-        if (!triggerName) {
-            flash.alerts << "Could not perform job operation, triggerName was not specified"
-            chain(action: "index")
-            return null
-        }
-
-        def triggerKey = new TriggerKey(triggerName)
-
-        def trigger = quartzScheduler.getTrigger(triggerKey)
-        if (!trigger) {
-            flash.alerts << "Could not find trigger for trigger name ${triggerName}"
-            redirect(action: "index")
-            return null
-        }
-
-        return trigger
     }
 }

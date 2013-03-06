@@ -1,7 +1,7 @@
 package metridoc.core
 
 import metridoc.utils.JobTrigger
-import metridoc.utils.QuartzUtility
+import metridoc.utils.QuartzUtils
 import org.apache.commons.lang.StringUtils
 import org.apache.commons.lang.SystemUtils
 import org.apache.commons.lang.exception.ExceptionUtils
@@ -33,7 +33,7 @@ class QuartzService {
      * @return
      */
     static boolean isManual(Trigger trigger) {
-        QuartzUtility.isManual(trigger)
+        QuartzUtils.isManual(trigger)
     }
 
     def mailJobError(Throwable throwable, JobExecutionContext context) {
@@ -64,39 +64,19 @@ class QuartzService {
     }
 
     static List<String> getTriggerSchedules() {
-        QuartzUtility.triggerSchedules
-    }
-
-    private static String convertTriggerName(String name) {
-        name.replaceAll("_", " ").toLowerCase()
-    }
-
-    TriggerKey triggerJobFromJobName(String jobName) {
-        QuartzUtility.triggerJobFromJobName(quartzScheduler, jobName)
-    }
-
-    TriggerKey triggerJobFromJobName(String jobName, JobDataMap dataMap) {
-        QuartzUtility.triggerJobFromJobName(jobName, dataMap)
-    }
-
-    TriggerKey triggerJobFromTriggerName(String triggerName) {
-        QuartzUtility.triggerJobFromTriggerName(quartzScheduler, triggerName)
-    }
-
-    TriggerKey triggerJobFromTriggerName(String triggerName, JobDataMap dataMap) {
-        QuartzUtility.triggerJobFromTriggerName(quartzScheduler, triggerName, dataMap)
+        QuartzUtils.triggerSchedules
     }
 
     TriggerKey triggerJobFromTrigger(org.quartz.Trigger trigger, JobDataMap dataMap) {
-        QuartzUtility.triggerJobFromTrigger(quartzScheduler, trigger, dataMap)
+        QuartzUtils.triggerJobFromTrigger(quartzScheduler, trigger, dataMap)
     }
 
     TriggerKey triggerJobFromTrigger(org.quartz.Trigger trigger) {
-        QuartzUtility.triggerJobFromTrigger(quartzScheduler, trigger)
+        QuartzUtils.triggerJobFromTrigger(quartzScheduler, trigger)
     }
 
     org.quartz.Trigger getTriggerNowTrigger(org.quartz.Trigger trigger, JobDataMap dataMap) {
-        QuartzUtility.getTriggerNowTrigger(trigger, dataMap)
+        QuartzUtils.getTriggerNowTrigger(trigger, dataMap)
     }
 
     /**
@@ -112,11 +92,11 @@ class QuartzService {
     }
 
     org.quartz.Trigger getTriggerNowTrigger(org.quartz.Trigger trigger) {
-        QuartzUtility.getTriggerNowTrigger(trigger)
+        QuartzUtils.getTriggerNowTrigger(trigger)
     }
 
     org.quartz.Trigger getTrigger(String triggerName) {
-        QuartzUtility.getTrigger(quartzScheduler, triggerName)
+        QuartzUtils.getTrigger(quartzScheduler, triggerName)
     }
 
     /**
@@ -195,7 +175,7 @@ class QuartzService {
     }
 
     void eachTrigger(Closure closure) {
-        QuartzUtility.eachTrigger(quartzScheduler, closure)
+        QuartzUtils.eachTrigger(quartzScheduler, closure)
     }
 
     Map getJobListModel(badEmails, Set alerts) {
