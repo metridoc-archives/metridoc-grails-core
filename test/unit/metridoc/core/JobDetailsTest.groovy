@@ -17,8 +17,8 @@ class JobDetailsTest {
     def foo = new JobDetails(jobName: "foo")
 
     @Test
-    void "if there is no config, then generate config will return null"() {
-        assert null == foo.generateConfigObject()
+    void "if there is no config, then generate config will return an empty config"() {
+        assert foo.generateConfigObject().isEmpty()
     }
 
     @Test
