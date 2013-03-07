@@ -5,3 +5,4 @@ pom.xml*
 test-reports
 *.sha1
 grails-plugin-metridoc-core-*.jar
+tomcat-*
