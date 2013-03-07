@@ -186,6 +186,7 @@ class QuartzController {
             }
 
             return [
+                    description: jobDetails.description ?: "No description available",
                     jobLog: jobLog,
                     config: config,
                     trigger: trigger,

@@ -4,7 +4,7 @@ function makeUpdateButtonAppear() {
 }
 $('#availableSchedules').change(makeUpdateButtonAppear);
 $('#arguments').change(makeUpdateButtonAppear);
-
+$('#description').change(makeUpdateButtonAppear);
 
 function editorChange() {
     makeUpdateButtonAppear()
@@ -17,3 +17,5 @@ editor = CodeMirror.fromTextArea(document.getElementById('code'), {
     matchBrackets: true,
     onKeyEvent: editorChange
 });
+
+$('#editDescription').tooltip();

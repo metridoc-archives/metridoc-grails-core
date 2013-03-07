@@ -9,8 +9,11 @@
         </g:else>
 
         <g:if test="${hasModule}">
-            <r:require module="${module}" strict="false"/>
+            <r:require module="${module}"/>
         </g:if>
+        <g:else>
+            <r:require module="${controllerName}" strict="false"/>
+        </g:else>
     </head>
 
     <body>

@@ -1,6 +1,7 @@
 package metridoc.core
 
 import grails.plugin.quartz2.GrailsArtefactJob
+import groovy.grape.Grape
 import metridoc.utils.ConfigObjectUtils
 import metridoc.utils.JobTrigger
 import metridoc.utils.QuartzUtils
@@ -21,6 +22,7 @@ class QuartzService {
 
     static final GROOVY_VERSION = "2.0.5"
     static final GROOVY_DISTRIBUTION = "http://dist.groovy.codehaus.org/distributions/groovy-binary-${GROOVY_VERSION}.zip"
+    private static final String DISABLE_GRAPE = 'groovy.grape.enable'
     def quartzScheduler
     def grailsApplication
     def pluginManager
@@ -266,10 +268,15 @@ class QuartzService {
     }
 
     Job buildRemoteScriptJob(String jobName) {
+        //we do not want to deal with grape issues, this could pollute our classpath
+        Grape.setEnableGrapes(false)
         def jobDetails = JobDetails.findByJobName(jobName)
         String url = jobDetails.url
         try {
             def shell = new GroovyShell()
+            int slashLocation = url.lastIndexOf("/")
+            def baseUrl = url.substring(0, slashLocation + 1)
+            shell.classLoader.addURL(new URL(baseUrl))
             def content = jobDetails.convertUrlToContent()
             def script = shell.parse(content)
             def scriptJob = new ScriptJob(script)

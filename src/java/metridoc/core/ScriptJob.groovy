@@ -36,6 +36,12 @@ class ScriptJob implements InterruptableJob {
         if (arguments) {
             script.args = arguments
         }
-        script.run()
+        def originalClassLoader = Thread.currentThread().contextClassLoader
+        try {
+            Thread.currentThread().setContextClassLoader(script.class.classLoader)
+            script.run()
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalClassLoader)
+        }
     }
 }

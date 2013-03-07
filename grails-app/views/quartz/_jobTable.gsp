@@ -19,8 +19,7 @@
             <g:else>
                 <td><a href="<g:createLink action="show" id="${job.trigger?.name}"/>">${job.trigger?.name}</a></td>
             </g:else>
-            <td class="quartz-tooltip quartz-status ${job.status ?: "not-run"}"
-                data-tooltip="${job.tooltip}">${job.lastRun}</td>
+            <td class="quartz-tooltip quartz-status ${job.status ?: "not-run"}" data-toggle="tooltip" data-original-title="${job.tooltip}">${job.lastRun}</td>
             <td class="quartz-to-hide">${job.tooltip}</td>
             <g:if test="${scheduler.isInStandbyMode() || job.triggerStatus == org.quartz.Trigger.TriggerState.PAUSED}">
                 <td class="hasCountdown countdown_amount">Paused</td>

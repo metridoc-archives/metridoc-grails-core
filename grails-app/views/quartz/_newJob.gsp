@@ -8,17 +8,21 @@
     <g:form action="newJob" class="form-horizontal">
         <div class="modal-body">
             <div class="control-group">
+                <label for="description" class="control-label">Description:</label>
+                <div class="controls">
+                    <textarea name="description" id="description"></textarea>
+                </div>
                 <label for="url" class="control-label">Script to run (url):</label>
                 <div class="controls">
                     <input type="text" name="url" id="url" required=""/>
                 </div>
-            </div>
-            <div class="control-group">
                 <label for="jobName" class="control-label">Job name:</label>
                 <div class="controls">
                     <input type="text" name="jobName" id="jobName" required=""/>
                 </div>
+
             </div>
+
         </div>
 
     <div class="modal-footer">

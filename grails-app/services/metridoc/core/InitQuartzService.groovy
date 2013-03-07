@@ -102,16 +102,18 @@ class InitQuartzService {
         details.each {
             def trigger = it.convertTriggerToQuartzTrigger()
             trigger.key = new TriggerKey(it.jobName)
-            trigger.jobName = it.template
-            trigger.startTime = new Date()
-            if (it.jobTrigger == NEVER) {
-                long fiftyYears = TimeUnit.DAYS.toMillis(365 * 50)
-                trigger.startTime = new Date(new Date().time + fiftyYears)
+            if (!quartzScheduler.getTrigger(trigger.key)) {
+                trigger.jobName = it.template
+                trigger.startTime = new Date()
+                if (it.jobTrigger == NEVER) {
+                    long fiftyYears = TimeUnit.DAYS.toMillis(365 * 50)
+                    trigger.startTime = new Date(new Date().time + fiftyYears)
+                }
+                SimpleJobDetail quartzDetails = new SimpleJobDetail()
+                quartzDetails.key = new JobKey(it.template)
+                quartzScheduler.addJob(quartzDetails, true)
+                quartzScheduler.scheduleJob(trigger)
             }
-            SimpleJobDetail quartzDetails = new SimpleJobDetail()
-            quartzDetails.key = new JobKey(it.template)
-            quartzScheduler.addJob(quartzDetails, true)
-            quartzScheduler.scheduleJob(trigger)
         }
     }
 }

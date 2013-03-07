@@ -9,18 +9,26 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <md:report module="quartzShow">
     <md:header>Trigger Details</md:header>
-
+    <tmpl:editDescription></tmpl:editDescription>
+    <p id="description">${description} <a href="#"
+                                         id="editDescription"
+                                         data-toggle="tooltip"
+                                         data-original-title="Edit description"
+                                         data-placement="right"><i class="icon-edit"></i></a>
+    </p>
+    <br/>
     <g:form class="form-horizontal" action="updateSchedule" id="${triggerName}">
         <div class="control-group">
             <label for="triggerName" class="control-label">Trigger Name:</label>
 
             <div class="controls">
-                <input name="triggerName" type="text" disabled="" value="${triggerName}"/>
+                <input name="triggerName" id="triggerName" type="text" disabled="" value="${triggerName}"/>
             </div>
+
             <label for="nextFireTime" class="control-label">Next Fire Time:</label>
 
             <div class="controls">
-                <input name="nextFireTime" type="text" disabled="" value="${nextFireTime}"/>
+                <input name="nextFireTime" id="nextFireTime" type="text" disabled="" value="${nextFireTime}"/>
             </div>
             <label for="availableSchedules" class="control-label">Available Schedules:</label>
 
@@ -29,11 +37,13 @@
             </div>
 
             <label for="arguments" class="control-label">Arguments:</label>
+
             <div class="controls">
                 <input id="arguments" name="arguments" type="text" value="${arguments}"/>
             </div>
 
             <label for="config" class="control-label">Configuration (url or groovy):</label>
+
             <div class="controls">
                 <g:textArea name="config" id="code" value="${config}"/>
             </div>

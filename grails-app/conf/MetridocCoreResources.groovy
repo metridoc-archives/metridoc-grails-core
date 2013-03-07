@@ -47,9 +47,12 @@ modules = {
     }
 
     quartzShow {
-        dependsOn 'codeMirrorGroovy'
+        dependsOn 'application', 'codeMirrorGroovy'
+        resource id: 'showCss',
+                url: [dir: "quartz/css", file: "show.css", plugin: "metridocCore"]
         resource id: 'showJs',
-                url: [dir: "quartz/js", file: "show.js", plugin: "metridocCore"]
+                url: [dir: "quartz/js", file: "show.js", plugin: "metridocCore"],
+                disposition: 'defer'
     }
 
     manageConfig {
