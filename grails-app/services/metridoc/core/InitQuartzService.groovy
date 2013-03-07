@@ -89,6 +89,8 @@ class InitQuartzService {
                 detail.jobTrigger = IN_CODE
                 detail.classToRun = trigger.jobKey.name
                 detail.jobName = jobName
+                detail.template = trigger.jobKey.name
+                detail.save()
             }
         }
     }

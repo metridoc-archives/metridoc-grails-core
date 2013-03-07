@@ -171,4 +171,8 @@ class JobDetails {
 
         return new ConfigObject()
     }
+
+    String convertUrlToContent() {
+        new URL(url).text
+    }
 }

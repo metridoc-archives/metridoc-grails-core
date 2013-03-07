@@ -266,10 +266,17 @@ class QuartzService {
     }
 
     Job buildRemoteScriptJob(String jobName) {
-        def shell = new GroovyShell()
-        def url = JobDetails.findByJobName(jobName)
-        def script = shell.parse(url)
-        return new ScriptJob(script: script)
+        def jobDetails = JobDetails.findByJobName(jobName)
+        String url = jobDetails.url
+        try {
+            def shell = new GroovyShell()
+            def content = jobDetails.convertUrlToContent()
+            def script = shell.parse(content)
+            def scriptJob = new ScriptJob(script)
+            return new GrailsArtefactJob(scriptJob)
+        } catch (Throwable throwable) {
+            log.error("Could not run the remote script $url", throwable)
+        }
     }
 
     Job buildJob(String grailsJobName) {

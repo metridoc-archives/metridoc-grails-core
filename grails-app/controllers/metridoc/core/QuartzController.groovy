@@ -14,6 +14,7 @@ class QuartzController {
 
     private static final String LIST = "list"
     static final String JOB_FAILURE_SCOPE = "jobFailure"
+    def initQuartzService
 
     /**
      * By default only admins can access this controller
@@ -261,6 +262,7 @@ class QuartzController {
         details = new JobDetails(jobName: jobName, url: url, template: template, jobTrigger: JobTrigger.NEVER)
         details.save()
         flash.infos << "Job $jobName has been added"
+        initQuartzService.handleUrlBasedScripts()
         redirect(action: LIST)
     }
 
