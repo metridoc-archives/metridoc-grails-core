@@ -10,9 +10,9 @@
 <md:report module="quartzShow">
     <md:header>Trigger Details</md:header>
     <tmpl:editDescription></tmpl:editDescription>
-    <p id="description">${description} <a href="#"
+    <p id="description">${description} <a href="#descriptionModal"
                                          id="editDescription"
-                                         data-toggle="tooltip"
+                                         data-toggle="modal"
                                          data-original-title="Edit description"
                                          data-placement="right"><i class="icon-edit"></i></a>
     </p>

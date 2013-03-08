@@ -13,7 +13,9 @@ import org.quartz.*
 class QuartzController {
 
     private static final String LIST = "list"
+    private static final Map TO_LIST = [action: LIST]
     static final String JOB_FAILURE_SCOPE = "jobFailure"
+    public static final String NO_DESCRIPTION = "No description available"
     def initQuartzService
 
     /**
@@ -75,7 +77,7 @@ class QuartzController {
     }
 
     def runNow(@RequestParameter("id") String triggerName) {
-        doTriggerOperation(triggerName){Trigger trigger ->
+        doTriggerOperation(triggerName) { Trigger trigger ->
             use(QuartzUtils) {
                 def dataMap = new JobDataMap(params)
                 quartzScheduler.triggerJobFromTrigger(trigger, dataMap)
@@ -91,7 +93,7 @@ class QuartzController {
         if (triggerName) {
             use(QuartzUtils) {
                 Trigger trigger = quartzScheduler.searchForTrigger(triggerName)
-                if(trigger) {
+                if (trigger) {
                     result = operation.call(trigger)
                 } else {
                     errorChain("Could not find trigger for trigger name ${triggerName}")
@@ -123,7 +125,7 @@ class QuartzController {
         }
     }
 
-    def jobTableOnly(){
+    def jobTableOnly() {
         quartzService.getJobListModel()
     }
 
@@ -138,7 +140,7 @@ class QuartzController {
     }
 
     def stopJob(@RequestParameter("id") String triggerName) {
-        doTriggerOperation(triggerName){
+        doTriggerOperation(triggerName) {
             def displayJob = QuartzMonitorJobFactory.jobRuns.get(triggerName)
             if (displayJob == null) {
                 flash.alert = "job $triggerName does not exist"
@@ -160,7 +162,7 @@ class QuartzController {
     }
 
     def show(@RequestParameter("id") String triggerName, String errorConfig) {
-        doTriggerOperation(triggerName){Trigger trigger ->
+        doTriggerOperation(triggerName) { Trigger trigger ->
             def jobDetails = JobDetails.findByJobName(triggerName)
             def currentSchedule = jobDetails ? jobDetails.jobTrigger.toString() : "DEFAULT"
             boolean manual = QuartzUtils.isManual(trigger)
@@ -186,7 +188,7 @@ class QuartzController {
             }
 
             return [
-                    description: jobDetails.description ?: "No description available",
+                    description: jobDetails.description ?: NO_DESCRIPTION,
                     jobLog: jobLog,
                     config: config,
                     trigger: trigger,
@@ -194,21 +196,18 @@ class QuartzController {
                     triggerName: trigger.key.name,
                     nextFireTime: trigger.nextFireTime,
                     availableSchedules: triggerSchedules,
-                    arguments:jobDetails ? jobDetails.arguments : null
+                    arguments: jobDetails ? jobDetails.arguments : null
             ]
         }
     }
 
     def updateSchedule(@RequestParameter("id") String triggerName, String availableSchedules, String config, String arguments) {
-        doTriggerOperation(triggerName){Trigger trigger ->
+        doTriggerOperation(triggerName) { Trigger trigger ->
 
-            JobDetails jobDetails
-            if (config) {
-                jobDetails = quartzService.getJobDetailsByTrigger(triggerName)
-                jobDetails.config = config
-                jobDetails.arguments = arguments
-                jobDetails.save()
-            }
+            JobDetails jobDetails = quartzService.getJobDetailsByTrigger(triggerName)
+            jobDetails.config = config
+            jobDetails.arguments = arguments
+            jobDetails.save()
 
             if (jobDetails && jobDetails.errors.errorCount) {
                 if (jobDetails.errors.getFieldError("config")) {
@@ -254,7 +253,7 @@ class QuartzController {
         }
 
         def details = JobDetails.findByJobName(jobName)
-        if(details) {
+        if (details) {
             errorChain("${jobName} already exists")
             return
         }
@@ -265,6 +264,17 @@ class QuartzController {
         flash.infos << "Job $jobName has been added"
         initQuartzService.handleUrlBasedScripts()
         redirect(action: LIST)
+    }
+
+    def saveDescription(@RequestParameter("id") String jobName, String description) {
+        def jobDetails
+        doTriggerOperation(jobName) {
+            jobDetails = JobDetails.findByJobName(jobName)
+            jobDetails.description = description
+            jobDetails.save(failOnError: true)
+        }
+
+        redirect(action: "show", id: jobName)
     }
 
     private static jobKey(name, group) {

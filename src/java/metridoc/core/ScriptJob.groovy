@@ -14,7 +14,7 @@ import org.quartz.UnableToInterruptJobException
  */
 class ScriptJob implements InterruptableJob {
     private Script script
-    private String arguments
+    String arguments
 
     ScriptJob(Script script) {
         this.script = script
@@ -34,7 +34,7 @@ class ScriptJob implements InterruptableJob {
         }
 
         if (arguments) {
-            script.args = arguments
+            script.args = arguments.split(" ")
         }
         def originalClassLoader = Thread.currentThread().contextClassLoader
         try {
