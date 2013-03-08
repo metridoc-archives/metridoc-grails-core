@@ -1,26 +1,12 @@
-<div id="quartzModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<md:saveModal action="saveSettings" name="quartz" header="Quartz Settings">
+    <div class="control-group">
+        <div>
+            <div>Email on Failures</div>
 
-        <h3 id="myModalLabel">Quartz Settings</h3>
-    </div>
-    <g:form action="saveSettings">
-        <div class="modal-body">
-
-            <div>
-                <div>Email on Failures</div>
-
-                <div class="textContainer">
-                    <g:textArea name="emails">${notificationEmails}</g:textArea>
-                </div>
+            <div class="textContainer">
+                <g:textArea name="emails">${notificationEmails}</g:textArea>
             </div>
-
         </div>
+    </div>
+</md:saveModal>
 
-        <div class="modal-footer">
-            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-            <button class="btn" type="submit" value="Save" id="saveSettingsButton">Save changes</button>
-        </div>
-    </g:form>
-</div>

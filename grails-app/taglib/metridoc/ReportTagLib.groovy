@@ -1,5 +1,6 @@
 package metridoc
 
+import org.apache.commons.lang.StringUtils
 import org.apache.log4j.Level
 import org.springframework.util.Assert
 
@@ -85,6 +86,39 @@ class ReportTagLib {
         out << render(
                 template: "/reports/alerts",
                 plugin: "metridocCore"
+        )
+    }
+
+    /**
+     * Creates a save / cancel bootstrap modal
+     *
+     * @attr name name of the modal, optional, defaults to controllerName
+     * @attr header header of the modal, required
+     * @attr action action of the form, optional
+     * @attr method method of the form, optional
+     * @attr controller controller of the form, optional
+     * @attr id id of the form, optional
+     * @attr save the value assigned to the save submit button, optional, 'Save changes' by deafault
+     * @attr formClass class value for the form, optional
+     */
+    def saveModal = { attrs, body ->
+        Assert.isTrue(attrs.header != null && attrs.header != StringUtils.EMPTY, "header variable MUST be added")
+        def model = [
+                modalBody: body(),
+                modalName: attrs.name ?: controllerName,
+                modalHeader: attrs.header,
+                modalFormAction: attrs.action,
+                modalFormMethod: attrs.method,
+                modalFormController: attrs.controller,
+                modalFormId: attrs.id,
+                modalSaveChanges: attrs.save ?: "Save changes",
+                modalFormClass: attrs.formClass
+        ]
+
+        out << render(
+                template: "/reports/saveModal",
+                plugin: "metridocCore",
+                model: model
         )
     }
 }
