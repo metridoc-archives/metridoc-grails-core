@@ -195,7 +195,12 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
         }
 
         public void addToolTip() {
-            String jobRunTime = "Most recent job ran in " + duration + "ms";
+            String jobRunTime = null;
+            if(duration == null) {
+                jobRunTime = "Job has not run yet";
+            } else {
+                jobRunTime = "Most recent job ran in " + duration + "ms";
+            }
             String jobException = error != null ? ", with error " + error : "";
             String tooltip = jobRunTime + jobException;
             setTooltip(tooltip);
