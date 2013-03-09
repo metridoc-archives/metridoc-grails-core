@@ -5,7 +5,12 @@ import grails.web.RequestParameter
 import metridoc.utils.JobTrigger
 import metridoc.utils.QuartzUtils
 import org.apache.commons.lang.exception.ExceptionUtils
-import org.quartz.*
+import org.quartz.JobDataMap
+import org.quartz.JobKey
+import org.quartz.Trigger
+import org.quartz.UnableToInterruptJobException
+
+import static org.quartz.utils.Key.DEFAULT_GROUP
 
 /**
  * Manages the installed jobs in metridoc
@@ -66,13 +71,13 @@ class QuartzController {
         redirect(action: LIST)
     }
 
-    def pause() {
-        quartzScheduler.pauseJob(jobKey(params.jobName, params.jobGroup))
+    def pause(@RequestParameter("id") String jobName) {
+        quartzScheduler.pauseJob(jobKey(jobName, DEFAULT_GROUP))
         redirect(action: LIST)
     }
 
-    def resume() {
-        quartzScheduler.resumeJob(jobKey(params.jobName, params.jobGroup))
+    def resume(@RequestParameter("id") String jobName) {
+        quartzScheduler.resumeJob(jobKey(jobName, DEFAULT_GROUP))
         redirect(action: LIST)
     }
 
@@ -230,6 +235,7 @@ class QuartzController {
         }
     }
 
+    @SuppressWarnings("GroovyUnusedCatchParameter")
     def newJob(String url, String jobName) {
         if (!url || !jobName) {
             errorChain("url and job name must not be blank or null")
@@ -239,7 +245,7 @@ class QuartzController {
         def usedUrl
         try {
             usedUrl = new URL(url)
-        } catch (MalformedURLException e) {
+        } catch (MalformedURLException ignore) {
             errorChain("url $url is not a valid url")
             return
         }

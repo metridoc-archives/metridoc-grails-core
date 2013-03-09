@@ -2,8 +2,8 @@ var FIVE_MINUTES = 1000 * 60 * 5;
 
 addCountDownAndJobDetails();
 addWindowRefresh();
-addToolTips()
-addClock()
+addToolTips();
+addClock();
 
 function addClock() {
     var clock = $('#clock');
@@ -11,10 +11,10 @@ function addClock() {
 }
 
 function addToolTips() {
-    $('#new-job').tooltip()
-    $('#quartz-settings').tooltip()
-    $('#start-scheduler').tooltip()
-    $('#stop-scheduler').tooltip()
+    $('#new-job').tooltip();
+    $('#quartz-settings').tooltip();
+    $('#start-scheduler').tooltip();
+    $('#stop-scheduler').tooltip();
 }
 
 function reloadWindow(delay) {
@@ -36,7 +36,7 @@ function addWindowRefresh() {
     var today = new Date();
     var time = today.getTime();
 
-    $("#quartz-jobs tr").each(function (index) {
+    $("#quartz-jobs").find("tr").each(function (index) {
         if (index != 0) {
             var row = $(this).find("td");
             var countDown = row[4];
@@ -114,5 +114,19 @@ function addCountDownAndJobDetails() {
             }
         };
     $(init);
+}
+
+function submitJobTableForm(action, jobName, question) {
+    var tableForm = $('#quartz-table-form');
+    tableForm.attr("action", action + "/" + jobName);
+
+    //TODO: at some point let's implement a nice modal yes / no here
+    if (question != undefined && question != '') {
+        if (confirm('Are you sure you want to ' + question + '?')) {
+            tableForm.submit()
+        }
+    } else {
+        tableForm.submit()
+    }
 }
 

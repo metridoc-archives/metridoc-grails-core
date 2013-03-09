@@ -2,7 +2,6 @@ package metridoc.core;
 
 import grails.plugin.quartz2.GrailsArtefactJob;
 import grails.plugin.quartz2.GrailsArtefactJobDetailFactoryBean;
-import groovy.lang.Script;
 import groovy.util.ConfigObject;
 import org.hibernate.SessionFactory;
 import org.quartz.*;
@@ -52,7 +51,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
 
         if (grailsJobName != null) {
             job = quartzService.buildJob(grailsJobName);
-        } else if(quartzService.isRemoteScriptJob(triggerName)) {
+        } else if (quartzService.isRemoteScriptJob(triggerName)) {
             job = quartzService.buildRemoteScriptJob(triggerName);
         } else {
             job = super.newJob(bundle, scheduler);
@@ -120,9 +119,9 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
 
         public void execute(final JobExecutionContext context) throws JobExecutionException {
             try {
-                Long lastDuration = null;
+                Long lastDuration;
                 String jobName = trigger.getKey().getName();
-                lastDuration = quartzService.getLastDuration(jobName);
+                lastDuration = QuartzService.getLastDuration(jobName);
                 Date lastRunUsed = new Date();
                 String lastTooltip = getTooltip();
                 clearDetails();
@@ -164,7 +163,8 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
                 try {
                     setInterrupting(false);
                 } catch (UnableToInterruptJobException e) {
-                    throw new JobExecutionException(e);
+                    String errorMessage = "Could not set interrupt to false for trigger " + currentTrigger.getKey().getName();
+                    displayLogger.warn(errorMessage);
                 }
                 JobDataMap jobData = currentTrigger.getJobDataMap();
                 if (jobData.containsKey("oldTrigger")) {
@@ -195,15 +195,12 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
         }
 
         public void addToolTip() {
-            String jobRunTime = null;
-            if(duration == null) {
-                jobRunTime = "Job has not run yet";
-            } else {
-                jobRunTime = "Most recent job ran in " + duration + "ms";
+            if (duration != null) {
+                String jobRunTime = "Most recent job ran in " + duration + "ms";
+                String jobException = error != null ? ", with error " + error : "";
+                String tooltip = jobRunTime + jobException;
+                setTooltip(tooltip);
             }
-            String jobException = error != null ? ", with error " + error : "";
-            String tooltip = jobRunTime + jobException;
-            setTooltip(tooltip);
         }
 
         public void setDuration(Long duration) {
@@ -225,6 +222,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
             }
         }
 
+        @SuppressWarnings("UnusedDeclaration")
         public Boolean getInterrupting() {
             return this.interrupting;
         }
@@ -233,6 +231,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
             this.status = status;
         }
 
+        @SuppressWarnings("UnusedDeclaration")
         public String getStatus() {
             if (this.status != null) {
                 return this.status.toString().toLowerCase();
@@ -272,6 +271,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
             this.tooltip = tooltip;
         }
 
+        @SuppressWarnings("UnusedDeclaration")
         public String getJobGroup() {
             if (jobKey != null) {
                 return jobKey.getGroup();
@@ -279,6 +279,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
             return null;
         }
 
+        @SuppressWarnings("UnusedDeclaration")
         public String getJobName() {
             if (jobKey != null) {
                 return jobKey.getName();
@@ -286,6 +287,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
             return null;
         }
 
+        @SuppressWarnings("UnusedDeclaration")
         public JobKey getJobKey() {
             return jobKey;
         }
@@ -294,6 +296,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
             this.jobKey = jobKey;
         }
 
+        @SuppressWarnings("UnusedDeclaration")
         public GrailsArtefactJob getJob() {
             return job;
         }
@@ -302,6 +305,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
             this.job = job;
         }
 
+        @SuppressWarnings("UnusedDeclaration")
         public SessionFactory getSessionFactory() {
             return sessionFactory;
         }
@@ -310,6 +314,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
             this.sessionFactory = sessionFactory;
         }
 
+        @SuppressWarnings("UnusedDeclaration")
         public Trigger.TriggerState getTriggerStatus() {
             return triggerStatus;
         }
@@ -326,6 +331,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
             this.trigger = trigger;
         }
 
+        @SuppressWarnings("UnusedDeclaration")
         public boolean isManualJob() {
             return manualJob;
         }
@@ -334,6 +340,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
             this.manualJob = manualJob;
         }
 
+        @SuppressWarnings("UnusedDeclaration")
         public QuartzService getQuartzService() {
             return quartzService;
         }
@@ -342,6 +349,7 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
             this.quartzService = quartzService;
         }
 
+        @SuppressWarnings("CloneDoesntCallSuperClone")
         @Override
         protected Object clone() throws CloneNotSupportedException {
             QuartzDisplayJob clone = new QuartzDisplayJob();
