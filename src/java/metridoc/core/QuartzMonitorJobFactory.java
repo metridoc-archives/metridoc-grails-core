@@ -323,6 +323,17 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
             this.triggerStatus = triggerStatus;
         }
 
+        //TODO: we should abstract out the concept of a job to make this more extendable, maybe someone
+        //TODO: wants to create a ruby or python job...
+
+        /**
+         * @return indication whether this job is a script job or not
+         */
+        @SuppressWarnings("UnusedDeclaration")
+        public boolean isScriptJob() {
+            return trigger != null && quartzService.isRemoteScriptJob(trigger.getKey().getName());
+        }
+
         public Trigger getTrigger() {
             return trigger;
         }

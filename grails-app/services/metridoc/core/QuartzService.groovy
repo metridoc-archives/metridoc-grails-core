@@ -5,7 +5,6 @@ import groovy.grape.Grape
 import metridoc.utils.ConfigObjectUtils
 import metridoc.utils.JobTrigger
 import metridoc.utils.QuartzUtils
-import org.apache.commons.lang.SerializationUtils
 import org.apache.commons.lang.StringUtils
 import org.apache.commons.lang.SystemUtils
 import org.apache.commons.lang.exception.ExceptionUtils
@@ -156,7 +155,7 @@ class QuartzService {
         return mergedConfig
     }
 
-    static void addConfigToBinding(ConfigObject config, Binding binding) {
+    static void addConfigToBinding(Map config, Binding binding) {
         if (config) {
             binding.setVariable("config", config)
         }
@@ -238,7 +237,7 @@ class QuartzService {
         jobRuns.save()
     }
 
-    private static QuartzMonitorJobFactory.QuartzDisplayJob createJob(String jobGroup, String jobName, List<QuartzMonitorJobFactory.QuartzDisplayJob> jobsList, triggerName = "") {
+    private QuartzMonitorJobFactory.QuartzDisplayJob createJob(String jobGroup, String jobName, List<QuartzMonitorJobFactory.QuartzDisplayJob> jobsList, String triggerName = "") {
         def displayJob = QuartzMonitorJobFactory.jobRuns.get(triggerName)
         if (!displayJob) {
             displayJob = new QuartzMonitorJobFactory.QuartzDisplayJob()
@@ -255,7 +254,7 @@ class QuartzService {
                     }
                 }
                 displayJob.addToolTip()
-
+                displayJob.quartzService = this
             }
         }
 
@@ -282,7 +281,8 @@ class QuartzService {
             def scriptJob = new ScriptJob(script)
             return new GrailsArtefactJob(scriptJob)
         } catch (Throwable throwable) {
-            log.error("Could not run the remote script $url", throwable)
+            log.error("Could not build the remote script $url", throwable)
+            throw throwable
         }
     }
 

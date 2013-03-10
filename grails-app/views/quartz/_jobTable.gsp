@@ -62,6 +62,11 @@
                                                    jobName="${job.trigger.key.name}"/>
                         </g:if>
                     </g:else>
+                    <g:if test="${job.scriptJob}">
+                        <tmpl:quartzActionLink action="deleteJob" icon="icon-trash"
+                                               question="delete job ${job.trigger.key.name}"
+                                               jobName="${job.trigger.key.name}"/>
+                    </g:if>
                 </td>
             </tr>
         </g:each>

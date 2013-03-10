@@ -5,10 +5,7 @@ import grails.web.RequestParameter
 import metridoc.utils.JobTrigger
 import metridoc.utils.QuartzUtils
 import org.apache.commons.lang.exception.ExceptionUtils
-import org.quartz.JobDataMap
-import org.quartz.JobKey
-import org.quartz.Trigger
-import org.quartz.UnableToInterruptJobException
+import org.quartz.*
 
 import static org.quartz.utils.Key.DEFAULT_GROUP
 
@@ -39,9 +36,7 @@ class QuartzController {
             """
     ]
 
-    static final Map triggers = [:]
-
-    def quartzScheduler
+    Scheduler quartzScheduler
     def quartzService
 
     /**
@@ -65,12 +60,6 @@ class QuartzController {
         quartzService.getJobListModel(params.badEmails, flash.alerts)
     }
 
-    def start() {
-        def trigger = triggers.get(params.jobName)
-        quartzScheduler.scheduleJob(trigger)
-        redirect(action: LIST)
-    }
-
     def pause(@RequestParameter("id") String jobName) {
         quartzScheduler.pauseJob(jobKey(jobName, DEFAULT_GROUP))
         redirect(action: LIST)
@@ -79,6 +68,22 @@ class QuartzController {
     def resume(@RequestParameter("id") String jobName) {
         quartzScheduler.resumeJob(jobKey(jobName, DEFAULT_GROUP))
         redirect(action: LIST)
+    }
+
+    def deleteJob(@RequestParameter("id") String jobName) {
+        doTriggerOperation(jobName) {
+            def runs = JobRuns.where {
+                details.jobName == jobName
+            }.findAll()
+            runs.each {
+                it.delete()
+            }
+            def jobDetails = JobDetails.findByJobName(jobName)
+            jobDetails.delete()
+            quartzScheduler.unscheduleJob(new TriggerKey(jobName))
+            quartzScheduler.deleteJob(new JobKey(jobDetails.template))
+            redirect(TO_LIST)
+        }
     }
 
     def runNow(@RequestParameter("id") String triggerName) {

@@ -16,6 +16,9 @@ class ScriptJob implements InterruptableJob {
     private Script script
     String arguments
 
+    ScriptJob() {
+    }
+
     ScriptJob(Script script) {
         this.script = script
     }
@@ -25,7 +28,7 @@ class ScriptJob implements InterruptableJob {
     }
 
     void execute(JobExecutionContext context) throws JobExecutionException {
-        def binding = script.binding
+        Binding binding = script.binding
         binding.setVariable("jobExecutionContext", context)
         def config = context.getTrigger().getJobDataMap().get("config")
 
