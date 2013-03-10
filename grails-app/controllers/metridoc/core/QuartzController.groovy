@@ -171,7 +171,7 @@ class QuartzController {
         redirect(action: LIST)
     }
 
-    def show(@RequestParameter("id") String triggerName, String errorConfig) {
+    def show(@RequestParameter("id") String triggerName, String errorConfig, String errorCron) {
         doTriggerOperation(triggerName) { Trigger trigger ->
             def jobDetails = JobDetails.findByJobName(triggerName)
             def currentSchedule = jobDetails.jobTrigger
@@ -185,10 +185,15 @@ class QuartzController {
             }
 
             def config = errorConfig
+            def cron = errorCron
             if (!errorConfig) {
                 //if we dont have the config then get it from the database
                 def jobConfig = JobDetails.findByJobName(triggerName)
                 config = jobConfig ? jobConfig.config : null
+            }
+
+            if (!errorCron) {
+                cron = jobDetails.cron
             }
             if (!trigger) return
             def jobLog = null
@@ -201,6 +206,7 @@ class QuartzController {
                     description: jobDetails.description ?: NO_DESCRIPTION,
                     isScriptJob: jobDetails.url ? true : false,
                     scriptUrl: jobDetails.url,
+                    cron: cron,
                     jobLog: jobLog,
                     config: config,
                     trigger: trigger,
@@ -213,12 +219,15 @@ class QuartzController {
         }
     }
 
-    def updateSchedule(@RequestParameter("id") String triggerName, String availableSchedules, String config, String arguments) {
+    def updateSchedule(@RequestParameter("id") String triggerName, String availableSchedules, String config,
+                       String arguments, String customCron) {
+
         doTriggerOperation(triggerName) { Trigger trigger ->
 
             JobDetails jobDetails = quartzService.getJobDetailsByTrigger(triggerName)
             jobDetails.config = config
             jobDetails.arguments = arguments
+            jobDetails.cron = customCron
             jobDetails.save()
 
             if (jobDetails && jobDetails.errors.errorCount) {
@@ -226,12 +235,15 @@ class QuartzController {
                     Throwable exception = JobDetails.getConfigException(config)
                     flash.alerts << "<pre>${ExceptionUtils.getStackTrace(exception)}</pre>"
                     log.error "Tried to store a bad configuration", exception
+                } else if (jobDetails.errors.getFieldError("cron")) {
+                    flash.alerts << "cron $jobDetails.cron is not a valid cron"
+                    log.error "Tried to store illegal cron $jobDetails.cron"
                 } else {
                     flash.alerts << "Unknown exception trying to save configuration"
                     log.error "Could not store job config: ${jobDetails.errors}"
                 }
 
-                def params = [errorConfig: config, id: triggerName]
+                def params = [errorConfig: config, errorCron: customCron, id: triggerName]
                 redirect(action: "show", params: params)
                 return
             }

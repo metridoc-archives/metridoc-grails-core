@@ -42,7 +42,8 @@
             <label for="availableSchedules" class="control-label">Available Schedules:</label>
 
             <div class="controls">
-                <g:select name="availableSchedules" from="${availableSchedules}" value="${currentSchedule}"/>
+                <g:select name="availableSchedules" from="${availableSchedules}" value="${currentSchedule.toString()}"/>
+                <input id="customCron" name="customCron" type="text" placeholder="* * * * ? *" value="${cron}"/>
             </div>
 
             <label for="arguments" class="control-label">Arguments:</label>

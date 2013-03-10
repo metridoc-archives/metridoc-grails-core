@@ -2,6 +2,7 @@ package metridoc.core
 
 import grails.util.Environment
 import metridoc.utils.JobTrigger
+import org.quartz.CronExpression
 import org.quartz.CronScheduleBuilder
 import org.quartz.SimpleScheduleBuilder
 import static metridoc.utils.JobTrigger.*
@@ -31,9 +32,16 @@ class JobDetails {
 
     static constraints = {
         arguments(nullable: true)
-        config(nullable: true)
         jobName(unique: true)
-        cron(nullable: true)
+        cron(
+                nullable: true,
+                validator:  {
+                    boolean invalidCron = !CronExpression.isValidExpression(it)
+                    if(invalidCron) {
+                        return "invalid.cron"
+                    }
+                }
+        )
         description(nullable: true, maxSize: Integer.MAX_VALUE)
         url(nullable: true)
         classToRun(nullable: true)
@@ -130,6 +138,8 @@ class JobDetails {
                 return CronScheduleBuilder.cronSchedule("0 0 22 * * ?").build()
             case TIME_23_00:
                 return CronScheduleBuilder.cronSchedule("0 0 23 * * ?").build()
+            case CUSTOM_CRON:
+                return CronScheduleBuilder.cronSchedule(cron).build()
             default:
                 throw new IllegalArgumentException("$jobTrigger is not supportted")
         }

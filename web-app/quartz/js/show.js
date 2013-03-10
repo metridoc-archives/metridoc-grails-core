@@ -5,6 +5,7 @@ function makeUpdateButtonAppear() {
 $('#availableSchedules').change(makeUpdateButtonAppear);
 $('#arguments').keypress(makeUpdateButtonAppear);
 $('#description').change(makeUpdateButtonAppear);
+$('#customCron').keypress(makeUpdateButtonAppear);
 
 function editorChange() {
     makeUpdateButtonAppear()
@@ -19,3 +20,19 @@ editor = CodeMirror.fromTextArea(document.getElementById('code'), {
 });
 
 $('#editDescription').tooltip();
+
+//handle custom cron
+$('#availableSchedules').change(doCronToggle);
+
+function doCronToggle() {
+    var selectedSchedule = $('#availableSchedules').val()
+    if(selectedSchedule === 'CUSTOM_CRON') {
+        $('#customCron').toggle(true)
+        $('#customCron').attr('required', "true")
+    } else {
+        $('#customCron').toggle(false)
+        $('#customCron').removeAttr('required')
+    }
+}
+
+$(document).ready(doCronToggle)

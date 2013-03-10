@@ -118,24 +118,22 @@ class QuartzService {
         Closure schedulerJob = plugin.scheduleJob
         schedulerJob.delegate = plugin
 
-        if ("DEFAULT" != triggerDescription) {
-            def jobDetails = getSchedule(triggerName, triggerDescription)
-            jobDetails.jobTrigger = JobTrigger.valueOf(triggerDescription)
-            jobDetails.save(flush: true, failOnError: true)
-            org.quartz.Trigger newTrigger
-            if (triggerDescription == "NEVER") {
-                long fiftyYears = TimeUnit.DAYS.toMillis(365 * 50)
-                newTrigger = jobDetails.convertTriggerToQuartzTrigger()
-                newTrigger.startTime = new Date(new Date().time + fiftyYears)
-            } else {
-                newTrigger = jobDetails.convertTriggerToQuartzTrigger()
-                newTrigger.startTime = new Date()
-            }
-
-            def key = new TriggerKey(triggerName)
-            newTrigger.key = key
-            quartzScheduler.rescheduleJob(key, newTrigger)
+        def jobDetails = getSchedule(triggerName, triggerDescription)
+        jobDetails.jobTrigger = JobTrigger.valueOf(triggerDescription)
+        jobDetails.save(flush: true, failOnError: true)
+        org.quartz.Trigger newTrigger
+        if (triggerDescription == "NEVER") {
+            long fiftyYears = TimeUnit.DAYS.toMillis(365 * 50)
+            newTrigger = jobDetails.convertTriggerToQuartzTrigger()
+            newTrigger.startTime = new Date(new Date().time + fiftyYears)
+        } else {
+            newTrigger = jobDetails.convertTriggerToQuartzTrigger()
+            newTrigger.startTime = new Date()
         }
+
+        def key = new TriggerKey(triggerName)
+        newTrigger.key = key
+        quartzScheduler.rescheduleJob(key, newTrigger)
     }
 
     JobDetails getSchedule(String triggerName, String description) {
