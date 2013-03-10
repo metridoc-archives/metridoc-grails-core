@@ -1,15 +1,7 @@
 package metridoc.utils
 
 import metridoc.core.JobDetails
-import org.quartz.JobDataMap
-import org.quartz.JobKey
-import org.quartz.Scheduler
-import org.quartz.SimpleScheduleBuilder
-import org.quartz.Trigger
-import org.quartz.TriggerBuilder
-import org.quartz.TriggerKey
-import org.quartz.core.QuartzScheduler
-import org.quartz.core.RemotableQuartzScheduler
+import org.quartz.*
 import org.quartz.impl.matchers.GroupMatcher
 
 import static org.springframework.util.Assert.notNull
@@ -33,7 +25,7 @@ class QuartzUtils {
         JobTrigger.values().each {
             result << it.toString()
         }
-        result << "DEFAULT"
+
         return result
     }
 
@@ -45,7 +37,7 @@ class QuartzUtils {
         def jobKey = new JobKey(jobName)
         List<org.quartz.Trigger> triggers = quartzScheduler.getTriggersOfJob(jobKey)
         if (triggers) {
-            return triggerJobFromTrigger(triggers[0], dataMap)
+            return triggerJobFromTrigger(quartzScheduler, triggers[0], dataMap)
         }
 
         quartzScheduler.triggerJob(jobKey, dataMap)
@@ -60,7 +52,7 @@ class QuartzUtils {
         def triggerKey = new TriggerKey(triggerName)
         org.quartz.Trigger trigger = quartzScheduler.getTrigger(triggerKey)
         notNull(trigger, "Could not find job ${triggerName}")
-        return triggerJobFromTrigger(trigger, dataMap)
+        return triggerJobFromTrigger(quartzScheduler, trigger, dataMap)
     }
 
     static TriggerKey triggerJobFromTrigger(Scheduler quartzScheduler, org.quartz.Trigger trigger, JobDataMap dataMap) {
@@ -111,10 +103,10 @@ class QuartzUtils {
 
     static void eachTrigger(Scheduler quartzScheduler, Closure closure) {
         def listJobGroups = quartzScheduler.getJobGroupNames()
-        listJobGroups?.each {jobGroup ->
+        listJobGroups?.each { jobGroup ->
             quartzScheduler.getJobKeys(GroupMatcher.groupEquals(jobGroup))?.each { jobKey ->
                 def triggers = quartzScheduler.getTriggersOfJob(jobKey)
-                triggers.each {Trigger trigger ->
+                triggers.each { Trigger trigger ->
                     closure.call(trigger)
                 }
             }

@@ -9,12 +9,13 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <md:report module="quartzShow">
     <md:header>Trigger Details</md:header>
-    <tmpl:editDescription></tmpl:editDescription>
-    <p id="description">${description} <a href="#descriptionModal"
-                                         id="editDescription"
-                                         data-toggle="modal"
-                                         data-original-title="Edit description"
-                                         data-placement="right"><i class="icon-edit"></i></a>
+    <tmpl:editDescription/>
+    <p id="description">${description} <!--suppress HtmlUnknownTarget -->
+        <a href="#descriptionModal"
+           id="editDescription"
+           data-toggle="modal"
+           data-original-title="Edit description"
+           data-placement="right"><i class="icon-edit"></i></a>
     </p>
     <br/>
     <g:form class="form-horizontal" action="updateSchedule" id="${triggerName}">
@@ -24,6 +25,14 @@
             <div class="controls">
                 <input name="triggerName" id="triggerName" type="text" disabled="" value="${triggerName}"/>
             </div>
+
+            <g:if test="${isScriptJob}">
+                <label for="scriptUrl" class="control-label">Script Url:</label>
+
+                <div class="controls">
+                    <input name="scriptUrl" id="scriptUrl" type="text" disabled="" value="${scriptUrl}"/>
+                </div>
+            </g:if>
 
             <label for="nextFireTime" class="control-label">Next Fire Time:</label>
 

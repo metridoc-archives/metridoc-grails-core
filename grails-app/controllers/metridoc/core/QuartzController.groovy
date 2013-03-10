@@ -174,14 +174,14 @@ class QuartzController {
     def show(@RequestParameter("id") String triggerName, String errorConfig) {
         doTriggerOperation(triggerName) { Trigger trigger ->
             def jobDetails = JobDetails.findByJobName(triggerName)
-            def currentSchedule = jobDetails ? jobDetails.jobTrigger.toString() : "DEFAULT"
+            def currentSchedule = jobDetails.jobTrigger
             boolean manual = QuartzUtils.isManual(trigger)
             if (manual) {
                 currentSchedule = metridoc.trigger.Trigger.NEVER
             }
             def triggerSchedules = quartzService.triggerSchedules
-            if ("DEFAULT" != currentSchedule) {
-                triggerSchedules.remove("DEFAULT")
+            if (JobTrigger.IN_CODE != currentSchedule) {
+                triggerSchedules.remove(JobTrigger.IN_CODE.toString())
             }
 
             def config = errorConfig
@@ -199,6 +199,8 @@ class QuartzController {
 
             return [
                     description: jobDetails.description ?: NO_DESCRIPTION,
+                    isScriptJob: jobDetails.url ? true : false,
+                    scriptUrl: jobDetails.url,
                     jobLog: jobLog,
                     config: config,
                     trigger: trigger,
