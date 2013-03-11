@@ -1,11 +1,6 @@
-import grails.plugin.quartz2.GrailsJobClass
-import grails.plugin.quartz2.JobArtefactHandler
 import grails.plugin.quartz2.QuartzFactoryBean
-import grails.plugin.quartz2.TriggersBuilder
-import metridoc.core.MetridocJob
 import metridoc.core.QuartzMonitorJobFactory
 import metridoc.core.ScriptJobArtefactHandler
-import metridoc.utils.BootupUtils
 import metridoc.utils.BootupUtils
 import org.apache.shiro.mgt.RememberMeManager
 import org.apache.shiro.web.mgt.CookieRememberMeManager
@@ -28,7 +23,7 @@ class MetridocCoreGrailsPlugin {
 
     static DEFAULT_MAX_REMEMER_ME = 60 * 60 //one hour
     // the plugin version
-    def version = "0.53"
+    def version = "0.54-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.0.4 > *"
 
