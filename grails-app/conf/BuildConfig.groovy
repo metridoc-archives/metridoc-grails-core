@@ -83,5 +83,9 @@ grails.project.dependency.resolution = {
             excludes "log4j", "groovy-all", "ant", "junit"
             export = false
         }
+
+        test(":code-coverage:1.2.5") {
+            export = false
+        }
     }
 }

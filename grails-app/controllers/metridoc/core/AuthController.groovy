@@ -25,22 +25,19 @@ class AuthController {
     def grailsApplication
 
     def index() {
-        def model
-        if (!params.template) {
-            model = [template: 'login', username: params.username, rememberMe: (params.rememberMe != null), targetUri: params.targetUri]
-        } else {
-            model = [params: params]
-        }
-
-        return model
+        chain(model: getModel(), action: "login")
+        return
     }
 
     def login() {
-        render(view: 'index', model: [template: 'login', username: params.username, rememberMe: (params.rememberMe != null), targetUri: params.targetUri])
+        getModel()
+    }
+
+    private Map getModel() {
+        [username: params.username, rememberMe: (params.rememberMe != null), targetUri: params.targetUri]
     }
 
     def unauthorized() {
-        render(view: 'index', model: [template: 'unauthorized'])
     }
 
     def doResetPassword() {
@@ -56,13 +53,13 @@ class AuthController {
 
                     if (!authService.isPasswordValid(password.toString())) {
                         def link = authService.newResetLink(user)
-                        flash.message = "Password length must be within 5-15"
+                        flash.alerts << "Password length must be within 5-15"
                         redirect(url: link, params: [resetPasswordId: id])
                         return
                     }
                     if (!authService.isPasswordMatch(password.toString(), confirm.toString())) {//generate a new reset password id and link
                         def link = authService.newResetLink(user)
-                        flash.message = "Passwords don't match"
+                        flash.alerts << "Passwords don't match"
                         redirect(url: link, params: [resetPasswordId: id])
                         return
                     }
@@ -82,7 +79,7 @@ class AuthController {
             case "GET":
                 try {
                     if (id && authService.canReset(id as Integer)) {
-                        render(view: 'index', model: [template: 'doResetPassword', resetPasswordId: id])
+                        return [resetPasswordId: id]
                     } else {
                         redirect(action: "index")
                     }

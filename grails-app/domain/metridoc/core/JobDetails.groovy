@@ -36,9 +36,11 @@ class JobDetails {
         cron(
                 nullable: true,
                 validator:  {
-                    boolean invalidCron = !CronExpression.isValidExpression(it)
-                    if(invalidCron) {
-                        return "invalid.cron"
+                    if (it) {
+                        boolean invalidCron = !CronExpression.isValidExpression(it)
+                        if(invalidCron) {
+                            return "invalid.cron"
+                        }
                     }
                 }
         )
