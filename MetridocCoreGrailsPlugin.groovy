@@ -28,7 +28,7 @@ class MetridocCoreGrailsPlugin {
 
     static DEFAULT_MAX_REMEMER_ME = 60 * 60 //one hour
     // the plugin version
-    def version = "0.53-SNAPSHOT"
+    def version = "0.53"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.0.4 > *"
 
