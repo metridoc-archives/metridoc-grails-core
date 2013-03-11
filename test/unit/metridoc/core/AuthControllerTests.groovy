@@ -7,13 +7,13 @@ import org.junit.Test
 @TestFor(AuthController)
 class AuthControllerTests {
 
-    @Before
     void loadParameters() {
         params << [username: "joe", targetUri:"http://foo.com"]
     }
 
     @Test
     void "testing the return values of getModel"() {
+        loadParameters()
         def model = controller.getModel()
         assert !model.rememberMe
         assert "joe" == model.username
@@ -25,6 +25,7 @@ class AuthControllerTests {
 
     @Test
     void "test that login returns the same values as model"() {
+        loadParameters()
         assert controller.getModel() == controller.login()
     }
 

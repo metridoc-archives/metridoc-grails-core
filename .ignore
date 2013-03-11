@@ -10,4 +10,5 @@ test-reports
 *.iws
 projectFilesBackup
 out
+cobertura.*
 
