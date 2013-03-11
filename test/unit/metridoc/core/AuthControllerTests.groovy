@@ -1,14 +1,14 @@
 package metridoc.core
 
 import grails.test.mixin.TestFor
-import org.junit.Before
 import org.junit.Test
 
+@SuppressWarnings("GroovyAccessibility")
 @TestFor(AuthController)
 class AuthControllerTests {
 
     void loadParameters() {
-        params << [username: "joe", targetUri:"http://foo.com"]
+        params << [username: "joe", targetUri: "http://foo.com"]
     }
 
     @Test

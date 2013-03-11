@@ -81,7 +81,6 @@ class QuartzController {
             def jobDetails = JobDetails.findByJobName(jobName)
             jobDetails.delete()
             quartzScheduler.unscheduleJob(new TriggerKey(jobName))
-            quartzScheduler.deleteJob(new JobKey(jobDetails.template))
             redirect(TO_LIST)
         }
     }
