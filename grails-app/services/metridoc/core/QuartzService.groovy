@@ -1,6 +1,7 @@
 package metridoc.core
 
 import grails.plugin.quartz2.GrailsArtefactJob
+import grails.util.Environment
 import groovy.grape.Grape
 import metridoc.utils.ConfigObjectUtils
 import metridoc.utils.JobTrigger
@@ -11,6 +12,7 @@ import org.apache.commons.lang.exception.ExceptionUtils
 import org.apache.commons.lang.text.StrBuilder
 import org.quartz.*
 import org.quartz.impl.matchers.GroupMatcher
+import org.quartz.spi.TriggerFiredBundle
 
 import java.util.concurrent.TimeUnit
 
@@ -28,6 +30,7 @@ class QuartzService {
     def commonService
     def mailService
     def logService
+    QuartzMonitorJobFactory quartzMonitorJobFactory
 
     /**
      * Checks if a trigger is manual
@@ -358,5 +361,33 @@ class QuartzService {
             jobInstance.arguments = jobDetails.arguments
         }
 
+    }
+
+    void runCliJob(String jobName, String args) {
+        Trigger trigger = (quartzScheduler as Scheduler).getTrigger(new TriggerKey(jobName))
+        assert trigger: "Could not find job $jobName"
+        JobDetail jobDetail = (quartzScheduler as Scheduler).getJobDetail(trigger.getJobKey())
+        def bundle = new TriggerFiredBundle(jobDetail, trigger, null, false, null, null, null, null)
+        Job job = quartzScheduler.sched.getJobFactory().newJob(bundle, quartzScheduler)
+        if (args) {
+            trigger.jobDataMap["args"] = args
+            def m = args =~ /config=([^\s]+)/
+            if (m.find()) {
+                def filePath = m.group(1).replaceAll("~", SystemUtils.USER_HOME)
+                def configFile = new File(filePath)
+                def configObject = new ConfigSlurper(Environment.current.toString().toLowerCase()).parse(configFile.toURI().toURL())
+                if (trigger.jobDataMap.containsKey("config")) {
+                    def config = trigger.jobDataMap["config"]
+                    if (config instanceof ConfigObject) {
+                        config.merge(configObject)
+                    }
+                }
+            }
+        }
+        job.execute(
+            [getTrigger:{
+                trigger
+            }] as JobExecutionContext
+        )
     }
 }

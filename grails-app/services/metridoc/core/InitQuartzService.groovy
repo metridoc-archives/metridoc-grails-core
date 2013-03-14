@@ -3,6 +3,7 @@ package metridoc.core
 import grails.plugin.quartz2.GrailsJobClass
 import grails.plugin.quartz2.SimpleJobDetail
 import grails.plugin.quartz2.TriggersBuilder
+import org.apache.commons.lang.StringUtils
 import org.quartz.JobKey
 import org.quartz.Scheduler
 import org.quartz.Trigger
@@ -21,14 +22,6 @@ class InitQuartzService {
     def pluginManager
 
     def initializeScheduler() {
-        def disableQuartz = Boolean.valueOf(System.getProperty("metridoc.quartz.disabled", "false"))
-
-        if (disableQuartz) {
-            //handy for command line jobs via run-job
-            quartzScheduler.shutdown(false)
-            return
-        }
-
         //just in case it is running even though it shouldn't
         def doResume = false
         if (quartzScheduler.isStarted()) {
@@ -38,6 +31,7 @@ class InitQuartzService {
         handleUnscheduledCodeJobs()
         handleAlreadyScheduledCodeJobs()
         handleUrlBasedScripts()
+
         //everything is ready to go!
         if (doResume) {
             quartzScheduler.resumeAll()
@@ -54,8 +48,11 @@ class InitQuartzService {
                 Closure scheduleJob = quartzPlugin.scheduleJob
                 scheduleJob.delegate = quartzPlugin
                 TriggersBuilder builder = new TriggersBuilder(jobClass.fullName)
-
-                builder.build(MetridocJob.MANUAL_RUN_TRIGGER)
+                def neverRunTrigger = {
+                    def fiftyYears = TimeUnit.DAYS.toMillis(365 * 50)
+                    simple name: jobClass.fullName, repeatInterval: 1000, startDelay: fiftyYears
+                }
+                builder.build(neverRunTrigger)
                 def triggers = (Map) builder.getTriggers()
                 jobClass.triggers.putAll(triggers)
                 scheduleJob.call(jobClass, applicationContext, quartzScheduler)

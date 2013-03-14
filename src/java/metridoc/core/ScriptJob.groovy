@@ -30,14 +30,19 @@ class ScriptJob implements InterruptableJob {
     void execute(JobExecutionContext context) throws JobExecutionException {
         Binding binding = script.binding
         binding.setVariable("jobExecutionContext", context)
-        def config = context.getTrigger().getJobDataMap().get("config")
+        def jobDataMap = context.getTrigger().getJobDataMap()
+        def config = jobDataMap.get("config")
+
+        if (jobDataMap.containsKey("args")) {
+            arguments = jobDataMap["args"]
+        }
 
         if (config != null && config instanceof Map) {
             QuartzService.addConfigToBinding(config, binding)
         }
 
         if (arguments) {
-            script.args = arguments.split(" ")
+            script.args = arguments.split("\\s+") as Set
         }
         def originalClassLoader = Thread.currentThread().contextClassLoader
         try {

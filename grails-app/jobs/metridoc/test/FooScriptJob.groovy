@@ -2,7 +2,7 @@ package metridoc.test
 
 import static org.slf4j.LoggerFactory.getLogger
 
-def log = getLogger("foo.logger")
+def log = getLogger("metridoc.foo.logger")
 log.info "I am a script job"
 
 def foo = config.foo

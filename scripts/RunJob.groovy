@@ -20,35 +20,25 @@ Options:
 
 runJobArguments = [:]
 
-target(main: "The description of the script goes here!") {
+target(main: "runs a metridoc job via grails commandline") {
     depends(parseArguments)
+    System.setProperty("metridoc.email.disabled", "true")
+    System.setProperty("metridoc.job.cliOnly", "true")
     if (argsMap.h) {
         usage()
     } else if (argsMap.params.size != 1) {
         grailsConsole.error "1 job must be specified, run grails run-job -h for more info"
-    } else if (argsMap.cli) {
-        System.setProperty("metridoc.quartz.disabled", "true")
-        System.setProperty("metridoc.job.cliOnly", "true")
-        if(!argsMap.email) {
-            System.setProperty("metridoc.email.disabled", "true")
-        }
-        depends(packageApp, loadApp, configureApp)
-
-        doCallFromAppCtx()
     } else {
         try {
             appCtx = Holders.applicationContext
             grailsConsole.info "running the job from the already running application"
         } catch (Exception e) {
-            System.setProperty("metridoc.quartz.disabled", "true")
-            System.setProperty("metridoc.job.cliOnly", "true")
             grailsConsole.info "running as a commandline job"
-            depends(packageApp, loadApp, configureApp)
+            depends(bootstrap)
         }
 
         doCallFromAppCtx()
     }
-
 }
 
 def usage() {
