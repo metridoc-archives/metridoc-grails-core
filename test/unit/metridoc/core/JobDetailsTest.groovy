@@ -65,4 +65,27 @@ class JobDetailsTest {
         assert foo.errors.getFieldError("config")
         assert "invalid.config" == foo.errors.getFieldError("config").code
     }
+
+    @Test
+    void "storedScript can be null"() {
+        foo.validate()
+        assert [] == foo.errors.getFieldErrors("storedScript")
+    }
+
+    @Test
+    void "stored script trumps url"() {
+        //test stored script
+        foo.url = "http://foo.com"
+        def storedScript = "println 'foo'"
+        foo.storedScript = storedScript
+        assert storedScript == foo.pickScript()
+
+        //test url if stored script is not there
+        def mockedConversion = "println 'bar'"
+        foo.metaClass.convertUrlToContent = {
+            mockedConversion
+        }
+        foo.storedScript = null
+        assert mockedConversion == foo.pickScript()
+    }
 }

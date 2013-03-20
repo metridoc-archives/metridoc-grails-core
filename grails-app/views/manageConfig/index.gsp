@@ -14,17 +14,19 @@
 
             %{--TODO: move all scripts and css to separate js and css files--}%
             <div class="controls">
-                <input id="metridocConfig" name="metridocConfig" type="file" style="display: none" />
-                <div class="input-append">
-                    <input id="metridocConfigPath" name="metridocConfigPath" type="text" disabled="true"/>
-                    <a class="btn" onclick="$('input[id=metridocConfig]').click();">Browse</a>
-                </div>
-                <g:javascript>
-                    $('input[id=metridocConfig]').change(function(){
-                        var fileName = $(this).val().replace("C:\\fakepath\\", "");
-                        $('#metridocConfigPath').val(fileName);
-                    });
-                </g:javascript>
+                <g:render template="/reports/uploadTemplate" model="[name:'metridocConfig']"/>
+
+                %{--<input id="metridocConfig" name="metridocConfig" type="file" style="display: none" />--}%
+                %{--<div class="input-append">--}%
+                    %{--<input id="metridocConfigPath" name="metridocConfigPath" type="text" disabled="true"/>--}%
+                    %{--<a class="btn" onclick="$('input[id=metridocConfig]').click();">Browse</a>--}%
+                %{--</div>--}%
+                %{--<g:javascript>--}%
+                    %{--$('input[id=metridocConfig]').change(function(){--}%
+                        %{--var fileName = $(this).val().replace("C:\\fakepath\\", "");--}%
+                        %{--$('#metridocConfigPath').val(fileName);--}%
+                    %{--});--}%
+                %{--</g:javascript>--}%
             </div>
 
             <div class="controls">

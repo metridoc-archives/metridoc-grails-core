@@ -277,7 +277,7 @@ class QuartzService {
             int slashLocation = url.lastIndexOf("/")
             def baseUrl = url.substring(0, slashLocation + 1)
             shell.classLoader.addURL(new URL(baseUrl))
-            def content = jobDetails.convertUrlToContent()
+            def content = jobDetails.pickScript()
             def script = shell.parse(content)
             def scriptJob = new ScriptJob(script)
             return new GrailsArtefactJob(scriptJob)

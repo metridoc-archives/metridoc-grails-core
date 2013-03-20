@@ -24,6 +24,7 @@ class JobDetails {
     String url
     String classToRun
     String description
+    String storedScript
     String arguments
 
     static mapping = {
@@ -45,6 +46,7 @@ class JobDetails {
                 }
         )
         description(nullable: true, maxSize: Integer.MAX_VALUE)
+        storedScript(nullable: true)
         url(nullable: true)
         classToRun(nullable: true)
         config(
@@ -186,5 +188,12 @@ class JobDetails {
 
     String convertUrlToContent() {
         new URL(url).text
+    }
+
+    String pickScript() {
+        if (storedScript) return storedScript
+        if(url) return convertUrlToContent()
+
+        return null
     }
 }
