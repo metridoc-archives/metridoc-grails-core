@@ -363,8 +363,25 @@ class QuartzService {
 
     }
 
-    void runCliJob(String jobName, String args) {
+    Trigger searchForTrigger(String jobName) {
         Trigger trigger = (quartzScheduler as Scheduler).getTrigger(new TriggerKey(jobName))
+        if (trigger == null) {
+            def details = JobDetails.findAllByTemplate(jobName)
+
+            if (details) {
+                def actualTriggerName = details[0].jobName
+                if (details.size() > 1) {
+                    log.warn "there are more than 1 job associated with name $jobName, pickinck"
+                }
+                return quartzScheduler.getTrigger(new TriggerKey(actualTriggerName))
+            }
+        }
+
+        return trigger
+    }
+
+    void runCliJob(String jobName, String args) {
+        Trigger trigger = searchForTrigger(jobName)
         assert trigger: "Could not find job $jobName"
         JobDetail jobDetail = (quartzScheduler as Scheduler).getJobDetail(trigger.getJobKey())
         def bundle = new TriggerFiredBundle(jobDetail, trigger, null, false, null, null, null, null)

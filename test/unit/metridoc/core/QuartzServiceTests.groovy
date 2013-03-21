@@ -5,6 +5,8 @@ import grails.test.mixin.TestFor
 import metridoc.utils.JobTrigger
 import metridoc.utils.QuartzUtils
 import org.junit.Test
+import org.quartz.Trigger
+import org.quartz.TriggerKey
 
 import static metridoc.utils.JobTrigger.NEVER
 
@@ -87,5 +89,38 @@ class QuartzServiceTests {
         barDetails.save(failOnError: true)
         jobDetails = service.getJobDetailsByTrigger(BAR)
         assert BAR_CONFIG == jobDetails.config
+    }
+
+    @Test
+    void "if the quartzscheduler has a trigger with the same name as the jobName, it is returned"() {
+        def trigger = [:] as Trigger
+        def quartzScheduler = [
+                getTrigger: {TriggerKey key ->
+                    trigger
+                }
+        ]
+
+        service.quartzScheduler = quartzScheduler
+        assert trigger == service.searchForTrigger(FOO)
+    }
+
+    @Test
+    void "if the scheduler does not have a trigger based on the job name, the trigger search returns a trigger based on template name in JobDetails"() {
+        JobDetails barDetails = new JobDetails(
+                jobName: BAR,
+                config: BAR_CONFIG,
+                template: FOO,
+                jobTrigger: JobTrigger.NEVER,
+        )
+        barDetails.save()
+        def trigger = [:] as Trigger
+        def quartzScheduler = [
+                getTrigger: {TriggerKey key ->
+                    if (key.name == BAR) return trigger
+                    return null
+                }
+        ]
+        service.quartzScheduler = quartzScheduler
+        assert trigger == service.searchForTrigger(FOO)
     }
 }
