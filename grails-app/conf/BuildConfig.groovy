@@ -66,7 +66,7 @@ grails.project.dependency.resolution = {
         compile ":quartz2:0.2.3"
         runtime ":mail:1.0.1"
         runtime ":hibernate:$grailsVersion"
-        runtime ":resources:1.2.RC2"
+        runtime ":resources:1.1.6"
         runtime(":shiro:1.1.4") {
             excludes(
                     [name: "shiro-quartz", group: "org.apache.shiro"]
