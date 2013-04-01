@@ -16,6 +16,7 @@ import static metridoc.utils.JobTrigger.NEVER
 
 class InitQuartzService {
 
+    public static final String CLI_ONLY = "metridoc.job.cliOnly"
     Scheduler quartzScheduler
     def quartzService
     def grailsApplication
@@ -36,7 +37,17 @@ class InitQuartzService {
         if (doResume) {
             quartzScheduler.resumeAll()
         } else {
+            startSchedulerIfNotACLIJob()
+        }
+    }
+
+    def startSchedulerIfNotACLIJob() {
+        def isCliJob = Boolean.valueOf(System.getProperty(CLI_ONLY, "false"))
+        if (!isCliJob) {
+            log.info "quartz scheduler is starting"
             quartzScheduler.start()
+        } else {
+            log.info "quartz scheduler will not start since the job is being run as a command line job"
         }
     }
 

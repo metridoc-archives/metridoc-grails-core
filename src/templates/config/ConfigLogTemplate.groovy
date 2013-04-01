@@ -19,15 +19,26 @@ log4j = {
                 file: "${config.metridoc.home}/logs/metridoc-job.log"
     }
 
-    warn 'metridoc.camel',
-            'metridoc.utils.CamelUtils'
 
-    info 'metridoc'
+    error  'org.codehaus.groovy',
+            'grails.app.resourceMappers',
+            'org.springframework',
+            'org.hibernate',
+            'net.sf.ehcache.hibernate',
+            'metridoc.camel',
+            'metridoc.test.NeverRunJob',
+            'grails.plugin',
+            'org.grails',
+            'org.quartz',
+            'ShiroGrailsPlugin',
+            'grails.util',
+            'org.grails.plugin.resource.BundleResourceMapper'
+
 
     //since it it running via commandline, it is assumed that standard out is only needed
     if ("true" == System.getProperty("metridoc.job.cliOnly")) {
         root {
-            error 'stdout'
+            info 'stdout'
         }
     } else {
         if ("false" == System.getProperty("metridoc.job.loggedLogLocation", "false")) {
@@ -36,7 +47,7 @@ log4j = {
             System.setProperty("metridoc.job.loggedLogLocation", "true")
         }
         root {
-            error 'stdout', 'file'
+            info 'stdout', 'file'
         }
     }
 }

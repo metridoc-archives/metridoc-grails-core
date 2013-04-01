@@ -3,9 +3,11 @@ import org.quartz.Scheduler
 
 includeTargets << grailsScript("_GrailsInit")
 
-doCallFromAppCtx = {
+doCallFromAppCtx = {boolean initializeScheduler ->
     def initQuartzService = appCtx.metridocCoreInitQuartzService
-    initQuartzService.initializeScheduler()
+    if (initializeScheduler) {
+        initQuartzService.initializeScheduler()
+    }
     def quartzService = appCtx.metridocCoreQuartzService
     def jobName = argsMap.params[0]
     quartzService.runCliJob(jobName, args)

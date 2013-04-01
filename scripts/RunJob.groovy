@@ -29,15 +29,17 @@ target(main: "runs a metridoc job via grails commandline") {
     } else if (argsMap.params.size != 1) {
         grailsConsole.error "1 job must be specified, run grails run-job -h for more info"
     } else {
+        boolean initializeScheduler = false
         try {
             appCtx = Holders.applicationContext
             grailsConsole.info "running the job from the already running application"
         } catch (Exception e) {
             grailsConsole.info "running as a commandline job"
             depends(bootstrap)
+            initializeScheduler = true
         }
 
-        doCallFromAppCtx()
+        doCallFromAppCtx(initializeScheduler)
     }
 }
 
