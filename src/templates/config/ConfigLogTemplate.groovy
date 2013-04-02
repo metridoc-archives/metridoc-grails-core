@@ -32,7 +32,8 @@ log4j = {
             'org.quartz',
             'ShiroGrailsPlugin',
             'grails.util',
-            'org.grails.plugin.resource.BundleResourceMapper'
+            'org.grails.plugin.resource.BundleResourceMapper',
+            'org.apache'
 
 
     //since it it running via commandline, it is assumed that standard out is only needed

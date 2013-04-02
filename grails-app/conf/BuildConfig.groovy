@@ -50,7 +50,9 @@ grails.project.dependency.resolution = {
 
     //standard jar maven dependencies
     dependencies {
-        compile("com.googlecode.metridoc:metridoc-job-core:0.3")
+        //TEMPLATE_METRIDOC_JOB_CORE
+        compile("com.googlecode.metridoc:metridoc-job-core:0.4-SNAPSHOT")
+        //TEMPLATE_METRIDOC_JOB_CORE
         //used for testing camel routes
         test("org.apache.camel:camel-test:2.9.2")
         //by default metridoc is tested on mysql
