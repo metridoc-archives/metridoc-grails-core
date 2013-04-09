@@ -72,9 +72,15 @@ class InitQuartzService {
     }
 
     def handleAlreadyScheduledCodeJobs() {
-        quartzService.eachTrigger {Trigger trigger ->
+        quartzService.eachTrigger { Trigger trigger ->
             def key = trigger.key
             String jobName = key.name
+            if (jobName.endsWith("0")) {
+                quartzScheduler.unscheduleJob(key)
+                jobName = StringUtils.chop(jobName)
+                trigger.key = new TriggerKey(jobName)
+                quartzScheduler.scheduleJob(trigger)
+            }
             def details = JobDetails.findByJobName(jobName)
 
             if (details) {

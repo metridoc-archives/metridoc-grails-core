@@ -12,6 +12,7 @@ import org.apache.commons.lang.exception.ExceptionUtils
 import org.apache.commons.lang.text.StrBuilder
 import org.quartz.*
 import org.quartz.impl.matchers.GroupMatcher
+import org.quartz.spi.OperableTrigger
 import org.quartz.spi.TriggerFiredBundle
 
 import java.util.concurrent.TimeUnit
@@ -86,7 +87,7 @@ class QuartzService {
         return new JobDetails(jobName: triggerName)
     }
 
-    org.quartz.Trigger getTrigger(String triggerName) {
+    Trigger getTrigger(String triggerName) {
         QuartzUtils.getTrigger(quartzScheduler, triggerName)
     }
 
@@ -124,7 +125,7 @@ class QuartzService {
         def jobDetails = getSchedule(triggerName, triggerDescription)
         jobDetails.jobTrigger = JobTrigger.valueOf(triggerDescription)
         jobDetails.save(flush: true, failOnError: true)
-        org.quartz.Trigger newTrigger
+        Trigger newTrigger
         if (triggerDescription == "NEVER") {
             long fiftyYears = TimeUnit.DAYS.toMillis(365 * 50)
             newTrigger = jobDetails.convertTriggerToQuartzTrigger()
@@ -156,6 +157,15 @@ class QuartzService {
         return mergedConfig
     }
 
+    String getArgsByTriggerName(String triggerName) {
+        def details = JobDetails.findByJobName(triggerName)
+        if (details) {
+            return details.arguments
+        }
+
+        return null
+    }
+
     static void addConfigToBinding(Map config, Binding binding) {
         if (config) {
             binding.setVariable("config", config)
@@ -178,7 +188,7 @@ class QuartzService {
             quartzScheduler.getJobKeys(GroupMatcher.groupEquals(jobGroup))?.each { jobKey ->
                 def triggers = quartzScheduler.getTriggersOfJob(jobKey)
                 if (triggers) {
-                    triggers.each { org.quartz.Trigger trigger ->
+                    triggers.each { Trigger trigger ->
                         def currentJob = createJob(jobGroup, jobKey.name, jobsList, trigger.key.name)
                         currentJob.trigger = trigger
                         currentJob.manualJob = QuartzUtils.isManual(trigger)
@@ -279,7 +289,7 @@ class QuartzService {
             shell.classLoader.addURL(new URL(baseUrl))
             def content = jobDetails.pickScript()
             def script = shell.parse(content)
-            def scriptJob = new ScriptJob(script)
+            def scriptJob = new JobWrapper(job: script)
             return new GrailsArtefactJob(scriptJob)
         } catch (Throwable throwable) {
             log.error("Could not build the remote script $url", throwable)
@@ -287,21 +297,15 @@ class QuartzService {
         }
     }
 
+    //ADD EVERYTHING STARTING HERE AND BELOW TO QUARTZUTILS
     Job buildJob(String grailsJobName) {
         def applicationContext = grailsApplication.mainContext
         Object jobBean = applicationContext.getBean(grailsJobName);
-        Job job
-        if (jobBean instanceof Script) {
-            ScriptJob scriptJob = new ScriptJob((Script) jobBean);
-            job = new GrailsArtefactJob(scriptJob);
-        } else {
-            job = new GrailsArtefactJob(jobBean);
-        }
+        def wrapper = new JobWrapper(job: jobBean)
 
-        return job
+        return new GrailsArtefactJob(wrapper)
     }
 
-    //ADD EVERYTHING STARTING HERE AND BELOW TO QUARTZUTILS
     static Date getLastRun(String jobName) {
         JobRuns jobRun = getMostRecentRun(jobName)
         if (jobRun) {
@@ -339,6 +343,8 @@ class QuartzService {
         return null
     }
 
+
+
     static JobRuns getMostRecentRun(String jobName) {
         List<JobRuns> runs = JobRuns.where {
             details.jobName == jobName
@@ -352,17 +358,6 @@ class QuartzService {
         return null
     }
 
-
-
-    void configureJob(String name, GrailsArtefactJob job) {
-        def jobInstance = job.job
-        if (jobInstance instanceof ScriptJob) {
-            def jobDetails = JobDetails.findByJobName(name)
-            jobInstance.arguments = jobDetails.arguments
-        }
-
-    }
-
     Trigger searchForTrigger(String jobName) {
         Trigger trigger = (quartzScheduler as Scheduler).getTrigger(new TriggerKey(jobName))
         if (trigger == null) {
@@ -371,7 +366,7 @@ class QuartzService {
             if (details) {
                 def actualTriggerName = details[0].jobName
                 if (details.size() > 1) {
-                    log.warn "there are more than 1 job associated with name $jobName, pickinck"
+                    log.warn "there is more than 1 job associated with name $jobName, picking $actualTriggerName"
                 }
                 return quartzScheduler.getTrigger(new TriggerKey(actualTriggerName))
             }
@@ -381,7 +376,7 @@ class QuartzService {
     }
 
     void runCliJob(String jobName, String args) {
-        Trigger trigger = searchForTrigger(jobName)
+        OperableTrigger trigger = searchForTrigger(jobName)
         assert trigger: "Could not find job $jobName"
         JobDetail jobDetail = (quartzScheduler as Scheduler).getJobDetail(trigger.getJobKey())
         def bundle = new TriggerFiredBundle(jobDetail, trigger, null, false, null, null, null, null)
@@ -402,9 +397,9 @@ class QuartzService {
             }
         }
         job.execute(
-            [getTrigger:{
-                trigger
-            }] as JobExecutionContext
+                [getTrigger: {
+                    trigger
+                }] as JobExecutionContext
         )
     }
 }

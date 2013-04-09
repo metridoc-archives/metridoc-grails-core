@@ -46,6 +46,8 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
         QuartzService quartzService = applicationContext.getBean("quartzService", QuartzService.class);
         ConfigObject config = quartzService.getConfigByTriggerName(triggerName);
         triggerJobDataMap.put("config", config);
+        String args = quartzService.getArgsByTriggerName(triggerName);
+        triggerJobDataMap.put("args", args);
         String grailsJobName = (String) jobDataMap.get(GrailsArtefactJobDetailFactoryBean.JOB_NAME_PARAMETER);
         org.quartz.Job job;
 
@@ -133,7 +135,6 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
                 String error;
                 try {
                     displayLogger.info("starting job {} at {}", getTrigger().getKey().getName(), getLastRun());
-                    quartzService.configureJob(trigger.getKey().getName(), job);
                     job.execute(context);
                     sessionFactory.getCurrentSession().flush();
                 } catch (Throwable e) {

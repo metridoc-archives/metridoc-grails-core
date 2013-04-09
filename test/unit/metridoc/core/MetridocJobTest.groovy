@@ -55,27 +55,11 @@ class MetridocJobTest {
         }
     }
 
-    @Test
-    void "the job execution facade has a job key that is equal to the class"() {
-        assert "metridoc.core.MetridocJobTestHelper" == helper.buildJobContextFacade().jobDetail.key.name
-
-    }
-
-    @Test
-    void "the job execution facade has a trigger key equal to manual-cli"() {
-        assert "manual-cli" == helper.buildJobContextFacade().trigger.key.name
-
-    }
-
-    @Test
-    void "if target is not supplied, then target is null in job data map"() {
-        assert null == helper.buildJobContextFacade().trigger.jobDataMap.target
-    }
 
     @Test
     void "when profiling, the properties should still propogate to the routing"() {
         //just run the helper, no errors should occur
-        helper.doExecute()
+        helper.configure()
         assert helper.doExecuteRouteRan
     }
 
@@ -88,7 +72,8 @@ class MetridocJobTest {
     @Test
     void "checking that property propogation works properly to routes in imported targets"() {
         helper.includeTargets(MetridocJobTestTargetHelper)
-        helper.depends("doRoute")
+        helper.setDefaultTarget("doRoute")
+        helper.execute()
     }
 
     @Test
@@ -99,7 +84,7 @@ class MetridocJobTest {
 
             }
             assert false: "exception should have occurred"
-        } catch (JobInteruptionException e) {
+        } catch (JobInterruptionException e) {
         }
     }
 
@@ -112,7 +97,7 @@ class MetridocJobTest {
                 helper.profile("do something") {
                     latch.await()
                 }
-            } catch (JobInteruptionException e) {
+            } catch (JobInterruptionException e) {
                 catchReachedLatch.countDown()
             }
         }
@@ -121,6 +106,34 @@ class MetridocJobTest {
         latch.countDown()
         catchReachedLatch.await(1000, TimeUnit.SECONDS)
         assert 0 == catchReachedLatch.count
+    }
+
+    @Test
+    void "test target override"() {
+        def overrideHelper = new TargetOverrideHelper()
+        overrideHelper.binding.setVariable("args", ["-target=bar"] as String[])
+        overrideHelper.execute()
+        assert overrideHelper.barRan
+        assert !overrideHelper.fooRan
+    }
+}
+
+class TargetOverrideHelper extends MetridocJob {
+
+    boolean barRan = false
+    boolean fooRan = false
+
+    @Override
+    def configure() {
+        target(foo: "run foo") {
+            fooRan = true
+        }
+
+        target(bar: "run bar") {
+            barRan = true
+        }
+
+        setDefaultTarget("foo")
     }
 }
 
@@ -138,7 +151,7 @@ class MetridocJobTestHelper extends MetridocJob {
      * we were having troubles when profiling a route.  The properties of the underlying class were not propogating to the
      * route
      */
-    def doExecute() {
+    def configure() {
         profile("profiling the route") {
             runRoute {
                 from("direct:start").process {
@@ -163,7 +176,7 @@ class MetridocJobTestTargetHelper extends Script {
         }
 
         target(doRoute: "runs a basic route to test that property propogation works properly") {
-            runRoute {
+            metridocJobTestHelper.runRoute {
                 from("sqlplus:bar?dataSource=dataSource").to("sqlplus:foobar?dataSource=dataSource")
             }
         }

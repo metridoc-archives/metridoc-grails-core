@@ -4,32 +4,30 @@ import metridoc.camel.CamelScript
 import metridoc.camel.CamelScriptRegistry
 import metridoc.camel.GroovyRouteBuilder
 import metridoc.camel.SqlPlusComponent
+import metridoc.core.tools.CamelTool
+import metridoc.core.tools.ParseArgsTool
+import metridoc.core.tools.RunnableTool
+import org.apache.camel.Exchange
 import org.apache.camel.builder.RouteBuilder
-import org.apache.commons.lang.exception.ExceptionUtils
-import org.quartz.*
+import org.apache.commons.lang.StringUtils
 import org.slf4j.LoggerFactory
 
+import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 
 /**
  * This is the primary class used for running MetriDoc jobs.  Although unnecessary to actually create a periodic job,
  * it contains helpful methods for routing and profiling tasks, in addition to common triggers.
  */
-abstract class MetridocJob {
-
-    private static final jobLogger = LoggerFactory.getLogger(MetridocJob)
-    /**
-     * all metridoc jobs are not concurrent by default.  Any needed concurrency should be incorporated into the job \
-     * itself
-     */
-    def concurrent = false
-    def grailsApplication
-    def mailService
-    def commonService
+abstract class MetridocJob extends RunnableTool {
 
     /**
-     * unfortunately for quartz to actually register a job, it must have some fire time in the future.  This trigger
+     * This was used when we couldn't manually set triggers in the web application.  This is no longer needed and
+     * might be removed in newer versions of the core.
+     * Unfortunately for quartz to actually register a job, it must have some fire time in the future.  This trigger
      * has an arbitrarily long start up delay (50 years).  By doing this the job can be managed via the quartzscheduler.
+     *
+     * @deprecated
      */
     static final MANUAL_RUN_TRIGGER = {
         def fiftyYears = TimeUnit.DAYS.toMillis(365 * 50)
@@ -37,83 +35,18 @@ abstract class MetridocJob {
     }
 
     /**
-     * represents a midnight trigger
+     * represents a midnight trigger.  Here for convenience when scheduling jobs in code
      */
     static final MIDNIGHT = {
         cron cronExpression: "0 0 0 * * ?"
     }
 
-    def Map<String, Closure> targetMap = Collections.synchronizedMap([:])
-    private Set _targetsRan = [] as Set
-    def Map jobDataMap = [:]
-    Binding binding = new Binding()
-    boolean interrupted
-
+    private static final jobLogger = LoggerFactory.getLogger(MetridocJob)
     /**
-     * necessary method that the grails job artifact that quartz will trigger
-     *
-     * @param context
-     * @return
+     * all metridoc jobs are not concurrent by default.  Any needed concurrency should be incorporated into the job
+     * itself.  This basically provides a hint to quartz
      */
-    def execute(JobExecutionContext context) {
-        if (context?.trigger?.jobDataMap) {
-            jobDataMap = context?.trigger?.jobDataMap
-        }
-        def config = jobDataMap.get("config")
-        QuartzService.addConfigToBinding(config, binding)
-        doExecute()
-        String targetFromJobDataMap = jobDataMap?.get("target")
-        if (targetFromJobDataMap) {
-            depends(targetFromJobDataMap)
-        } else {
-            jobLogger.debug("target map is $targetMap")
-            def containsDefault = targetMap.containsKey("default")
-            if (containsDefault) {
-                jobLogger.debug "running default"
-                depends("default")
-            }
-        }
-    }
-
-
-    def executeTarget() {
-        execute(buildJobContextFacade())
-    }
-
-    def executeTarget(String target) {
-        execute(buildJobContextFacade(target))
-    }
-
-    /**
-     * creates a fake ${@link JobExecutionContext} to help with command line only jobs
-     *
-     * @param target
-     * @return
-     */
-    JobExecutionContext buildJobContextFacade(String target = null) {
-        [
-                getJobDetail: {
-                    [
-                            getKey: {
-                                new JobKey(this.class.name)
-                            }
-                    ] as JobDetail
-                },
-                getTrigger: {
-                    [
-                            getKey: {
-                                new TriggerKey("manual-cli")
-                            },
-                            getJobDataMap: {
-                                def jobDataMap = new JobDataMap()
-                                jobDataMap.put("target", target)
-                                return jobDataMap
-                            }
-                    ] as org.quartz.Trigger
-                }
-
-        ] as JobExecutionContext
-    }
+    public final boolean concurrent = false
 
     /**
      * runs the closure as a route within the {@link GroovyRouteBuilder}.  Really handy for database migrations and
@@ -142,108 +75,71 @@ abstract class MetridocJob {
         CamelScript.runRouteBuilders(registry, builder)
     }
 
-    /**
-     * creates a target for later execution.  This idea was taken directly from the grails / GANT system and works
-     * similarily
-     *
-     * @param data
-     * @param closure
-     * @return
-     */
-    def target(Map data, Closure closure) {
-        closure.delegate = this //required for imported targets
-        if (data.size() != 1) {
-            throw new JobExecutionException("the map in target can only have one variable, which is the name and the description of the target")
-        }
-        def key = (data.keySet() as List<String>)[0]
-        String description = data[key]
-        def closureToRun = {
-            profile(description, closure)
-        }
-        targetMap.put(key, closureToRun)
+    void consume(String endpoint, Closure closure) {
+        includeTool(CamelTool).consume(endpoint, closure)
     }
 
-    /**
-     * fires off a target by name if it has not been run yet.  If it has run then it is skipped
-     *
-     * @param targetNames
-     * @return
-     */
-    def depends(String... targetNames) {
-        targetNames.each { targetName ->
-            Closure target = targetMap.get(targetName)
-            if (!target) {
-                throw new JobExecutionException("target $targetName does not exist")
-            }
-            def targetHasNotBeenCalled = !targetsRan.contains(targetName)
-            if (targetHasNotBeenCalled) {
-                target.delegate = this
-                target.resolveStrategy = Closure.DELEGATE_FIRST
-                target.call()
-                targetsRan.add(targetName)
-            }
-        }
+    void consumeNoWait(String endpoint, Closure closure) {
+        includeTool(CamelTool).consumeNoWait(endpoint, closure)
     }
 
-    /**
-     *
-     * @return all targets that have run
-     */
-    Set getTargetsRan() {
-        return _targetsRan
+    void consumeWait(String endpoint, long wait, Closure closure) {
+        includeTool(CamelTool).consumeWait(endpoint, wait, closure)
     }
-    /**
-     * profiles a chunk of code stating when it starts and finishes
-     * @param description description of the chunk of code
-     * @param closure the code to run
-     */
-    def profile(String description, Closure closure) {
-        if (interrupted) {
-            throw new JobInteruptionException(this.getClass().name)
+
+    void consumeTillDone(String endpoint, long wait, Closure closure) {
+        includeTool(CamelTool).consumeTillDone(endpoint, wait, closure)
+    }
+
+    Exchange send(String endpoint, body) {
+        includeTool(CamelTool).send(endpoint, body)
+    }
+
+    Exchange send(String endpoint, body, Map headers) {
+        includeTool(CamelTool).send(endpoint, body, headers)
+    }
+
+    Future<Exchange> asyncSend(String endpoint, body) {
+        includeTool(CamelTool).asyncSend(endpoint, body)
+    }
+
+    Future<Exchange> asyncSend(String endpoint, body, Map headers) {
+        includeTool(CamelTool).asyncSend(endpoint, body, headers)
+    }
+
+    @Override
+    def execute() {
+        def parseTool = includeTool(ParseArgsTool)
+        //in case args was set after this was initialized
+        parseTool.setBinding(binding)
+
+        def thisToolName = StringUtils.uncapitalize(this.getClass().simpleName)
+        if (!binding.hasVariable(thisToolName)) {
+            binding.setVariable(thisToolName, this)
         }
-        def start = System.currentTimeMillis()
-        jobLogger.info "profiling [$description] start"
-        closure.call()
-        def end = System.currentTimeMillis()
-        jobLogger.info "profiling [$description] finished ${end - start} ms"
-        if (interrupted) {
-            throw new JobInteruptionException(this.getClass().name)
+        //redo injection in case properties were set after including the tool
+        def manager = MetridocScript.getManager(binding)
+        manager.handlePropertyInjection(this)
+        configure()
+        doExecute()
+        String target = getVariable("target", String)
+        if (target) {
+            setDefaultTarget(target)
+        }
+        String defaultTarget = manager.defaultTarget
+        if (manager.targetMap.containsKey(defaultTarget)) {
+            manager.runDefaultTarget()
         }
     }
 
-    /**
-     * loads scripts that contain targets to allow for code reuse
-     *
-     * @param scriptClass
-     * @return returns the binding from the script in case global variables need to accessed
-     */
-    def includeTargets(Class<Script> scriptClass) {
-        return includeTargets(scriptClass, binding)
+    @Override
+    def configure() {
+        return null  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    /**
-     * the same as {@link #includeTargets(java.lang.Class)}, but a binding can be passed so more global variables can
-     * be loaded
-     *
-     * @param scriptClass
-     * @param binding
-     * @return the passed binding
-     */
-    def includeTargets(Class<Script> scriptClass, Binding binding) {
-
-        binding.setVariable("target") { Map description, Closure closure ->
-            target(description, closure)
-        }
-        Script script = scriptClass.newInstance()
-        script.binding = binding
-        script.run()
-
-        return binding
-    }
-
-    abstract doExecute()
+    def doExecute() {}
 
     void interrupt() {
-        interrupted = true
+        MetridocScript.getManager(binding).interrupt()
     }
 }

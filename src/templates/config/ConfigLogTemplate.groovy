@@ -20,7 +20,7 @@ log4j = {
     }
 
 
-    error  'org.codehaus.groovy',
+    error 'org.codehaus.groovy',
             'grails.app.resourceMappers',
             'org.springframework',
             'org.hibernate',
@@ -33,8 +33,8 @@ log4j = {
             'ShiroGrailsPlugin',
             'grails.util',
             'org.grails.plugin.resource.BundleResourceMapper',
-            'org.apache'
-
+            'org.apache',
+            'net.sf' //ehcache
 
     //since it it running via commandline, it is assumed that standard out is only needed
     if ("true" == System.getProperty("metridoc.job.cliOnly")) {

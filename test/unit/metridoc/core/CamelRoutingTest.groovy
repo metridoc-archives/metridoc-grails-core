@@ -32,12 +32,13 @@ class CamelRoutingTest {
 
     @Test(timeout = 15000L)
     void testFullRoute() {
-        job.executeTarget("fullRoute")
+        job.execute()
+        assert job.fullRouteRan
     }
 }
 
 class CamelRoutingJob extends MetridocJob {
-
+    boolean fullRouteRan = false
     def filesProcessed = 0
     def fileFilter = [
             accept: { GenericFile file ->
@@ -49,10 +50,10 @@ class CamelRoutingJob extends MetridocJob {
     ] as GenericFileFilter
 
     @Override
-    def doExecute() {
+    def configure() {
 
         target(fullRoute: "a more complicated route") {
-
+            fullRouteRan = true
             createTempDirectoryAndFiles()
             MockEndpoint mock = null
             runRoute {
@@ -65,6 +66,8 @@ class CamelRoutingJob extends MetridocJob {
             mock.assertIsSatisfied()
             deleteTempDirectoryAndFiles()
         }
+
+        setDefaultTarget("fullRoute")
     }
 
     def getTmpDirectory() {

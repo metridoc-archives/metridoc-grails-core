@@ -10,6 +10,7 @@ class BarJob extends MetridocJob {
     def someProperty = "somePropertyValue"
     static triggers = MetridocJob.MIDNIGHT
     def dataSource
+    def grailsApplication
 
     @Override
     def doExecute() {
@@ -17,8 +18,6 @@ class BarJob extends MetridocJob {
             assert grailsApplication
             Thread.sleep(10000)
         }
-
-        log.info "targets ran $targetsRan"
 
         def camelRouteWorked = false
         runRoute {
@@ -64,6 +63,5 @@ class BarJob extends MetridocJob {
             log.info "directRun target called in BarJob"
         }
 
-        log.info "target map is ${targetMap}"
     }
 }
