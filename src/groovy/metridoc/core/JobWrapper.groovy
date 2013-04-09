@@ -52,7 +52,7 @@ class JobWrapper implements InterruptableJob {
             }
 
             if (arguments) {
-                def args = arguments.split("\\s+") as Set
+                def args = arguments.split("\\s+") as String[]
                 binding.setVariable("args", args)
             }
 
