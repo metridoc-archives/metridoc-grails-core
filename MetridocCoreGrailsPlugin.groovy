@@ -23,7 +23,7 @@ class MetridocCoreGrailsPlugin {
 
     static DEFAULT_MAX_REMEMER_ME = 60 * 60 //one hour
     // the plugin version
-    def version = "0.54.1"
+    def version = "0.54.2"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.0.4 > *"
 
@@ -74,7 +74,7 @@ class MetridocCoreGrailsPlugin {
             grailsApplication = ref('grailsApplication')
             autoStartup = false
             globalJobListeners = [ref('jobErrorLoggerListener')]//,ref('persistenceContextJobListener')]
-            boolean waitForJobsToCompleteOnShutdown = true
+            waitForJobsToCompleteOnShutdown = true
             if (mcfg.grails.plugin.quartz2.jdbcStore) {
                 dataSource = ref('dataSource')
                 transactionManager = ref('transactionManager')
@@ -96,13 +96,13 @@ class MetridocCoreGrailsPlugin {
 
     //adds the manual trigger to all jobs that do not have triggers
     def doWithApplicationContext = { applicationContext ->
-        RememberMeManager manager = applicationContext.getBean("shiroRememberMeManager")
+        RememberMeManager manager = applicationContext.getBean("shiroRememberMeManager", RememberMeManager)
         if (manager instanceof CookieRememberMeManager) {
             manager.cookie.setMaxAge(DEFAULT_MAX_REMEMER_ME)
         }
     }
 
-    Properties loadQuartzConfig(config) {
+    static Properties loadQuartzConfig(config) {
         def properties = new Properties()
         if (config.org.containsKey('quartz')) {
             properties << config.org.quartz.toProperties('org.quartz')
