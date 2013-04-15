@@ -53,14 +53,17 @@ class ManageReportController {
                 report = new ManageReport(controllerName: controllerName)
             }
 
-            report.roles.clear()
+            def persistedRoles = report.roles
+            if (persistedRoles) {
+                persistedRoles.clear()
+            }
             if (roles) {
                 report.isProtected = true
             } else {
                 report.isProtected = isProtected
             }
 
-            roles.each { roleName ->
+            roles.each { String roleName ->
                 def role = ShiroRole.findByName(roleName)
                 report.addToRoles(role)
             }
