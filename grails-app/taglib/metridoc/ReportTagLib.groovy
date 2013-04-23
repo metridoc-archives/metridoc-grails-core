@@ -28,7 +28,7 @@ class ReportTagLib {
     def report = { attrs, body ->
         def layoutInConfig = grailsApplication.config.metridoc.style.layout ? grailsApplication.config.metridoc.style.layout : "main"
         def layout = attrs.layout ? attrs.layout : layoutInConfig
-        def model = [layout: layout, body: body]
+        def model = [layout: layout, body: body.call()]
 
         model.hasModule = false
         if (attrs.module) {

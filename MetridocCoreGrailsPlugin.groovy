@@ -23,7 +23,7 @@ class MetridocCoreGrailsPlugin {
 
     static DEFAULT_MAX_REMEMER_ME = 60 * 60 //one hour
     // the plugin version
-    def version = "0.54.3"
+    def version = "0.54.4-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.0.4 > *"
 
@@ -32,9 +32,6 @@ class MetridocCoreGrailsPlugin {
     def loadAfter = ["rest-client-builder", "release", "hibernate", "quartz2", "resources"]
 
     def artefacts = [new ScriptJobArtefactHandler()]
-
-    def watchedResources = [
-    ]
 
     def pluginExcludes = [
             "grails-app/workflows/metridoc/test/**/*",
@@ -90,11 +87,6 @@ class MetridocCoreGrailsPlugin {
 
     }
 
-    def doWithDynamicMethods = { ctx ->
-        //Implement registering dynamic methods to classes (optional)
-    }
-
-    //adds the manual trigger to all jobs that do not have triggers
     def doWithApplicationContext = { applicationContext ->
         RememberMeManager manager = applicationContext.getBean("shiroRememberMeManager", RememberMeManager)
         if (manager instanceof CookieRememberMeManager) {
