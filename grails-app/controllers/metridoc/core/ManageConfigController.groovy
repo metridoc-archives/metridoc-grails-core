@@ -1,10 +1,9 @@
 package metridoc.core
 
-import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.StringUtils
-import org.apache.maven.artifact.ant.shaded.ExceptionUtils
+import org.apache.commons.lang.exception.ExceptionUtils
 
-import static metridoc.core.CommonService.*
+import static metridoc.core.CommonService.METRIDOC_CONFIG
 
 class ManageConfigController {
 
@@ -16,15 +15,15 @@ class ManageConfigController {
 
     def index() {
         [
-            metridocConfigExists: commonService.metridocConfig.exists()
+                metridocConfigExists: commonService.metridocConfig.exists()
         ]
     }
 
     def upload() {
-        def fileContent = request.getFile("metridocConfig").inputStream.getText(CommonService.DEFAULT_ENCODING)
-            if (fileContent == null || fileContent == StringUtils.EMPTY) {
+        String fileContent = request.getFile("metridocConfig").inputStream.getText(CommonService.DEFAULT_ENCODING)
+        if (fileContent == null || fileContent == StringUtils.EMPTY) {
             flash.alerts << "No file was provided"
-            redirect(action:  "index")
+            redirect(action: "index")
             return
         }
         def slurper = new ConfigSlurper()
@@ -32,7 +31,7 @@ class ManageConfigController {
             slurper.parse(fileContent)
         } catch (Throwable ex) {
             flash.alerts << "Invalid Config! <br /><pre>${ExceptionUtils.getStackTrace(ex)}</pre>"
-            redirect(action:  "index")
+            redirect(action: "index")
             return
         }
         commonService.metridocConfig.delete()
@@ -51,7 +50,7 @@ class ManageConfigController {
         }
 
         flash.alerts << "${config} does not exist"
-        redirect(action:  "index")
+        redirect(action: "index")
     }
 
 
