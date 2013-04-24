@@ -1,7 +1,7 @@
-includeTargets << new File("$metridocCorePluginDir/scripts/_DownloadMetridocFiles.groovy")
+includeTargets << new File("$metridocCorePluginDir/scripts/_ConfigHelper.groovy")
 
 target(main: "configures a metridoc application") {
-    depends(updateBuildConfig, updateConfigFile, updateUrlMappings)
+    depends(overwriteBuildConfig, overwriteConfig, overwriteUrlMappings, deleteUnusedFiles)
 }
 
 setDefaultTarget(main)

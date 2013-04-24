@@ -1,7 +1,7 @@
 includeTargets << new File("$metridocCorePluginDir/scripts/_ConfigHelper.groovy")
 
-target(main: "updates url mappings file") {
-    depends(updateUrlMappings)
+target(main: "updates build config file") {
+    depends(updateMetridocVersion)
 }
 
 setDefaultTarget(main)

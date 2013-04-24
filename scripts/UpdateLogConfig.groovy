@@ -3,7 +3,7 @@ import java.util.regex.Matcher
 includeTargets << grailsScript("_GrailsInit")
 
 target(updateLogConfig: "Updates log config") {
-    def metridocCoreConfigFile = new File("$metridocCorePluginDir/src/templates/config/ConfigLogTemplate.groovy")
+    def metridocCoreConfigFile = new File("$metridocCorePluginDir/src/templates/config/ConfigTemplate.groovy")
     def localConfigFile = new File("$basedir/grails-app/conf/Config.groovy")
     def metridocCoreConfigContent = metridocCoreConfigFile.text
     def m = metridocCoreConfigContent =~ "(?s)TEMPLATE_LOG_4J.*?TEMPLATE_LOG_4J"
