@@ -8,7 +8,7 @@ import org.apache.camel.builder.RouteBuilder
 class BarJob extends MetridocJob {
 
     def someProperty = "somePropertyValue"
-    static triggers = MetridocJob.MIDNIGHT
+    static triggers = MIDNIGHT
     def dataSource
     def grailsApplication
 
@@ -16,7 +16,7 @@ class BarJob extends MetridocJob {
     def doExecute() {
         profile("running bar") {
             assert grailsApplication
-            Thread.sleep(10000)
+            Thread.sleep(1000 * 60 * 2) //pauses for 2 minutes to check that concurrency is shut off
         }
 
         def camelRouteWorked = false

@@ -89,8 +89,10 @@ public class QuartzMonitorJobFactory extends PropertySettingJobFactory implement
     }
 
     /**
-     * Quartz Job implementation that invokes execute() on the GrailsTaskClassJob instance whilst recording the time
+     * Quartz Job implementation that invokes execute() on the GrailsTaskClassJob instance whilst recording the time.
+     * All jobs are non concurrent
      */
+    @DisallowConcurrentExecution
     public static class QuartzDisplayJob implements org.quartz.Job, Cloneable {
         static final Logger displayLogger = LoggerFactory.getLogger(QuartzDisplayJob.class);
         private QuartzService quartzService;
