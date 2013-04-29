@@ -3,6 +3,7 @@ package metridoc.core
 import grails.plugin.quartz2.GrailsJobClass
 import grails.plugin.quartz2.SimpleJobDetail
 import grails.plugin.quartz2.TriggersBuilder
+import grails.util.Environment
 import org.apache.commons.lang.StringUtils
 import org.quartz.JobKey
 import org.quartz.Scheduler
@@ -42,12 +43,16 @@ class InitQuartzService {
     }
 
     def startSchedulerIfNotACLIJob() {
-        def isCliJob = Boolean.valueOf(System.getProperty(CLI_ONLY, "false"))
-        if (!isCliJob) {
-            log.info "quartz scheduler is starting"
-            quartzScheduler.start()
+        if (Environment.current != Environment.TEST) {
+            def isCliJob = Boolean.valueOf(System.getProperty(CLI_ONLY, "false"))
+            if (!isCliJob) {
+                log.info "quartz scheduler is starting"
+                quartzScheduler.start()
+            } else {
+                log.info "quartz scheduler will not start since the job is being run as a command line job or tests are being run"
+            }
         } else {
-            log.info "quartz scheduler will not start since the job is being run as a command line job"
+            log.info "quartz scheduler will not start since we are running a test"
         }
     }
 
