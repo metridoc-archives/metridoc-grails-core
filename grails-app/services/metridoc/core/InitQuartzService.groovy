@@ -44,6 +44,7 @@ class InitQuartzService {
 
     def startSchedulerIfNotACLIJob() {
         if (Environment.current != Environment.TEST) {
+            def args = System.getProperty("grails.cli.args")
             def isCliJob = Boolean.valueOf(System.getProperty(CLI_ONLY, "false"))
             if (!isCliJob) {
                 log.info "quartz scheduler is starting"

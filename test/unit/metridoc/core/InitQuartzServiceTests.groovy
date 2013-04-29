@@ -1,6 +1,8 @@
 package metridoc.core
 
 import grails.test.mixin.TestFor
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.quartz.Scheduler
 
@@ -13,6 +15,18 @@ import org.quartz.Scheduler
  */
 @TestFor(InitQuartzService)
 class InitQuartzServiceTests {
+
+    String originalSystemProperty
+
+    @Before
+    void "grab original system property"() {
+        originalSystemProperty = System.getProperty(InitQuartzService.CLI_ONLY)
+    }
+
+    @After
+    void "reset original system property"() {
+        setCliJobProperty(originalSystemProperty)
+    }
 
     @Test
     void "scheduler should not start if it is a commandline job"() {
