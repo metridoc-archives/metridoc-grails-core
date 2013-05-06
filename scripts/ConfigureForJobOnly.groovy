@@ -22,15 +22,7 @@ target(main: "deletes all unused files to make a cleaner project for creating jo
         properties.store(output, description)
     }
 
-    //delete default files that are not needed
-    ant.sequential {
-        delete(file: "scripts/_Install.groovy")
-        delete(file: "scripts/_Uninstall.groovy")
-        delete(file: "scripts/_Upgrade.groovy")
-        delete(file: "grails-app/views/error.gsp")
-    }
-
-    depends(downloadMetridocFiles, packageApp, createMetridocJob)
+    depends(overwriteBuildConfig, overwriteConfig, overwriteUrlMappings, deleteUnusedFiles, createMetridocJob)
 }
 
 setDefaultTarget(main)

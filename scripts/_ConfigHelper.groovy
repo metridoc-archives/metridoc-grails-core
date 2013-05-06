@@ -87,6 +87,12 @@ target(deleteUnusedFiles: "deletes all view files and front end assets not being
     ant.delete(dir: "web-app/css")
     ant.delete(dir: "web-app/js")
     ant.delete(dir: "web-app/images")
+    if (new File("scripts/_Install.groovy").exists()) {
+        delete(file: "scripts/_Install.groovy")
+        delete(file: "scripts/_Uninstall.groovy")
+        delete(file: "scripts/_Upgrade.groovy")
+        delete(file: "grails-app/views/error.gsp")
+    }
 }
 
 

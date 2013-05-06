@@ -1,44 +1,73 @@
-We used to have a starter project available, but as we have continued to streamline MetriDoc, this really didn't seem
-worth the effort anymore.  Using the standard grails create-app method gets you started just fine
+MetriDoc is a collection of grails plugins.  Installing MetriDoc assumes you are using its core plugin and one or more
+other MetriDoc plugins.  Generally users will create a central application that builds with other plugins that.  In the
+future, a user will be able to deploy MetriDoc plugins as standalone applications that will link with already running
+applications.
 
 h3. Installing via Commandline
 
+First use grails to create a new project @grails create-app metridoc@ and navigate to the directory (@cd metridoc@).
+After which you will have a directory structure
+similar to:
+
 {code}
-curl -s https://metridoc.googlecode.com/svn/trunk/startup/createMetridocProject.sh | sh
-cd metridoc
-grails run-app
+├── application.properties
+├── grails-app
+│   ├── conf
+│   │   ├── ApplicationResources.groovy
+│   │   ├── BootStrap.groovy
+│   │   ├── BuildConfig.groovy
+│   │   ├── Config.groovy
+│   │   ├── DataSource.groovy
+│   │   ├── UrlMappings.groovy
+│   │   ├── hibernate
+│   │   └── spring
+│   │       └── resources.groovy
+│   ├── controllers
+...
 {code}
 
-The script above installs the gvm if it is not already installed, along with grails.  You just need java.  The gvm
-does inspect your environment and may require you to set various path variables such as JAVA_HOME
+Update @BuildConfig.groovy@ to include the metridoc-core dependency:
 
-If all goes well, you should see this page:
+{code}
+plugins {
+        ...
+        compile(":metridoc-core:0.54.4-SNAPSHOT")
+        ...
+}
+{code}
 
-!http://metridoc.googlecode.com/svn/trunk/metridoc-core/src/docs/images/MetriDocHome.png!
+Update the repository section so grails knows where to pick up the dependency
 
-h3. Installing Manually
+{code}
+repositories {
+        ...
+        mavenRepo "https://metridoc.googlecode.com/svn/maven/repository"
+        ...
+}
+{code}
 
-After installing grails via the methods mentioned [here|http://metridoc.googlecode.com/svn/trunk/metridoc-core/target/docs/guide/gettingStarted.html#requiredSoftware],
-run @grails create-app metridoc@ on the command line.  After this is done you will need to change a few files and delete the contents
-of a directory to get metridoc core up and running.
+{note}
+The getting started scripts are part of the 0.54.4 snapshot.  Once this version is released, the release version can
+be used instead.
+{note}
 
-Below is a table of files that need to be replaced:
+Now run @grails -refresh-dependencies compile@ so it can grab all the related dependencies
 
-{table}
-*Local File* | *Replace With*
-metridoc/grails-app/conf/BuildConfig.groovy | [BuildConfig.groovy|http://metridoc.googlecode.com/svn/trunk/startup/BuildConfig.groovy]
-metridoc/grails-app/conf/Config.groovy | [Config.groovy|http://metridoc.googlecode.com/svn/trunk/metridoc-core/grails-app/conf/Config.groovy]
-metridoc/grails-app/conf/UrlMappings.groovy | [UrlMappings|http://metridoc.googlecode.com/svn/trunk/metridoc-core/grails-app/conf/UrlMappings.groovy]
-{table}
+Finally run @grails configure-metridoc-application -includeSnapshots@ to clean up and import various config files
 
-After the files have been updated, delete the contents of the directory grails-app/views
-and navigate to the metridoc directory and run @grails run-app@
+To run your metridoc instance, please run @grails run-app@
 
 If all goes well, you should see this page:
 
 !http://metridoc.googlecode.com/svn/trunk/metridoc-core/src/docs/images/MetriDocHome.png!
 
 {note}
-The plugin may fail saying that there is a corrupt cache.  If this happens, run
+if you get a @404@ error about not finding index.gsp try running @grails clean@ then @grails run-app@.  If that doesn't
+work do @grails flush-cache@ then @grails run-app@
+{note}
+
+{note}
+while building the application there might be a message saying that there is a corrupt cache.  If this happens, run
 @grails --refresh-dependencies compile@ and try @grails run-app@ again
 {note}
+

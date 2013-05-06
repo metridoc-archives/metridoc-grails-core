@@ -1,9 +1,13 @@
-Upgrading is simple.  Just go into your BuildConfig.groovy file and change the version of metridoc that you are using.
-For instance, say you see something like
+There are two ways to upgrade the application.  Metridoc has a simple script to do this automatically
+
 {code}
-compile (\":metridoc-core:0.52.1")
+grails update-metridoc-version
 {code}
-in your @BuildConfig.groovy@.
+
+If you want the latest snapshot, you can do @grails update-metridoc-version -includeSnapshots@
+
+If you would rather update the version of metridoc manually, open the @BuildConfig.groovy@ file and change the version
+in the plugins section
 
 When upgrading grails, I would recommend *NOT* using @grails upgrade@.  @grails upgrade@ does a bunch of magic, which
 generally creates a ton of unwanted files and folders.  Instead, go to application.properties in your project and
