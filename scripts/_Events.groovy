@@ -33,7 +33,7 @@ eventPackagingEnd = { msg ->
 }
 
 eventTestPhasesStart = {
-    //since we are in test mode or directly us, let's make sure that the quartz scheduler does not run
+    //since we are in test mode, let's make sure that the quartz scheduler does not run
     //setting this property will ensure the scheduler does not start
     System.setProperty("metridoc.job.cliOnly", "true")
 }
