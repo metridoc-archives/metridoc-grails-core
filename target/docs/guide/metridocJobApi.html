@@ -1,0 +1,266 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>4 Job Api 0.54.4-SNAPSHOT</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/gettingStarted.html"><strong>2</strong><span>Getting Started</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/configuration.html"><strong>3</strong><span>Configuration</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/metridocJobApi.html"><strong>4</strong><span>Job Api</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/metridocPlugins.html"><strong>5</strong><span>Metridoc Plugins</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/metridocSecurity.html"><strong>6</strong><span>Metridoc Security</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>
+    Provides core functionality for metridoc and all related plugins
+</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/configuration.html">&lt;&lt; <strong>3</strong><span>Configuration</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/metridocPlugins.html"><strong>5</strong><span>Metridoc Plugins</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>4 Job Api - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Thomas Barker</p>
+
+                    <p><strong>Version:</strong> 0.54.4-SNAPSHOT</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h1 id="metridocJobApi">4 Job Api</h1>
+The metridoc job api is essentially a collection of technologies that are ideal for job / task oriented workflows.
+It tries to merge the simplicity of scripting and the maintainability of java by using straight groovy, Apache Camel and
+its own pipeline workflow based on grails' build system.<p class="paragraph"/>A job can either be embedded and scheduled in a grails application, or it can be run via the command line and scheduled
+through some other mechanism such as cron.  To create a job, first run <code>grails create-plugin &#60;plugin name&#62;</code>.
+To add the metridoc libraries we need to add a couple lines to the BuildConfig.groovy file.  In the repositories section
+put:<p class="paragraph"/><div class="code"><pre>repositories &#123;
+    &#8230;
+    grailsRepo <span class="java&#45;quote">"https://metridoc.googlecode.com/svn/plugins/"</span>
+    &#8230;
+&#125;</pre></div><p class="paragraph"/>In the plugins section put:<p class="paragraph"/><div class="code"><pre>plugins &#123;
+    &#8230;
+    compile(&#34;:metridoc&#45;core:0.52&#45;SNAPSHOT&#34;)
+    &#8230;
+&#125;</pre></div><p class="paragraph"/><blockquote class="note">
+Do not add the dependency to the <code>dependency {...}</code> block.  You will get an error if you do this
+</blockquote><p class="paragraph"/>After adding the necessary information to the BuildConfig.groovy file, run <code>grails compile</code> to download all the metridoc
+libraries.<p class="paragraph"/>Grails creates a lot of files and folders.  If you just need to create a job
+without a web application, you can run <code>grails configure-for-job-only</code>.  The script will remove all unnecessary files
+and folders in addition to prompting for a job name.  After running the script, you will have an infrastructure to
+create metridoc jobs without the clutter.  If you named the job <code>foo</code>, your file structure should look something like:<p class="paragraph"/><div class="code"><pre>|── FooGrailsPlugin.groovy
+├── application.properties
+├── grails&#45;app
+│   ├── conf
+│   │   ├── BuildConfig.groovy
+│   │   ├── Config.groovy
+│   │   ├── DataSource.groovy
+│   │   └── UrlMappings.groovy
+│   ├── i18n
+│   │   └── shiro.properties
+│   ├── jobs
+│   │   └── foo
+│   │       └── FooJob.groovy
+│   └── migrations
+├── target
+├── test
+│   ├── integration
+│   └── unit
+└── web&#45;app
+    ├── META&#45;INF
+    └── WEB&#45;INF
+        ├── applicationContext.xml
+        ├── sitemesh.xml
+        └── tld
+            ├── c.tld
+            ├── fmt.tld
+            ├── grails.tld
+            └── spring.tld</pre></div><p class="paragraph"/>all information under <code>web-app</code> is grails specific.  Most everything you will work with is under the <code>jobs</code> and <code>config</code>
+folders.  From this point forward, running <code>grails create-metridoc-job</code> will create new metridoc jobs that
+extend the helper class MetridocJob, while running <code>create-job</code> will create a basic groovy job without the extra
+metridoc functionality.<p class="paragraph"/>To schedule the job, create a static triggers field and add appropriate values as described <a href="http://grails-plugins.github.com/grails-quartz/guide/scheduling.html" target="blank">here</a>,
+and implement doExecute(), or execute() depending on whether you are creating a MetridocJob or just a normal Grails Job<p class="paragraph"/><blockquote class="note">
+The documentation is for the grails job plugin which depends on quartz 1.  MetriDoc actually uses the quartz2 grails plugin
+which is more or less compatible with the quartz 1 version.  Just referencing the older one since the documentation
+is a little better
+</blockquote><p class="paragraph"/>While implementing doExecute you can enjoy the power of groovy, which has tools for sql, and structured text
+parsing among other things.  In addition MetridJob provides a couple of helpful methods and workflows<p class="paragraph"/><h3>Targets</h3><p class="paragraph"/>A target is a unit of work that should only occur once.  It can depend on other targets as well to construct a pipeline
+of work.  Generally a MetridocJob will be executed once to gather all targets, and then again to actually execute the
+work.  Each job has a default target which will be called once the first pass through has happened.  Here is a simple
+hello world job:<p class="paragraph"/><div class="code"><pre>class HelloWorldJob <span class="java&#45;keyword">extends</span> MetridocJob &#123;<p class="paragraph"/>    def doExecute() &#123;
+        target(<span class="java&#45;keyword">default</span>: <span class="java&#45;quote">"say hello"</span>) &#123;
+            log.info <span class="java&#45;quote">"hello world!"</span>
+        &#125;
+    &#125;
+&#125;</pre></div><p class="paragraph"/>When executed, the job will run doExecute to collect all targets, then run the <code>default</code> target to print <code>hello world!</code>.
+To build a pipeline, simply add multiple targets and use the <code>depends</code> method.  So consider this:<p class="paragraph"/><div class="code"><pre>class HelloWorldJob <span class="java&#45;keyword">extends</span> MetridocJob &#123;<p class="paragraph"/>    def doExecute() &#123;<p class="paragraph"/>        target(<span class="java&#45;keyword">default</span>: <span class="java&#45;quote">"say hello"</span>) &#123;
+            depends(<span class="java&#45;quote">"runMeFirst"</span>)
+            log.info <span class="java&#45;quote">"hello world!"</span>
+        &#125;<p class="paragraph"/>        target(runMeFirst: <span class="java&#45;quote">"I run first!"</span>) &#123;
+            log.info <span class="java&#45;quote">"running before saying hello"</span>
+        &#125;
+    &#125;
+&#125;</pre></div><p class="paragraph"/>In this case runMeFirst logs before default does because of the depends method.  Now what happens if we do:<p class="paragraph"/><div class="code"><pre>class HelloWorldJob <span class="java&#45;keyword">extends</span> MetridocJob &#123;<p class="paragraph"/>    def doExecute() &#123;<p class="paragraph"/>        target(<span class="java&#45;keyword">default</span>: <span class="java&#45;quote">"say hello"</span>) &#123;
+            depends(<span class="java&#45;quote">"runB"</span>, <span class="java&#45;quote">"runA"</span>)<p class="paragraph"/>        &#125;<p class="paragraph"/>        target(runA: <span class="java&#45;quote">"run A"</span>) &#123;
+            log.info <span class="java&#45;quote">"running A"</span>
+        &#125;<p class="paragraph"/>        target(runB: <span class="java&#45;quote">"run B"</span>) &#123;
+            depends(<span class="java&#45;quote">"runA"</span>)
+            log.info <span class="java&#45;quote">"running B"</span>
+        &#125;
+    &#125;
+&#125;</pre></div><p class="paragraph"/>order of logging would be <code>runA -&#62; runB -&#62; default</code>.  Despite <code>default</code> depending on <code>runA</code>, since <code>runA</code> was already called
+we will not call it again.  <code>depends</code> creates task dependencies while guarantying that none of them run more than once.
+If you need to run a target regardless of whether it was ran before or not, do <code>targetMap.&#60;target name&#62;.call()</code>.  To
+reuse targets across jobs you can store the targets in scripts and import them using <code>includeTargets</code>.<p class="paragraph"/><h3>Routing</h3><p class="paragraph"/>MetridocJob also provides a couple of routing features from Apache Camel.  To run a route, use
+the <code>runRoute</code> method and everything contained within the passed closure will be the body of the configure method in
+<a href="http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/builder/RouteBuilder.html" target="blank">RouteBuilder</a>.
+MetridocJob will create a CamelContext instance, add the route, and wait until all messages are
+processed by the route.  Below are some examples<p class="paragraph"/><h4>Migrating a table to another table</h4><p class="paragraph"/>
+<div class="code"><pre>class MigrationJob <span class="java&#45;keyword">extends</span> MetridocJob &#123;
+    def doExecute() &#123;
+        runRoute &#123;
+            from(<span class="java&#45;quote">"sqlplus:tableA?dataSource=dataSourceA"</span>).to(<span class="java&#45;quote">"sqlplus:tableB?dataSource=dataSourceB"</span>)
+        &#125;
+    &#125;
+&#125;</pre></div><p class="paragraph"/>dataSources or services will be available to the apache camel route.  Even any fields you set within MetridocJob.
+For instance, say you want to consume some files from a directory, you can create a file filter as a field and use it<p class="paragraph"/><div class="code"><pre>class FileJob <span class="java&#45;keyword">extends</span> MetridocJob &#123;
+    def fooFilter = &#91;
+        accept: &#123;GenericFile file &#45;&#62;
+            <span class="java&#45;keyword">return</span> file.fileName.contains(<span class="java&#45;quote">"foo"</span>)
+        &#125;
+    &#93;<p class="paragraph"/>    def doExecute() &#123;
+        runRoute &#123;
+            from(<span class="java&#45;quote">"file:/user/foo/files?filter=&#35;fooFilter"</span>).process&#123;Exchange exchange &#45;&#62;
+                def fileName = excange.in.body.name
+                log.info <span class="java&#45;quote">"processing file $fileName"</span>
+            &#125;
+        &#125;
+    &#125;
+&#125;</pre></div><p class="paragraph"/><h4>Metridoc additions to Apache Camel</h4><p class="paragraph"/>We added the <code>sqlplus</code> component to easily migrate data between tables.  The from part does a select * on the whatever
+table is provided and transfers a <code>ResultSet</code> within the exchange.  The <code>to</code> component can accept a list of maps,
+a ResultSet or just a map, and inserts the data into the destination table.<p class="paragraph"/>If you are using runRoute with a closure, there are a few additions to the Apache Camel DSL worth mentioning<p class="paragraph"/><strong class="bold">process</strong> - You can process an Exchange with a Closure instead of implementing a Processor<p class="paragraph"/><strong class="bold">filter</strong> - You can process a filter with a Closure instead of implementing a Predicate<p class="paragraph"/><strong class="bold">when</strong> - process a condition with a closure<p class="paragraph"/><strong class="bold">splitByLine</strong> - splits a text file by line<p class="paragraph"/><strong class="bold">aggregateByBody</strong> - aggregates the body of incoming exchanges into one exchange who has a list of all incoming exchanges
+in its body<p class="paragraph"/>The javadoc for the extension is <a href="http://metridoc.googlecode.com/svn/trunk/metridoc-core/target/docs/gapi/metridoc/camel/CamelExtensions.html" target="blank">here</a><p class="paragraph"/>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/configuration.html">&lt;&lt; <strong>3</strong><span>Configuration</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/metridocPlugins.html"><strong>5</strong><span>Metridoc Plugins</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">commandline</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/commandline/configure-for-job-only.html">configure-for-job-only</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/commandline/configure-for-metridoc-application.html">configure-for-metridoc-application</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/commandline/flush-cache.html">flush-cache</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/commandline/run-job.html">run-job</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/commandline/update-metridoc-version.html">update-metridoc-version</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">taglibs</h1><div class="menu-sub">
+                        
+                            
+                            </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

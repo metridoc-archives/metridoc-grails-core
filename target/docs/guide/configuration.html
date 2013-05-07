@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>3 Configuration 0.54.4-SNAPSHOT</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/gettingStarted.html"><strong>2</strong><span>Getting Started</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/configuration.html"><strong>3</strong><span>Configuration</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/metridocJobApi.html"><strong>4</strong><span>Job Api</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/metridocPlugins.html"><strong>5</strong><span>Metridoc Plugins</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/metridocSecurity.html"><strong>6</strong><span>Metridoc Security</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>
+    Provides core functionality for metridoc and all related plugins
+</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/gettingStarted.html">&lt;&lt; <strong>2</strong><span>Getting Started</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/metridocJobApi.html"><strong>4</strong><span>Job Api</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>3 Configuration - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Thomas Barker</p>
+
+                    <p><strong>Version:</strong> 0.54.4-SNAPSHOT</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h1 id="configuration">3 Configuration</h1>
+<h3> Setting up the DataSource</h3><p class="paragraph"/>To setup data sources, edit the DataSources.groovy file located at grails-app/conf/DataSources.groovy.  At bare
+minimum you will need a user name, password, database url and driver class name.  In general it is recommended that
+you use MySql, going forward MetriDoc plugins will abstract database operations as much as possible so any database
+supported by GORM can be used.  To the extent a plugin requires MySql, the documentation will indicate this.  The other
+config files have already been put together for you when you created the project.<p class="paragraph"/>External configuration is also possible.  The file <code>~/.metridoc/MetridocConfig.groovy</code> is imported if it exists.  Any
+values in there, including ones specifying the data source are applied to the running application.  You can see where
+this file import at the top of the Config.groovy file:<p class="paragraph"/><div class="code"><pre>&#8230;
+<span class="java&#45;keyword">if</span> (<span class="java&#45;keyword">new</span> File(<span class="java&#45;quote">"&#36;&#123;metridoc.home&#125;/MetridocConfig.groovy"</span>).exists()) &#123;
+    log.info <span class="java&#45;quote">"found MetridocConfig.groovy, will add to configuration"</span>
+&#125;
+...</pre></div><p class="paragraph"/>Additionally, metridoc searches for any jars under <code>&#60;user home&#62;/.grails/drivers</code> and drops them into the classpath.
+This can be really handy if you need to add database driver that are not accessible via maven.  The code for this
+is at the top of the <code>Config.groovy</code> page and can be changed depending on your environment:<p class="paragraph"/><div class="code"><pre>&#8230;
+<span class="java&#45;keyword">if</span> (driverDirectory.exists() &#38;&#38; driverDirectory.isDirectory()) &#123;
+    <span class="java&#45;keyword">if</span> (rootLoader) &#123;
+        driverDirectory.eachFile &#123;
+            <span class="java&#45;keyword">if</span> (it.name.endsWith(<span class="java&#45;quote">".jar"</span>)) &#123;
+                def url = it.toURI().toURL()
+                LoggerFactory.getLogger(<span class="java&#45;quote">"config.Config"</span>).info <span class="java&#45;quote">"adding driver $&#123;url&#125;"</span> as <span class="java&#45;object">String</span>
+                rootLoader.addURL(url)
+            &#125;
+        &#125;
+    &#125;
+&#125;
+...</pre></div><p class="paragraph"/>
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/gettingStarted.html">&lt;&lt; <strong>2</strong><span>Getting Started</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/metridocJobApi.html"><strong>4</strong><span>Job Api</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">commandline</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/commandline/configure-for-job-only.html">configure-for-job-only</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/commandline/configure-for-metridoc-application.html">configure-for-metridoc-application</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/commandline/flush-cache.html">flush-cache</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/commandline/run-job.html">run-job</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/commandline/update-metridoc-version.html">update-metridoc-version</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">taglibs</h1><div class="menu-sub">
+                        
+                            
+                            </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>
