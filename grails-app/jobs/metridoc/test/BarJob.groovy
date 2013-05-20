@@ -8,7 +8,6 @@ import org.apache.camel.builder.RouteBuilder
 class BarJob extends MetridocJob {
 
     def someProperty = "somePropertyValue"
-    static triggers = MIDNIGHT
     def dataSource
     def grailsApplication
 

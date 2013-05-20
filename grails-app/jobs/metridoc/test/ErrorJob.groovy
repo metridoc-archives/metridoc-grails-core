@@ -11,8 +11,6 @@ import metridoc.core.MetridocJob
  */
 class ErrorJob extends MetridocJob {
 
-    static triggers = MetridocJob.MIDNIGHT
-
     def doExecute() {
         log.error "about to throw an error from ErrorJob"
         throw new RuntimeException("I meant to do that")
