@@ -65,7 +65,6 @@ grails.project.dependency.resolution = {
     plugins {
         compile ":external-config-reload:1.2.2"
         compile ":plugin-config:0.1.5"
-        compile ":quartz2:0.2.3"
         runtime ":mail:1.0.1"
         runtime ":hibernate:$grailsVersion"
         runtime ":resources:1.1.6"

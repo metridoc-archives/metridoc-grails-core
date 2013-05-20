@@ -26,7 +26,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>MetriDoc</title>
-    <!-- make sure console works in any browser -->
+    <!-- make sure console works in any browser (ie won't crash in ie!) -->
     <script type="text/javascript">
         if (!console) console = {log: function () {
         }};
@@ -81,10 +81,9 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings <b
                                         class="caret"></b></a>
                                 <ul class="dropdown-menu">
-                                    <li><g:link controller="profile" plugin="metridocCore"><i class="icon-user"></i> Account</g:link></li>
-                                    <li><g:link controller="log" plugin="metridocCore"><i class="icon-file-alt"></i> Application Log</g:link></li>
-                                    <li><g:link controller="user" plugin="metridocCore"><i class="icon-group"></i> Manage Users</g:link></li>
-                                    <li><g:link controller="quartz" plugin="metridocCore"><i class="icon-play"></i> Jobs</g:link></li>
+                                    <li><g:link controller="profile"><i class="icon-user"></i> Account</g:link></li>
+                                    <li><g:link controller="log"><i class="icon-file-alt"></i> Application Log</g:link></li>
+                                    <li><g:link controller="user"><i class="icon-group"></i> Manage Metridoc</g:link></li>
                                 </ul>
                             </li>
                         </shiro:hasRole>

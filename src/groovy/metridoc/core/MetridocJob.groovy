@@ -20,33 +20,9 @@ import java.util.concurrent.TimeUnit
  * it contains helpful methods for routing and profiling tasks, in addition to common triggers.
  */
 abstract class MetridocJob extends RunnableTool {
-
-    /**
-     * This was used when we couldn't manually set triggers in the web application.  This is no longer needed and
-     * might be removed in newer versions of the core.
-     * Unfortunately for quartz to actually register a job, it must have some fire time in the future.  This trigger
-     * has an arbitrarily long start up delay (50 years).  By doing this the job can be managed via the quartzscheduler.
-     *
-     * @deprecated
-     */
-    static final MANUAL_RUN_TRIGGER = {
-        def fiftyYears = TimeUnit.DAYS.toMillis(365 * 50)
-        simple repeatInterval: 1000, startDelay: fiftyYears
-    }
-
-    /**
-     * represents a midnight trigger.  Here for convenience when scheduling jobs in code
-     */
-    static final MIDNIGHT = {
-        cron cronExpression: "0 0 0 * * ?"
-    }
+    static scope = "session"
 
     private static final jobLogger = LoggerFactory.getLogger(MetridocJob)
-    /**
-     * all metridoc jobs are not concurrent by default.  Any needed concurrency should be incorporated into the job
-     * itself.  This basically provides a hint to quartz
-     */
-    public final boolean concurrent = false
 
     /**
      * runs the closure as a route within the {@link GroovyRouteBuilder}.  Really handy for database migrations and
