@@ -5,7 +5,10 @@ import org.apache.camel.Exchange
 import org.apache.camel.Processor
 import org.apache.camel.builder.RouteBuilder
 
-class BarJob extends MetridocJob {
+/**
+ * a test job to illustrate and make sure many of the features of MetridocJob are actually working
+ */
+class BarJobService extends MetridocJob {
 
     def someProperty = "somePropertyValue"
     def dataSource
@@ -59,7 +62,7 @@ class BarJob extends MetridocJob {
         }
 
         target(directRun: "not called by default, but could be called via url with 'target' set") {
-            log.info "directRun target called in BarJob"
+            log.info "directRun target called in BarJobService"
         }
 
     }
