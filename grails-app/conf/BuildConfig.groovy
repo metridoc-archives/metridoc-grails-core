@@ -63,6 +63,7 @@ grails.project.dependency.resolution = {
 
     //grails based plugins
     plugins {
+        compile(":job-runner:latest.integration")
         compile ":external-config-reload:1.2.2"
         compile ":plugin-config:0.1.5"
         runtime ":mail:1.0.1"
