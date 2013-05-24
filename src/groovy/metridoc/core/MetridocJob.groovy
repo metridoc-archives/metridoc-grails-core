@@ -13,14 +13,12 @@ import org.apache.commons.lang.StringUtils
 import org.slf4j.LoggerFactory
 
 import java.util.concurrent.Future
-import java.util.concurrent.TimeUnit
 
 /**
  * This is the primary class used for running MetriDoc jobs.  Although unnecessary to actually create a periodic job,
  * it contains helpful methods for routing and profiling tasks, in addition to common triggers.
  */
 abstract class MetridocJob extends RunnableTool {
-    static scope = "session"
 
     private static final jobLogger = LoggerFactory.getLogger(MetridocJob)
 
@@ -43,6 +41,7 @@ abstract class MetridocJob extends RunnableTool {
      *
      * @param builder
      */
+    @SuppressWarnings("GrMethodMayBeStatic")
     def runRoute(RouteBuilder builder) {
         CamelScript.components.put("sqlplus", SqlPlusComponent)
         def mockClosure = {}
