@@ -27,7 +27,7 @@ class MetridocCoreGrailsPlugin {
     def loadAfter = ["rest-client-builder", "release", "hibernate", "resources"]
 
     def pluginExcludes = [
-            "grails-app/workflows/metridoc/test/**/*",
+            "grails-app/services/metridoc/test/**/*",
             "grails-app/controllers/metridoc/test/**/*",
             "grails-app/domain/metridoc/test/**/*",
             "grails-app/conf/MetridocConfig.groovy"
@@ -55,7 +55,6 @@ class MetridocCoreGrailsPlugin {
 
 
         def shiroConfig = application.config.security.shiro
-        def mcfg = application.mergedConfig
         //have to do it in here instead of using the plugin config plugin since the shiro plugin does not use the
         //plugin config plugin
         BootupUtils.addDefaultShiroConfig(shiroConfig)
