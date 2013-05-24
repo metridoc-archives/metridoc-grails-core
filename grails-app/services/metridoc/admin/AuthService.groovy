@@ -1,10 +1,10 @@
 package metridoc.admin
 
+import metridoc.core.ShiroUser
 import org.apache.commons.lang.math.RandomUtils
-import metridoc.reports.ShiroUser
-import org.apache.shiro.crypto.hash.Sha256Hash
-import org.apache.shiro.authc.UsernamePasswordToken
 import org.apache.shiro.SecurityUtils
+import org.apache.shiro.authc.UsernamePasswordToken
+import org.apache.shiro.crypto.hash.Sha256Hash
 
 class AuthService {
 
@@ -27,6 +27,7 @@ class AuthService {
     def canReset(id) {
         canDoReset(id, new Date().getTime())
     }
+
     private canDoReset(id, now) {
         def date = dateById.remove(id)
 
@@ -47,7 +48,7 @@ class AuthService {
         return id
     }
 
-    def sendResetPasswordEmail(String emailAddress){
+    def sendResetPasswordEmail(String emailAddress) {
         def id = addResetLink()
         def link = grailsApplication.config.grails.serverURL + "/auth/doResetPassword?id=${id}"
         def user = ShiroUser.findByEmailAddress(emailAddress)
@@ -61,23 +62,23 @@ class AuthService {
         }
     }
 
-    boolean isPasswordValid(String password){
+    boolean isPasswordValid(String password) {
         return (password.length() >= 5 && password.length() <= 15)
     }
 
-    boolean isPasswordMatch(String password, String confirm){
+    boolean isPasswordMatch(String password, String confirm) {
         return password == confirm
     }
 
 
-    def newResetLink(user){
+    def newResetLink(user) {
         def id = addResetLink()
         addUserById(id, user)
         def link = grailsApplication.config.grails.serverURL + "/auth/doResetPassword?id=${id}"
         return link
     }
 
-    def resetPassword(user, password, confirm){
+    def resetPassword(user, password, confirm) {
         def passwordHash = new Sha256Hash(password).toHex()
         log.info "reseting password for ${user.username}"
         ShiroUser.withTransaction {

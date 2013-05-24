@@ -1,9 +1,7 @@
 package metridoc.core
 
-import metridoc.reports.ShiroUser
 import org.apache.shiro.SecurityUtils
 import org.apache.shiro.crypto.hash.Sha256Hash
-
 
 class ProfileController {
 
@@ -18,11 +16,7 @@ class ProfileController {
     def edit() {
         def currentUser = SecurityUtils.getSubject().getPrincipal()
 
-//        if (!currentUser) {
-//            return
-//        }
-
-        ShiroUser shiroUserInstance = ShiroUser.findByUsername(currentUser)
+        ShiroUser shiroUserInstance = ShiroUser.findByUsername(currentUser as String)
 
         if (shiroUserInstance.username == 'anonymous') {
             flash.message = message(code: 'cannot.modify.message', args: ['Anonymous User'], default: 'Anonymous User cannot be modified.')
@@ -86,8 +80,8 @@ class ProfileController {
     }
 
     static protected updateUserInfo(ShiroUser user, params) {
-        user.with {
-            emailAddress = params.emailAddress ?: params.emailAddress
+        if (params.emailAddress) {
+            user.emailAddress = params.emailAddress
         }
     }
 

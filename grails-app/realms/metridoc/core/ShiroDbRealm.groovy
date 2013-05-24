@@ -1,3 +1,7 @@
+package metridoc.core
+
+import org.apache.shiro.authc.*
+
 /*
  * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
  * Educational Community License, Version 2.0 (the "License"); you may
@@ -12,15 +16,8 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-
-import metridoc.reports.ShiroUser
-import org.apache.shiro.authc.AccountException
-import org.apache.shiro.authc.IncorrectCredentialsException
-import org.apache.shiro.authc.SimpleAccount
-import org.apache.shiro.authc.UnknownAccountException
-
 class ShiroDbRealm {
-    static authTokenClass = org.apache.shiro.authc.UsernamePasswordToken
+    static authTokenClass = UsernamePasswordToken
 
     def credentialMatcher
     def shiroPermissionResolver
@@ -51,7 +48,7 @@ class ShiroDbRealm {
 
         // Now check the user's password against the hashed value stored
         // in the database.
-        def account = new SimpleAccount(username, user.passwordHash, "ShiroDbRealm")
+        def account = new SimpleAccount(username, user.passwordHash, "metridoc.core.ShiroDbRealm")
         if (!credentialMatcher.doCredentialsMatch(authToken, account)) {
             log.info "Invalid password (DB realm)"
             throw new IncorrectCredentialsException("Invalid password for user '${username}'")
@@ -68,13 +65,13 @@ class ShiroDbRealm {
             eq("username", principal)
         }
 
-        return roles.size() > 0 ? true : false
+        return roles.size() > 0
     }
 
     def hasRole(principal, roleName) {
 
         def isAdmin = isAdmin(principal)
-        if(isAdmin) return true
+        if (isAdmin) return true
 
         def roles = ShiroUser.withCriteria {
             roles {
@@ -87,7 +84,7 @@ class ShiroDbRealm {
     }
 
     def hasAllRoles(principal, roleList) {
-        if(isAdmin(principal)) {
+        if (isAdmin(principal)) {
             return true
         }
 
@@ -122,8 +119,7 @@ class ShiroDbRealm {
             if (perm.implies(requiredPermission)) {
                 // User has the permission!
                 return true
-            }
-            else {
+            } else {
                 return false
             }
         }
@@ -152,18 +148,11 @@ class ShiroDbRealm {
             if (perm.implies(requiredPermission)) {
                 // User has the permission!
                 return true
-            }
-            else {
+            } else {
                 return false
             }
         }
 
-        if (retval != null) {
-            // Found a matching permission!
-            return true
-        }
-        else {
-            return false
-        }
+        return retval != null
     }
 }

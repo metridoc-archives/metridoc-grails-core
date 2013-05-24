@@ -14,8 +14,6 @@
  */
 package metridoc.core
 
-import metridoc.reports.ShiroRole
-import metridoc.reports.ShiroUser
 import org.apache.shiro.SecurityUtils
 import org.apache.shiro.crypto.hash.Sha256Hash
 import org.springframework.dao.DataIntegrityViolationException
@@ -142,18 +140,18 @@ class UserController {
                 shiroUserInstance.setPasswordHash(new Sha256Hash(password).toHex())
             }
             roles = []
-            def addRole = {roleName ->
+            def addRole = { roleName ->
                 log.debug("adding role ${roleName} for user ${shiroUserInstance}")
-                def role = ShiroRole.find {
+                def role = find {
                     name == roleName
                 }
-                roles.add(role)
+                roles.add(role as ShiroRole)
             }
             def isAString = params.roles instanceof String
             if (isAString) {
                 params.roles = [params.roles]
             }
-            params.roles.each {roleName ->
+            params.roles.each { roleName ->
                 addRole(roleName)
             }
 
@@ -172,6 +170,7 @@ class UserController {
         redirect(action: "show", id: shiroUserInstance.id)
     }
 
+    @SuppressWarnings("GroovyUnnecessaryReturn")
     def delete() {
 
         def shiroUserInstance = ShiroUser.get(params.id)
@@ -180,7 +179,7 @@ class UserController {
             redirect(action: "list")
             return
         }
-        String username = shiroUserInstance.username
+
         try {
             shiroUserInstance.delete(flush: true)
             flash.info = "User ${shiroUserInstance.username} deleted"

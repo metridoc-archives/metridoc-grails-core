@@ -1,4 +1,4 @@
-package metridoc.reports
+package metridoc.core
 
 import grails.test.mixin.Mock
 import org.apache.commons.lang.StringUtils
@@ -6,11 +6,8 @@ import org.apache.shiro.crypto.hash.Sha256Hash
 import org.junit.Before
 import org.junit.Test
 
-import static metridoc.reports.ShiroUser.*
+import static metridoc.core.ShiroUser.*
 
-/**
- * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
- */
 @Mock([ShiroUser, ShiroRole])
 class ShiroUserTests {
 
@@ -30,8 +27,8 @@ class ShiroUserTests {
         def admin = ShiroUser.findByUsername("admin")
         admin.roles = []
         assert !admin.validate()
-        ShiroUser.addAlertForAllErrors(admin, flash)
-        assert ShiroUser.ADMIN_MUST_HAVE_ROLE_ADMIN == flash.alert
+        addAlertForAllErrors(admin, flash)
+        assert ADMIN_MUST_HAVE_ROLE_ADMIN == flash.alert
     }
 
     @Test
@@ -106,7 +103,7 @@ class ShiroUserTests {
                 OLD_PASSWORD_MISMATCH)
 
         checkForError(validatePasswords: true,
-                oldPassword:  "blahblah",
+                oldPassword: "blahblah",
                 username: "barfoo",
                 emailAddress: fooEmail,
                 password: "foobar",
@@ -116,7 +113,7 @@ class ShiroUserTests {
                 CONFIRM_MISMATCH)
     }
 
-    void checkForError(LinkedHashMap userParams, String field, String errorMessage) {
+    static void checkForError(LinkedHashMap userParams, String field, String errorMessage) {
         Map flash = [:]
         ShiroUser user = new ShiroUser()
         userParams.each {
@@ -124,7 +121,7 @@ class ShiroUserTests {
         }
         assert !user.validate()
         assert user.errors.getFieldError(field)
-        ShiroUser.addAlertForAllErrors(user, flash)
+        addAlertForAllErrors(user, flash)
         assert errorMessage == flash.alert
     }
 }

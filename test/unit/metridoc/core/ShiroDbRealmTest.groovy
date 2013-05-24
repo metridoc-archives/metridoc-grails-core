@@ -1,11 +1,9 @@
-import metridoc.reports.ShiroUser
-import grails.test.mixin.TestFor
-import org.junit.Test
-import metridoc.reports.ShiroRole
+package metridoc.core
+
 import grails.test.mixin.Mock
-import grails.test.mixin.domain.DomainClassUnitTestMixin
-import grails.test.mixin.TestMixin
 import org.junit.Before
+import org.junit.Test
+
 /**
  * Created with IntelliJ IDEA.
  * User: tbarker
@@ -20,7 +18,7 @@ class ShiroDbRealmTest {
 
     @Before
     void "create some data"() {
-        ShiroUser.withTransaction{
+        ShiroUser.withTransaction {
             def adminUser = new ShiroUser(username: "admin", passwordHash: "asdasd", emailAddress: "foo@foo.com")
             def adminRole = new ShiroRole(name: "ROLE_ADMIN")
 
@@ -49,7 +47,7 @@ class ShiroDbRealmTest {
     }
 
     @Test
-    void "basic check if a user is an admin within the shirodbrealm" () {
+    void "basic check if a user is an admin within the shirodbrealm"() {
         assert realm.isAdmin("admin")
     }
 

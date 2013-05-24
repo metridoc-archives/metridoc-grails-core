@@ -1,10 +1,10 @@
 package metridoc.auth
 
-import metridoc.admin.ManageReport
-import metridoc.reports.ShiroRole
-import metridoc.reports.ShiroUser
-import org.apache.shiro.crypto.hash.Sha256Hash
 import grails.util.Holders
+import metridoc.core.ManageReport
+import metridoc.core.ShiroRole
+import metridoc.core.ShiroUser
+import org.apache.shiro.crypto.hash.Sha256Hash
 
 /**
  * @auhor Tommy Barker
@@ -33,7 +33,7 @@ class InitAuthService {
         def grailsApplication = Holders.grailsApplication
 
         if (grailsApplication) {
-            if(grailsApplication.mergedConfig.dataSource_admin) {
+            if (grailsApplication.mergedConfig.dataSource_admin) {
                 dataSource = 'admin'
             }
         }
@@ -94,8 +94,8 @@ class InitAuthService {
 
             } else {
                 anonymousUser = new ShiroUser(
-                    username: "anonymous",
-                    passwordHash: new Sha256Hash("password").toHex(),
+                        username: "anonymous",
+                        passwordHash: new Sha256Hash("password").toHex(),
                 )
 
             }
@@ -117,7 +117,7 @@ class InitAuthService {
      * @return
      */
     def initDefaultRoles() {
-        DEFAULT_ROLES.each {shortRoleName ->
+        DEFAULT_ROLES.each { shortRoleName ->
             def roleExists = ShiroRole.find {
                 name == createRoleName(shortRoleName)
             }
@@ -136,7 +136,7 @@ class InitAuthService {
      */
     static createRole(String type) {
         def role = new ShiroRole(
-            name: createRoleName(type)
+                name: createRoleName(type)
         )
 
         role.addToPermissions(type)

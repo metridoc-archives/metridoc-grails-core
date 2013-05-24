@@ -1,7 +1,7 @@
 package metridoc.auth
 
 import grails.test.mixin.Mock
-import metridoc.reports.ShiroRole
+import metridoc.core.ShiroRole
 import org.junit.Test
 
 /**

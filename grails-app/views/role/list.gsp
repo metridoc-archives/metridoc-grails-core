@@ -14,11 +14,11 @@
     permissions and limitations under the License.
 
 -->
-<%@ page import="metridoc.reports.ShiroRole" %>
+<%@ page import="metridoc.core.ShiroRole" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <md:report>
 
-    <g:render template="/user/tabs" plugin="metridocCore"/>
+    <g:render template="/user/tabs"/>
 
     <div id="list-shiroRole" class="content scaffold-list" role="main">
 

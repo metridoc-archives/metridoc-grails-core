@@ -15,18 +15,19 @@
 
 -->
 
-<%@ page import="metridoc.reports.ShiroRole" %>
+<%@ page import="metridoc.core.ShiroRole" %>
 
 <md:report>
 
-    <g:render template="/user/tabs" plugin="metridocCore"/>
+    <g:render template="/user/tabs"/>
 
     <g:form class="form-horizontal">
         <div class="control-group">
             <label for="shiro-role" class="control-label">Role</label>
 
             <div class="controls">
-                <input name="shiro-role" type="text" disabled="disabled" value="${shiroRoleInstance?.name}"/>
+                <input name="shiro-role" id="shiro-role" type="text" disabled="disabled"
+                       value="${shiroRoleInstance?.name}"/>
             </div>
         </div>
     </g:form>

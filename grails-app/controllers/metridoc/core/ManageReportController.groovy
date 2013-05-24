@@ -1,8 +1,6 @@
 package metridoc.core
 
 import grails.web.RequestParameter
-import metridoc.admin.ManageReport
-import metridoc.reports.ShiroRole
 
 class ManageReportController {
 

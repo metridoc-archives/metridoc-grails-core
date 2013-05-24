@@ -14,7 +14,7 @@
     permissions and limitations under the License.
 
 -->
-<%@ page import="metridoc.reports.ShiroRole" %>
+<%@ page import="metridoc.core.ShiroRole" %>
 
 <div class="fieldcontain ${hasErrors(bean: shiroRoleInstance, field: 'name', 'error')} required">
     <label for="rolename">

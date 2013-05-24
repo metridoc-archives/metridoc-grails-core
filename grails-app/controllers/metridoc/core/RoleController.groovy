@@ -14,10 +14,7 @@
  */
 package metridoc.core
 
-import metridoc.reports.ShiroRole
-import org.apache.commons.lang.StringUtils
-
-import static org.apache.commons.lang.StringUtils.*
+import static org.apache.commons.lang.StringUtils.EMPTY
 
 class RoleController {
 
@@ -52,15 +49,15 @@ class RoleController {
 
     def save(String rolename) {
 
-        if(rolename == null || rolename == EMPTY) {
+        if (rolename == null || rolename == EMPTY) {
             flash.alert = "rolename has to be provided"
             render(view: "/role/create")
         }
 
         def usedRoleName = rolename
         usedRoleName = usedRoleName.toUpperCase()
-        if (!usedRoleName.startsWith('ROLE_')){
-           usedRoleName = 'ROLE_'+usedRoleName
+        if (!usedRoleName.startsWith('ROLE_')) {
+            usedRoleName = 'ROLE_' + usedRoleName
         }
 
         def shiroRoleInstance = new ShiroRole(name: usedRoleName)
@@ -120,9 +117,9 @@ class RoleController {
 
         def roleName = params.get('rolename').toString()
         if (!roleName.startsWith('ROLE_')) {
-            shiroRoleInstance.properties.put('name','ROLE_'+roleName.toUpperCase())
-        }else{
-            shiroRoleInstance.properties.put('name',roleName.toUpperCase())
+            shiroRoleInstance.properties.put('name', 'ROLE_' + roleName.toUpperCase())
+        } else {
+            shiroRoleInstance.properties.put('name', roleName.toUpperCase())
         }
 
         if (!shiroRoleInstance.save(flush: true)) {

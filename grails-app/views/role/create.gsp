@@ -14,17 +14,19 @@
     permissions and limitations under the License.
 
 -->
-<%@ page import="metridoc.reports.ShiroRole" %>
+<%@ page import="metridoc.core.ShiroRole" %>
 <md:report>
 
-    <g:render template="/user/tabs" plugin="metridocCore"/>
+    <g:render template="/user/tabs"/>
 
     <g:form class="form-horizontal" action="save">
         <div class="control-group">
             <label class="control-label" for="rolename">Role Name</label>
+
             <div class="controls">
-                <input name="rolename" type="text" required placeholder="ROLE_FOO"/>
+                <input name="rolename" id="rolename" type="text" required placeholder="ROLE_FOO"/>
             </div>
+
             <div class="controls">
                 <button class="btn" type="submit">
                     <i class="icon-edit"></i> Create

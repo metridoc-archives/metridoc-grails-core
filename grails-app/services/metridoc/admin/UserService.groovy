@@ -1,6 +1,6 @@
 package metridoc.admin
 
-import metridoc.reports.ShiroRole
+import metridoc.core.ShiroRole
 
 class UserService {
 

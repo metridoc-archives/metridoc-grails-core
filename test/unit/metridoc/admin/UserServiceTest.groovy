@@ -1,10 +1,9 @@
 package metridoc.admin
 
 import grails.test.mixin.Mock
-import metridoc.reports.ShiroRole
-import metridoc.reports.ShiroUser
+import metridoc.core.ShiroRole
+import metridoc.core.ShiroUser
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 
 /**

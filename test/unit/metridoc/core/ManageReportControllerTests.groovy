@@ -2,7 +2,6 @@ package metridoc.core
 
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
-import metridoc.admin.ManageReport
 
 /**
  * Created with IntelliJ IDEA on 4/15/13

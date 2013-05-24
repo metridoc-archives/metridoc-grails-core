@@ -1,7 +1,5 @@
 package metridoc.core
 
-import metridoc.admin.ManageReport
-import org.codehaus.groovy.grails.commons.GrailsClass
 import org.codehaus.groovy.grails.commons.GrailsControllerClass
 
 class ManageReportService {
@@ -19,7 +17,7 @@ class ManageReportService {
 
     static Set<String> getRolesByControllerAndRoleMap(String controllerName, Map roleMaps) {
         def normRoleMap = getNormalizedRoleMapsHelper(roleMaps)
-        normRoleMap[controllerName] ?: [] as Set
+        (normRoleMap[controllerName] ?: []) as Set<String>
     }
 
     boolean isProtected(String controllerName) {
@@ -38,7 +36,7 @@ class ManageReportService {
             return true
         }
         def controller = grailsApplication.getArtefactByLogicalPropertyName("Controller", controllerName)
-        return isControllerGrailsClassProtected(controller)
+        return isControllerGrailsClassProtected(controller as GrailsControllerClass)
     }
 
     static boolean isControllerGrailsClassProtected(GrailsControllerClass clazz) {

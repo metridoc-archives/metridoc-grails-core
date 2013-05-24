@@ -1,7 +1,8 @@
 package metridoc.admin
 
 import grails.test.mixin.Mock
-import metridoc.reports.ShiroRole
+import metridoc.core.ManageReport
+import metridoc.core.ShiroRole
 import org.junit.Test
 
 /**
@@ -18,7 +19,7 @@ class ManageReportTests {
     void "nothing happens if no data is stored"() {
         def originalRoles = ["ROLE_ADMIN", "ROLE_REST"]
         def roleMap = [
-                "*":originalRoles
+                "*": originalRoles
         ]
 
         ManageReport.overrideRoleMap("user", roleMap)
@@ -31,7 +32,7 @@ class ManageReportTests {
         role.save(flush: true)
         new ManageReport(controllerName: "user", isProtected: true, roles: [role]).save(flush: true, failOnError: true)
         def roleMap = [
-                "*":["ROLE_ADMIN", "ROLE_REST"]
+                "*": ["ROLE_ADMIN", "ROLE_REST"]
         ]
         ManageReport.overrideRoleMap("user", roleMap)
         def actionMap = roleMap.get("*")
