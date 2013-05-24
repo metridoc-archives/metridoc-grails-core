@@ -15,13 +15,14 @@
 
 -->
 
-<%@ page import="metridoc.reports.ShiroUser" %>
+<%@ page import="metridoc.core.ShiroUser" %>
 
 <md:report>
 
     <g:render template="/user/tabs" plugin="metridocCore"/>
 
-    <g:form class="form-horizontal" onsubmit="if(this.submited == '_action_delete') return window.confirm('Are you sure you want to delete the user ${shiroUserInstance?.username}?'); return true;">
+    <g:form class="form-horizontal"
+            onsubmit="if(this.submited == '_action_delete') return window.confirm('Are you sure you want to delete the user ${shiroUserInstance?.username}?'); return true;">
         <g:hiddenField name="id" value="${shiroUserInstance?.id}"/>
         <div class="control-group">
             <g:render template="/user/userName" plugin="metridocCore" model="[disabled: true]"/>

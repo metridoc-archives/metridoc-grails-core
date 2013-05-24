@@ -14,7 +14,7 @@
     permissions and limitations under the License.
 
 -->
-<%@ page import="metridoc.reports.ShiroUser" %>
+<%@ page import="metridoc.core.ShiroRole; metridoc.core.ShiroUser" %>
 
 <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'username', 'error')} required">
     <label for="username">
@@ -29,7 +29,7 @@
         <g:message code="shiroUser.password.label" default="Password"/>
         <span class="required-indicator">*</span>
     </label>
-    <g:passwordField name="password" />
+    <g:passwordField name="password"/>
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'password', 'error')} ">
@@ -37,7 +37,7 @@
         <g:message code="shiroUser.confirmPassword.label" default="Confirm Password"/>
         <span class="required-indicator">*</span>
     </label>
-    <g:passwordField name="confirm" />
+    <g:passwordField name="confirm"/>
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: shiroUserInstance, field: 'emailAddress', 'error')} ">
@@ -52,9 +52,9 @@
         <g:message code="shiroUser.roles.label" default="Roles"/>
     </label>
     <select name="roles" multiple="multiple" size="5">
-        <g:each in="${metridoc.reports.ShiroRole.list()}" var="shiroRole">
+        <g:each in="${ShiroRole.list()}" var="shiroRole">
             <g:if test="${shiroUserInstance?.roles?.contains(shiroRole)}">
-            <option value="${shiroRole.name}" selected="selected" >${shiroRole.name}</option>
+                <option value="${shiroRole.name}" selected="selected">${shiroRole.name}</option>
             </g:if>
             <g:else>
                 <option value="${shiroRole.name}">${shiroRole.name}</option>

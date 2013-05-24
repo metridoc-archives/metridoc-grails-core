@@ -15,7 +15,7 @@
 
 -->
 
-<%@ page import="metridoc.reports.ShiroUser" %>
+<%@ page import="metridoc.core.ShiroUser" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <md:report>
 

@@ -14,7 +14,7 @@
     permissions and limitations under the License.
 
 -->
-<%@ page import="metridoc.reports.ShiroUser" %>
+<%@ page import="metridoc.core.ShiroUser" %>
 <md:report>
 
     <g:render template="/user/tabs" plugin="metridocCore"/>

@@ -14,18 +14,18 @@
     permissions and limitations under the License.
 
 -->
-<%@ page import="metridoc.reports.ShiroUser" %>
+<%@ page import="metridoc.core.ShiroUser" %>
 <md:report>
 
     <g:render template="/user/tabs" plugin="metridocCore"/>
 
     <g:form action="save" class="form-horizontal">
         <div class="control-group">
-            <tmpl:userName/>
-            <tmpl:passwords/>
-            <tmpl:email/>
-            <tmpl:roles/>
-            <tmpl:button content="Create" icon="icon-edit"/>
+        <tmpl:userName/>
+        <tmpl:passwords/>
+        <tmpl:email/>
+        <tmpl:roles/>
+        <tmpl:button content="Create" icon="icon-edit"/>
     </g:form>
 
 </md:report>
