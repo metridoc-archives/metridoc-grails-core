@@ -30,7 +30,6 @@ class MetridocCoreGrailsPlugin {
             "grails-app/services/metridoc/test/**/*",
             "grails-app/controllers/metridoc/test/**/*",
             "grails-app/domain/metridoc/test/**/*",
-            "grails-app/conf/MetridocConfig.groovy"
     ]
 
     def title = "Metridoc Core Plugin" // Headline display name of the plugin
