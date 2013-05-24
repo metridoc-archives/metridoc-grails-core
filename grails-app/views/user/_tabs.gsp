@@ -1,6 +1,5 @@
 <ul class="nav nav-tabs">
     <g:render template="/user/tabLabel"
-              plugin="metridocCore"
               model="[controllerName: controllerName,
                       actionName: actionName,
                       linkController: 'user',
@@ -9,7 +8,6 @@
                       icon: 'icon-group']"/>
     <g:render
             template="/user/tabLabel"
-            plugin="metridocCore"
             model="[controllerName: controllerName,
                     actionName: actionName,
                     linkController: 'user',
@@ -18,7 +16,6 @@
                     icon: 'icon-user']"/>
     <g:render
             template="/user/tabLabel"
-            plugin="metridocCore"
             model="[controllerName: controllerName,
                     actionName: actionName,
                     linkController: 'role',
@@ -27,7 +24,6 @@
                     icon: 'icon-list-alt']"/>
     <g:render
             template="/user/tabLabel"
-            plugin="metridocCore"
             model="[controllerName: controllerName,
                     actionName: actionName,
                     linkController: 'role',
@@ -36,7 +32,6 @@
                     icon: 'icon-edit']"/>
     <g:render
             template="/user/tabLabel"
-            plugin="metridocCore"
             model="[controllerName: controllerName,
                     actionName: actionName,
                     linkController: 'manageReport',

@@ -1,3 +1,3 @@
 <div class="controls">
-    <g:render template="/user/embeddedButton" plugin="metridocCore"/>
+    <g:render template="/user/embeddedButton"/>
 </div>

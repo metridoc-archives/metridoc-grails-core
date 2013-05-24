@@ -17,7 +17,7 @@
 <%@ page import="metridoc.core.ShiroUser" %>
 <md:report>
 
-    <g:render template="/user/tabs" plugin="metridocCore"/>
+    <g:render template="/user/tabs"/>
 
     <g:form action="save" class="form-horizontal">
         <div class="control-group">

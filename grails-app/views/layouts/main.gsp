@@ -71,10 +71,10 @@
                     <ul class="nav">
 
                         <g:if test="${"home" == controllerName}">
-                            <li class="active"><g:link controller="home" plugin="metridocCore"><i class="icon-home"></i> Home</g:link></li>
+                            <li class="active"><g:link controller="home"><i class="icon-home"></i> Home</g:link></li>
                         </g:if>
                         <g:else>
-                            <li><g:link controller="home" plugin="metridocCore"><i class="icon-home"></i> Home</g:link></li>
+                            <li><g:link controller="home"><i class="icon-home"></i> Home</g:link></li>
                         </g:else>
                         <shiro:hasRole name="ROLE_ADMIN">
                             <li class="dropdown">
@@ -82,8 +82,10 @@
                                         class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li><g:link controller="profile"><i class="icon-user"></i> Account</g:link></li>
-                                    <li><g:link controller="log"><i class="icon-file-alt"></i> Application Log</g:link></li>
-                                    <li><g:link controller="user"><i class="icon-group"></i> Manage Metridoc</g:link></li>
+                                    <li><g:link controller="log"><i class="icon-file-alt"></i> Application Log</g:link>
+                                    </li>
+                                    <li><g:link controller="user"><i class="icon-group"></i> Manage Metridoc</g:link>
+                                    </li>
                                 </ul>
                             </li>
                         </shiro:hasRole>

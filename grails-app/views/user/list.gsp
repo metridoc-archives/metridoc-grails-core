@@ -19,7 +19,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <md:report>
 
-    <g:render template="/user/tabs" plugin="metridocCore"/>
+    <g:render template="/user/tabs"/>
 
     <div id="list-shiroUser" class="content scaffold-list" role="main">
         <table class="table table-striped table-hover">

@@ -7,18 +7,17 @@
 --%>
 
 <md:report module="codeMirrorShell">
-    <g:render template="/user/tabs" plugin="metridocCore"/>
+    <g:render template="/user/tabs"/>
     <g:form action="run" class="form-horizontal">
         <div class="control-group">
 
-
-            <label for="workDirectory" class="control-label" required>Work Directory:</label>
+            <label for="workDirectory" class="control-label">Work Directory:</label>
 
             <div class="controls">
                 <g:textField name="workDirectory" value="${workDirectory}" placeholder="/foo/bar" required=""/>
             </div>
 
-            <label for="command" class="control-label" required>Command To Run:</label>
+            <label for="command" class="control-label">Command To Run:</label>
 
             <div class="controls">
                 <g:textArea id="code" name="command" value="${command}" placeholder="grails run-war" required=""/>

@@ -19,20 +19,20 @@
 
 <md:report>
 
-    <g:render template="/user/tabs" plugin="metridocCore"/>
+    <g:render template="/user/tabs"/>
 
     <g:form class="form-horizontal"
             onsubmit="if(this.submited == '_action_delete') return window.confirm('Are you sure you want to delete the user ${shiroUserInstance?.username}?'); return true;">
         <g:hiddenField name="id" value="${shiroUserInstance?.id}"/>
         <div class="control-group">
-            <g:render template="/user/userName" plugin="metridocCore" model="[disabled: true]"/>
-            <g:render template="/user/email" plugin="metridocCore" model="[disabled: true]"/>
-            <g:render template="/user/roles" plugin="metridocCore" model="[disabled: true]"/>
+            <g:render template="/user/userName" model="[disabled: true]"/>
+            <g:render template="/user/email" model="[disabled: true]"/>
+            <g:render template="/user/roles" model="[disabled: true]"/>
             <div class="controls">
-                <g:render template="/user/embeddedButton" plugin="metridocCore"
+                <g:render template="/user/embeddedButton"
                           model="[type: 'submit', action: '_action_edit', icon: 'icon-edit', content: 'Edit']"/>
                 <g:if test="${shiroUserInstance != null && shiroUserInstance.username != 'admin'}">
-                    <g:render template="/user/embeddedButton" plugin="metridocCore"
+                    <g:render template="/user/embeddedButton"
                               model="[type: 'submit',
                                       action: '_action_delete',
                                       icon: 'icon-trash',
