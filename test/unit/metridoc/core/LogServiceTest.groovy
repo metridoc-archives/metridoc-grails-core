@@ -1,8 +1,8 @@
-package metridoc.admin
+package metridoc.core
 
 import org.junit.Test
 
-import static metridoc.admin.LogService.DATE_FORMAT
+import static metridoc.core.LogService.DATE_FORMAT
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,7 +15,8 @@ class LogServiceTest {
 
     @Test
     void "test date class rendering"() {
-        def now = Date.parse(DATE_FORMAT,"2012-08-29 14:48:31")
+        def now = Date.parse(DATE_FORMAT, "2012-08-29 14:48:31")
+        //noinspection GroovyAccessibility
         def htmlClazz = LogService.getDateClass("2012-08-29 12:48:31,548", null, now)
         assert "all sixHours twelveHours day" == htmlClazz
     }
@@ -31,12 +32,12 @@ class LogServiceTest {
         }
 
         assert 6 == lines.size()
-        ["bar", "bam", "biz", "baz"].each {item ->
-            assert 1 == lines.findAll {it.contains(item)}.size()
+        ["bar", "bam", "biz", "baz"].each { item ->
+            assert 1 == lines.findAll { it.contains(item) }.size()
         }
     }
 
-    private long getTime(String time) {
+    private static long getTime(String time) {
         Date.parse(DATE_FORMAT, time).time
     }
 

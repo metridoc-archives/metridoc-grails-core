@@ -1,8 +1,6 @@
-package metridoc.admin
+package metridoc.core
 
 import grails.test.mixin.Mock
-import metridoc.core.ManageReport
-import metridoc.core.ShiroRole
 import org.junit.Test
 
 /**

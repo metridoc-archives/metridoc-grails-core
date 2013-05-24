@@ -1,6 +1,4 @@
-package metridoc.admin
-
-import metridoc.core.ShiroRole
+package metridoc.core
 
 class UserService {
 

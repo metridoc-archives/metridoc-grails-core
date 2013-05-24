@@ -1,10 +1,4 @@
-package metridoc.admin
-
-import org.apache.commons.lang.SystemUtils
-import org.apache.commons.lang.text.StrBuilder
-import org.springframework.util.Assert
-
-import java.util.regex.Pattern
+package metridoc.core
 
 import static org.apache.commons.lang.SystemUtils.FILE_SEPARATOR
 import static org.apache.commons.lang.SystemUtils.LINE_SEPARATOR
@@ -34,13 +28,13 @@ class LogService {
     /**
      * Convert logs in given log file into a html page content
      * @param response
-     * @param file  logFile which needs to be converted into html
+     * @param file logFile which needs to be converted into html
      */
     public void renderLog(response, file) {
 
         def previous = LineType.INFO
         def lineNum = 0
-        file.eachLine {String line ->
+        file.eachLine { String line ->
             def escapedLine = escape(line)
             def div = addDiv(escapedLine, previous)
             def divLine = div.line
@@ -121,7 +115,7 @@ class LogService {
     private static getDateClass(line, previousDate, now) {
         def m = line =~ DATE_REGEX
         def result = "all"
-        if(m.lookingAt()) {
+        if (m.lookingAt()) {
             def date = Date.parse(DATE_FORMAT, m.group(1)).getTime()
 
             def dateTest = {
@@ -130,19 +124,19 @@ class LogService {
                 date > difference
             }
 
-            if(dateTest(ONE_HOUR)) {
+            if (dateTest(ONE_HOUR)) {
                 result += " hour"
             }
 
-            if(dateTest(SIX_HOURS)) {
+            if (dateTest(SIX_HOURS)) {
                 result += " sixHours"
             }
 
-            if(dateTest(TWELVE_HOURS)) {
+            if (dateTest(TWELVE_HOURS)) {
                 result += " twelveHours"
             }
 
-            if(dateTest(ONE_DAY)) {
+            if (dateTest(ONE_DAY)) {
                 result += " day"
             }
 
@@ -163,9 +157,9 @@ class LogService {
 
         def m = line =~ /(INFO|WARN)\s\&nbsp\;([^\s]*)\s\&nbsp\;-/
         def n = line =~ /(ERROR)\s([^\s]*)\s\&nbsp\;-/
-        if(m.find()) {
+        if (m.find()) {
             return m.group(2)
-        }else if(n.find()){
+        } else if (n.find()) {
             return n.group(2)
         } else {
             return previousLogName
@@ -173,19 +167,19 @@ class LogService {
     }
     /**
      * Each line in log file corresponds to a <div> in html
-     * @param line  line content
-     * @param previous   line type of previous logging line
-     * @param previousDateClass   DateType of previous logging line
-     * @param previousLogNameClass  LogName of previous logging line
-     * @param lineNum  index of the line given as argument
+     * @param line line content
+     * @param previous line type of previous logging line
+     * @param previousDateClass DateType of previous logging line
+     * @param previousLogNameClass LogName of previous logging line
+     * @param lineNum index of the line given as argument
      * @return
      */
     def addDiv(String line, previous) {
 
 
-        def addLine = {clazz, color->
-            def result= "<div "+
-                    "class=\"content logLine ${clazz}\" "+
+        def addLine = { clazz, color ->
+            def result = "<div " +
+                    "class=\"content logLine ${clazz}\" " +
                     "style=\"color:${color}\">${line}</div>"
             return result
         }
@@ -203,7 +197,7 @@ class LogService {
                 result = addLine("info", "green")
         }
 
-        return [line: result, previous:type]
+        return [line: result, previous: type]
 
     }
 
@@ -219,15 +213,15 @@ class LogService {
         //the start so we can avoid chopping off logs in the beginning
         def normalizedStart = start - 1000 //one second
         boolean startGrabbingData = false
-        file.eachLine {String line ->
-            if(!startGrabbingData) {
+        file.eachLine { String line ->
+            if (!startGrabbingData) {
                 def m = line =~ DATE_REGEX
-                if(m.lookingAt()) {
+                if (m.lookingAt()) {
                     def lineDate = Date.parse(DATE_FORMAT, m.group(1)).getTime()
                     startGrabbingData = lineDate >= normalizedStart
                 }
             }
-            if(startGrabbingData) {
+            if (startGrabbingData) {
                 response << line + LINE_SEPARATOR
             }
         }

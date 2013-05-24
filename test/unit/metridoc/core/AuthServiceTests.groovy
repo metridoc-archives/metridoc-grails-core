@@ -1,13 +1,8 @@
-package metridoc.admin
+package metridoc.core
 
+import grails.test.mixin.TestFor
+import org.junit.Test
 
-
-import grails.test.mixin.*
-import org.junit.*
-
-/**
- * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
- */
 @TestFor(AuthService)
 class AuthServiceTests {
 
@@ -25,15 +20,16 @@ class AuthServiceTests {
     }
 
     @Test
-    void "test that ids expire" () {
+    void "test that ids expire"() {
         def id = service.addResetLink()
         def twentyMinutes = 1000 * 60 * 20
         def now = new Date().time + twentyMinutes
+        //noinspection GroovyAccessibility
         assert !service.canDoReset(id, now)
     }
 
     @Test
-    void "cant reset if the id is not in the cache" () {
+    void "cant reset if the id is not in the cache"() {
         assert !service.canReset(123)
     }
 }

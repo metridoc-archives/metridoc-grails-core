@@ -1,6 +1,5 @@
-package metridoc.admin
+package metridoc.core
 
-import metridoc.core.ShiroUser
 import org.apache.commons.lang.math.RandomUtils
 import org.apache.shiro.SecurityUtils
 import org.apache.shiro.authc.UsernamePasswordToken

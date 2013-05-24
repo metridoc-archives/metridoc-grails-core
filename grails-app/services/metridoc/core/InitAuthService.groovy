@@ -1,9 +1,6 @@
-package metridoc.auth
+package metridoc.core
 
 import grails.util.Holders
-import metridoc.core.ManageReport
-import metridoc.core.ShiroRole
-import metridoc.core.ShiroUser
 import org.apache.shiro.crypto.hash.Sha256Hash
 
 /**
