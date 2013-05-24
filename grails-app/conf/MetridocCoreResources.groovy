@@ -46,15 +46,6 @@ modules = {
                 url: [dir: "groovy", file: "groovy.js", plugin: "metridocCore"]
     }
 
-    quartzShow {
-        dependsOn 'application', 'codeMirrorGroovy'
-        resource id: 'showCss',
-                url: [dir: "quartz/css", file: "show.css", plugin: "metridocCore"]
-        resource id: 'showJs',
-                url: [dir: "quartz/js", file: "show.js", plugin: "metridocCore"],
-                disposition: 'defer'
-    }
-
     manageConfig {
         dependsOn 'codeMirrorGroovy'
         resource id: 'js',
@@ -131,31 +122,6 @@ modules = {
 
     status {
         dependsOn 'jquery'
-    }
-
-    quartz {
-        dependsOn 'jquery'
-        resource id: 'quartzCountdownJs',
-                url: [plugin: "metridocCore", dir: "quartz/js", file: 'jquery.countdown.js'],
-                attrs: [type: 'js']
-        resource id: 'quartzColorJs',
-                url: [plugin: "metridocCore", dir: "quartz/js", file: 'jquery.color.js'],
-                attrs: [type: 'js']
-        resource id: 'quartzClockJs',
-                url: [plugin: "metridocCore", dir: "quartz/js", file: 'jquery.clock.js'],
-                attrs: [type: 'js']
-        resource id: 'quartzMonitorJs',
-                url: [plugin: "metridocCore", dir: "quartz/js", file: 'quartz-monitor.js'],
-                attrs: [type: 'js']
-        resource id: 'quartzClockCss',
-                url: [plugin: "metridocCore", dir: "quartz/css", file: 'jquery.clock.css'],
-                attrs: [type: 'css']
-        resource id: 'quartzCountdownCss',
-                url: [plugin: "metridocCore", dir: "quartz/css", file: 'jquery.countdown.css'],
-                attrs: [type: 'css']
-        resource id: 'quartzMonitorCss',
-                url: [plugin: "metridocCore", dir: "quartz/css", file: 'quartz-monitor.css'],
-                attrs: [type: 'css']
     }
 
     log {
