@@ -1,9 +1,0 @@
-DefaultPackage
-metridoc
-metridoc.admin
-metridoc.auth
-metridoc.core
-metridoc.reports
-metridoc.test
-metridoc.utils
-spring
