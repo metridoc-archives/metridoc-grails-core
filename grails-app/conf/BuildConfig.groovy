@@ -17,12 +17,12 @@ grails.servlet.version = "2.5" // Change opendepending on target container compl
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
-grails.project.target.level = 1.6
-grails.project.source.level = 1.6
+grails.project.target.level = 1.7
+grails.project.source.level = 1.7
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
 //location of the release repository
-grails.project.repos.metridocRepo.url = "svn:https://metridoc.googlecode.com/svn/maven/repository"
+grails.project.repos.metridocRepo.url = "https://dl.bintray.com/upennlib/metridoc"
 //name of the repository
 grails.project.repos.default = "metridocRepo"
 
@@ -45,25 +45,25 @@ grails.project.dependency.resolution = {
         grailsCentral()
         mavenCentral()
         mavenRepo "https://oss.sonatype.org/content/repositories/snapshots"
-        mavenRepo "https://metridoc.googlecode.com/svn/maven/repository"
+        mavenRepo "http://dl.bintray.com/upennlib/metridoc"
+        mavenRepo "http://jcenter.bintray.com"
     }
 
     //standard jar maven dependencies
     dependencies {
         //TEMPLATE_METRIDOC_JOB_CORE
-        compile("com.googlecode.metridoc:metridoc-job-core:0.4")
+        compile("com.googlecode.metridoc:metridoc-job-core:0.5.RC4")
         //TEMPLATE_METRIDOC_JOB_CORE
         //used for testing camel routes
-        test("org.apache.camel:camel-test:2.9.2")
+        test("org.apache.camel:camel-test:2.11.0")
         //by default metridoc is tested on mysql
         compile("mysql:mysql-connector-java:5.1.20")
         compile('org.jasypt:jasypt:1.9.0')
-        build("com.google.code.maven-svn-wagon:maven-svn-wagon:1.4")
     }
 
     //grails based plugins
     plugins {
-        compile(":job-runner:latest.integration")
+        compile(":job-runner:0.4")
         compile ":external-config-reload:1.2.2"
         compile ":plugin-config:0.1.5"
         runtime ":mail:1.0.1"
@@ -78,7 +78,7 @@ grails.project.dependency.resolution = {
             export = false
         }
         compile(":rest-client-builder:1.0.3")
-        build(":release:$grailsVersion") {
+        build(":release:2.2.1") {
             export = false
         }
         build(":codenarc:0.18") {

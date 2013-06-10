@@ -1,9 +1,6 @@
 package metridoc.test
 
 import metridoc.core.MetridocJob
-import org.apache.camel.Exchange
-import org.apache.camel.Processor
-import org.apache.camel.builder.RouteBuilder
 
 /**
  * a test job to illustrate and make sure many of the features of MetridocJob are actually working
@@ -15,39 +12,20 @@ class BarJobService extends MetridocJob {
     def grailsApplication
 
     @Override
-    def doExecute() {
+    def configure() {
         profile("running bar") {
             assert grailsApplication
-            Thread.sleep(1000 * 60 * 2) //pauses for 2 minutes to check that concurrency is shut off
+            Thread.sleep(1000) //run one sec to check profiling
         }
 
         def camelRouteWorked = false
-        runRoute {
-            from("direct:start").process {
-                camelRouteWorked = true
-            }
+
+        asyncSend("seda:start", "hello")
+        consume("seda:start") {
+            camelRouteWorked = true
         }
 
-        def camelRouteWithRouteBuilderWorked = false
-        runRoute(
-                new RouteBuilder() {
-
-                    @Override
-                    void configure() {
-                        final processor = new Processor() {
-
-                            @Override
-                            void process(Exchange exchange) {
-                                camelRouteWithRouteBuilderWorked = true
-                            }
-                        }
-                        from("direct:start").process(processor)
-                    }
-                }
-        )
-
         assert camelRouteWorked
-        assert camelRouteWithRouteBuilderWorked
 
         target(default: "the default target for job bar") {
 

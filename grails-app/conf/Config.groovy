@@ -16,20 +16,6 @@
 import org.apache.commons.lang.SystemUtils
 import org.slf4j.LoggerFactory
 
-// config files can either be Java properties files or ConfigSlurper scripts
-
-// grails.config.locations = [ "classpath:${appName}-config.properties",
-//                             "classpath:${appName}-config.groovy",
-//                             "file:${userHome}/.grails/${appName}-config.properties",
-//                             "file:${userHome}/.grails/${appName}-config.groovy"]
-
-// if (System.properties["${appName}.config.location"]) {
-//    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
-// }
-
-//for jquery
-grails.views.javascript.library = "jquery"
-
 def rootLoader = Thread.currentThread().contextClassLoader.rootLoader
 
 def driverDirectory = new File("${SystemUtils.USER_HOME}/.grails/drivers")
