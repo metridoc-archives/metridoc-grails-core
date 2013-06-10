@@ -22,7 +22,7 @@ grails.project.source.level = 1.7
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
 //location of the release repository
-grails.project.repos.metridocRepo.url = "https://dl.bintray.com/upennlib/metridoc/metridoc-core"
+grails.project.repos.metridocRepo.url = "https://api.bintray.com/maven/upennlib/metridoc/metridoc-core"
 //name of the repository
 grails.project.repos.default = "metridocRepo"
 
