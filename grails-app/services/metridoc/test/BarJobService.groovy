@@ -26,6 +26,7 @@ class BarJobService extends MetridocJob {
         }
 
         assert camelRouteWorked
+        log.info "someProperty is [$someProperty]"
 
         target(default: "the default target for job bar") {
 
