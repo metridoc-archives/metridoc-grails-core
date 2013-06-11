@@ -22,9 +22,15 @@ $(function () {
 
     $('#metridocLogs').bind('scroll', chk_scroll);
 
-})
+    $('#logFile').change(function () {
+        $('#metridocLogs').fadeOut(200, function () {
+            forceLogUpdate(true);
+        });
+    });
 
-var isAtBottomOfLog = false
+});
+
+var isAtBottomOfLog = false;
 
 function chk_scroll(e) {
     var elem = $(e.currentTarget);
@@ -33,24 +39,30 @@ function chk_scroll(e) {
     var outerHeaight = elem.outerHeight();
     var difference = scrollHeight - scrollTop - outerHeaight;
     var fudgeFactor = 20;
-    if (Math.abs(difference) < fudgeFactor) {
-        isAtBottomOfLog = true
-    } else {
-        isAtBottomOfLog = false
-    }
+    isAtBottomOfLog = Math.abs(difference) < fudgeFactor;
+}
 
+function forceLogUpdate(fade) {
+    var encodedFileName = encodeURIComponent($('#logFile').val());
+    if (fade) {
+        $("#metridocLogs").load("plain/" + encodedFileName, function () {
+            $('#metridocLogs').fadeIn()
+        });
+    } else {
+        $("#metridocLogs").load("plain/" + encodedFileName);
+    }
 }
 
 function updateLog() {
-    var isStreaming = $('#doStreaming').is(":checked")
+    var isStreaming = $('#doStreaming').is(":checked");
     if (isStreaming && isAtBottomOfLog) {
-        $("#metridocLogs").load("plain")
+        forceLogUpdate(false);
         $("#metridocLogs").scrollTop($('#metridocLogs').prop("scrollHeight"));
         //make checks frequent
-        triggerNextLogUpdate(1000)
+        triggerNextLogUpdate(1000);
     } else {
         //don't need to check for awhile
-        triggerNextLogUpdate(3000)
+        triggerNextLogUpdate(3000);
     }
 }
 
@@ -59,5 +71,5 @@ function triggerNextLogUpdate(time) {
     window.setTimeout(updateLog, time);
 }
 
-triggerNextLogUpdate(3000)
+triggerNextLogUpdate(3000);
 

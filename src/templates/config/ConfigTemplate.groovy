@@ -124,12 +124,12 @@ log4j = {
         rollingFile name: "file",
                 maxBackupIndex: 10,
                 maxFileSize: "1MB",
-                file: "${config.metridoc.home}/logs/metridoc.log"
+                file: "${config.metridoc.home}/logs/${config.metridoc.app.name ?: 'metridoc'}.log"
 
         rollingFile name: "stacktrace",
                 maxFileSize: "1MB",
                 maxBackupIndex: 10,
-                file: "${config.metridoc.home}/logs/metridoc-stacktrace.log"
+                file: "${config.metridoc.home}/logs/${config.metridoc.app.name ?: 'metridoc'}-stacktrace.log"
 
         //not used yet... this will be where we log cli jobs
         rollingFile name: "jobLog",
@@ -161,7 +161,7 @@ log4j = {
         }
     } else {
         if ("false" == System.getProperty("metridoc.job.loggedLogLocation", "false")) {
-            println "INFO: logs will be stored at ${config.metridoc.home}/logs"
+            println "INFO: logs will be stored at ${config.metridoc.home}/logs/${config.metridoc.app.name ?: 'metridoc'}.log"
             //avoids duplicate logging
             System.setProperty("metridoc.job.loggedLogLocation", "true")
         }

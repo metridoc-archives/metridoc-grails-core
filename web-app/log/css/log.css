@@ -1,7 +1,6 @@
 #metridocLogs {
     overflow: auto;
     height: 410px;
-
 }
 
 #metridocLogsContainer {
@@ -9,9 +8,10 @@
     border-top-style: ridge;
     border-bottom: #212121;
     border-bottom-style: ridge;
+    height: 410px;
 }
 
-body,html {
+body, html {
     height: 100%
 }
 
