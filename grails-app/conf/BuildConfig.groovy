@@ -64,7 +64,7 @@ grails.project.dependency.resolution = {
     //grails based plugins
     plugins {
         compile ":database-session:1.2.1"
-        compile(":job-runner:0.4")
+        compile ":job-runner:0.4.1"
         compile ":external-config-reload:1.2.2"
         compile ":plugin-config:0.1.5"
         runtime ":mail:1.0.1"
