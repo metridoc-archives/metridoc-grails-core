@@ -52,7 +52,7 @@ grails.project.dependency.resolution = {
     //standard jar maven dependencies
     dependencies {
         //TEMPLATE_METRIDOC_JOB_CORE
-        compile("com.googlecode.metridoc:metridoc-job-core:0.5.RC4")
+        compile("com.googlecode.metridoc:metridoc-job-core:0.5.RC5")
         //TEMPLATE_METRIDOC_JOB_CORE
         //used for testing camel routes
         test("org.apache.camel:camel-test:2.11.0")
