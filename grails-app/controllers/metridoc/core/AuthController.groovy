@@ -4,6 +4,7 @@ import org.apache.commons.validator.UrlValidator
 import org.apache.shiro.SecurityUtils
 import org.apache.shiro.authc.AuthenticationException
 import org.apache.shiro.authc.UsernamePasswordToken
+import org.apache.shiro.web.util.WebUtils
 
 /*
  * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
@@ -19,9 +20,6 @@ import org.apache.shiro.authc.UsernamePasswordToken
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-
-import org.apache.shiro.web.util.WebUtils
-
 class AuthController {
 
     def authService
@@ -118,11 +116,12 @@ class AuthController {
             // password is incorrect.
             SecurityUtils.subject.login(authToken)
             UrlValidator urlValidator = new UrlValidator()
-            if (targetUri && !urlValidator.isValid(params.targetUri) && !params.targetUri.contains("www.")) {
+            if (targetUri && !urlValidator.isValid(params.targetUri) && !params.targetUri.startsWith("http:") && !params.targetUri.startsWith("https:")) {
 
                 log.info "Redirecting to '${targetUri}'."
                 redirect(uri: targetUri)
             } else {
+                flash.message = message("Good")
                 redirect(controller: "home")
             }
         }
