@@ -18,13 +18,9 @@ import org.apache.shiro.web.servlet.SimpleCookie
 * permissions and limitations under the License.
 */
 class MetridocCoreGrailsPlugin {
-
     static DEFAULT_MAX_REMEMER_ME = 60 * 60 //one hour
-    // the plugin version
     def version = "0.6.RC1"
-    // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.0.4 > *"
-    // the other plugins this plugin depends on
     def loadAfter = ["rest-client-builder", "release", "hibernate", "resources"]
 
     def pluginExcludes = [
@@ -32,7 +28,6 @@ class MetridocCoreGrailsPlugin {
             "grails-app/controllers/metridoc/test/**/*",
             "grails-app/domain/metridoc/test/**/*",
     ]
-
     def title = "Metridoc Core Plugin" // Headline display name of the plugin
     def author = "Thomas Barker"
     def authorEmail = "tbarker@pobox.upenn.edu"
@@ -40,25 +35,16 @@ class MetridocCoreGrailsPlugin {
 
     Provides core functionality for metridoc and all related plugins
 '''
-
-    def documentation = "http://metridoc.googlecode.com"
-
+    def documentation = "https://github.com/metridoc/metridoc-core.git"
     def license = "ECL2"
-
     def organization = [name: "University of Pennsylvania", url: "http://www.upenn.edu/"]
-
-//    def issueManagement = [ system: "JIRA", url: "metridoc.googlecode.com/svn/trunk/metridoc-core" ]
-
-    def scm = [url: "https:metridoc.googlecode.com/svn/trunk/metridoc-core"]
-
+    def issueManagement = [system: "GitHuB", url: "https://github.com/metridoc/metridoc-core.git"]
+    def scm = [url: "https://github.com/metridoc/metridoc-core.git"]
     def doWithSpring = {
-
-
         def shiroConfig = application.config.security.shiro
         //have to do it in here instead of using the plugin config plugin since the shiro plugin does not use the
         //plugin config plugin
         BootupUtils.addDefaultShiroConfig(shiroConfig)
-
     }
 
     def doWithApplicationContext = { applicationContext ->
