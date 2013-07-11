@@ -2,6 +2,7 @@ package metridoc.core
 
 import org.apache.commons.validator.UrlValidator
 import org.apache.shiro.SecurityUtils
+import org.apache.shiro.authc.AuthenticationException
 
 /*
  * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
@@ -18,7 +19,6 @@ import org.apache.shiro.SecurityUtils
  * permissions and limitations under the License.
  */
 
-import org.apache.shiro.authc.AuthenticationException
 import org.apache.shiro.authc.UsernamePasswordToken
 import org.apache.shiro.web.util.WebUtils
 
@@ -117,8 +117,9 @@ class AuthController {
             // will be thrown if the username is unrecognised or the
             // password is incorrect.
             SecurityUtils.subject.login(authToken)
+            UrlValidator urlValidator = new UrlValidator()
+            if (targetUri && !urlValidator.isValid(params.targetUri) && !params.targetUri.contains("www")) {
 
-            if (targetUri) {
                 log.info "Redirecting to '${targetUri}'."
                 redirect(uri: targetUri)
             } else {
@@ -129,7 +130,7 @@ class AuthController {
             // Authentication failed, so display the appropriate message
             // on the login page.
 
-            UrlValidator urlValidator = new UrlValidator()
+
             log.info "Authentication failure for user '${params.username}'."
             flash.message = message(code: "login.failed")
 
@@ -145,12 +146,10 @@ class AuthController {
                 m["targetUri"] = params.targetUri
             }
 
-            if (urlValidator.isValid(params.targetUri)) {
-                redirect(controller: "home")
-            }
-
             // Now redirect back to the login page.
             redirect(action: "login", params: m)
+
+
         }
     }
 
