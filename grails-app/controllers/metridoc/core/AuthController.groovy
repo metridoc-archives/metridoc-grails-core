@@ -121,7 +121,6 @@ class AuthController {
                 log.info "Redirecting to '${targetUri}'."
                 redirect(uri: targetUri)
             } else {
-                flash.message = message("Good")
                 redirect(controller: "home")
             }
         }
