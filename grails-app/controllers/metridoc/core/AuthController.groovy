@@ -3,6 +3,7 @@ package metridoc.core
 import org.apache.commons.validator.UrlValidator
 import org.apache.shiro.SecurityUtils
 import org.apache.shiro.authc.AuthenticationException
+import org.apache.shiro.authc.UsernamePasswordToken
 
 /*
  * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
@@ -19,7 +20,6 @@ import org.apache.shiro.authc.AuthenticationException
  * permissions and limitations under the License.
  */
 
-import org.apache.shiro.authc.UsernamePasswordToken
 import org.apache.shiro.web.util.WebUtils
 
 class AuthController {
@@ -118,7 +118,7 @@ class AuthController {
             // password is incorrect.
             SecurityUtils.subject.login(authToken)
             UrlValidator urlValidator = new UrlValidator()
-            if (targetUri && !urlValidator.isValid(params.targetUri) && !params.targetUri.contains("www")) {
+            if (targetUri && !urlValidator.isValid(params.targetUri) && !params.targetUri.contains("www.")) {
 
                 log.info "Redirecting to '${targetUri}'."
                 redirect(uri: targetUri)

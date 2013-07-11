@@ -20,6 +20,40 @@
 
     <g:render template="/user/tabs"/>
 
+    <h1>Create New Role
+        <a href="#" onclick="showRoleForm()">
+            <i id="createRole" class="icon-circle-arrow-down"></i>
+        </a>
+
+    </h1>
+    <script>
+        function showRoleForm() {
+            $('#createRoleForm').toggle();
+            $('#createRole').toggleClass('icon-circle-arrow-down icon-circle-arrow-up')
+
+
+        }
+    </script>
+
+    <div id="createRoleForm" hidden="true">
+        <g:form class="form-horizontal" action="save">
+            <div class="control-group">
+                <label class="control-label" for="rolename">Role Name</label>
+
+                <div class="controls">
+                    <input name="rolename" id="rolename" type="text" required placeholder="ROLE_FOO"/>
+                </div>
+
+                <div class="controls">
+                    <button class="btn" type="submit">
+                        <i class="icon-edit"></i> Create
+                    </button>
+                </div>
+            </div>
+        </g:form>
+    </div>
+
+
     <div id="list-shiroRole" class="content scaffold-list" role="main">
 
         <g:if test="${flash.message}">

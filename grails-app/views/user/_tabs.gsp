@@ -6,6 +6,7 @@
                       linkAction: 'list',
                       linkText: 'User List',
                       icon: 'icon-group']"/>
+    <!--
     <g:render
             template="/user/tabLabel"
             model="[controllerName: controllerName,
@@ -14,6 +15,7 @@
                     linkAction: 'create',
                     linkText: 'Create User',
                     icon: 'icon-user']"/>
+    -->
     <g:render
             template="/user/tabLabel"
             model="[controllerName: controllerName,
@@ -22,6 +24,7 @@
                     linkAction: 'list',
                     linkText: 'Role List',
                     icon: 'icon-list-alt']"/>
+    <!--
     <g:render
             template="/user/tabLabel"
             model="[controllerName: controllerName,
@@ -30,6 +33,7 @@
                     linkAction: 'create',
                     linkText: 'Create Role',
                     icon: 'icon-edit']"/>
+    -->
     <g:render
             template="/user/tabLabel"
             model="[controllerName: controllerName,
