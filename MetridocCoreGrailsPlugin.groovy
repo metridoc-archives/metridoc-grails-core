@@ -1,6 +1,7 @@
 import metridoc.utils.BootupUtils
 import org.apache.shiro.mgt.RememberMeManager
 import org.apache.shiro.web.mgt.CookieRememberMeManager
+import org.apache.shiro.web.servlet.SimpleCookie
 
 /*
 * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
@@ -64,6 +65,7 @@ class MetridocCoreGrailsPlugin {
         RememberMeManager manager = applicationContext.getBean("shiroRememberMeManager", RememberMeManager)
         if (manager instanceof CookieRememberMeManager) {
             manager.cookie.setMaxAge(DEFAULT_MAX_REMEMER_ME)
+            manager.cookie.setPath(SimpleCookie.ROOT_PATH)
         }
     }
 }
