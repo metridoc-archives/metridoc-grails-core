@@ -1,4 +1,8 @@
 package metridoc.core
+
+import org.apache.commons.validator.UrlValidator
+import org.apache.shiro.SecurityUtils
+
 /*
  * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
  * Educational Community License, Version 2.0 (the "License"); you may
@@ -14,7 +18,6 @@ package metridoc.core
  * permissions and limitations under the License.
  */
 
-import org.apache.shiro.SecurityUtils
 import org.apache.shiro.authc.AuthenticationException
 import org.apache.shiro.authc.UsernamePasswordToken
 import org.apache.shiro.web.util.WebUtils
@@ -125,6 +128,8 @@ class AuthController {
         catch (AuthenticationException ex) {
             // Authentication failed, so display the appropriate message
             // on the login page.
+
+            UrlValidator urlValidator = new UrlValidator()
             log.info "Authentication failure for user '${params.username}'."
             flash.message = message(code: "login.failed")
 
@@ -138,6 +143,10 @@ class AuthController {
             // Remember the target URI too.
             if (params.targetUri) {
                 m["targetUri"] = params.targetUri
+            }
+
+            if (urlValidator.isValid(params.targetUri)) {
+                redirect(controller: "home")
             }
 
             // Now redirect back to the login page.
