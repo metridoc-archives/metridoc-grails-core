@@ -47,6 +47,7 @@ grails.project.dependency.resolution = {
         mavenRepo "https://oss.sonatype.org/content/repositories/snapshots"
         mavenRepo "http://dl.bintray.com/upennlib/metridoc"
         mavenRepo "http://dl.bintray.com/upennlib/maven"
+        mavenRepo "http://jcenter.bintray.com/"
     }
 
     //standard jar maven dependencies
