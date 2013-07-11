@@ -46,7 +46,7 @@ grails.project.dependency.resolution = {
         mavenCentral()
         mavenRepo "https://oss.sonatype.org/content/repositories/snapshots"
         mavenRepo "http://dl.bintray.com/upennlib/metridoc"
-        mavenRepo "http://jcenter.bintray.com"
+        mavenRepo "http://dl.bintray.com/upennlib/maven"
     }
 
     //standard jar maven dependencies
@@ -79,7 +79,7 @@ grails.project.dependency.resolution = {
             export = false
         }
         compile(":rest-client-builder:1.0.3")
-        build(":release:2.2.1") {
+        build(":release:2.2.1", ":bintray-upload:0.2") {
             export = false
         }
         build(":codenarc:0.18") {
