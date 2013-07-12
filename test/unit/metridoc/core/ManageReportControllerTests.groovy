@@ -18,6 +18,12 @@ class ManageReportControllerTests {
                     //do nothing, just mock it so unit test will run
                 }
         ]
+        controller.manageReportService = new ManageReportService()
+        controller.manageReportService.initAuthService = [
+                init: {
+
+                }
+        ]
         controller.update("foo") //null pointer exception will occur here if bug exists
     }
 }
