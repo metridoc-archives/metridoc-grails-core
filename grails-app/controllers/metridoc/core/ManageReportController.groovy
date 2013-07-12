@@ -33,48 +33,19 @@ class ManageReportController {
         [controllerDetails: controllerDetails]
     }
 
+    def updateAll() {
+        def updateThese = params.controllerNames.tokenize(",")
+        for (s in updateThese) {
+            manageReportService.updateController(params, flash, s)
+        }
+        flash.info = "updated security for controller [$updateThese]"
+
+        redirect(action: "index")
+    }
+
     def update(String controllerName) {
+        manageReportService.updateController(params, flash, controllerName)
 
-        def roles = params.roles
-        boolean isProtected = params.isProtected ? true : false
-        if (roles == null) {
-            roles = []
-        }
-
-        if (roles instanceof String) {
-            roles = [roles]
-        }
-
-        if (controllerName) {
-            def report = ManageReport.findByControllerName(controllerName)
-            if (report == null) {
-                report = new ManageReport(controllerName: controllerName)
-            }
-
-            def persistedRoles = report.roles
-            if (persistedRoles) {
-                persistedRoles.clear()
-            }
-            if (roles) {
-                report.isProtected = true
-            } else {
-                report.isProtected = isProtected
-            }
-
-            roles.each { String roleName ->
-                def role = ShiroRole.findByName(roleName)
-                report.addToRoles(role)
-            }
-
-            if (report.save(flush: true)) {
-                flash.info = "updated security for controller [$controllerName]"
-            } else {
-                log.error report.errors
-                flash.alert = "errors occurred trying to save $controllerName"
-            }
-            //make changes to the role map
-            initAuthService.init()
-        }
         redirect(action: "index")
     }
 }
