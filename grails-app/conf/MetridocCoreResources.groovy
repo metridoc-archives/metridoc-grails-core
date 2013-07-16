@@ -53,12 +53,6 @@ modules = {
                 attrs: [type: "js"]
     }
 
-    jquery {
-        resource id: 'js',
-                url: [plugin: "metridocCore", dir: "components/jquery", file: "jquery.js"],
-                disposition: "head"
-    }
-
     profile {
         dependsOn 'jquery'
         resource id: 'css',
