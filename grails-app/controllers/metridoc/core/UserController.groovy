@@ -61,13 +61,14 @@ class UserController {
         def password = params.get('password')
         def confirm = params.get('confirm')
 
+        def username = params.get('username')
         def shiroUserInstance = new ShiroUser(
-                username: params.get('username'),
+                username: username,
                 oldPassword: password,
                 validatePasswords: true,
                 password: password,
                 confirm: confirm,
-                passwordHash: new Sha256Hash(password).toHex(),
+                passwordHash: new Sha256Hash(password, username).toHex(),
                 emailAddress: params.get('emailAddress'))
 
         userService.addRolesToUser(shiroUserInstance, params.roles)
@@ -137,7 +138,7 @@ class UserController {
                 oldPassword = params.password
                 password = params.password
                 confirm = params.confirm
-                shiroUserInstance.setPasswordHash(new Sha256Hash(password).toHex())
+                shiroUserInstance.setPasswordHash(new Sha256Hash(password, shiroUserInstance.username).toHex())
             }
             roles = []
             def addRole = { roleName ->

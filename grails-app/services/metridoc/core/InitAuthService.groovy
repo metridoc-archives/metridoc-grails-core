@@ -67,14 +67,15 @@ class InitAuthService {
                 if (DEFAULT_PASSWORD == password) {
                     log.warn "Could not find user admin, creating a default one with password '${DEFAULT_PASSWORD}'.  Change this immediatelly"
                 }
-                adminUser = new ShiroUser(username: 'admin', passwordHash: new Sha256Hash(password).toHex(), emailAddress: "admin@admin.com")
+                adminUser = new ShiroUser(username: 'admin', passwordHash: new Sha256Hash(password, "admin").toHex(), emailAddress: "admin@admin.com")
 
                 def adminRole = ShiroRole.find {
                     name == createRoleName(ADMIN)
                 }
                 adminUser.addToRoles(adminRole)
                 adminUser.save()
-            } else {
+            }
+            else {
                 log.debug "admin user exists, the default admin does not need to be created"
             }
         }
@@ -89,7 +90,8 @@ class InitAuthService {
             if (anonymousUser) {
                 log.debug "anonymous user found, don't need to create a default one"
 
-            } else {
+            }
+            else {
                 anonymousUser = new ShiroUser(
                         username: "anonymous",
                         passwordHash: new Sha256Hash("password").toHex(),
