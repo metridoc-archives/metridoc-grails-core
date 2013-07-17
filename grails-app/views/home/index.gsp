@@ -25,41 +25,93 @@
 
 <div id="page-body" role="main" style="padding: 20px; padding-left: 0px">
 
-    <h1>Welcome to MetriDoc</h1>
+<h1>Welcome to MetriDoc</h1>
 
-    <p>
-        MetriDoc is an extendable platform to view and maintain library statistics and reports.  Please choose an
-        application or report below.
-    </p>
-
+<p>
+    MetriDoc is an extendable platform to view and maintain library statistics and reports.  Please choose an
+    application or report below.
+</p>
+<g:each in="${categories}" var="category">
     <div class="linkContainer">
-        <md:header>Available Applications <i class="icon-bar-chart"></i></md:header>
+    <g:if test="${!category.adminOnly}">
+        <div>
+            <md:header>${category.name} <i class="${category.iconName}"></i>
+                <a href="#" onclick="showApps(this.id)" class="categoryHeader">
+                    <i class="icon-circle-arrow-down"></i>
+                </a>
+
+            </md:header>
+        </div>
 
         <g:if test="${!applicationControllers}">
             <ul class="undecorated">
                 <li>No applications available</li>
             </ul>
         </g:if>
-
-        <g:each in="${applicationControllers}" var="appController" status="i">
-            <ul class="undecorated">
-                <li><a href="${createLink(controller: appController.controllerName, action: 'index')}">${appController.title}</a><g:if test="${appController.description}"> - </g:if>${appController.description}</li>
-            </ul>
-        </g:each>
-    </div>
-
-    <div class="linkContainer">
-        <shiro:hasRole name="ROLE_ADMIN">
-            <md:header>Administration <i class="icon-cog"></i> </md:header>
-            <g:each in="${adminControllers}" var="controller" status="i">
+        <div class="categoryDiv">
+            <g:each in="${applicationControllers}" var="controller" status="i">
                 <ul class="undecorated">
-                    <li>
-                        <a href="${createLink(controller: controller.controllerName, action: 'index')}">${controller.title}</a><g:if test="${controller.description}"> - </g:if>${controller.description}
-                    </li>
+                    <li><a href="${createLink(url: controller.controllerPath)}">${controller.appName}</a><g:if
+                            test="${controller.appDescription}">-</g:if>${controller.appDescription}</li>
                 </ul>
             </g:each>
-        </shiro:hasRole>
-    </div>
-</div>
+        </div>
+        </div>
+    </g:if>
+    <g:else>
+
+        <div class="linkContainer">
+            <shiro:hasRole name="ROLE_ADMIN">
+                <md:header>${category.name} <i class="${category.iconName}"></i>
+                    <a href="#" onclick="showApps(this.id)" class="categoryHeader">
+                        <i class="icon-circle-arrow-down"></i>
+                    </a></md:header>
+                <g:if test="${!adminControllers}">
+                    <ul class="undecorated">
+                        <li>No applications available</li>
+                    </ul>
+                </g:if>
+                <div class="categoryDiv">
+                    <g:each in="${adminControllers}" var="controller" status="i">
+                        <ul class="undecorated">
+                            <li><a href="${createLink(url: controller.controllerPath)}">${controller.appName}</a><g:if
+                                    test="${controller.appDescription}">-</g:if>${controller.appDescription}</li>
+                        </ul>
+                    </g:each>
+                </div>
+
+            </shiro:hasRole>
+        </div>
+
+        </div>
+    </g:else>
+</g:each>
+<script>
+    var newID = "category"
+    var newHeader = "header"
+    var newIcon = "icon"
+    $(function () {
+        $('.categoryDiv').each(function (i) {
+            $(this).attr({id: newID + i});
+        });
+
+        $('.categoryHeader').each(function (i) {
+            $(this).attr({id: newHeader + i});
+        });
+        $('.icon-circle-arrow-down').each(function (i) {
+            $(this).attr({id: newIcon + i});
+        });
+
+
+    });
+    function showApps(id) {
+        var targetID = id.replace("header", "category")
+        var iconID = id.replace("header", "icon")
+        $('#' + targetID).toggle()
+        $('#' + iconID).toggleClass('icon-circle-arrow-down icon-circle-arrow-up')
+    }
+
+</script>
 </body>
+
 </html>

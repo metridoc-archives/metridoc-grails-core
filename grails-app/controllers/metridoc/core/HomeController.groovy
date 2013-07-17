@@ -8,8 +8,8 @@ class HomeController {
         def model = [:]
         model.adminControllers = homeService.adminControllers
         model.applicationControllers = homeService.applicationControllers
+        model.categories = homeService.categories
 
         return model
     }
-
 }
