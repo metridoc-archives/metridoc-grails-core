@@ -31,7 +31,7 @@ class ShiroUser {
     String confirm
     String emailAddress
 
-    static transients = ['password', 'confirm', 'oldPassword', 'validatePasswords', 'hashAgainstOldPassword']
+    static transients = ['password', 'confirm', 'oldPassword', 'validatePasswords', 'hashAgainstOldPassword', 'salted']
     static final EMAIL_ERROR = { String emailAddress ->
         "The email ${emailAddress} is associated with another account, please choose another"
     }
@@ -72,8 +72,7 @@ class ShiroUser {
 
                 if (obj.oldPassword != null && obj.oldPassword.trim() != EMPTY) {
                     if (obj.hashAgainstOldPassword) {
-                        def hash = new Sha256Hash(obj.oldPassword).toHex()
-                        if (hash != obj.passwordHash) return "oldPassword.match"
+                        if (!obj.oldPasswordMatch()) return "oldPassword.match"
                     }
                 } else return "password.nullable" //oldPassword should never be null or empty
 
@@ -82,8 +81,7 @@ class ShiroUser {
                 } else {
                     //not sure this will ever fail
                     if (!obj.hashAgainstOldPassword) {
-                        def hash = new Sha256Hash(obj.password).toHex()
-                        if (hash != obj.passwordHash) return "confirm.match"
+                        if (!obj.passwordsMatch()) return "confirm.match"
                     }
                 }
             }
@@ -192,6 +190,46 @@ class ShiroUser {
     private static addAlerts(ShiroUser user, String field, Closure closure) {
         user.errors.getFieldErrors(field).each {
             closure.call(it.code)
+        }
+    }
+
+    boolean isSalted() {
+        new Sha256Hash(password, username).toHex() == passwordHash
+    }
+
+    boolean passwordsMatch() {
+        if(isSalted()) {
+            return true
+        }
+
+        new Sha256Hash(password).toHex() == passwordHash
+    }
+
+    boolean oldPasswordMatch() {
+        saltedHash(oldPassword) == passwordHash ?: hash(oldPassword) == passwordHash
+    }
+
+    String hash() {
+        hash(password)
+    }
+
+    String saltedHash() {
+        saltedHash(password)
+    }
+
+    String hash(String password) {
+        new Sha256Hash(password).toHex()
+    }
+
+    String saltedHash(String password) {
+        new Sha256Hash(password, username).toHex()
+    }
+
+    void saltIfNotSalted(String password) {
+        this.password = password
+        if(passwordsMatch() && !salted) {
+            this.passwordHash = new Sha256Hash(password, this.username).toHex()
+            save(flush: true)
         }
     }
 }
