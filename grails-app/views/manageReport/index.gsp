@@ -36,6 +36,7 @@
                             </g:else>
                         </td>
 
+
                         <td>
                             <g:if test="${detail.value.roles}">
                                 <i class="icon-check"></i>
