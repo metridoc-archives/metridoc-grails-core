@@ -1,6 +1,7 @@
 package metridoc.core
 
 import org.apache.shiro.authc.*
+import org.apache.shiro.util.SimpleByteSource
 
 /*
  * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
@@ -45,10 +46,11 @@ class ShiroDbRealm {
         }
 
         log.info "Found user '${user.username}' in DB"
-
+        user.saltIfNotSalted(authToken.password as String)
         // Now check the user's password against the hashed value stored
         // in the database.
-        def account = new SimpleAccount(username, user.passwordHash, "metridoc.core.ShiroDbRealm")
+        def account = new SimpleAccount(username, user.passwordHash, new SimpleByteSource(user.username),
+                "metridoc.core.ShiroDbRealm")
         if (!credentialMatcher.doCredentialsMatch(authToken, account)) {
             log.info "Invalid password (DB realm)"
             throw new IncorrectCredentialsException("Invalid password for user '${username}'")
@@ -119,7 +121,8 @@ class ShiroDbRealm {
             if (perm.implies(requiredPermission)) {
                 // User has the permission!
                 return true
-            } else {
+            }
+            else {
                 return false
             }
         }
@@ -148,7 +151,8 @@ class ShiroDbRealm {
             if (perm.implies(requiredPermission)) {
                 // User has the permission!
                 return true
-            } else {
+            }
+            else {
                 return false
             }
         }
