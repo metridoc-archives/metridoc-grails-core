@@ -5,7 +5,6 @@
   Time: 2:37 PM
   To change this template use File | Settings | File Templates.
 --%>
-
 <%@ page contentType="text/html;charset=UTF-8" %>
 <md:report>
     <tmpl:manageReportHeaders/>
@@ -59,8 +58,16 @@
                     <label for="isProtected" class="control-label">Protected?</label>
 
                     <div class="controls">
-                        <input type="checkbox" id="isProtected" name="isProtected"/>
+                        <input type="checkbox" id="isProtected" name="isProtected" hidden/>
+
+                        <div class="btn-group" data-toggle="buttons-radio">
+                            <button type="button" class="btn btn-primary" name="isProtected"
+                                    onclick="protect()">Protected</button>
+                            <button type="button" class="btn btn-primary active" name="unProtected"
+                                    onclick="unProtect()">Unprotected</button>
+                        </div>
                     </div>
+
                     <g:render template="/user/roles" model="[selectedRoles: controllerDetails.roles]"/>
                     <div class="controls">
                         <button class="btn" type="submit" onmouseover="getControllerNames()">
@@ -73,6 +80,14 @@
         </div>
     </div>
     <script>
+        function protect() {
+            $('#isProtected').prop("checked", true)
+        }
+
+        function unProtect() {
+            $('#isProtected').prop("checked", false)
+        }
+
         function getControllerNames() {
             var cNames = [];
             var table = document.getElementById("controllerTable");
@@ -107,6 +122,10 @@
                 var cellText;
                 var table = document.getElementById("controllerTable");
                 var i, j;
+                //When changing search, boxes should be unchecked
+                $('input[name=selectAll]').prop("checked", false);
+                $('input[name=controllerNames]').prop("checked", false);
+
                 for (i = 1, j = table.rows.length; i < j; i++) {
                     cellText = table.rows[i].cells[1].innerHTML.replace('<a href=\"/metridoc-core/manageReport/show/', "");
                     cellText = cellText.replace('</a>', "");
@@ -115,9 +134,12 @@
 
                     if (cellText.indexOf(searchText) != -1) {
                         $('#controllerTable tr').slice(i, i + 1).show();
+
                     }
                     else {
                         $('#controllerTable tr').slice(i, i + 1).hide();
+
+
                     }
 
 
@@ -125,7 +147,12 @@
             });
             $('input[name=selectAll]').click(function () {
                 if (this.checked) {
-                    $('input[name=controllerNames]').prop("checked", true);
+                    $('#controllerTable tr').slice(1).each(function () {
+                        if ($(this).is(':visible')) {
+                            $(this).find('input:checkbox').prop("checked", true);
+                        }
+
+                    });
 
                 }
                 else {
