@@ -1,0 +1,32 @@
+.btn-primary {
+    color: #a6d091;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #a6d091;
+    *background-color: #a6d091;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#cae5bc), to(#a6d091));
+    background-image: -webkit-linear-gradient(top, #cae5bc, #a6d091);
+    background-image: -o-linear-gradient(top, #cae5bc, #a6d091);
+    background-image: linear-gradient(to bottom, #cae5bc, #a6d091);
+    background-image: -moz-linear-gradient(top, #cae5bc, #a6d091);
+    background-repeat: repeat-x;
+    border-color: #a6d091 #a6d091 #002a80;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ffa6d091', endColorstr='#ff0044cc', GradientType=0);
+    filter: progid:dximagetransform.microsoft.gradient(enabled=false);
+}
+
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary.active,
+.btn-primary.disabled,
+.btn-primary[disabled] {
+    color: #ffffff;
+    background-color: #a6d091;
+    *background-color: #a6d091;
+    height: 50%;
+}
+
+.btn-primary:active,
+.btn-primary.active {
+    background-color: #48802c;
+}
