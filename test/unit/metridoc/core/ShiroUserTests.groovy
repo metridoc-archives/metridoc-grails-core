@@ -13,13 +13,57 @@ class ShiroUserTests {
 
     static final blahEmailAddress = "blah@foo.com"
     def flash = [:]
+    private ShiroUser seededUser
+    private ShiroUser notSeededUser
 
     @Before
     void "prime the database"() {
         def adminRole = new ShiroRole(name: "ROLE_ADMIN")
         adminRole.save(flush: true)
-        new ShiroUser(username: "foobar", emailAddress: blahEmailAddress, passwordHash: "blahlblah").save(flush: true, failOnError: true)
-        new ShiroUser(username: "admin", emailAddress: "admin@admin.com", passwordHash: "blahlblah", roles: [adminRole]).save(flush: true)
+        seededUser = new ShiroUser(username: "foobar", emailAddress: blahEmailAddress, passwordHash: new Sha256Hash("password",
+                "foobar").toHex())
+        seededUser.password = "password"
+        seededUser.save(flush: true, failOnError: true)
+        notSeededUser = new ShiroUser(username: "admin", emailAddress: "admin@admin.com",
+                passwordHash: new Sha256Hash("password").toHex(), roles: [adminRole])
+        notSeededUser.password = "password"
+        notSeededUser.save(flush: true)
+    }
+
+    @Test
+    void "test salting if not salted"() {
+        def notSaltedUser = new ShiroUser()
+        notSaltedUser.with {
+            username = "foo"
+            passwordHash = new Sha256Hash("password").toHex()
+            saltIfNotSalted("password")
+        }
+        assert notSaltedUser.passwordHash == new Sha256Hash("password", "foo").toHex()
+    }
+
+    @Test
+    void "test old password matching"() {
+        def foo = new ShiroUser(passwordHash: new Sha256Hash("password").toHex(), username: "foo")
+        foo.oldPassword = "password"
+        assert foo.oldPasswordMatch()
+        foo.passwordHash = new Sha256Hash("password", "foo").toHex()
+        assert foo.oldPasswordMatch()
+        foo.oldPassword = "noMatch"
+        assert !foo.oldPasswordMatch()
+    }
+
+    @Test
+    void "test basic seeding"() {
+        assert seededUser.isSalted()
+        assert !notSeededUser.isSalted()
+    }
+
+    @Test
+    void "test password matching"() {
+        assert seededUser.passwordsMatch()
+        assert notSeededUser.passwordsMatch()
+        seededUser.password = "noMatch"
+        assert !seededUser.passwordsMatch()
     }
 
     @Test
