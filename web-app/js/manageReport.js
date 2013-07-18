@@ -14,6 +14,35 @@ function unProtect() {
     $('#isProtected').prop("checked", false)
 }
 
+function triggerFilter() {
+    var searchText = $('#searchControllers').val();
+    var cellText;
+    var table = document.getElementById("controllerTable");
+    var i, j;
+    //When changing search, boxes should be unchecked
+    $('input[name=selectAll]').prop("checked", false);
+    $('input[name=controllerNames]').prop("checked", false);
+
+    for (i = 1, j = table.rows.length; i < j; i++) {
+        cellText = table.rows[i].cells[1].innerHTML.replace('<a href=\"/metridoc-core/manageReport/show/', "");
+        cellText = cellText.replace('</a>', "");
+        cellText = cellText.replace(/[a-zA-Z]*">/, "");
+
+
+        if (cellText.indexOf(searchText) != -1) {
+            $('#controllerTable tr').slice(i, i + 1).show();
+
+        }
+        else {
+            $('#controllerTable tr').slice(i, i + 1).hide();
+
+
+        }
+
+
+    }
+}
+
 function getControllerNames() {
     var cNames = [];
     var table = document.getElementById("controllerTable");
@@ -37,13 +66,17 @@ function getControllerNames() {
 
     }
     $('#controllerNames').val(cNames);
+    var searchField = $('#searchControllers').val();
+    //alert(searchField);
+    $('#searchFilter').val(searchField);
+    //alert($('#searchFilter').val());
 
 }
 
 
 $(document).ready(function () {
-    $('#searchFilter').keyup(function () {
-        var searchText = $('#searchFilter').val();
+    $('#searchControllers').keyup(function () {
+        var searchText = $('#searchControllers').val();
         var cellText;
         var table = document.getElementById("controllerTable");
         var i, j;
@@ -69,6 +102,7 @@ $(document).ready(function () {
 
 
         }
+
     });
     $('input[name=selectAll]').click(function () {
         if (this.checked) {

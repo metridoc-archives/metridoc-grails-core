@@ -11,8 +11,13 @@
     <tmpl:manageReportHeaders/>
     <strong>Controller Specific Security:</strong>
     <br>
-    <input type="text" id="searchFilter" class="userInput" name="searchFilter" maxlength="100"
+    <input type="text" id="searchControllers" class="userInput" name="searchControllers" maxlength="100"
            placeholder="Filter Controllers" value="${searchFilter}"/>
+    <script>
+        $(document).ready(function () {
+            triggerFilter();
+        });
+    </script>
 
     <div class="row-fluid">
         <div class="span8">
@@ -57,6 +62,7 @@
             <md:header>Edit Controller Security</md:header>
             <g:form action="updateAll">
                 <g:hiddenField id="controllerNames" name="controllerNames" value=""/>
+                <g:hiddenField id="searchFilter" name="searchFilter" value=""/>
                 <div class="control-group">
 
                     <label for="isProtected" class="control-label">Protected?</label>
