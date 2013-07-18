@@ -15,7 +15,8 @@ class ManageReportController {
     def index() {
         [
                 controllerDetails: manageReportService.controllerDetails,
-                shiroFilters: grailsApplication.config.security.shiro.filter.filterChainDefinitions
+                shiroFilters: grailsApplication.config.security.shiro.filter.filterChainDefinitions,
+                searchFilter: "st"
         ]
     }
 
@@ -38,9 +39,9 @@ class ManageReportController {
         for (s in updateThese) {
             manageReportService.updateController(params, flash, s)
         }
-        flash.info = "updated security for controller [$updateThese]"
+        flash.info = "updated security for controller [$updateThese] ${params.searchFilter}"
 
-        redirect(action: "index")
+        redirect(action: "index", searchFilter: params.searchFilter)
     }
 
     def update(String controllerName) {
