@@ -9,26 +9,24 @@ class HomeService {
 
 
 
-    def getApplicationControllers() {
-        def appControllers = ControllerData.where { homePage == true && category.adminOnly == false }.list()
-        return appControllers
-    }
 
 
+    def getControllersByCategory() {
+        def categoryMap = [:]
+        def categoryList = AppCategory.list()
+        def categoryControllers
+        for (cat in categoryList) {
+            categoryControllers = ControllerData.where { category == cat }.list()
+            categoryMap.put(cat, categoryControllers)
+        }
+        return categoryMap
 
-    def getAdminControllers() {
-        def adminControllers = ControllerData.where { homePage == true && category.adminOnly == true }.list()
-        return adminControllers
-    }
-
-    def getCategories() {
-        def categories = AppCategory.where { adminOnly == false }.list()
-        categories.addAll(AppCategory.where { adminOnly == true }.list())
-        return categories
     }
 
 //Uses log.info to confirm what categories and applications are being added. feel free to comment out
     def bootStrapApplications() {
+
+        //Must add categories by hand
         def adminOnly = AppCategory.find {
             name == "Administration"
         }
@@ -45,6 +43,8 @@ class HomeService {
             availableApps = new AppCategory(name: "Available Applications", iconName: "icon-bar-chart", adminOnly: false)
             log.info "Adding category ${availableApps.name}"
             availableApps.save()
+
+
         }
         grailsApplication.controllerClasses.each { controller ->
             def app = ControllerData.find {

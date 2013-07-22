@@ -6,9 +6,8 @@ class HomeController {
 
     def index() {
         def model = [:]
-        model.adminControllers = homeService.adminControllers
-        model.applicationControllers = homeService.applicationControllers
-        model.categories = homeService.categories
+
+        model.categories = homeService.controllersByCategory
 
         return model
     }

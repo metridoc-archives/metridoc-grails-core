@@ -7,8 +7,8 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <md:report>
-    <r:external dir="js" file="manageReport.js" plugin="metridoc-core"/>
-    <r:external dir="css" file="manageReport.css" plugin="metridoc-core"/>
+    <r:external dir="manageReport/js" file="manageReport.js" plugin="metridoc-core"/>
+    <r:external dir="manageReport/css" file="manageReport.css" plugin="metridoc-core"/>
     <tmpl:manageReportHeaders/>
     <strong>Controller Specific Security:</strong>
     <br>

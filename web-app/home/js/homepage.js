@@ -30,4 +30,22 @@ function showApps(id) {
     $('#' + iconID).toggleClass('icon-circle-arrow-down icon-circle-arrow-up')
 }
 
+function assignID() {
+    var newID = "category"
+    var newHeader = "header"
+    var newIcon = "icon"
+    $('.categoryDiv').each(function (i) {
+        $(this).attr({id: newID + i});
+    });
+    $('.categoryHeader').each(function (i) {
+        $(this).attr({id: newHeader + i});
+    });
+    $('.icon-circle-arrow-down').each(function (i) {
+        $(this).attr({id: newIcon + i});
+    });
+
+};
+
+
+
 
