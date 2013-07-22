@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <md:report>
+    <r:external dir="components/bootstrap.css/js" file="bootstrap.js" plugin="metridoc-core"/>
     <r:external dir="manageReport/js" file="manageReport.js" plugin="metridoc-core"/>
     <r:external dir="manageReport/css" file="manageReport.css" plugin="metridoc-core"/>
     <tmpl:manageReportHeaders/>
@@ -48,11 +49,15 @@
                             <td>
                                 <g:if test="${detail.value.roles}">
                                     <i class="icon-check"></i>
+                                    <a href="#" class="popRoles" rel="popover" data-content="${detail.value.roles}"><i
+                                            class="icon-eye-open"></i></a>
                                 </g:if>
                                 <g:else>
                                     <i class="icon-check-empty"></i>
                                 </g:else>
+
                             </td>
+
                         </tr>
                     </g:if>
                 </g:each>

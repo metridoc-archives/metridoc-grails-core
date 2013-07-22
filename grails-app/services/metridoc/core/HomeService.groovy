@@ -13,7 +13,7 @@ class HomeService {
 
     def getControllersByCategory() {
         def categoryMap = [:]
-        def categoryList = AppCategory.list()
+        def categoryList = AppCategory.list().sort() { it.adminOnly == true }
         def categoryControllers
         for (cat in categoryList) {
             categoryControllers = ControllerData.where { category == cat }.list()

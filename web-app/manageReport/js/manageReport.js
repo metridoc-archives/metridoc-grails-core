@@ -120,4 +120,23 @@ $(document).ready(function () {
         }
     });
 
-})
+});
+
+$(function () {
+    $("[rel='tooltip']").tooltip();
+});
+
+$(function () {
+    $("[rel='popover']").popover();
+});
+
+$(document).ready(function () {
+    $(function () {
+        $(".popRoles")
+            .popover({
+                offset: 10
+            })
+
+    })
+});
+
