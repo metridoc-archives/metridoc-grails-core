@@ -162,6 +162,15 @@ $(document).ready(function () {
 
 
             }
+            $('[name="roles"] option').each(function () {
+                if ($(this).val() == filterValue) {
+                    $(this).prop('selected', true);
+                }
+                else {
+                    $(this).prop('selected', false);
+                }
+            })
+
 
             var searchText = $('#searchControllers').val();
             table = document.getElementById("controllerTable");
