@@ -16,6 +16,7 @@ function unProtect() {
 
 function triggerFilter() {
     var searchText = $('#searchControllers').val();
+    var roleFilter = $('#roleFilter').val();
     var cellText;
     var table = document.getElementById("controllerTable");
     var i, j;
@@ -71,6 +72,10 @@ function getControllerNames() {
     $('#searchFilter').val(searchField);
     //alert($('#searchFilter').val());
 
+    var roleField = $('#roleFilter').val();
+    //alert(searchField);
+    $('#rFilter').val(roleField);
+
 }
 
 
@@ -103,7 +108,81 @@ $(document).ready(function () {
 
         }
 
+        var filterValue = $('#roleFilter').val();
+        table = document.getElementById("controllerTable");
+        var selRow, lastCell;
+        //When changing search, boxes should be unchecked
+        for (i = 2, j = table.rows.length; i <= j; i++) {
+            //cellText = $('#controllerTable tr .popRoles').attr("data-content");
+            //alert(cellText);
+
+            selRow = $('#controllerTable tr:nth-child(' + i + ')');
+            lastCell = selRow.find('td:last');
+            cellText = lastCell.html();
+            if (cellText.indexOf(filterValue) == -1) {
+                //alert("YES");
+                $('#controllerTable tr').slice(i - 1, i).hide();
+
+            }
+
+
+        }
+
+
     });
+
+    $(function () {
+        $('#roleFilter').change(function () {
+            var filterValue = $('#roleFilter').val();
+            var cellText;
+            var table = document.getElementById("controllerTable");
+            var i, j;
+            var selRow, lastCell;
+            //When changing search, boxes should be unchecked
+            $('input[name=selectAll]').prop("checked", false);
+            $('input[name=controllerNames]').prop("checked", false);
+            for (i = 2, j = table.rows.length; i <= j; i++) {
+                //cellText = $('#controllerTable tr .popRoles').attr("data-content");
+                //alert(cellText);
+
+                selRow = $('#controllerTable tr:nth-child(' + i + ')');
+                lastCell = selRow.find('td:last');
+                cellText = lastCell.html();
+                if (cellText.indexOf(filterValue) != -1) {
+                    //alert("YES");
+                    $('#controllerTable tr').slice(i - 1, i).show();
+
+                }
+                else {
+                    //alert("ERROR");
+                    $('#controllerTable tr').slice(i - 1, i).hide();
+
+
+                }
+
+
+            }
+
+            var searchText = $('#searchControllers').val();
+            table = document.getElementById("controllerTable");
+            //When changing search, boxes should be unchecked
+            for (i = 1, j = table.rows.length; i < j; i++) {
+                cellText = table.rows[i].cells[1].innerHTML.replace('<a href=\"/metridoc-core/manageReport/show/', "");
+                cellText = cellText.replace('</a>', "");
+                cellText = cellText.replace(/[a-zA-Z]*">/, "");
+
+
+                if (cellText.indexOf(searchText) == -1) {
+                    $('#controllerTable tr').slice(i, i + 1).hide();
+
+                }
+            }
+
+
+        });
+    });
+
+
     $('input[name=selectAll]').click(function () {
         if (this.checked) {
             $('#controllerTable tr').slice(1).each(function () {
@@ -133,7 +212,7 @@ $(function () {
 $(document).ready(function () {
     $(function () {
         $(".popRoles")
-            .popover({
+            .mouseover({
                 offset: 10
             })
 

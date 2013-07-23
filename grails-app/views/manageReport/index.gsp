@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="metridoc.core.ShiroRole" %>
 <md:report>
     <r:external dir="components/bootstrap.css/js" file="bootstrap.js" plugin="metridoc-core"/>
     <r:external dir="manageReport/js" file="manageReport.js" plugin="metridoc-core"/>
@@ -15,6 +16,14 @@
     <br>
     <input type="text" id="searchControllers" class="userInput" name="searchControllers" maxlength="100"
            placeholder="Filter Controllers" value="${searchFilter}"/>
+    <select name="roleFilter" id="roleFilter" onchange="filterByRole()">
+        <option value="">All Roles</option>
+        <g:each in="${ShiroRole.list()}" var="shiroRole">
+            <option value="${shiroRole.name}">${shiroRole.name}</option>
+
+        </g:each>
+
+    </select>
     <script>
         $(document).ready(function () {
             triggerFilter();
@@ -49,7 +58,8 @@
                             <td>
                                 <g:if test="${detail.value.roles}">
                                     <i class="icon-check"></i>
-                                    <a href="#" class="popRoles" rel="popover" data-content="${detail.value.roles}"><i
+                                    <a href="#" name="popRoles" class="popRoles" rel="popover" data-trigger="hover"
+                                       data-content="${detail.value.roles}"><i
                                             class="icon-eye-open"></i></a>
                                 </g:if>
                                 <g:else>
