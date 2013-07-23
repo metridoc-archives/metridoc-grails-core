@@ -22,14 +22,14 @@
     <g:render template="/user/tabs"/>
     <h1>Create New User
         <a href="#" onclick="showUserForm()">
-            <i id="createUser" class="icon-circle-arrow-down"></i>
+            <i id="createUser" class="icon-plus-sign"></i>
         </a>
 
     </h1>
     <script>
         function showUserForm() {
             $('#createUserForm').toggle();
-            $('#createUser').toggleClass('icon-circle-arrow-down icon-circle-arrow-up')
+            $('#createUser').toggleClass('icon-plus-sign icon-circle-arrow-up')
         }
     </script>
 
