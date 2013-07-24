@@ -60,6 +60,7 @@ grails.project.dependency.resolution = {
         //by default metridoc is tested on mysql
         compile("mysql:mysql-connector-java:5.1.20")
         compile('org.jasypt:jasypt:1.9.0')
+
     }
 
     //grails based plugins
@@ -68,10 +69,14 @@ grails.project.dependency.resolution = {
         compile ":job-runner:0.4.1"
         compile ":external-config-reload:1.2.2"
         compile ":plugin-config:0.1.5"
+        compile ":twitter-bootstrap:2.3.2"
+        compile ":font-awesome-resources:3.2.1.1"
         runtime ":mail:1.0.1"
         runtime ":hibernate:$grailsVersion"
         runtime ":resources:1.1.6"
         runtime ":jquery:1.10.0"
+        runtime ':twitter-bootstrap:2.3.2'
+        runtime ":font-awesome-resources:3.2.1.1"
         runtime(":shiro:1.1.4") {
             excludes(
                     [name: "shiro-quartz", group: "org.apache.shiro"]
