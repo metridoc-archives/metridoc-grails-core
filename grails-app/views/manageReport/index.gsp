@@ -8,9 +8,9 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page import="metridoc.core.ShiroRole" %>
 <md:report>
-    <r:external dir="components/bootstrap.css/js" file="bootstrap.js" plugin="metridoc-core"/>
-    <r:external dir="manageReport/js" file="manageReport.js" plugin="metridoc-core"/>
-    <r:external dir="manageReport/css" file="manageReport.css" plugin="metridoc-core"/>
+    <r:external dir="components/bootstrap.css/js" file="bootstrap.js"/>
+    <r:external dir="manageReport/js" file="manageReport.js"/>
+    <r:external dir="manageReport/css" file="manageReport.css"/>
     <tmpl:manageReportHeaders/>
     <strong>Controller Specific Security:</strong>
     <br>
