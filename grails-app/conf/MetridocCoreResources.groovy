@@ -82,7 +82,7 @@ modules = {
     }
 
     user {
-        dependsOn 'jquery'
+        dependsOn 'jquery, bootstrap'
         resource id: 'css',
                 url: [plugin: "metridocCore", dir: 'user/css', file: 'user.css'],
                 attrs: [type: 'css']

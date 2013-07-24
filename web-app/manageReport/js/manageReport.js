@@ -113,14 +113,10 @@ $(document).ready(function () {
         var selRow, lastCell;
         //When changing search, boxes should be unchecked
         for (i = 2, j = table.rows.length; i <= j; i++) {
-            //cellText = $('#controllerTable tr .popRoles').attr("data-content");
-            //alert(cellText);
-
             selRow = $('#controllerTable tr:nth-child(' + i + ')');
             lastCell = selRow.find('td:last');
             cellText = lastCell.html();
             if (cellText.indexOf(filterValue) == -1) {
-                //alert("YES");
                 $('#controllerTable tr').slice(i - 1, i).hide();
 
             }
@@ -142,19 +138,14 @@ $(document).ready(function () {
             $('input[name=selectAll]').prop("checked", false);
             $('input[name=controllerNames]').prop("checked", false);
             for (i = 2, j = table.rows.length; i <= j; i++) {
-                //cellText = $('#controllerTable tr .popRoles').attr("data-content");
-                //alert(cellText);
-
                 selRow = $('#controllerTable tr:nth-child(' + i + ')');
                 lastCell = selRow.find('td:last');
                 cellText = lastCell.html();
                 if (cellText.indexOf(filterValue) != -1) {
-                    //alert("YES");
                     $('#controllerTable tr').slice(i - 1, i).show();
 
                 }
                 else {
-                    //alert("ERROR");
                     $('#controllerTable tr').slice(i - 1, i).hide();
 
 

@@ -68,8 +68,23 @@
 
                     </td>
                     <td>
-                        <g:each in="${shiroUserInstance.roles}" var="role">
-                            ${role.name.minus("ROLE_").toLowerCase().capitalize()}&nbsp;&nbsp;&nbsp;&nbsp;
+                        <g:each in="${shiroUserInstance.roles}" var="role" status="count">
+
+                            <g:if test="${count < 10}">
+                                <span>
+                                    <g:if test="${count < 9 && count < shiroUserInstance.roles.size() - 1}">
+                                        ${role.name.minus("ROLE_").toLowerCase().capitalize()},&nbsp;
+                                    </g:if>
+                                    <g:else>
+                                        ${role.name.minus("ROLE_").toLowerCase().capitalize()}
+                                    </g:else>
+                                </span>
+                            </g:if>
+                            <g:if test="${count == 10}">
+                                <a href="#" name="popRoles" class="popRoles" rel="popover" data-trigger="hover"
+                                   data-content="${shiroUserInstance.roles}" style="font:14">...</a>
+                            </g:if>
+
                         </g:each>
 
                     </td>
@@ -104,4 +119,7 @@
         </g:if>
 
     </div>
+    <script>$(document).ready(function () {
+        assignID()
+    })</script>
 </md:report>
