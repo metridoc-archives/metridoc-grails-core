@@ -51,7 +51,10 @@
             <tr>
                 <g:sortableColumn property="username"
                                   title="Users"/>
+                <th>Roles</th>
+                <th></th>
             </tr>
+
             </thead>
 
             <tbody>
@@ -62,6 +65,15 @@
                         <g:link action="show"
                                 id="${shiroUserInstance.id}">${fieldValue(bean: shiroUserInstance, field: "username")}
                         </g:link>
+
+                    </td>
+                    <td>
+                        <g:each in="${shiroUserInstance.roles}" var="role">
+                            ${role.name.minus("ROLE_").toLowerCase().capitalize()}&nbsp;&nbsp;&nbsp;&nbsp;
+                        </g:each>
+
+                    </td>
+                    <td>
                         <g:if test="${shiroUserInstance.username != 'anonymous'}">
                             <span class="inCellActions">
 
