@@ -11,30 +11,31 @@
     permissions and limitations under the License.
 -->
 <!doctype html>
-<html>
-<head>
-    <r:external dir="home/js" file="homepage.js" plugin="metridoc-core"/>
-    <meta name="layout" content="main"/>
-</head>
+<md:report>
+    <html>
+    <head>
+        <meta name="layout" content="main"/>
+    </head>
 
-<body>
-<div id="page-body" role="main" style="padding: 20px; padding-left: 0px">
-    <h1>Welcome to MetriDoc</h1>
+    <body>
+    <div id="page-body" role="main" style="padding: 20px; padding-left: 0px">
+        <h1>Welcome to MetriDoc</h1>
 
-    <p>
-        MetriDoc is an extendable platform to view and maintain library statistics and reports.  Please choose an
-        application or report below.
-    </p>
-    <g:each in="${categories}" var="category">
-        <g:if test="${!category.getKey().adminOnly}">
-            <g:render template="listControllers" model="${[category: category]}"/>
-        </g:if>
-        <g:else>
-            <shiro:hasRole name="ROLE_ADMIN">
+        <p>
+            MetriDoc is an extendable platform to view and maintain library statistics and reports.  Please choose an
+            application or report below.
+        </p>
+        <g:each in="${categories}" var="category">
+            <g:if test="${!category.getKey().adminOnly}">
                 <g:render template="listControllers" model="${[category: category]}"/>
-            </shiro:hasRole>
-        </g:else>
-    </g:each>
-    <script>assignID()</script>
-</body>
-</html>
+            </g:if>
+            <g:else>
+                <shiro:hasRole name="ROLE_ADMIN">
+                    <g:render template="listControllers" model="${[category: category]}"/>
+                </shiro:hasRole>
+            </g:else>
+        </g:each>
+        <script>assignID()</script>
+    </body>
+    </html>
+</md:report>
