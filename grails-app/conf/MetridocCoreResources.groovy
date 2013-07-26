@@ -101,13 +101,7 @@ modules = {
                 attrs: [type: 'js']
     }
 
-    application {
-        dependsOn 'jquery'
-        resource id: 'appJs',
-                url: [plugin: "metridocCore", dir: 'js', file: 'application.js'],
-                attrs: [type: 'js']
-        resource id: 'faviconIco',
-                url: [plugin: "metridocCore", dir: 'images', file: 'favicon.ico']
+    bootstrap {
         resource id: 'bootStrapCss',
                 url: [plugin: "metridocCore", dir: 'components/bootstrap.css/css', file: 'bootstrap.css'],
                 attrs: [type: 'css']
@@ -117,9 +111,15 @@ modules = {
         resource id: "bootStrapJs",
                 url: [plugin: "metridocCore", dir: 'components/bootstrap.css/js', file: 'bootstrap.js'],
                 attrs: [type: 'js']
-        resource id: 'fontAwesome',
-                url: [plugin: "metridocCore", dir: 'components/font-awesome/css', file: "font-awesome.css"],
-                attrs: [type: 'css']
+    }
+
+    application {
+        dependsOn 'jquery', 'bootstrap', 'font-awesome'
+        resource id: 'appJs',
+                url: [plugin: "metridocCore", dir: 'js', file: 'application.js'],
+                attrs: [type: 'js']
+        resource id: 'faviconIco',
+                url: [plugin: "metridocCore", dir: 'images', file: 'favicon.ico']
         resource id: 'mainCss',
                 url: [plugin: "metridocCore", dir: 'css', file: 'main.css'],
                 attrs: [type: 'css']

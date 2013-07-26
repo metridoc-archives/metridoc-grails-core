@@ -71,7 +71,6 @@ grails.project.dependency.resolution = {
         compile ":plugin-config:0.1.5"
         //TODO: Figure out why using these as plugins breaks everything
         //compile ":twitter-bootstrap:2.3.2"
-        //compile ":font-awesome-resources:3.2.1.1"
         runtime ":mail:1.0.1"
         runtime ":hibernate:$grailsVersion"
         runtime ":resources:1.1.6"
