@@ -2,7 +2,7 @@
     <div>
         <md:header>${category.getKey().name} <i class="${category.getKey().iconName}"></i>
             <a href="#" onclick="showApps(this.id)" class="categoryHeader">
-                <i class="icon-circle-arrow-down"></i>
+                <i class="icon-minus-sign"></i>
             </a>
 
         </md:header>

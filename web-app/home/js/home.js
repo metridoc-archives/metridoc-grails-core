@@ -17,7 +17,7 @@ $(function () {
     $('.categoryHeader').each(function (i) {
         $(this).attr({id: newHeader + i});
     });
-    $('.icon-circle-arrow-down').each(function (i) {
+    $('.icon-minus-sign').each(function (i) {
         $(this).attr({id: newIcon + i});
     });
 
@@ -27,7 +27,7 @@ function showApps(id) {
     var targetID = id.replace("header", "category")
     var iconID = id.replace("header", "icon")
     $('#' + targetID).toggle()
-    $('#' + iconID).toggleClass('icon-circle-arrow-down icon-circle-arrow-up')
+    $('#' + iconID).toggleClass('icon-minus-sign icon-plus-sign')
 }
 
 function assignID() {
@@ -40,7 +40,7 @@ function assignID() {
     $('.categoryHeader').each(function (i) {
         $(this).attr({id: newHeader + i});
     });
-    $('.icon-circle-arrow-down').each(function (i) {
+    $('.icon-minus-sign').each(function (i) {
         $(this).attr({id: newIcon + i});
     });
 
