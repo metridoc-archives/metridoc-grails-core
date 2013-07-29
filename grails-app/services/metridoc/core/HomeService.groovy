@@ -32,7 +32,7 @@ class HomeService {
         }
         if (!adminOnly) {
             adminOnly = new AppCategory(name: "Administration", iconName: "icon-cog", adminOnly: true)
-            log.info "Adding category ${adminOnly.name}"
+            log.debug "Adding category ${adminOnly.name}"
             adminOnly.save()
         }
 
@@ -41,7 +41,7 @@ class HomeService {
         }
         if (!availableApps) {
             availableApps = new AppCategory(name: "Available Applications", iconName: "icon-bar-chart", adminOnly: false)
-            log.info "Adding category ${availableApps.name}"
+            log.debug "Adding category ${availableApps.name}"
             availableApps.save()
 
 
@@ -50,7 +50,7 @@ class HomeService {
             def app = ControllerData.find {
                 appName == "${controller.naturalName}"
             }
-            log.info "Couldn't find data for ${controller.naturalName}"
+            log.debug "Couldn't find data for ${controller.naturalName}"
             if (!app) {
                 def dataField = GrailsClassUtils.getStaticFieldValue(controller.clazz, HOME_DATA_FIELD)
                 if (dataField != null) {
@@ -64,10 +64,10 @@ class HomeService {
                         category = "Available Applications"
                     }
                     app = new ControllerData(appName: title, appDescription: description, controllerPath: path, category: AppCategory.findByName(category), homePage: true)
-                    log.info "Adding controller Data for ${controller.naturalName}, category ${category}"
+                    log.debug "Adding controller Data for ${controller.naturalName}, category ${category}"
                     app.save()
                 } else {
-                    log.info "${controller.naturalName} doesn't have home page metadata"
+                    log.debug "${controller.naturalName} doesn't have home page metadata"
                 }
             }
         }
