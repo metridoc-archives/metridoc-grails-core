@@ -1,5 +1,5 @@
-<div class="linkContainer">
-    <div>
+<span class="linkContainer">
+    <div style="margin-top: 20px">
         <md:header>${category.getKey().name} <i class="${category.getKey().iconName}"></i>
             <a href="#" onclick="showApps(this.id)" class="categoryHeader">
                 <i class="icon-minus-sign"></i>
@@ -21,4 +21,4 @@
             </ul>
         </g:each>
     </div>
-</div>
+</span>
