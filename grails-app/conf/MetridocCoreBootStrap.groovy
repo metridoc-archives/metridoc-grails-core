@@ -1,5 +1,3 @@
-import org.apache.commons.lang.RandomStringUtils
-
 class MetridocCoreBootStrap {
 
     def initAuthService
@@ -17,9 +15,10 @@ class MetridocCoreBootStrap {
         if (!key.exists()) {
             log.info "Generating mkey"
             new File(System.getProperty("user.home") + "/.metridoc/mkey").withWriter { out ->
-                out << RandomStringUtils.randomAlphanumeric(64)
+                out << UUID.randomUUID().toString()
             }
         }
+
     }
 
     def destroy = {

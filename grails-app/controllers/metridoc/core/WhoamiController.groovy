@@ -7,10 +7,14 @@ class WhoamiController {
     static final ANONYMOUS = "anonymous"
     static boolean isProtected = true
 
-    def index() {
-        def userName = SecurityUtils.subject.principal ? SecurityUtils.subject.principal : ANONYMOUS
+    def restService
 
-        render (contentType: "text/html", text: """
+    def index() {
+        def userName
+        if (params.get("restKey")) userName = restService.getFromRestCache(params.get("restKey"))
+        else userName = SecurityUtils.subject.principal ? SecurityUtils.subject.principal : ANONYMOUS
+
+        render(contentType: "text/html", text: """
 <html>
     <body>${userName}</body>
 </html>

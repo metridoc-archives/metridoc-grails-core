@@ -28,5 +28,7 @@
 
 .btn-primary:active,
 .btn-primary.active {
+    color: #ffffff;
     background-color: #48802c;
 }
+

@@ -21,6 +21,6 @@ class BootupUtils {
 
         filter.filterChainDefinitions = """${currentFilterChainDefinitions}
 /admin/** = user,roles[ROLE_ADMIN]
-/rest/** = authcBasic, roles[ROLE_ADMIN]"""
+"""
     }
 }
