@@ -14,6 +14,7 @@
 /eclipse
 /*.iml
 /.idea
+/out
 
 # default HSQL database files for production mode
 /prodDb.*
@@ -33,6 +34,7 @@
 # plugin release file
 /*.zip
 /plugin.xml
+/*.zip.sha1
 
 # older plugin install locations
 /plugins
@@ -44,5 +46,6 @@
 
 # other
 *.iws
+*.DS_Store
 
 
