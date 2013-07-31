@@ -22,14 +22,14 @@
     <g:render template="/user/tabs"/>
     <h1>Create New User
         <a href="#" onclick="showUserForm()">
-            <i id="createUser" class="icon-circle-arrow-down"></i>
+            <i id="createUser" class="icon-plus-sign"></i>
         </a>
 
     </h1>
     <script>
         function showUserForm() {
             $('#createUserForm').toggle();
-            $('#createUser').toggleClass('icon-circle-arrow-down icon-circle-arrow-up')
+            $('#createUser').toggleClass('icon-plus-sign icon-circle-arrow-up')
         }
     </script>
 
@@ -51,7 +51,10 @@
             <tr>
                 <g:sortableColumn property="username"
                                   title="Users"/>
+                <th>Roles</th>
+                <th></th>
             </tr>
+
             </thead>
 
             <tbody>
@@ -62,6 +65,30 @@
                         <g:link action="show"
                                 id="${shiroUserInstance.id}">${fieldValue(bean: shiroUserInstance, field: "username")}
                         </g:link>
+
+                    </td>
+                    <td>
+                        <g:each in="${shiroUserInstance.roles}" var="role" status="count">
+
+                            <g:if test="${count < 10}">
+                                <span>
+                                    <g:if test="${count < 9 && count < shiroUserInstance.roles.size() - 1}">
+                                        ${role.name.minus("ROLE_").toLowerCase().capitalize()},&nbsp;
+                                    </g:if>
+                                    <g:else>
+                                        ${role.name.minus("ROLE_").toLowerCase().capitalize()}
+                                    </g:else>
+                                </span>
+                            </g:if>
+                            <g:if test="${count == 10}">
+                                <a href="#" name="popRoles" class="popRoles" rel="popover" data-trigger="hover"
+                                   data-content="${shiroUserInstance.roles}" style="font:14">...</a>
+                            </g:if>
+
+                        </g:each>
+
+                    </td>
+                    <td>
                         <g:if test="${shiroUserInstance.username != 'anonymous'}">
                             <span class="inCellActions">
 
@@ -92,4 +119,7 @@
         </g:if>
 
     </div>
+    <script>$(document).ready(function () {
+        assignID()
+    })</script>
 </md:report>

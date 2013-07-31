@@ -143,9 +143,7 @@ class UserController {
             roles = []
             def addRole = { roleName ->
                 log.debug("adding role ${roleName} for user ${shiroUserInstance}")
-                def role = find {
-                    name == roleName
-                }
+                def role = ShiroRole.findByName(roleName) {}
                 roles.add(role as ShiroRole)
             }
             def isAString = params.roles instanceof String
@@ -155,6 +153,7 @@ class UserController {
             params.roles.each { roleName ->
                 addRole(roleName)
             }
+
 
         }
 

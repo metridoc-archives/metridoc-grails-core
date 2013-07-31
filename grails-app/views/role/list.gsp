@@ -22,14 +22,14 @@
 
     <h1>Create New Role
         <a href="#" onclick="showRoleForm()">
-            <i id="createRole" class="icon-circle-arrow-down"></i>
+            <i id="createRole" class="icon-plus-sign"></i>
         </a>
 
     </h1>
     <script>
         function showRoleForm() {
             $('#createRoleForm').toggle();
-            $('#createRole').toggleClass('icon-circle-arrow-down icon-circle-arrow-up')
+            $('#createRole').toggleClass('icon-plus-sign icon-circle-arrow-up')
 
 
         }

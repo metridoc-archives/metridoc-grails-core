@@ -6,14 +6,16 @@ import org.apache.shiro.SecurityUtils
  */
 class ShiroSecurityFilters {
     def manageReportService
-
+    def restService
     def filters = {
         all(uri: "/**") {
             before = {
+
                 // Ignore direct views (e.g. the default main index page).
                 if (!controllerName) return true
                 //this should be handled by shiro's filter map
                 if (request.requestURL.contains("/rest/")) return true
+                if (restService.getFromRestCache(params.get("restKey"))) return true
                 def details = manageReportService.getControllerDetails().get(controllerName)
                 def roles = details.roles
                 def isProtected = details.isProtected

@@ -25,7 +25,6 @@ class InitAuthService {
      * The dataSource that the service will build a transaction around
      */
     static dataSource
-
     static {
         def grailsApplication = Holders.grailsApplication
 
@@ -35,7 +34,6 @@ class InitAuthService {
             }
         }
     }
-
     /**
      * calls all security initializations
      */
@@ -58,24 +56,19 @@ class InitAuthService {
                 username == "admin"
             }
 
-
             if (!adminUser) {
-
                 def preConfiguredPassword = grailsApplication.config.metridoc.admin.password
                 def password = preConfiguredPassword ? preConfiguredPassword : DEFAULT_PASSWORD
-
                 if (DEFAULT_PASSWORD == password) {
                     log.warn "Could not find user admin, creating a default one with password '${DEFAULT_PASSWORD}'.  Change this immediatelly"
                 }
                 adminUser = new ShiroUser(username: 'admin', passwordHash: new Sha256Hash(password, "admin").toHex(), emailAddress: "admin@admin.com")
-
                 def adminRole = ShiroRole.find {
                     name == createRoleName(ADMIN)
                 }
                 adminUser.addToRoles(adminRole)
                 adminUser.save()
-            }
-            else {
+            } else {
                 log.debug "admin user exists, the default admin does not need to be created"
             }
         }
@@ -86,21 +79,15 @@ class InitAuthService {
             def anonymousUser = ShiroUser.find() {
                 username == ANONYMOUS
             }
-
             if (anonymousUser) {
                 log.debug "anonymous user found, don't need to create a default one"
-
-            }
-            else {
+            } else {
                 anonymousUser = new ShiroUser(
                         username: "anonymous",
                         passwordHash: new Sha256Hash("password").toHex(),
                 )
-
             }
-
             def hasRoles = anonymousUser.roles
-
             if (!hasRoles) {
                 def anonymousRole = ShiroRole.find {
                     name == createRoleName(ANONYMOUS)
@@ -110,7 +97,6 @@ class InitAuthService {
             }
         }
     }
-
     /**
      * add all default roles if they don't exist, which include ROLE_ANONYMOUS, ROLE_ADMIN, and ROLE_REPORT_USER
      * @return
@@ -120,7 +106,6 @@ class InitAuthService {
             def roleExists = ShiroRole.find {
                 name == createRoleName(shortRoleName)
             }
-
             if (!roleExists) {
                 createRole(shortRoleName).save()
             }
@@ -137,7 +122,6 @@ class InitAuthService {
         def role = new ShiroRole(
                 name: createRoleName(type)
         )
-
         role.addToPermissions(type)
     }
 

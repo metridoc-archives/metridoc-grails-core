@@ -6,12 +6,26 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="metridoc.core.ShiroRole" %>
 <md:report>
     <tmpl:manageReportHeaders/>
     <strong>Controller Specific Security:</strong>
     <br>
-    <input type="text" id="searchController" class="userInput" name="search" maxlength="100"
-           placeholder="Filter Controllers"/>
+    <input type="text" id="searchControllers" class="userInput" name="searchControllers" maxlength="100"
+           placeholder="Filter Controllers" value="${searchFilter}"/>
+    <select name="roleFilter" id="roleFilter" onchange="filterByRole()">
+        <option value="">All Roles</option>
+        <g:each in="${ShiroRole.list()}" var="shiroRole">
+            <option value="${shiroRole.name}">${shiroRole.name}</option>
+
+        </g:each>
+
+    </select>
+    <script>
+        $(document).ready(function () {
+            triggerFilter();
+        });
+    </script>
 
     <div class="row-fluid">
         <div class="span8">
@@ -23,28 +37,36 @@
                     <th>Has Roles?</th>
                 </tr>
                 <g:each in="${controllerDetails}" var="detail">
-                    <tr>
-                        <td><input type="checkbox" name="controllerNames" value="${detail.key}"></td>
-                        <td><g:link action="show" params="[id: detail.key]">${detail.key}</g:link></td>
+                    <g:if test="${detail.key != "home" && detail.key != "logout" && detail.key != "profile" && detail.key != "auth"}">
+                        <tr>
+                            <td><input type="checkbox" name="controllerNames" value="${detail.key}"></td>
+                            <td><g:link action="show" params="[id: detail.key]">${detail.key}</g:link></td>
 
-                        <td>
-                            <g:if test="${detail.value.isProtected}">
-                                <i class="icon-check"></i>
-                            </g:if>
-                            <g:else>
-                                <i class="icon-check-empty"></i>
-                            </g:else>
-                        </td>
+                            <td>
+                                <g:if test="${detail.value.isProtected}">
+                                    <i class="icon-check"></i>
+                                </g:if>
+                                <g:else>
+                                    <i class="icon-check-empty"></i>
+                                </g:else>
+                            </td>
 
-                        <td>
-                            <g:if test="${detail.value.roles}">
-                                <i class="icon-check"></i>
-                            </g:if>
-                            <g:else>
-                                <i class="icon-check-empty"></i>
-                            </g:else>
-                        </td>
-                    </tr>
+
+                            <td>
+                                <g:if test="${detail.value.roles}">
+                                    <i class="icon-check"></i>
+                                    <a href="#" name="popRoles" class="popRoles" rel="popover" data-trigger="hover"
+                                       data-content="${detail.value.roles}"><i
+                                            class="icon-eye-open"></i></a>
+                                </g:if>
+                                <g:else>
+                                    <i class="icon-check-empty"></i>
+                                </g:else>
+
+                            </td>
+
+                        </tr>
+                    </g:if>
                 </g:each>
             </table>
         </div>
@@ -53,6 +75,7 @@
             <md:header>Edit Controller Security</md:header>
             <g:form action="updateAll">
                 <g:hiddenField id="controllerNames" name="controllerNames" value=""/>
+                <g:hiddenField id="searchFilter" name="searchFilter" value=""/>
                 <div class="control-group">
 
                     <label for="isProtected" class="control-label">Protected?</label>
@@ -79,88 +102,5 @@
 
         </div>
     </div>
-    <script>
-        function protect() {
-            $('#isProtected').prop("checked", true)
-        }
 
-        function unProtect() {
-            $('#isProtected').prop("checked", false)
-        }
-
-        function getControllerNames() {
-            var cNames = [];
-            var table = document.getElementById("controllerTable");
-            var i, j;
-            var k = 0;
-            var cellText;
-
-            var boxes = $('input[name="controllerNames"]');
-
-            for (i = 1, j = table.rows.length; i < j; i++) {
-
-                //alert(table.rows[i].cells[1].innerHTML)
-                //if(table.rows[i].getElementsByName('selectController').checked){
-                if (boxes[i - 1].checked) {
-
-                    cellText = table.rows[i].cells[1].innerHTML.replace('<a href=\"/metridoc-core/manageReport/show/', "");
-                    cellText = cellText.replace('</a>', "");
-                    cellText = cellText.replace(/[a-zA-Z]*">/, "");
-                    cNames.push(cellText);
-                }
-
-            }
-            $('#controllerNames').val(cNames);
-
-        }
-    </script>
-
-    <script>
-        $(document).ready(function () {
-            $('#searchController').keyup(function () {
-                var searchText = $('#searchController').val();
-                var cellText;
-                var table = document.getElementById("controllerTable");
-                var i, j;
-                //When changing search, boxes should be unchecked
-                $('input[name=selectAll]').prop("checked", false);
-                $('input[name=controllerNames]').prop("checked", false);
-
-                for (i = 1, j = table.rows.length; i < j; i++) {
-                    cellText = table.rows[i].cells[1].innerHTML.replace('<a href=\"/metridoc-core/manageReport/show/', "");
-                    cellText = cellText.replace('</a>', "");
-                    cellText = cellText.replace(/[a-zA-Z]*">/, "");
-
-
-                    if (cellText.indexOf(searchText) != -1) {
-                        $('#controllerTable tr').slice(i, i + 1).show();
-
-                    }
-                    else {
-                        $('#controllerTable tr').slice(i, i + 1).hide();
-
-
-                    }
-
-
-                }
-            });
-            $('input[name=selectAll]').click(function () {
-                if (this.checked) {
-                    $('#controllerTable tr').slice(1).each(function () {
-                        if ($(this).is(':visible')) {
-                            $(this).find('input:checkbox').prop("checked", true);
-                        }
-
-                    });
-
-                }
-                else {
-                    $('input[name=controllerNames]').prop("checked", false);
-
-                }
-            });
-
-        })
-    </script>
 </md:report>
