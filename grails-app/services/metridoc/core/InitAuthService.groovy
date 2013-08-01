@@ -42,6 +42,7 @@ class InitAuthService {
         initRoleOverides()
         initAdminUser()
         initAnonymousUser()
+        initMkey()
     }
 
     def initRoleOverides() {
@@ -109,6 +110,17 @@ class InitAuthService {
             if (!roleExists) {
                 createRole(shortRoleName).save()
             }
+        }
+    }
+
+    def initMkey() {
+        def findMKey = MKey.findByName("mKey")
+        if (!findMKey) {
+            def mKey = new MKey(
+                    name: "mKey",
+                    encryptKey: UUID.randomUUID().toString()
+            )
+            mKey.save()
         }
     }
 
