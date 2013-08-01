@@ -2,6 +2,7 @@ package metridoc.core
 
 import grails.util.Holders
 import org.apache.shiro.crypto.hash.Sha256Hash
+import org.jasypt.util.text.StrongTextEncryptor
 
 /**
  * @auhor Tommy Barker
@@ -42,6 +43,8 @@ class InitAuthService {
         initRoleOverides()
         initAdminUser()
         initAnonymousUser()
+        initCryptKey()
+        initLDAP()
     }
 
     def initRoleOverides() {
@@ -109,6 +112,30 @@ class InitAuthService {
             if (!roleExists) {
                 createRole(shortRoleName).save()
             }
+        }
+    }
+
+    def initCryptKey() {
+        if (CryptKey.list().size() == 0) {
+            def mKey = new CryptKey(
+                    encryptKey: UUID.randomUUID().toString()
+            )
+            mKey.save()
+        }
+    }
+
+    def initLDAP() {
+        def findLDAP = LDAP_Data.findByName("LDAP_Config")
+        if (!findLDAP) {
+            StrongTextEncryptor textEncrypt = new StrongTextEncryptor()
+            textEncrypt.setPassword(CryptKey.list().get(0).encryptKey)
+            String encryptedPW = textEncrypt.encrypt("default")
+            def managerPassword = encryptedPW
+            def LDAP_Config = new LDAP_Data(
+                    name: "LDAP_Config",
+                    managerPassword: managerPassword
+            )
+            LDAP_Config.save()
         }
     }
 
