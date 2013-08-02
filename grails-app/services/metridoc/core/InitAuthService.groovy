@@ -2,7 +2,7 @@ package metridoc.core
 
 import grails.util.Holders
 import org.apache.shiro.crypto.hash.Sha256Hash
-import org.jasypt.util.text.StrongTextEncryptor
+import org.jasypt.util.text.BasicTextEncryptor
 
 /**
  * @auhor Tommy Barker
@@ -13,6 +13,7 @@ class InitAuthService {
 
     def grailsApplication
     def pluginManager
+    def encryptionService
     final static DEFAULT_PASSWORD = "password"
     final static ANONYMOUS = "anonymous"
     final static ADMIN = "admin"
@@ -44,7 +45,7 @@ class InitAuthService {
         initAdminUser()
         initAnonymousUser()
         initCryptKey()
-        initLDAP()
+        initLdap()
     }
 
     def initRoleOverides() {
@@ -124,18 +125,28 @@ class InitAuthService {
         }
     }
 
-    def initLDAP() {
-        def findLDAP = LDAP_Data.findByName("LDAP_Config")
-        if (!findLDAP) {
-            StrongTextEncryptor textEncrypt = new StrongTextEncryptor()
-            textEncrypt.setPassword(CryptKey.list().get(0).encryptKey)
-            String encryptedPW = textEncrypt.encrypt("default")
-            def managerPassword = encryptedPW
-            def LDAP_Config = new LDAP_Data(
-                    name: "LDAP_Config",
-                    managerPassword: managerPassword
-            )
-            LDAP_Config.save()
+    def initLdap() {
+        def findLdap = LdapData.findByName("ldapConfig")
+        def ldapConfig
+        if (!findLdap) {
+            try {
+                def managerPassword = encryptionService.encryptString("default", true)
+                ldapConfig = new LdapData(
+                        name: "ldapConfig",
+                        managerPassword: managerPassword,
+                        encryptStrong: true
+                )
+            } catch (org.jasypt.exceptions.EncryptionOperationNotPossibleException ex) {
+                BasicTextEncryptor textEncrypt = new BasicTextEncryptor()
+                def managerPassword = encryptionService.encryptString("default", false)
+                ldapConfig = new LdapData(
+                        name: "ldapConfig",
+                        managerPassword: managerPassword,
+                        encryptStrong: false
+                )
+            }
+
+            ldapConfig.save()
         }
     }
 

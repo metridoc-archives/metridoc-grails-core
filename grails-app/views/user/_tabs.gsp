@@ -70,7 +70,7 @@
             template="/user/tabLabel"
             model="[controllerName: controllerName,
                     actionName: actionName,
-                    linkController: 'AdminLDAP',
+                    linkController: 'AdminLdap',
                     linkAction: 'index',
                     linkText: 'LDAP',
                     icon: 'icon-sitemap']"/>
