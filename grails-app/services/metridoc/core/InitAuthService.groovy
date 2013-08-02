@@ -140,7 +140,7 @@ class InitAuthService {
                         encryptStrong: true
                 )
             } catch (org.jasypt.exceptions.EncryptionOperationNotPossibleException ex) {
-                StrongTextEncryptor textEncrypt = new BasicTextEncryptor()
+                BasicTextEncryptor textEncrypt = new BasicTextEncryptor()
                 textEncrypt.setPassword(CryptKey.list().get(0).encryptKey)
                 String encryptedPW = textEncrypt.encrypt("default")
                 def managerPassword = encryptedPW
