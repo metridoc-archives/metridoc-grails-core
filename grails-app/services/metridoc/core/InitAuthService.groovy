@@ -116,10 +116,8 @@ class InitAuthService {
     }
 
     def initMKey() {
-        def findMKey = MKey.findByName("mKey")
-        if (!findMKey) {
+        if (MKey.list().size() == 0) {
             def mKey = new MKey(
-                    name: "mKey",
                     encryptKey: UUID.randomUUID().toString()
             )
             mKey.save()
@@ -127,10 +125,10 @@ class InitAuthService {
     }
 
     def initLDAP() {
-        def findLDAP = MKey.findByName("LDAP_Config")
+        def findLDAP = LDAP_Data.findByName("LDAP_Config")
         if (!findLDAP) {
             StrongTextEncryptor textEncrypt = new StrongTextEncryptor()
-            textEncrypt.setPassword(MKey.findByName("mKey").encryptKey)
+            textEncrypt.setPassword(MKey.list().get(0).encryptKey)
             String encryptedPW = textEncrypt.encrypt("default")
             def managerPassword = encryptedPW
             def LDAP_Config = new LDAP_Data(
