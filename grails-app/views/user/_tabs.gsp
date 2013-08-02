@@ -66,6 +66,14 @@
                     linkAction: 'index',
                     linkText: 'Config',
                     icon: 'icon-cog']"/>
+    <g:render
+            template="/user/tabLabel"
+            model="[controllerName: controllerName,
+                    actionName: actionName,
+                    linkController: 'AdminLDAP',
+                    linkAction: 'index',
+                    linkText: 'LDAP',
+                    icon: 'icon-sitemap']"/>
 </ul>
 
 
