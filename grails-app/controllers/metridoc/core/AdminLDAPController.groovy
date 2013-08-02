@@ -1,5 +1,6 @@
 package metridoc.core
 
+import org.jasypt.util.text.BasicTextEncryptor
 import org.jasypt.util.text.StrongTextEncryptor
 
 class AdminLDAPController {
@@ -18,9 +19,12 @@ class AdminLDAPController {
                 userSearchFilter: old_LDAP_Config.userSearchFilter,
                 groupSearchBase: old_LDAP_Config.groupSearchBase,
                 managerDN: old_LDAP_Config.managerDN,
-                managerPassword: old_LDAP_Config.managerPassword
+                managerPassword: old_LDAP_Config.managerPassword,
+                encryptStrong: old_LDAP_Config.encryptStrong
         )
-        StrongTextEncryptor textEncrypt = new StrongTextEncryptor()
+        def textEncrypt
+        if (LDAP_Config.encryptStrong) textEncrypt = new StrongTextEncryptor()
+        else textEncrypt = new BasicTextEncryptor()
         textEncrypt.setPassword(CryptKey.list().get(0).encryptKey)
         String encryptedPW = textEncrypt.decrypt(LDAP_Config.managerPassword)
         LDAP_Config.managerPassword = textEncrypt.decrypt(LDAP_Config.managerPassword)
@@ -36,7 +40,9 @@ class AdminLDAPController {
         def temp_LDAP_Config = LDAP_Data.findByName("temp")
         temp_LDAP_Config.delete()
         new_LDAP_Config.save(failOnError: true)
-        StrongTextEncryptor textEncrypt = new StrongTextEncryptor()
+        def textEncrypt
+        if (new_LDAP_Config.encryptStrong) textEncrypt = new StrongTextEncryptor()
+        else textEncrypt = new BasicTextEncryptor()
         textEncrypt.setPassword(CryptKey.list().get(0).encryptKey)
         String encryptedPW = textEncrypt.encrypt(params.managerPassword)
         new_LDAP_Config.managerPassword = encryptedPW

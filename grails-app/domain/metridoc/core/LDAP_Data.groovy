@@ -8,6 +8,7 @@ class LDAP_Data {
     String userSearchFilter = "default"
     String groupSearchBase = ""
     String managerDN = "default"
+    Boolean encryptStrong = true
     String managerPassword
 
     static constraints = {

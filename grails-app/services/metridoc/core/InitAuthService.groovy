@@ -2,6 +2,7 @@ package metridoc.core
 
 import grails.util.Holders
 import org.apache.shiro.crypto.hash.Sha256Hash
+import org.jasypt.util.text.BasicTextEncryptor
 import org.jasypt.util.text.StrongTextEncryptor
 
 /**
@@ -126,15 +127,30 @@ class InitAuthService {
 
     def initLDAP() {
         def findLDAP = LDAP_Data.findByName("LDAP_Config")
+        def LDAP_Config
         if (!findLDAP) {
-            StrongTextEncryptor textEncrypt = new StrongTextEncryptor()
-            textEncrypt.setPassword(CryptKey.list().get(0).encryptKey)
-            String encryptedPW = textEncrypt.encrypt("default")
-            def managerPassword = encryptedPW
-            def LDAP_Config = new LDAP_Data(
-                    name: "LDAP_Config",
-                    managerPassword: managerPassword
-            )
+            try {
+                StrongTextEncryptor textEncrypt = new StrongTextEncryptor()
+                textEncrypt.setPassword(CryptKey.list().get(0).encryptKey)
+                String encryptedPW = textEncrypt.encrypt("default")
+                def managerPassword = encryptedPW
+                LDAP_Config = new LDAP_Data(
+                        name: "LDAP_Config",
+                        managerPassword: managerPassword,
+                        encryptStrong: true
+                )
+            } catch (org.jasypt.exceptions.EncryptionOperationNotPossibleException ex) {
+                StrongTextEncryptor textEncrypt = new BasicTextEncryptor()
+                textEncrypt.setPassword(CryptKey.list().get(0).encryptKey)
+                String encryptedPW = textEncrypt.encrypt("default")
+                def managerPassword = encryptedPW
+                LDAP_Config = new LDAP_Data(
+                        name: "LDAP_Config",
+                        managerPassword: managerPassword,
+                        encryptStrong: false
+                )
+            }
+
             LDAP_Config.save()
         }
     }
