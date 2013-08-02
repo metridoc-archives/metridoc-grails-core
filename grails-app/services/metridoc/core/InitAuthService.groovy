@@ -43,7 +43,7 @@ class InitAuthService {
         initRoleOverides()
         initAdminUser()
         initAnonymousUser()
-        initMKey()
+        initCryptKey()
         initLDAP()
     }
 
@@ -115,9 +115,9 @@ class InitAuthService {
         }
     }
 
-    def initMKey() {
-        if (MKey.list().size() == 0) {
-            def mKey = new MKey(
+    def initCryptKey() {
+        if (CryptKey.list().size() == 0) {
+            def mKey = new CryptKey(
                     encryptKey: UUID.randomUUID().toString()
             )
             mKey.save()
@@ -128,7 +128,7 @@ class InitAuthService {
         def findLDAP = LDAP_Data.findByName("LDAP_Config")
         if (!findLDAP) {
             StrongTextEncryptor textEncrypt = new StrongTextEncryptor()
-            textEncrypt.setPassword(MKey.list().get(0).encryptKey)
+            textEncrypt.setPassword(CryptKey.list().get(0).encryptKey)
             String encryptedPW = textEncrypt.encrypt("default")
             def managerPassword = encryptedPW
             def LDAP_Config = new LDAP_Data(

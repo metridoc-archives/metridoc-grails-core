@@ -21,7 +21,7 @@ class AdminLDAPController {
                 managerPassword: old_LDAP_Config.managerPassword
         )
         StrongTextEncryptor textEncrypt = new StrongTextEncryptor()
-        textEncrypt.setPassword(MKey.list().get(0).encryptKey)
+        textEncrypt.setPassword(CryptKey.list().get(0).encryptKey)
         String encryptedPW = textEncrypt.decrypt(LDAP_Config.managerPassword)
         LDAP_Config.managerPassword = textEncrypt.decrypt(LDAP_Config.managerPassword)
         LDAP_Config.save()
@@ -37,7 +37,7 @@ class AdminLDAPController {
         temp_LDAP_Config.delete()
         new_LDAP_Config.save(failOnError: true)
         StrongTextEncryptor textEncrypt = new StrongTextEncryptor()
-        textEncrypt.setPassword(MKey.list().get(0).encryptKey)
+        textEncrypt.setPassword(CryptKey.list().get(0).encryptKey)
         String encryptedPW = textEncrypt.encrypt(params.managerPassword)
         new_LDAP_Config.managerPassword = encryptedPW
 

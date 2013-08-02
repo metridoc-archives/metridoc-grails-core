@@ -1,8 +1,7 @@
 package metridoc.core
 
-class MKey {
+class CryptKey {
     String encryptKey;
-    String name;
 
     static constraints = {
 
