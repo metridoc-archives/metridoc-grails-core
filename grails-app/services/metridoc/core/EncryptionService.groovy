@@ -4,6 +4,7 @@ import org.jasypt.util.text.BasicTextEncryptor
 import org.jasypt.util.text.StrongTextEncryptor
 
 class EncryptionService {
+    static transactional = false
 
     def encryptString(String target, Boolean strong) {
         if (strong) {
