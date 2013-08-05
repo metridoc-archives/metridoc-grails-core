@@ -1,55 +1,64 @@
 package metridoc.core
 
-import org.jasypt.util.text.BasicTextEncryptor
-import org.jasypt.util.text.StrongTextEncryptor
-
-class AdminLDAPController {
+class AdminLdapController {
 
     static accessControl = {
         role(name: "ROLE_ADMIN")
     }
 
+    def encryptionService
+
     def index() {
-        def old_LDAP_Config = LDAP_Data.findByName("LDAP_Config")
-        def LDAP_Config = new LDAP_Data(
+        def testLdap = LdapData.findByName("temp")
+        def oldLdapConfig = LdapData.findByName("ldapConfig")
+        def ldapConfig = new LdapData(
                 name: "temp",
-                server: old_LDAP_Config.server,
-                rootDN: old_LDAP_Config.rootDN,
-                userSearchBase: old_LDAP_Config.userSearchBase,
-                userSearchFilter: old_LDAP_Config.userSearchFilter,
-                groupSearchBase: old_LDAP_Config.groupSearchBase,
-                managerDN: old_LDAP_Config.managerDN,
-                managerPassword: old_LDAP_Config.managerPassword,
-                encryptStrong: old_LDAP_Config.encryptStrong
+                server: oldLdapConfig.server,
+                rootDN: oldLdapConfig.rootDN,
+                userSearchBase: oldLdapConfig.userSearchBase,
+                userSearchFilter: oldLdapConfig.userSearchFilter,
+                groupSearchBase: oldLdapConfig.groupSearchBase,
+                managerDN: oldLdapConfig.managerDN,
+                managerPassword: oldLdapConfig.managerPassword,
+                encryptStrong: oldLdapConfig.encryptStrong
         )
-        def textEncrypt
-        if (LDAP_Config.encryptStrong) textEncrypt = new StrongTextEncryptor()
-        else textEncrypt = new BasicTextEncryptor()
-        textEncrypt.setPassword(CryptKey.list().get(0).encryptKey)
-        String encryptedPW = textEncrypt.decrypt(LDAP_Config.managerPassword)
-        LDAP_Config.managerPassword = textEncrypt.decrypt(LDAP_Config.managerPassword)
-        LDAP_Config.save()
-        render(view: "index", model: [LDAP: LDAP_Config])
+        ldapConfig.managerPassword = encryptionService.decryptString(ldapConfig.managerPassword, ldapConfig.encryptStrong)
+        ldapConfig.save()
+        render(view: "index", model: [LDAP: ldapConfig])
     }
 
     def save() {
-        def old_LDAP_Config = LDAP_Data.findByName("LDAP_Config")
-        old_LDAP_Config.delete()
-        def new_LDAP_Config = new LDAP_Data(params)
-        new_LDAP_Config.name = "LDAP_Config"
-        def temp_LDAP_Config = LDAP_Data.findByName("temp")
-        temp_LDAP_Config.delete()
-        new_LDAP_Config.save(failOnError: true)
-        def textEncrypt
-        if (new_LDAP_Config.encryptStrong) textEncrypt = new StrongTextEncryptor()
-        else textEncrypt = new BasicTextEncryptor()
-        textEncrypt.setPassword(CryptKey.list().get(0).encryptKey)
-        String encryptedPW = textEncrypt.encrypt(params.managerPassword)
-        new_LDAP_Config.managerPassword = encryptedPW
 
-        new_LDAP_Config.save(failOnError: true)
+        def tempLdapConfig = LdapData.findByName("temp")
+        if (tempLdapConfig) tempLdapConfig.delete()
+        def newLdapConfig = LdapData.findByName("ldapConfig")
+        if (newLdapConfig) {
+            newLdapConfig.server = params.server
+            newLdapConfig.rootDN = params.rootDN
+            newLdapConfig.userSearchBase = params.userSearchBase
+            newLdapConfig.userSearchFilter = params.userSearchFilter
+            newLdapConfig.groupSearchBase = params.groupSearchBase
+            newLdapConfig.managerDN = params.managerDN
+            newLdapConfig.managerPassword = params.managerPassword
+        } else {
+            newLdapConfig = new LdapData(
+                    name: "ldapConfig",
+                    server: params.server,
+                    rootDN: params.rootDN,
+                    userSearchBase: params.userSearchBase,
+                    userSearchFilter: params.userSearchFilter,
+                    groupSearchBase: params.groupSearchBase,
+                    managerDN: params.managerDN,
+                    managerPassword: params.managerPassword
+            )
+        }
+        if (params.encryptStrong == "true") newLdapConfig.encryptStrong = true
+        else newLdapConfig.encryptStrong = false
+        newLdapConfig.save(failOnError: true)
+        newLdapConfig.managerPassword = encryptionService.encryptString(params.managerPassword, newLdapConfig.encryptStrong)
+        newLdapConfig.save(failOnError: true)
         flash.message = "LDAP configuration updated"
-        redirect(action: "index", model: [LDAP: new_LDAP_Config])
+        redirect(action: "index", model: [LDAP: newLdapConfig])
 
 
     }

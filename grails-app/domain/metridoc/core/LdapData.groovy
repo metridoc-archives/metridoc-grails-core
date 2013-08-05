@@ -1,7 +1,7 @@
 package metridoc.core
 
-class LDAP_Data {
-    String name = "LDAP_Config"
+class LdapData {
+    String name = "ldap_Config"
     String server = "default"
     String rootDN = "default"
     String userSearchBase = "default"
