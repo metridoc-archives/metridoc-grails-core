@@ -16,6 +16,5 @@ class AdminLdapControllerSpec extends Specification {
     }
 
     void "test something"() {
-        true
     }
 }
