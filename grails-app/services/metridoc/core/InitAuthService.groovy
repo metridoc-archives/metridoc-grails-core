@@ -1,8 +1,6 @@
 package metridoc.core
 
-import grails.util.Holders
 import org.apache.shiro.crypto.hash.Sha256Hash
-import org.jasypt.util.text.BasicTextEncryptor
 
 /**
  * @auhor Tommy Barker
@@ -23,19 +21,6 @@ class InitAuthService {
     final static REST = "rest"
     final static DEFAULT_ROLES = [ADMIN, SUPER_USER, REST, ANONYMOUS]
 
-    /**
-     * The dataSource that the service will build a transaction around
-     */
-    static dataSource
-    static {
-        def grailsApplication = Holders.grailsApplication
-
-        if (grailsApplication) {
-            if (grailsApplication.mergedConfig.dataSource_admin) {
-                dataSource = 'admin'
-            }
-        }
-    }
     /**
      * calls all security initializations
      */
@@ -137,7 +122,6 @@ class InitAuthService {
                         encryptStrong: true
                 )
             } catch (org.jasypt.exceptions.EncryptionOperationNotPossibleException ex) {
-                BasicTextEncryptor textEncrypt = new BasicTextEncryptor()
                 def managerPassword = encryptionService.encryptString("default", false)
                 ldapConfig = new LdapData(
                         name: "ldapConfig",

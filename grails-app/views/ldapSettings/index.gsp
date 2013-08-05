@@ -11,7 +11,7 @@
     <g:render template="/user/tabs"/>
     <div class="md-application-content">
         <strong>LDAP Settings</strong>
-        <g:form controller="AdminLdap">
+        <g:form controller="LdapSettings">
             <g:hiddenField id="encryptStrong" name="encryptStrong" value="${LDAP.encryptStrong}"/>
 
 
