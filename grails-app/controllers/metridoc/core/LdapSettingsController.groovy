@@ -1,6 +1,6 @@
 package metridoc.core
 
-class AdminLdapController {
+class LdapSettingsController {
 
     static accessControl = {
         role(name: "ROLE_ADMIN")
