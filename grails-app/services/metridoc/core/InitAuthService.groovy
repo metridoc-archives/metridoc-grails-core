@@ -30,7 +30,7 @@ class InitAuthService {
         initAdminUser()
         initAnonymousUser()
         initCryptKey()
-        initLdap()
+
     }
 
     def initRoleOverides() {
@@ -107,30 +107,6 @@ class InitAuthService {
                     encryptKey: UUID.randomUUID().toString()
             )
             mKey.save()
-        }
-    }
-
-    def initLdap() {
-        def findLdap = LdapData.findByName("ldapConfig")
-        def ldapConfig
-        if (!findLdap) {
-            try {
-                def managerPassword = encryptionService.encryptString("default", true)
-                ldapConfig = new LdapData(
-                        name: "ldapConfig",
-                        managerPassword: managerPassword,
-                        encryptStrong: true
-                )
-            } catch (org.jasypt.exceptions.EncryptionOperationNotPossibleException ex) {
-                def managerPassword = encryptionService.encryptString("default", false)
-                ldapConfig = new LdapData(
-                        name: "ldapConfig",
-                        managerPassword: managerPassword,
-                        encryptStrong: false
-                )
-            }
-
-            ldapConfig.save()
         }
     }
 

@@ -1,23 +1,44 @@
 package metridoc.core
 
+import org.jasypt.util.text.BasicTextEncryptor
+import org.jasypt.util.text.StrongTextEncryptor
+
 class LdapData {
-    String name = "ldap_Config"
-    String server = "default"
-    String rootDN = "default"
-    String userSearchBase = "default"
-    String userSearchFilter = "default"
-    String groupSearchBase = ""
-    String managerDN = "default"
+    String server
+    String rootDN
+    String userSearchBase
+    String userSearchFilter
+    String managerDN
     Boolean encryptStrong = true
-    String managerPassword
+    String encryptedPassword
+
+    Boolean skipAuthentication = false
+    Boolean skipCredentialsCheck = false
+    Boolean allowEmptyPasswords = true
+
+    static transients = ['unencryptedPassword']
 
     static constraints = {
-        server(nullable: false, blank: false)
-        rootDN(nullable: false, blank: false)
-        userSearchBase(nullable: false, blank: false)
-        userSearchFilter(nullable: false, blank: false)
-        managerDN(nullable: false, blank: false)
-        managerPassword(nullable: false, blank: false)
+        server(blank: false)
+        rootDN(blank: false)
+        userSearchBase(blank: false)
+        userSearchFilter(blank: false)
+        managerDN(nullable: true, blank: true)
+        encryptedPassword(nullable: true, blank: true)
 
+    }
+
+    String getUnencryptedPassword() {
+        if (encryptStrong) {
+            StrongTextEncryptor textEncrypt = new StrongTextEncryptor()
+            textEncrypt.setPassword(CryptKey.list().get(0).encryptKey)
+            String decrypted = textEncrypt.decrypt(encryptedPassword)
+            return decrypted
+        } else {
+            BasicTextEncryptor textEncrypt = new BasicTextEncryptor()
+            textEncrypt.setPassword(CryptKey.list().get(0).encryptKey)
+            String decrypted = textEncrypt.decrypt(encryptedPassword)
+            return decrypted
+        }
     }
 }
