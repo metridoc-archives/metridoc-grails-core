@@ -21,18 +21,13 @@
 </div>
 
 <div>
-    <label>Group Search Base</label>
-    <g:textField style="width:750px" class="userInput" name="groupSearchBase" maxlength="750"
-                 value="${LDAP.groupSearchBase}"/>
-</div>
-
-<div>
     <label>Manager DN</label>
     <g:textField style="width:750px" class="userInput" name="managerDN" maxlength="750" value="${LDAP.managerDN}"/>
 </div>
 
 <div>
     <label>Manager Password</label>
-    <g:passwordField name="managerPassword" id="${LDAP.managerPassword}" value="${LDAP.managerPassword}"
+    <g:passwordField name="unencryptedPassword" id="${LDAP.getUnencryptedPassword()}"
+                     value="${LDAP.getUnencryptedPassword()}"
                      placeholder="Password"/>
 </div>
