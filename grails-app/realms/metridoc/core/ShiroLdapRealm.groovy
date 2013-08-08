@@ -24,18 +24,17 @@ class ShiroLdapRealm {
         def username = authToken.username
         def password = new String(authToken.password)
 
-        // Get LDAP config for application. Use defaults when no config
-        // is provided.
-        def appConfig = grailsApplication.config
-        def ldapUrls = appConfig.ldap.server.url ?: [LOCALHOST_LDAP]
-        def searchBase = appConfig.ldap.search.base ?: ""
-        def searchUser = appConfig.ldap.search.user ?: ""
-        def searchPass = appConfig.ldap.search.pass ?: ""
-        def searchScope = appConfig.ldap.search.scope ?: 0
-        def usernameAttribute = appConfig.ldap.username.attribute ?: "uid"
-        def skipAuthc = appConfig.ldap.skip.authentication ?: false
-        def skipCredChk = appConfig.ldap.skip.credentialsCheck ?: false
-        def allowEmptyPass = appConfig.ldap.allowEmptyPasswords != [:] ? appConfig.ldap.allowEmptyPasswords : true
+
+        def appConfig = LdapData.list().get(0)
+        def ldapUrl = appConfig.server ?: [LOCALHOST_LDAP]
+        def searchBase = appConfig.rootDN
+        def searchUser = appConfig.userSearchBase
+        def searchPass = appConfig.unencryptedPassword
+        def searchScope = 2
+        def usernameAttribute = appConfig.userSearchFilter
+        def skipAuthc = appConfig.skipAuthentication
+        def skipCredChk = appConfig.skipCredentialsCheck
+        def allowEmptyPass = appConfig.allowEmptyPasswords
 
         // Skip authentication ?
         if (skipAuthc) {
@@ -68,8 +67,8 @@ class ShiroLdapRealm {
 
         // Accept strings and GStrings for convenience, but convert to
         // a list.
-        if (ldapUrls && !(ldapUrls instanceof Collection)) {
-            ldapUrls = [ldapUrls]
+        if (ldapUrl && !(ldapUrl instanceof Collection)) {
+            ldapUrl = [ldapUrl]
         }
 
         // Set up the configuration for the LDAP search we are about
@@ -85,7 +84,7 @@ class ShiroLdapRealm {
 
         // Find an LDAP server that we can connect to.
         def ctx
-        def urlUsed = ldapUrls.find { url ->
+        def urlUsed = ldapUrl.find { url ->
             log.info "Trying LDAP server ${url} ..."
             env[Context.PROVIDER_URL] = url
 
