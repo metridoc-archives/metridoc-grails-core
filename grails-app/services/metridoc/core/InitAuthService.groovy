@@ -1,6 +1,5 @@
 package metridoc.core
 
-import grails.util.Holders
 import org.apache.shiro.crypto.hash.Sha256Hash
 
 /**
@@ -12,6 +11,7 @@ class InitAuthService {
 
     def grailsApplication
     def pluginManager
+    def encryptionService
     final static DEFAULT_PASSWORD = "password"
     final static ANONYMOUS = "anonymous"
     final static ADMIN = "admin"
@@ -22,19 +22,6 @@ class InitAuthService {
     final static DEFAULT_ROLES = [ADMIN, SUPER_USER, REST, ANONYMOUS]
 
     /**
-     * The dataSource that the service will build a transaction around
-     */
-    static dataSource
-    static {
-        def grailsApplication = Holders.grailsApplication
-
-        if (grailsApplication) {
-            if (grailsApplication.mergedConfig.dataSource_admin) {
-                dataSource = 'admin'
-            }
-        }
-    }
-    /**
      * calls all security initializations
      */
     def init() {
@@ -42,6 +29,8 @@ class InitAuthService {
         initRoleOverides()
         initAdminUser()
         initAnonymousUser()
+        initCryptKey()
+
     }
 
     def initRoleOverides() {
@@ -109,6 +98,15 @@ class InitAuthService {
             if (!roleExists) {
                 createRole(shortRoleName).save()
             }
+        }
+    }
+
+    def initCryptKey() {
+        if (CryptKey.list().size() == 0) {
+            def mKey = new CryptKey(
+                    encryptKey: UUID.randomUUID().toString()
+            )
+            mKey.save()
         }
     }
 
