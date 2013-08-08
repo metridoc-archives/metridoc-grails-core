@@ -26,7 +26,7 @@ class ShiroLdapRealm {
 
 
         def appConfig = LdapData.list().get(0)
-        def ldapUrls = appConfig.server ?: [LOCALHOST_LDAP]
+        def ldapUrl = appConfig.server ?: [LOCALHOST_LDAP]
         def searchBase = appConfig.rootDN
         def searchUser = appConfig.userSearchBase
         def searchPass = appConfig.unencryptedPassword
@@ -67,8 +67,8 @@ class ShiroLdapRealm {
 
         // Accept strings and GStrings for convenience, but convert to
         // a list.
-        if (ldapUrls && !(ldapUrls instanceof Collection)) {
-            ldapUrls = [ldapUrls]
+        if (ldapUrl && !(ldapUrl instanceof Collection)) {
+            ldapUrl = [ldapUrl]
         }
 
         // Set up the configuration for the LDAP search we are about
@@ -84,7 +84,7 @@ class ShiroLdapRealm {
 
         // Find an LDAP server that we can connect to.
         def ctx
-        def urlUsed = ldapUrls.find { url ->
+        def urlUsed = ldapUrl.find { url ->
             log.info "Trying LDAP server ${url} ..."
             env[Context.PROVIDER_URL] = url
 

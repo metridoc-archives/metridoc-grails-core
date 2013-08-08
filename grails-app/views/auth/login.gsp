@@ -27,9 +27,4 @@
             </div>
         </g:form>
     </div>
-    <script>
-        $(function () {
-            $("#username").focus();
-        });
-    </script>
 </md:report>

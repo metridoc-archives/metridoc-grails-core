@@ -17,7 +17,6 @@ class LdapSettingsController {
     }
 
     def save() {
-
         def newLdapConfig
         if (LdapData.list().size() > 0) {
             newLdapConfig = LdapData.list().get(0)
@@ -26,7 +25,6 @@ class LdapSettingsController {
             newLdapConfig.userSearchBase = params.userSearchBase
             newLdapConfig.userSearchFilter = params.userSearchFilter
             newLdapConfig.managerDN = params.managerDN
-
         } else {
             newLdapConfig = new LdapData(
                     server: params.server,
@@ -34,16 +32,11 @@ class LdapSettingsController {
                     userSearchBase: params.userSearchBase,
                     userSearchFilter: params.userSearchFilter,
                     managerDN: params.managerDN,
-
             )
         }
-
         encryptionService.encryptString(newLdapConfig, params.unencryptedPassword)
         newLdapConfig.save(failOnError: true)
         flash.message = "LDAP configuration updated"
         redirect(action: "index", model: [LDAP: newLdapConfig])
-
-
     }
 }
-

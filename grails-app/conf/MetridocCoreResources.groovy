@@ -130,6 +130,9 @@ modules = {
         resource id: 'loginCss',
                 url: [plugin: "metridocCore", dir: 'auth/css', file: 'login.css'],
                 attrs: [type: 'css']
+        resource id: 'loginJs',
+                url: [plugin: "metridocCore", dir: 'auth/js', file: 'login.js'],
+                attrs: [type: 'js']
     }
 
     status {
