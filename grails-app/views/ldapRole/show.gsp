@@ -25,11 +25,12 @@
             onsubmit="if(this.submitted == '_action_delete') return window.confirm('Are you sure you want to delete the group ${ldapRoleMappingInstance?.name}?'); return true;">
         <g:hiddenField name="id" value="${ldapRoleMappingInstance?.id}"/>
         <div class="control-group">
-            <g:render template="/user/roles" model="[disabled: true]"/>
+            <g:render template="groupName" model="[disabled: true]"/>
+            <g:render template="/user/roles" model="[disabled: true, target: ldapRoleMappingInstance]"/>
             <div class="controls">
                 <g:render template="/user/embeddedButton"
                           model="[type: 'submit', action: '_action_edit', icon: 'icon-edit', content: 'Edit']"/>
-                <g:if test="${ldapRoleMappingInstance != null && (!userGroups || !userGroups.contains(ldapRoleMappingInstance.name))}">
+                <g:if test="${ldapRoleMappingInstance}">
                     <g:render template="/user/embeddedButton"
                               model="[type: 'submit',
                                       action: '_action_delete',

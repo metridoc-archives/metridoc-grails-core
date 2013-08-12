@@ -6,6 +6,6 @@ class LdapRoleMapping {
 
     static hasMany = [roles: ShiroRole]
     static constraints = {
-        name(blank: false)
+        name(blank: false, unique: true)
     }
 }

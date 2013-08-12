@@ -36,6 +36,7 @@
     <div id="createGroupForm" hidden="true">
         <g:form action="save" class="form-horizontal">
             <div class="control-group">
+            <tmpl:groupName/>
             <tmpl:roles/>
             <tmpl:button content="Create" icon="icon-edit"/>
         </g:form>
@@ -91,11 +92,10 @@
                             <a href="edit/${ldapRoleMappingInstance.id}">
                                 <i class="icon-edit"></i>
                             </a>
-                            <g:if test="${!userGroups || !userGroups?.contains(ldapRoleMappingInstance.name)}">
-                                <a class="delete" href="#" onclick="deleteGroup(${ldapRoleMappingInstance.id})">
-                                    <i class="icon-trash"></i>
-                                </a>
-                            </g:if>
+                            <a class="delete" href="#" onclick="deleteMapping(${ldapRoleMappingInstance.id})">
+                                <i class="icon-trash"></i>
+                            </a>
+
                             <g:form name="mdForm_${ldapRoleMappingInstance.id}" method="delete" action="delete"
                                     id="${ldapRoleMappingInstance.id}"/>
 

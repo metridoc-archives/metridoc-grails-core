@@ -27,7 +27,7 @@
         <div class="control-group">
             <g:render template="/user/userName" model="[disabled: true]"/>
             <g:render template="/user/email" model="[disabled: true]"/>
-            <g:render template="/user/roles" model="[disabled: true]"/>
+            <g:render template="/user/roles" model="[disabled: true, target: shiroUserInstance]"/>
             <div class="controls">
                 <g:render template="/user/embeddedButton"
                           model="[type: 'submit', action: '_action_edit', icon: 'icon-edit', content: 'Edit']"/>

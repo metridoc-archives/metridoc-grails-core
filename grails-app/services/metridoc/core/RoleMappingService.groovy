@@ -12,7 +12,6 @@ class RoleMappingService {
  * Created with IntelliJ IDEA on 7/18/13
  * @author Tommy Barker
  */
-
         def config = new ConfigSlurper().parse(new File("${System.getProperty("user.home")}/.metridoc/MetridocConfig.groovy").toURI().toURL())
         def url = "ldap://carmel.library.upenn.edu"
         def searchBase = "OU=PennLibraryDepts,DC=library,DC=upenn,DC=edu"
@@ -63,5 +62,41 @@ class RoleMappingService {
         }
         return roles
     }
-}
 
+    def allGroups() {
+
+        def config = new ConfigSlurper().parse(new File("${System.getProperty("user.home")}/.metridoc/MetridocConfig.groovy").toURI().toURL())
+        def url = "ldap://carmel.library.upenn.edu"
+        def searchBase = "OU=PennLibraryDepts,DC=library,DC=upenn,DC=edu"
+        def username = "metridoc"
+        def pass = "1247T1247b!"
+        def searchScope = 2
+        def usernameAttribute = "sAMAccountName"
+        SearchControls searchControls = new SearchControls()
+        searchControls.setSearchScope(searchScope)
+
+        def env = new Hashtable()
+        env[Context.INITIAL_CONTEXT_FACTORY] = "com.sun.jndi.ldap.LdapCtxFactory"
+// Non-anonymous access for the search.
+        env[Context.SECURITY_AUTHENTICATION] = "simple"
+        env[Context.SECURITY_PRINCIPAL] = username
+        env[Context.SECURITY_CREDENTIALS] = pass
+        env[Context.PROVIDER_URL] = url
+
+        def ctx = new InitialDirContext(env)
+
+        String[] attrIDs = { "cn" };
+        def allGroups = new ArrayList()
+        def filter = "(objectclass=group)"
+        def result = ctx.search(searchBase, filter, searchControls);
+        result.each {
+            def attrs = it.getAttributes();
+            allGroups.add(attrs.get("cn").toString().replace("cn: ", ""));
+        }
+        return allGroups
+    }
+
+    def isValidGroup(groupName) {
+        return allGroups().contains(groupName)
+    }
+}

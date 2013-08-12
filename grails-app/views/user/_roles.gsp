@@ -2,8 +2,8 @@
 <label for="roles" class="control-label">
     Roles:
 </label>
-<g:if test="${shiroUserInstance}">
-    <g:set var="selectedRoles" value="${shiroUserInstance.roles?.collect { it.name }}"/>
+<g:if test="${target}">
+    <g:set var="selectedRoles" value="${target.roles?.collect { it.name }}"/>
 </g:if>
 <div class="controls">
     <g:if test="${disabled}">

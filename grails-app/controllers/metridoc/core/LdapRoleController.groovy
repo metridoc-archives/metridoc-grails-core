@@ -23,7 +23,7 @@ class LdapRoleController {
 
     def roleMappingService
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "DELETE", list: "GET", index: "GET"]
+    static allowedMethods = [save: "POST", update: "POST", delete: ["DELETE", "POST"], list: "GET", index: "GET"]
     def static final reportName = "Manage LDAP role mapping"
 
     static accessControl = {
@@ -53,22 +53,40 @@ class LdapRoleController {
         [ldapRoleMappingInstance: new LdapRoleMapping(params)]
     }
 
-    def save(String groupname) {
-
+    def save() {
+        def groupname = params.name
         if (groupname == null || groupname == EMPTY) {
             flash.alert = "groupname has to be provided"
-            render(view: "/ldapRole/create")
+            render(view: "/ldapRole/list")
+        } else if (!roleMappingService.isValidGroup(groupname)) {
+            flash.alert = "Not a valid group name!"
+            redirect(action: "list")
+            return
+        }
+        def ldapRoleMappingInstance = new LdapRoleMapping(name: groupname)
+
+        ldapRoleMappingInstance.with {
+
+            roles = []
+            def addRole = { roleName ->
+                log.debug("adding role ${roleName} for user ${ldapRoleMappingInstance}")
+                def role = ShiroRole.findByName(roleName) {}
+                roles.add(role as ShiroRole)
+            }
+            def isAString = params.roles instanceof String
+            if (isAString) {
+                params.roles = [params.roles]
+            }
+            params.roles.each { roleName ->
+                addRole(roleName)
+            }
+
         }
 
-        def usedRoleName = groupname
-        usedRoleName = usedRoleName.toUpperCase()
-
-
-        def ldapRoleMappingInstance = new LdapRoleMapping(name: usedRoleName)
 
         if (!ldapRoleMappingInstance.save(flush: true)) {
             flash.alert = "Could not save ${ldapRoleMappingInstance}"
-            render(view: "/ldapRole/create", model: [ldapRoleMappingInstance: ldapRoleMappingInstance])
+            redirect(action: "list")
             return
         }
 
@@ -133,8 +151,6 @@ class LdapRoleController {
             params.roles.each { roleName ->
                 addRole(roleName)
             }
-
-
         }
 
         if (!ldapRoleMappingInstance.save(flush: true)) {
