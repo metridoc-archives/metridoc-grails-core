@@ -101,6 +101,16 @@ modules = {
                 attrs: [type: 'js']
     }
 
+    ldapRole {
+        dependsOn 'jquery'
+        resource id: 'css',
+                url: [plugin: "metridocCore", dir: 'ldapRole/css', file: 'ldapRole.css'],
+                attrs: [type: 'css']
+        resource id: 'js',
+                url: [plugin: "metridocCore", dir: 'ldapRole/js', file: 'ldapRole.js'],
+                attrs: [type: 'js']
+    }
+
     bootstrap {
         resource id: 'bootStrapCss',
                 url: [plugin: "metridocCore", dir: 'components/bootstrap.css/css', file: 'bootstrap.css'],
