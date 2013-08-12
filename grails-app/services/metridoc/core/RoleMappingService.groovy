@@ -46,5 +46,22 @@ class RoleMappingService {
         }
         return groups
     }
+
+    def rolesByGroups(groups) {
+        def roles = new ArrayList()
+        def roleName
+        def query = LdapRoleMapping.where {
+            groups.contains(name)
+        }.list()
+
+        for (group in query) {
+            for (role in group.roles) {
+                if (!roles.contains(role.name) && role != null && role?.name != "") {
+                    roles.add(role.name)
+                }
+            }
+        }
+        return roles
+    }
 }
 

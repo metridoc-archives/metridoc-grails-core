@@ -18,6 +18,7 @@ class ShiroLdapRealm {
     static authTokenClass = org.apache.shiro.authc.UsernamePasswordToken
     static LOCALHOST_LDAP = "ldap://localhost:389/"
     def grailsApplication
+    def roleMappingService
 
     def authenticate(authToken) {
         log.info "Attempting to authenticate ${authToken.username} in LDAP realm..."
@@ -140,5 +141,38 @@ class ShiroLdapRealm {
             log.info "Invalid password"
             throw new IncorrectCredentialsException("Invalid password for user '${username}'")
         }
+    }
+
+    def isAdmin(principal) {
+        def adminRole = ShiroRole.findByName("ROLE_ADMIN")
+        def groups = roleMappingService.userGroupsAsList(principal)
+        def roles = roleMappingService.rolesByGroups(groups)
+        return roles.contains(adminRole.name)
+    }
+
+    def hasRole(principal, roleName) {
+
+        def groups = roleMappingService.userGroupsAsList(principal)
+        def roles = roleMappingService.rolesByGroups(groups)
+        log.info roles
+        log.info roles?.contains(roleName)
+        return roles?.contains(roleName)
+    }
+
+    def hasAllRoles(principal, roleList) {
+        boolean allRoles = true
+
+        if (isAdmin(principal)) {
+            return true
+        }
+
+        def groups = roleMappingService.userGroupsAsList(principal)
+        def roles = roleMappingService.rolesByGroups(groups)
+        for (role in roleList) {
+            if (!roles.contains(role)) {
+                allRoles = false
+            }
+        }
+        return allRoles
     }
 }
