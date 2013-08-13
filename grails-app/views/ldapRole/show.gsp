@@ -15,30 +15,29 @@
 
 -->
 
-<%@ page import="metridoc.core.ShiroUser" %>
+<%@ page import="metridoc.core.LdapRoleMapping" %>
 
 <md:report>
 
     <g:render template="/user/tabs"/>
 
     <g:form class="form-horizontal"
-            onsubmit="if(this.submited == '_action_delete') return window.confirm('Are you sure you want to delete the user ${shiroUserInstance?.username}?'); return true;">
-        <g:hiddenField name="id" value="${shiroUserInstance?.id}"/>
+            onsubmit="if(this.submitted == '_action_delete') return window.confirm('Are you sure you want to delete the group ${ldapRoleMappingInstance?.name}?'); return true;">
+        <g:hiddenField name="id" value="${ldapRoleMappingInstance?.id}"/>
         <div class="control-group">
-            <g:render template="/user/userName" model="[disabled: true]"/>
-            <g:render template="/user/email" model="[disabled: true]"/>
-            <g:render template="/user/roles" model="[disabled: true, target: shiroUserInstance]"/>
+            <g:render template="groupName" model="[disabled: true]"/>
+            <g:render template="/user/roles" model="[disabled: true, target: ldapRoleMappingInstance]"/>
             <div class="controls">
                 <g:render template="/user/embeddedButton"
                           model="[type: 'submit', action: '_action_edit', icon: 'icon-edit', content: 'Edit']"/>
-                <g:if test="${shiroUserInstance != null && shiroUserInstance.username != 'admin'}">
+                <g:if test="${ldapRoleMappingInstance}">
                     <g:render template="/user/embeddedButton"
                               model="[type: 'submit',
                                       action: '_action_delete',
                                       icon: 'icon-trash',
                                       content: 'Delete',
                                       buttonClass: 'btn-danger',
-                                      onClick: 'return confirm(\'Are you sure you want to delete this user?\');']"/>
+                                      onClick: 'return confirm(\'Are you sure you want to delete this group?\');']"/>
                 </g:if>
             </div>
         </div>
