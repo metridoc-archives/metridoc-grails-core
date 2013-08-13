@@ -23,7 +23,7 @@ class LdapRoleController {
 
     def roleMappingService
 
-    static allowedMethods = [save: "POST", update: "POST", delete: ["DELETE", "POST"], list: "GET", index: "GET"]
+    static allowedMethods = [save: "POST", update: "POST", delete: ["DELETE"], list: "GET", index: "GET"]
     def static final reportName = "Manage LDAP role mapping"
 
     static accessControl = {
