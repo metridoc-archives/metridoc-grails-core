@@ -6,32 +6,55 @@ import javax.naming.directory.SearchControls
 
 class RoleMappingService {
 
+
     def userGroupsAsList(String targetUser) {
 
 /**
  * Created with IntelliJ IDEA on 7/18/13
  * @author Tommy Barker
  */
+        def ldapSettings = LdapData.list()
+        if (ldapSettings) ldapSettings = ldapSettings.get(0)
+        else ldapSettings = new LdapData(
+                server: "",
+                rootDN: "",
+                userSearchBase: "",
+                userSearchFilter: "",
+                managerDN: "",
+                encryptedPassword: "")
         def config = new ConfigSlurper().parse(new File("${System.getProperty("user.home")}/.metridoc/MetridocConfig.groovy").toURI().toURL())
-        def url = "ldap://carmel.library.upenn.edu"
-        def searchBase = "OU=PennLibraryDepts,DC=library,DC=upenn,DC=edu"
-        def username = "metridoc"
-        def pass = "1247T1247b!"
-        def searchScope = 2
-        def usernameAttribute = "sAMAccountName"
-        SearchControls searchControls = new SearchControls()
-        searchControls.setSearchScope(searchScope)
+        def url
+        def searchBase
+        def username
+        def pass
+        def searchScope
+        def usernameAttribute
+        SearchControls searchControls
+        def env
+        def ctx
 
-        def env = new Hashtable()
-        env[Context.INITIAL_CONTEXT_FACTORY] = "com.sun.jndi.ldap.LdapCtxFactory"
+        try {
+            url = ldapSettings.server
+            searchBase = ldapSettings.rootDN
+            username = ldapSettings.userSearchBase
+            pass = ldapSettings.unencryptedPassword
+            searchScope = 2
+            usernameAttribute = ldapSettings.userSearchFilter
+            searchControls = new SearchControls()
+            searchControls.setSearchScope(searchScope)
+
+            env = new Hashtable()
+            env[Context.INITIAL_CONTEXT_FACTORY] = "com.sun.jndi.ldap.LdapCtxFactory"
 // Non-anonymous access for the search.
-        env[Context.SECURITY_AUTHENTICATION] = "simple"
-        env[Context.SECURITY_PRINCIPAL] = username
-        env[Context.SECURITY_CREDENTIALS] = pass
-        env[Context.PROVIDER_URL] = url
+            env[Context.SECURITY_AUTHENTICATION] = "simple"
+            env[Context.SECURITY_PRINCIPAL] = username
+            env[Context.SECURITY_CREDENTIALS] = pass
+            env[Context.PROVIDER_URL] = url
 
-        def ctx = new InitialDirContext(env)
-
+            ctx = new InitialDirContext(env)
+        } catch (Exception ex) {
+            return null
+        }
         String filter = "($usernameAttribute=${targetUser})"
 
         def result = ctx.search(searchBase, filter, searchControls)
@@ -64,26 +87,50 @@ class RoleMappingService {
     }
 
     def allGroups() {
-
+        def ldapSettings = LdapData.list()
+        if (ldapSettings) ldapSettings = ldapSettings.get(0)
+        else ldapSettings = new LdapData(
+                server: "",
+                rootDN: "",
+                userSearchBase: "",
+                userSearchFilter: "",
+                managerDN: "",
+                encryptedPassword: "")
         def config = new ConfigSlurper().parse(new File("${System.getProperty("user.home")}/.metridoc/MetridocConfig.groovy").toURI().toURL())
-        def url = "ldap://carmel.library.upenn.edu"
-        def searchBase = "OU=PennLibraryDepts,DC=library,DC=upenn,DC=edu"
-        def username = "metridoc"
-        def pass = "1247T1247b!"
-        def searchScope = 2
-        def usernameAttribute = "sAMAccountName"
-        SearchControls searchControls = new SearchControls()
-        searchControls.setSearchScope(searchScope)
+        def url
+        def searchBase
+        def username
+        def pass
+        def searchScope
+        def usernameAttribute
+        SearchControls searchControls
+        def env
+        def ctx
 
-        def env = new Hashtable()
-        env[Context.INITIAL_CONTEXT_FACTORY] = "com.sun.jndi.ldap.LdapCtxFactory"
+
+        try {
+            url = ldapSettings.server
+            searchBase = ldapSettings.rootDN
+            username = ldapSettings.userSearchBase
+            pass = ldapSettings.unencryptedPassword
+            searchScope = 2
+            usernameAttribute = ldapSettings.userSearchFilter
+            searchControls = new SearchControls()
+            searchControls.setSearchScope(searchScope)
+
+            env = new Hashtable()
+            env[Context.INITIAL_CONTEXT_FACTORY] = "com.sun.jndi.ldap.LdapCtxFactory"
 // Non-anonymous access for the search.
-        env[Context.SECURITY_AUTHENTICATION] = "simple"
-        env[Context.SECURITY_PRINCIPAL] = username
-        env[Context.SECURITY_CREDENTIALS] = pass
-        env[Context.PROVIDER_URL] = url
+            env[Context.SECURITY_AUTHENTICATION] = "simple"
+            env[Context.SECURITY_PRINCIPAL] = username
+            env[Context.SECURITY_CREDENTIALS] = pass
+            env[Context.PROVIDER_URL] = url
 
-        def ctx = new InitialDirContext(env)
+
+            ctx = new InitialDirContext(env)
+        } catch (Exception ex) {
+            return null
+        }
 
         String[] attrIDs = { "cn" };
         def allGroups = new ArrayList()
