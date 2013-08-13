@@ -6,6 +6,8 @@ import javax.naming.directory.SearchControls
 
 class RoleMappingService {
 
+    def ldapSettings = LdapData.list().get(0)
+
     def userGroupsAsList(String targetUser) {
 
 /**
@@ -13,12 +15,12 @@ class RoleMappingService {
  * @author Tommy Barker
  */
         def config = new ConfigSlurper().parse(new File("${System.getProperty("user.home")}/.metridoc/MetridocConfig.groovy").toURI().toURL())
-        def url = "ldap://carmel.library.upenn.edu"
-        def searchBase = "OU=PennLibraryDepts,DC=library,DC=upenn,DC=edu"
-        def username = "metridoc"
-        def pass = "1247T1247b!"
+        def url = ldapSettings.server
+        def searchBase = ldapSettings.rootDN
+        def username = ldapSettings.userSearchBase
+        def pass = ldapSettings.unencryptedPassword
         def searchScope = 2
-        def usernameAttribute = "sAMAccountName"
+        def usernameAttribute = ldapSettings.userSearchFilter
         SearchControls searchControls = new SearchControls()
         searchControls.setSearchScope(searchScope)
 
@@ -66,12 +68,12 @@ class RoleMappingService {
     def allGroups() {
 
         def config = new ConfigSlurper().parse(new File("${System.getProperty("user.home")}/.metridoc/MetridocConfig.groovy").toURI().toURL())
-        def url = "ldap://carmel.library.upenn.edu"
-        def searchBase = "OU=PennLibraryDepts,DC=library,DC=upenn,DC=edu"
-        def username = "metridoc"
-        def pass = "1247T1247b!"
+        def url = ldapSettings.server
+        def searchBase = ldapSettings.rootDN
+        def username = ldapSettings.userSearchBase
+        def pass = ldapSettings.unencryptedPassword
         def searchScope = 2
-        def usernameAttribute = "sAMAccountName"
+        def usernameAttribute = ldapSettings.userSearchFilter
         SearchControls searchControls = new SearchControls()
         searchControls.setSearchScope(searchScope)
 
