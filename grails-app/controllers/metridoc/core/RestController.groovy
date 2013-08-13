@@ -2,7 +2,7 @@ package metridoc.core
 
 import org.apache.shiro.SecurityUtils
 import org.apache.shiro.authc.AuthenticationException
-import org.apache.shiro.crypto.hash.Sha256Hash
+import org.apache.shiro.authc.UsernamePasswordToken
 
 class RestController {
 
@@ -36,23 +36,21 @@ class RestController {
         }
 
         try {
-            def myUser = ShiroUser.findByUsername(userPW[0])
-            if (!myUser) {
-                throw new AuthenticationException()
+            def authToken = new UsernamePasswordToken(userPW[0], userPW[1])
+            SecurityUtils.subject.login(authToken)
+
+            def allRoles = ShiroRole.list()
+            def userRoles = []
+            for (role in allRoles) {
+                if (SecurityUtils.subject.hasRole(role.name)) userRoles.add(role)
             }
-            def myUserPW = myUser.passwordHash
-            def testUserPW = new Sha256Hash(userPW[1], userPW[0]).toHex()
-            if (myUserPW != testUserPW) {
-                throw new AuthenticationException()
-            }
-            def userRoles = ShiroUser.findByUsername(userPW[0]).getRoles()
             def controllerReport = ManageReport.findByControllerName("${controllerForward}")
             if (controllerReport == null) {
                 controllerReport = new ManageReport(controllerName: controllerForward.capitalize())
             }
             def controllerRoles = controllerReport.getRoles()
             log.info controllerRoles
-            if (userRoles) {
+            if (userRoles?.size() != 0) {
                 if (!controllerRoles || restService.hasCommonRoles(userRoles, controllerRoles)) {
                     def key = UUID.randomUUID().toString()
                     restService.addToRestCache(key, userPW[0])

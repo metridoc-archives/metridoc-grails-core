@@ -132,6 +132,6 @@ class RoleMappingService {
     }
 
     def isValidGroup(groupName) {
-        return allGroups().contains(groupName)
+        return allGroups()?.contains(groupName)
     }
 }
