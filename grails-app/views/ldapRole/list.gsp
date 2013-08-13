@@ -26,12 +26,6 @@
         </a>
 
     </h1>
-    <script>
-        function showGroupForm() {
-            $('#createGroupForm').toggle();
-            $('#createGroup').toggleClass('icon-plus-sign icon-circle-arrow-up')
-        }
-    </script>
 
     <div id="createGroupForm" hidden="true">
         <g:form action="save" class="form-horizontal">
@@ -115,7 +109,4 @@
         </g:if>
 
     </div>
-    <script>$(document).ready(function () {
-        assignID()
-    })</script>
 </md:report>

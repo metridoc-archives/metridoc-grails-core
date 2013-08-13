@@ -4,4 +4,12 @@ function deleteMapping(mappingId) {
     }
 }
 
+function showGroupForm() {
+    $('#createGroupForm').toggle();
+    $('#createGroup').toggleClass('icon-plus-sign icon-circle-arrow-up')
+}
+
+$(document).ready(function () {
+    assignID()
+})
 
