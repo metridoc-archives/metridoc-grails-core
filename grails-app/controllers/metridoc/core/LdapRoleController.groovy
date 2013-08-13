@@ -44,7 +44,7 @@ class LdapRoleController {
                 ldapRoleMappingInstanceList: LdapRoleMapping.list(params),
                 ldapRoleMappingInstanceTotal: groupCount,
                 showPagination: showPagination,
-                userGroups: roleMappingService.userGroupsAsList(SecurityUtils.getSubject().getPrincipal())
+                userGroups: roleMappingService.userGroupsAsList(SecurityUtils.getSubject().getPrincipal()) ?: []
         ]
     }
 
@@ -103,7 +103,7 @@ class LdapRoleController {
         }
 
         [ldapRoleMappingInstance: ldapRoleMappingInstance,
-                userGroups: roleMappingService.userGroupsAsList(SecurityUtils.getSubject().getPrincipal())]
+                userGroups: roleMappingService.userGroupsAsList(SecurityUtils.getSubject().getPrincipal())] ?: []
     }
 
     def edit() {

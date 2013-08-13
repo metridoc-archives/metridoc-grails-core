@@ -15,13 +15,7 @@ class RoleMappingService {
  */
         def ldapSettings = LdapData.list()
         if (ldapSettings) ldapSettings = ldapSettings.get(0)
-        else ldapSettings = new LdapData(
-                server: "",
-                rootDN: "",
-                userSearchBase: "",
-                userSearchFilter: "",
-                managerDN: "",
-                encryptedPassword: "")
+        else return null
         def config = new ConfigSlurper().parse(new File("${System.getProperty("user.home")}/.metridoc/MetridocConfig.groovy").toURI().toURL())
         def url
         def searchBase
@@ -89,13 +83,7 @@ class RoleMappingService {
     def allGroups() {
         def ldapSettings = LdapData.list()
         if (ldapSettings) ldapSettings = ldapSettings.get(0)
-        else ldapSettings = new LdapData(
-                server: "",
-                rootDN: "",
-                userSearchBase: "",
-                userSearchFilter: "",
-                managerDN: "",
-                encryptedPassword: "")
+        else return null
         def config = new ConfigSlurper().parse(new File("${System.getProperty("user.home")}/.metridoc/MetridocConfig.groovy").toURI().toURL())
         def url
         def searchBase

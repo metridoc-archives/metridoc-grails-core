@@ -146,6 +146,7 @@ class ShiroLdapRealm {
     def isAdmin(principal) {
         def adminRole = ShiroRole.findByName("ROLE_ADMIN")
         def groups = roleMappingService.userGroupsAsList(principal)
+        if (!groups) return false
         def roles = roleMappingService.rolesByGroups(groups)
         return roles.contains(adminRole.name)
     }
@@ -153,9 +154,8 @@ class ShiroLdapRealm {
     def hasRole(principal, roleName) {
 
         def groups = roleMappingService.userGroupsAsList(principal)
+        if (!groups) return false
         def roles = roleMappingService.rolesByGroups(groups)
-        log.info roles
-        log.info roles?.contains(roleName)
         return roles?.contains(roleName)
     }
 
@@ -167,6 +167,7 @@ class ShiroLdapRealm {
         }
 
         def groups = roleMappingService.userGroupsAsList(principal)
+        if (!groups) return false
         def roles = roleMappingService.rolesByGroups(groups)
         for (role in roleList) {
             if (!roles.contains(role)) {
