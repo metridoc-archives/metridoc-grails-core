@@ -2,8 +2,8 @@
 <label for="roles" class="control-label">
     Roles:
 </label>
-<g:if test="${target}">
-    <g:set var="selectedRoles" value="${target.roles?.collect { it.name }}"/>
+<g:if test="${ldapRoleMappingInstance}">
+    <g:set var="selectedRoles" value="${ldapRoleMappingInstance.roles?.collect { it.name }}"/>
 </g:if>
 <div class="controls">
     <g:if test="${disabled}">

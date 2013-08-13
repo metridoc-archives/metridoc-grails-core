@@ -9,7 +9,7 @@
             <div class="control-group">
                 <g:render template="/user/userName" model="[disabled: true]"/>
                 <g:render template="/user/email"/>
-                <g:render template="/user/roles" model="[disabled: true]"/>
+                <g:render template="/user/roles" model="[disabled: true, target: shiroUserInstance]"/>
                 <label class="control-label" for="changePW">Change Password?</label>
 
                 <div class="controls" id="ifChangePassword">
