@@ -2,4 +2,6 @@
     padding-top: 10px
 }
 
-
+.popover-title {
+    display: none;
+}
