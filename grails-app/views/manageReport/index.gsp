@@ -21,11 +21,6 @@
         </g:each>
 
     </select>
-    <script>
-        $(document).ready(function () {
-            triggerFilter();
-        });
-    </script>
 
     <div class="row-fluid">
         <div class="span8">

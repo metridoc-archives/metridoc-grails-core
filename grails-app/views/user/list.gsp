@@ -26,12 +26,6 @@
         </a>
 
     </h1>
-    <script>
-        function showUserForm() {
-            $('#createUserForm').toggle();
-            $('#createUser').toggleClass('icon-plus-sign icon-circle-arrow-up')
-        }
-    </script>
 
     <div id="createUserForm" hidden="true">
         <g:form action="save" class="form-horizontal">
@@ -119,7 +113,4 @@
         </g:if>
 
     </div>
-    <script>$(document).ready(function () {
-        assignID()
-    })</script>
 </md:report>

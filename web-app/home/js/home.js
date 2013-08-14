@@ -29,22 +29,23 @@ function showApps(id) {
     $('#' + targetID).toggle()
     $('#' + iconID).toggleClass('icon-minus-sign icon-plus-sign')
 }
+$(document).ready(function () {
+    function assignID() {
+        var newID = "category"
+        var newHeader = "header"
+        var newIcon = "icon"
+        $('.categoryDiv').each(function (i) {
+            $(this).attr({id: newID + i});
+        });
+        $('.categoryHeader').each(function (i) {
+            $(this).attr({id: newHeader + i});
+        });
+        $('.icon-minus-sign').each(function (i) {
+            $(this).attr({id: newIcon + i});
+        });
 
-function assignID() {
-    var newID = "category"
-    var newHeader = "header"
-    var newIcon = "icon"
-    $('.categoryDiv').each(function (i) {
-        $(this).attr({id: newID + i});
-    });
-    $('.categoryHeader').each(function (i) {
-        $(this).attr({id: newHeader + i});
-    });
-    $('.icon-minus-sign').each(function (i) {
-        $(this).attr({id: newIcon + i});
-    });
-
-};
+    };
+});
 
 
 
