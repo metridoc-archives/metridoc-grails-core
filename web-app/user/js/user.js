@@ -53,3 +53,8 @@ if (passwordAndConfirmPasswordExist) {
         });
     });
 }
+function showUserForm() {
+    $('#createUserForm').toggle();
+    $('#createUser').toggleClass('icon-plus-sign icon-circle-arrow-up')
+}
+

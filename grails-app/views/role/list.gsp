@@ -26,14 +26,6 @@
         </a>
 
     </h1>
-    <script>
-        function showRoleForm() {
-            $('#createRoleForm').toggle();
-            $('#createRole').toggleClass('icon-plus-sign icon-circle-arrow-up')
-
-
-        }
-    </script>
 
     <div id="createRoleForm" hidden="true">
         <g:form class="form-horizontal" action="save">
