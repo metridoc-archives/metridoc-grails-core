@@ -35,7 +35,6 @@
                 </shiro:hasRole>
             </g:else>
         </g:each>
-        <script>assignID()</script>
     </body>
     </html>
 </md:report>
