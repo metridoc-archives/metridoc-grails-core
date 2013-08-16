@@ -1,15 +1,10 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: tbarker
-  Date: 1/30/13
-  Time: 2:37 PM
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page import="metridoc.core.ShiroRole" %>
-<md:report>
-    <g:render template="/user/tabs"/>
-    <tmpl:manageReportHeaders/>
+<%@ page import="metridoc.core.ShiroUser" %>
+<div style="border-top: 1px solid #ddd"></div>
+<br>
+
+<div style="margin-left:25px">
+    <g:render template="/manageReport/manageReportHeaders"/>
     <strong>Controller Specific Security:</strong>
     <br>
     <input type="text" id="searchControllers" class="userInput" name="searchControllers" maxlength="100"
@@ -36,7 +31,8 @@
                     <g:if test="${detail.key != "home" && detail.key != "logout" && detail.key != "profile" && detail.key != "auth"}">
                         <tr>
                             <td><input type="checkbox" name="controllerNames" value="${detail.key}"></td>
-                            <td><g:link action="show" params="[id: detail.key]">${detail.key}</g:link></td>
+                            <td><g:link controller="manageReport" action="show"
+                                        params="[id: detail.key]">${detail.key}</g:link></td>
 
                             <td>
                                 <g:if test="${detail.value.isProtected}">
@@ -69,7 +65,7 @@
 
         <div class="span4">
             <md:header>Edit Controller Security</md:header>
-            <g:form action="updateAll">
+            <g:form controller="manageReport" action="updateAll">
                 <g:hiddenField id="controllerNames" name="controllerNames" value=""/>
                 <g:hiddenField id="searchFilter" name="searchFilter" value=""/>
                 <div class="control-group">
@@ -98,5 +94,4 @@
 
         </div>
     </div>
-
-</md:report>
+</div>

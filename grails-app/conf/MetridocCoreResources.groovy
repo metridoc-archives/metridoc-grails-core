@@ -60,6 +60,13 @@ modules = {
                 attrs: [type: "js"]
     }
 
+    manageAccess {
+        dependsOn 'manageReport', 'user', 'role'
+        resource id: 'js',
+                url: [dir: "manageAccess/js", file: "manageAccess.js", plugin: "metridocCore"],
+                attrs: [type: "js"]
+    }
+
     manageReport {
         dependsOn 'jquery'
         resource id: 'css',
