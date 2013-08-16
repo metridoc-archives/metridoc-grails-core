@@ -13,6 +13,10 @@ class ManageAccessController {
             """
     ]
 
+    static accessControl = {
+        role(name: "ROLE_ADMIN")
+    }
+
     def manageReportService
 
     def index() {
