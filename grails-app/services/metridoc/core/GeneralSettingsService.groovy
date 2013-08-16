@@ -6,15 +6,17 @@ import java.lang.management.ManagementFactory
 
 class GeneralSettingsService {
 
-    static File getStartFile() {
+    def grailsApplication
+
+    File getStartFile() {
         getMetridocHomeFile("start.sh")
     }
 
-    static File getWorkDirectoryFile() {
+    File getWorkDirectoryFile() {
         getMetridocHomeFile("workDir.txt")
     }
 
-    static File getMetridocHomeFile(String fileName) {
+    File getMetridocHomeFile(String fileName) {
         def metridocHome = grailsApplication.mergedConfig.metridoc.home
         return new File("$metridocHome${SystemUtils.FILE_SEPARATOR}${fileName}")
     }
@@ -23,13 +25,13 @@ class GeneralSettingsService {
         file.exists() && file.text.trim()
     }
 
-    static String javaCommand() {
+    String javaCommand() {
 
         def slash = SystemUtils.FILE_SEPARATOR
         System.getProperty("java.home") + "${slash}bin${slash}java"
     }
 
-    static String javaVmArguments() {
+    String javaVmArguments() {
         def vmArguments = ManagementFactory.getRuntimeMXBean().getInputArguments()
         def vmArgsOneLine = new StringBuffer();
         vmArguments.each {
@@ -42,7 +44,7 @@ class GeneralSettingsService {
         return vmArgsOneLine
     }
 
-    static String mainCommand() {
+    String mainCommand() {
         System.getProperty("sun.java.command")
     }
 }
