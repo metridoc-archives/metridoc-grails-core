@@ -20,14 +20,6 @@ import org.springframework.dao.DataIntegrityViolationException
 
 class UserController {
 
-    static homePage = [
-            title: "Manage Metridoc",
-            adminOnly: true,
-            description: """
-                Create, update and delete users and roles.  Change configuration, load plugins and restart the
-                application
-            """
-    ]
 
     static allowedMethods = [save: "POST", update: "POST", delete: ['DELETE', "POST"], list: "GET", index: "GET"]
     static accessControl = {
@@ -36,6 +28,7 @@ class UserController {
     def userService
 
     def index() {
+        session.setAttribute("previousExpanded", "userList")
         chain(action: "list")
     }
 
@@ -80,14 +73,16 @@ class UserController {
         }
 
         flash.info = "User '${shiroUserInstance.username}' created"
-        redirect(action: "show", id: shiroUserInstance.id)
+        session.setAttribute("previousExpanded", "userList")
+        chain(controller: "manageAccess", action: "index", id: shiroUserInstance.id, previousExpanded: 'userList')
     }
 
     def show() {
         def shiroUserInstance = ShiroUser.get(params.id)
         if (!shiroUserInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'shiroUser.label', default: 'ShiroUser'), params.id])
-            redirect(action: "list")
+            session.setAttribute("previousExpanded", "userList")
+            chain(controller: "manageAccess", action: "index")
             return
         }
 
@@ -101,7 +96,9 @@ class UserController {
         def shiroUserInstance = ShiroUser.get(params.id)
         if (!shiroUserInstance) {
             flash.alert = "Could not find user for id ${params.id}"
-            redirect(action: "list")
+            params.previousExpanded = 'userList'
+            session.setAttribute("previousExpanded", "userList")
+            chain(controller: "manageAccess", action: "list")
             return
         }
 
@@ -117,7 +114,9 @@ class UserController {
         def shiroUserInstance = ShiroUser.get(params.id)
         if (!shiroUserInstance) {
             couldNotFind(id)
-            redirect(action: "list")
+            params.previousExpanded = 'userList'
+            session.setAttribute("previousExpanded", "userList")
+            chain(controller: "manageAccess", action: "list")
             return
         }
 
@@ -162,12 +161,16 @@ class UserController {
             if (flash.alert == null) {
                 unexpectedError(shiroUserInstance)
             }
-            render(view: "/user/edit", model: [shiroUserInstance: shiroUserInstance])
+            params.previousExpanded = 'userList'
+            session.setAttribute("previousExpanded", "userList")
+            chain(controller: "manageAccess", action: "list")
             return
         }
 
         flash.info = "User '${shiroUserInstance.username}' updated"
-        redirect(action: "show", id: shiroUserInstance.id)
+        params.previousExpanded = 'userList'
+        session.setAttribute("previousExpanded", "userList")
+        chain(controller: "manageAccess", action: "list", id: shiroUserInstance.id)
     }
 
     @SuppressWarnings("GroovyUnnecessaryReturn")
@@ -176,20 +179,26 @@ class UserController {
         def shiroUserInstance = ShiroUser.get(params.id)
         if (!shiroUserInstance) {
             couldNotFind(params.id)
-            redirect(action: "list")
+            params.previousExpanded = 'userList'
+            session.setAttribute("previousExpanded", "userList")
+            chain(controller: "manageAccess", action: "list")
             return
         }
 
         try {
             shiroUserInstance.delete(flush: true)
             flash.info = "User ${shiroUserInstance.username} deleted"
-            redirect(action: "list")
+            params.previousExpanded = 'userList'
+            session.setAttribute("previousExpanded", "userList")
+            chain(controller: "manageAccess", action: "list")
             return
         }
         catch (DataIntegrityViolationException e) {
             log.error("error occurred trying to delete user ${shiroUserInstance}", e)
             unexpectedError()
-            redirect(action: "show", id: params.id)
+            params.previousExpanded = 'userList'
+            session.setAttribute("previousExpanded", "userList")
+            chain(controller: "manageAccess", action: "list", id: params.id)
             return
         }
     }
