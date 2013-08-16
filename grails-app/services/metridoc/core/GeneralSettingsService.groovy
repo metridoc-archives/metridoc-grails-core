@@ -4,27 +4,32 @@ import org.apache.commons.lang.SystemUtils
 
 import java.lang.management.ManagementFactory
 
-class StatusController {
+class GeneralSettingsService {
 
-    def dataSource
-    def grailsApplication
-
-    static accessControl = {
-        role(name: "ROLE_ADMIN")
+    static File getStartFile() {
+        getMetridocHomeFile("start.sh")
     }
 
-    def index() {
-        redirect(controller: "manageConfig", action: "index")
-
+    static File getWorkDirectoryFile() {
+        getMetridocHomeFile("workDir.txt")
     }
 
-    private String javaCommand() {
+    static File getMetridocHomeFile(String fileName) {
+        def metridocHome = grailsApplication.mergedConfig.metridoc.home
+        return new File("$metridocHome${SystemUtils.FILE_SEPARATOR}${fileName}")
+    }
+
+    static boolean fileExists(File file) {
+        file.exists() && file.text.trim()
+    }
+
+    static String javaCommand() {
 
         def slash = SystemUtils.FILE_SEPARATOR
         System.getProperty("java.home") + "${slash}bin${slash}java"
     }
 
-    private String javaVmArguments() {
+    static String javaVmArguments() {
         def vmArguments = ManagementFactory.getRuntimeMXBean().getInputArguments()
         def vmArgsOneLine = new StringBuffer();
         vmArguments.each {
@@ -37,7 +42,7 @@ class StatusController {
         return vmArgsOneLine
     }
 
-    private String mainCommand() {
+    static String mainCommand() {
         System.getProperty("sun.java.command")
     }
 }
