@@ -84,7 +84,8 @@
                                     <li><g:link controller="profile"><i class="icon-user"></i> Account</g:link></li>
                                     <li><g:link controller="log"><i class="icon-file-alt"></i> Application Log</g:link>
                                     </li>
-                                    <li><g:link controller="user"><i class="icon-group"></i> Manage Metridoc</g:link>
+                                    <li><g:link controller="manageAccess"><i
+                                            class="icon-group"></i> Manage Metridoc</g:link>
                                     </li>
                                 </ul>
                             </li>

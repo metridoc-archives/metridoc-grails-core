@@ -26,7 +26,8 @@ class RoleController {
     }
 
     def index() {
-        chain(action: "list")
+        session.setAttribute("previousExpanded", "roleList")
+        chain(controller: "manageAccess", action: "list")
     }
 
     def list() {
@@ -69,14 +70,16 @@ class RoleController {
         }
 
         flash.message = message(code: 'default.created.message', args: [message(code: 'shiroRole.label', default: 'Role'), shiroRoleInstance.name.substring(5)])
-        redirect(action: "show", id: shiroRoleInstance.id)
+        session.setAttribute("previousExpanded", "roleList")
+        chain(controller: "manageAccess", action: "index", id: shiroRoleInstance.id, previousExpanded: 'roleList')
     }
 
     def show() {
         def shiroRoleInstance = ShiroRole.get(params.id)
         if (!shiroRoleInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'shiroRole.label', default: 'Role'), params.id])
-            redirect(action: "list")
+            session.setAttribute("previousExpanded", "roleList")
+            chain(controller: "manageAccess", action: "list", previousExpanded: 'roleList')
             return
         }
 
@@ -87,7 +90,8 @@ class RoleController {
         def shiroRoleInstance = ShiroRole.get(params.id)
         if (!shiroRoleInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'shiroRole.label', default: 'Role'), params.id])
-            redirect(action: "list")
+            session.setAttribute("previousExpanded", "roleList")
+            chain(controller: "manageAccess", action: "list", previousExpanded: 'roleList')
             return
         }
 
@@ -98,7 +102,8 @@ class RoleController {
         def shiroRoleInstance = ShiroRole.get(params.id)
         if (!shiroRoleInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'shiroRole.label', default: 'Role'), params.id])
-            redirect(action: "list")
+            session.setAttribute("previousExpanded", "roleList")
+            chain(controller: "manageAccess", action: "list", previousExpanded: 'roleList')
             return
         }
 
@@ -128,7 +133,8 @@ class RoleController {
         }
 
         flash.message = message(code: 'default.updated.message', args: [message(code: 'shiroRole.label', default: 'Role'), shiroRoleInstance.name.substring(5)])
-        redirect(action: "show", id: shiroRoleInstance.id)
+        session.setAttribute("previousExpanded", "roleList")
+        chain(controller: "manageAccess", action: "index", id: shiroRoleInstance.id, previousExpanded: 'roleList')
     }
 
 

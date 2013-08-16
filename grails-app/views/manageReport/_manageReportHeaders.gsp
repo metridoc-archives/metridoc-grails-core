@@ -1,2 +1,1 @@
-<g:render template="/user/tabs"/>
-<tmpl:globalFilters/>
+<g:render template="/manageReport/globalFilters"/>

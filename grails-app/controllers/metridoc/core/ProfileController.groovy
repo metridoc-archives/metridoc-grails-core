@@ -29,7 +29,6 @@ class ProfileController {
         ]
     }
 
-
     def update() {
         def shiroUserInstance = ShiroUser.get(params.id)
 
