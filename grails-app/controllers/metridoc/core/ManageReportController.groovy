@@ -1,6 +1,7 @@
 package metridoc.core
 
 import grails.web.RequestParameter
+import org.apache.shiro.SecurityUtils
 
 class ManageReportController {
 
@@ -42,13 +43,17 @@ class ManageReportController {
         }
         flash.info = "updated security for controller [$updateThese]"
         def oldSearch = params.searchFilter
-        redirect(action: "index", params: [searchFilter: oldSearch])
+        session.setAttribute("searchFilter", oldSearch)
+        session.setAttribute("previousExpanded", "manageReportIndex")
+        chain(controller: "manageAccess", action: "index", previousExpanded: 'manageReportIndex')
     }
 
     def update(String controllerName) {
         manageReportService.updateController(params, flash, controllerName)
-
-        redirect(action: "index")
+        def oldSearch = params.searchFilter
+        session.setAttribute("searchFilter", oldSearch)
+        session.setAttribute("previousExpanded", "manageReportIndex")
+        chain(controller: "manageAccess", action: "index", previousExpanded: 'manageReportIndex')
     }
 }
 
