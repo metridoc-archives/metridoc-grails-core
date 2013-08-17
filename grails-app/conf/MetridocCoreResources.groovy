@@ -118,20 +118,8 @@ modules = {
                 attrs: [type: 'js']
     }
 
-    bootstrap {
-        resource id: 'bootStrapCss',
-                url: [plugin: "metridocCore", dir: 'components/bootstrap.css/css', file: 'bootstrap.css'],
-                attrs: [type: 'css']
-        resource id: 'bootStrapResonsiveCss',
-                url: [plugin: "metridocCore", dir: 'components/bootstrap.css/css', file: 'bootstrap-responsive.css'],
-                attrs: [type: 'css']
-        resource id: "bootStrapJs",
-                url: [plugin: "metridocCore", dir: 'components/bootstrap.css/js', file: 'bootstrap.js'],
-                attrs: [type: 'js']
-    }
-
     application {
-        dependsOn 'jquery', 'bootstrap', 'font-awesome'
+        dependsOn 'jquery', 'bootstrap', 'bootstrap-responsive-less', 'font-awesome'
         resource id: 'appJs',
                 url: [plugin: "metridocCore", dir: 'js', file: 'application.js'],
                 attrs: [type: 'js']
