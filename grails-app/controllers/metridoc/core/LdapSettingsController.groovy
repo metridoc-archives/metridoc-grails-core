@@ -9,11 +9,9 @@ class LdapSettingsController {
     def encryptionService
 
     def index() {
-        if (LdapData.list().size() != 0) {
-            render(view: "index", model: [LDAP: LdapData.list().get(0)])
-        } else {
-            render(view: "index", model: [LDAP: new LdapData()])
-        }
+
+        chain(controller: "ldapRole", action: "index")
+
     }
 
     def save() {
@@ -36,7 +34,8 @@ class LdapSettingsController {
         }
         encryptionService.encryptString(newLdapConfig, params.unencryptedPassword)
         newLdapConfig.save(failOnError: true)
-        flash.message = "LDAP configuration updated"
-        redirect(action: "index", model: [LDAP: newLdapConfig])
+        flash.alert = "LDAP configuration updated"
+        session.setAttribute("previousExpanded", "ldapConfig")
+        chain(controller: "ldapRole", action: "index")
     }
 }
