@@ -8,16 +8,39 @@ import static metridoc.core.CommonService.METRIDOC_CONFIG
 class ManageConfigController {
 
     def commonService
+    def generalSettingsService
+    def dataSource
+    def grailsApplication
 
     static accessControl = {
         role(name: "ROLE_ADMIN")
     }
 
     def index() {
+        def startFileExistsAndHasText = generalSettingsService.fileExists(generalSettingsService.startFile)
+        def workDirectoryFileExistsAndHasText = generalSettingsService.fileExists(generalSettingsService.workDirectoryFile)
+        def command
+        def workDirectory
+        if (startFileExistsAndHasText) {
+            command = startFileExistsAndHasText ? generalSettingsService.startFile.text : null
+            workDirectory = workDirectoryFileExistsAndHasText ? generalSettingsService.workDirectoryFile.text : null
+        }
+
         [
+                command: command,
+                workDirectory: workDirectory,
+                javaCommand: generalSettingsService.javaCommand(),
+                javaVmArguments: generalSettingsService.javaVmArguments(),
+                mainCommand: generalSettingsService.mainCommand(),
+                dataSourceUrl: dataSource.connection.metaData.getURL(),
+                applicationName: grailsApplication.mergedConfig.metridoc.app.name,
+                shiroFilters: grailsApplication.config.security.shiro.filter.filterChainDefinitions,
                 metridocConfigExists: commonService.metridocConfig.exists()
         ]
+
+
     }
+
 
     def upload() {
         String fileContent = request.getFile("metridocConfig").inputStream.getText(CommonService.DEFAULT_ENCODING)

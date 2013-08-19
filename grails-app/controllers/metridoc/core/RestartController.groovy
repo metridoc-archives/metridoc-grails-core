@@ -14,10 +14,10 @@ class RestartController {
         def workDirectoryFileExistsAndHasText = fileExists(workDirectoryFile)
 
         if (startFileExistsAndHasText) {
-            [
-                    command: startFileExistsAndHasText ? startFile.text : null,
-                    workDirectory: workDirectoryFileExistsAndHasText ? workDirectoryFile.text : null
-            ]
+            chain(controller: "manageConfig", action: "index", params: [restartModel: [command: startFileExistsAndHasText ? startFile.text : null,
+                    workDirectory: workDirectoryFileExistsAndHasText ? workDirectoryFile.text : null]])
+        } else {
+            chain(controller: "manageConfig", action: "index")
         }
     }
 
@@ -31,7 +31,7 @@ class RestartController {
         def invalidDirectory = !workDirectoryExists || !isADirectory
         if (invalidDirectory) {
             flash.alert = "Work Directory $workDirectory does not exist or is not a directory"
-            chain(action: "index")
+            chain(controller: "manageConfig", action: "index")
             return
         }
 
