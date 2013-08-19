@@ -31,16 +31,36 @@ class LdapRoleController {
     }
 
     def index() {
+        if (session.getAttribute("previousExpanded") == "ldapConfig") {
+            flash.message = "LDAP configuration updated"
+        }
+
         chain(action: "list")
     }
 
     def list() {
+        def ldapData
+        if (LdapData.list().size() != 0) {
+            ldapData = LdapData.list().get(0)
+        } else {
+            ldapData = new LdapData()
+        }
+
         def max = Math.min(params.max ? params.int('max') : 10, 100)
         params.max = max
         def groupCount = LdapRoleMapping.count()
         def showPagination = groupCount > max
 
+        def previousExpanded = ""
+        if (params.previousExpanded != 'clear') {
+            previousExpanded = session.getAttribute("previousExpanded")
+        } else {
+            previousExpanded = "none"
+        }
+        session.setAttribute("previousExpanded", "none")
         [
+                previousExpanded: previousExpanded,
+                LDAP: ldapData,
                 ldapRoleMappingInstanceList: LdapRoleMapping.list(params),
                 ldapRoleMappingInstanceTotal: groupCount,
                 showPagination: showPagination,

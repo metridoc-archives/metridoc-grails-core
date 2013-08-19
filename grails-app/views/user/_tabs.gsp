@@ -24,14 +24,7 @@
                     linkAction: 'index',
                     linkText: 'LDAP Config',
                     icon: 'icon-sitemap']"/>
-    <g:render
-            template="/user/tabLabel"
-            model="[controllerName: controllerName,
-                    actionName: actionName,
-                    linkController: 'LdapRole',
-                    linkAction: 'index',
-                    linkText: 'LDAP Role Mapping',
-                    icon: 'icon-table']"/>
+
 </ul>
 
 

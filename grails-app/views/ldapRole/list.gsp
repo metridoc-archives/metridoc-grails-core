@@ -18,95 +18,37 @@
 <%@ page import="metridoc.core.LdapRoleMapping" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <md:report>
-
+    <g:hiddenField name="previousExpanded" id="previousExpanded" value="${previousExpanded}"/>
     <g:render template="/user/tabs"/>
-    <h1>Create New Group
-        <a href="#" onclick="showGroupForm()">
-            <i id="createGroup" class="icon-plus-sign"></i>
+
+    <div style="border-bottom: 1px solid #ddd">
+        <a href="#" onclick="changeIcon('groupList')">
+            <h1 style="font-size:14px; color:black">LDAP Groups&nbsp<i id="cGroupList"
+                                                                       data-toggle="collapse" data-target="#groupList"
+                                                                       class="icon-circle-arrow-up"></i></h1>
+
         </a>
+        <span id="sGroupList" style="margin-left: 25px">Create and view LDAP groups</span>
 
-    </h1>
-
-    <div id="createGroupForm" hidden="true">
-        <g:form action="save" class="form-horizontal">
-            <div class="control-group">
-            <tmpl:groupName/>
-            <tmpl:roles/>
-            <tmpl:button content="Create" icon="icon-edit"/>
-        </g:form>
+        <div id="groupList" class="collapse in">
+            <g:render template="/ldapRole/ldapGroupList"/>
+        </div>
     </div>
+    <br>
+
+    <div style="border-bottom: 1px solid #ddd">
+        <a href="#" onclick="changeIcon('ldapConfig')">
+            <h1 style="font-size:14px; color:black">LDAP Config&nbsp<i id="cLdapConfig"
+                                                                       data-toggle="collapse" data-target="#ldapConfig"
+                                                                       class="icon-circle-arrow-down"></i></h1>
+
+        </a>
+        <span id="sLdapConfig" style="margin-left: 25px">Change LDAP configuration</span>
+
+        <div id="ldapConfig" class="collapse">
+            <g:render template="/ldapSettings/ldapConfig"/>
+        </div>
     </div>
+    <br>
 
-    <div id="list-ldapRoleMapping" class="content scaffold-list" role="main">
-        <table class="table table-striped table-hover">
-            <thead>
-            <tr>
-                <g:sortableColumn property="name"
-                                  title="Groups"/>
-                <th>Roles</th>
-                <th></th>
-            </tr>
-
-            </thead>
-
-            <tbody>
-            <g:each in="${ldapRoleMappingInstanceList}" status="i" var="ldapRoleMappingInstance">
-                <tr>
-
-                    <td>
-                        <g:link action="show"
-                                id="${ldapRoleMappingInstance.id}">${fieldValue(bean: ldapRoleMappingInstance, field: "name")}
-                        </g:link>
-
-                    </td>
-                    <td>
-                        <g:each in="${ldapRoleMappingInstance.roles}" var="role" status="count">
-
-                            <g:if test="${count < 10}">
-                                <span>
-                                    <g:if test="${count < 9 && count < ldapRoleMappingInstance.roles.size() - 1}">
-                                        ${role.name.minus("ROLE_").toLowerCase().capitalize()},&nbsp;
-                                    </g:if>
-                                    <g:else>
-                                        ${role.name.minus("ROLE_").toLowerCase().capitalize()}
-                                    </g:else>
-                                </span>
-                            </g:if>
-                            <g:if test="${count == 10}">
-                                <a href="#" name="popRoles" class="popRoles" rel="popover" data-trigger="hover"
-                                   data-content="${ldapRoleMappingInstance.roles}" style="font:14">...</a>
-                            </g:if>
-
-                        </g:each>
-
-                    </td>
-                    <td>
-                        <span class="inCellActions">
-
-                            <a href="edit/${ldapRoleMappingInstance.id}">
-                                <i class="icon-edit"></i>
-                            </a>
-                            <a class="delete" href="#" onclick="deleteMapping(${ldapRoleMappingInstance.id})">
-                                <i class="icon-trash"></i>
-                            </a>
-
-                            <g:form name="mdForm_${ldapRoleMappingInstance.id}" method="delete" action="delete"
-                                    id="${ldapRoleMappingInstance.id}"/>
-
-                        </span>
-
-                    </td>
-
-                </tr>
-            </g:each>
-            </tbody>
-        </table>
-
-        <g:if test="${showPagination}">
-            <div class="pagination">
-                <g:paginate total="${ldapRoleMappingInstanceTotal}"/>
-            </div>
-        </g:if>
-
-    </div>
 </md:report>
