@@ -63,19 +63,16 @@ grails.project.dependency.resolution = {
 
     }
 
-    //grails based plugins
     plugins {
         compile ":database-session:1.2.1"
         compile ":job-runner:0.4.1"
         compile ":external-config-reload:1.2.2"
         compile ":plugin-config:0.1.5"
-        //TODO: Figure out why using these as plugins breaks everything
-        //compile ":twitter-bootstrap:2.3.2"
+        runtime ":twitter-bootstrap:2.3.2"
         runtime ":mail:1.0.1"
         runtime ":hibernate:$grailsVersion"
         runtime ":resources:1.1.6"
         runtime ":jquery:1.10.0"
-        //runtime ':twitter-bootstrap:2.3.2'
         runtime ":font-awesome-resources:3.2.1.1"
         runtime(":shiro:1.1.4") {
             excludes(
