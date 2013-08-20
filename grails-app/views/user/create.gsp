@@ -17,15 +17,15 @@
 <%@ page import="metridoc.core.ShiroUser" %>
 <md:report>
 
-    <g:render template="/user/tabs"/>
+    <g:render template="/commonTemplates/tabs"/>
 
     <g:form action="save" class="form-horizontal">
         <div class="control-group">
         <tmpl:userName/>
         <tmpl:passwords/>
         <tmpl:email/>
-        <tmpl:roles/>
-        <tmpl:button content="Create" icon="icon-edit"/>
+        <g:render template="/commonTemplates/roles" model="${[target: shiroUserInstance]}"/>
+        <g:render template="/commonTemplates/button" model="${[content: 'Create', icon: 'icon-edit']}"/>
     </g:form>
 
 </md:report>

@@ -19,7 +19,7 @@
 
 <md:report>
 
-    <g:render template="/user/tabs"/>
+    <g:render template="/commonTemplates/tabs"/>
 
     <g:form class="form-horizontal">
         <div class="control-group">

@@ -8,7 +8,7 @@
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 <md:report>
-    <g:render template="/user/tabs"/>
+    <g:render template="/commonTemplates/tabs"/>
     <div class="md-application-content">
         <strong>LDAP Settings</strong>
         <g:form controller="LdapSettings">

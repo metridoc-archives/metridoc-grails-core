@@ -4,7 +4,6 @@ class CryptKey {
     String encryptKey;
 
     static constraints = {
-
     }
 }
 

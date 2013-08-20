@@ -20,7 +20,6 @@ class ShiroRole {
     static hasMany = [users: ShiroUser, permissions: String]
     static belongsTo = ShiroUser
     static mapping = {
-
     }
 
     static constraints = {

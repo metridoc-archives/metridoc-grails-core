@@ -45,11 +45,10 @@ class LogController {
 
         def files = logFiles
         def initialValue = "${files.find { it.contains(grailsApplication.metadata.getApplicationName()) }}"
-        [
-                logFiles: files,
+
+        [logFiles: files,
                 initialValue: initialValue,
-                logToDisplay: initialValue
-        ]
+                logToDisplay: initialValue]
     }
 
     private Set<String> getLogFiles() {

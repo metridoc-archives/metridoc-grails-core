@@ -15,11 +15,9 @@ class StatusController {
 
     def index() {
         redirect(controller: "manageConfig", action: "index")
-
     }
 
     private String javaCommand() {
-
         def slash = SystemUtils.FILE_SEPARATOR
         System.getProperty("java.home") + "${slash}bin${slash}java"
     }
@@ -33,7 +31,6 @@ class StatusController {
                 vmArgsOneLine.append(" ");
             }
         }
-
         return vmArgsOneLine
     }
 

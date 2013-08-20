@@ -36,7 +36,9 @@
             <thead>
             <tr>
                 <g:sortableColumn property="name" title="Roles"/>
+
             </tr>
+
             </thead>
             <tbody>
             <g:each in="${shiroRoleInstanceList}" status="i" var="shiroRoleInstance">
@@ -46,6 +48,7 @@
                                 id="${shiroRoleInstance.id}">${fieldValue(bean: shiroRoleInstance, field: "name")}
                         </g:link>
                     </td>
+
                 </tr>
             </g:each>
             </tbody>

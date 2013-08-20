@@ -86,23 +86,23 @@ class LdapRoleController {
         def ldapRoleMappingInstance = new LdapRoleMapping(name: groupname)
 
         ldapRoleMappingInstance.with {
-
             roles = []
+
             def addRole = { roleName ->
                 log.debug("adding role ${roleName} for user ${ldapRoleMappingInstance}")
                 def role = ShiroRole.findByName(roleName) {}
                 roles.add(role as ShiroRole)
             }
+
             def isAString = params.roles instanceof String
             if (isAString) {
                 params.roles = [params.roles]
             }
+
             params.roles.each { roleName ->
                 addRole(roleName)
             }
-
         }
-
 
         if (!ldapRoleMappingInstance.save(flush: true)) {
             flash.alert = "Could not save ${ldapRoleMappingInstance}"
@@ -203,6 +203,4 @@ class LdapRoleController {
             return
         }
     }
-
-
 }

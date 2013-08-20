@@ -19,7 +19,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <md:report>
 
-    <g:render template="/user/tabs"/>
+    <g:render template="/commonTemplates/tabs"/>
     <h1>Create New User
         <a href="#" onclick="showUserForm()">
             <i id="createUser" class="icon-plus-sign"></i>
@@ -33,8 +33,8 @@
             <tmpl:userName/>
             <tmpl:passwords/>
             <tmpl:email/>
-            <tmpl:roles/>
-            <tmpl:button content="Create" icon="icon-edit"/>
+            <g:render template="/commonTemplates/roles" model="${[target: shiroUserInstance]}"/>
+            <g:render template="/commonTemplates/button" model="${[content: 'Create', icon: 'icon-edit']}"/>
         </g:form>
     </div>
     </div>
@@ -86,9 +86,10 @@
                         <g:if test="${shiroUserInstance.username != 'anonymous'}">
                             <span class="inCellActions">
 
-                                <a href="edit/${shiroUserInstance.id}">
-                                    <i class="icon-edit"></i>
-                                </a>
+                                <g:link action="edit"
+                                        id="${shiroUserInstance.id}"><i class="icon-edit"></i>
+                                </g:link>
+
                                 <g:if test="${shiroUserInstance.username != currentUserName}">
                                     <a class="delete" href="#" onclick="deleteUser(${shiroUserInstance.id})">
                                         <i class="icon-trash"></i>

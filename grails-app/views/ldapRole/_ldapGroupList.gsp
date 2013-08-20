@@ -19,17 +19,17 @@
         <a href="#" onclick="showGroupForm()">
             <i id="createGroup" class="icon-plus-sign"></i>
         </a>
-
     </h1>
 
     <div id="createGroupForm" hidden="true">
         <g:form action="save" class="form-horizontal">
             <div class="control-group">
-            <tmpl:groupName/>
-            <tmpl:roles/>
-            <tmpl:button content="Create" icon="icon-edit"/>
+                <g:render template="/commonTemplates/nameLabel"
+                          model="${[disabled: false, target: ldapRoleMappingInstance, required: true, category: 'Group Name']}"/>
+                <g:render template="/commonTemplates/roles" model="${[target: ldapRoleMappingInstance]}"/>
+                <g:render template="/commonTemplates/button" model="${[content: 'Create', icon: 'icon-edit']}"/>
+            </div>
         </g:form>
-    </div>
     </div>
 
     <div id="list-ldapRoleMapping" class="content scaffold-list" role="main">

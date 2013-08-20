@@ -1,5 +1,5 @@
 <md:report>
-    <g:render template="/user/tabs"/>
+    <g:render template="/commonTemplates/tabs"/>
     <ul>
         <li><strong>Java Exec:&nbsp;&nbsp;</strong><code>${javaCommand}</code></li>
         <li><strong>Java VM Arguments:&nbsp;&nbsp;</strong><code>${javaVmArguments}</code></li>

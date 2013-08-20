@@ -19,7 +19,7 @@
 
 <md:report>
 
-    <g:render template="/user/tabs"/>
+    <g:render template="/commonTemplates/tabs"/>
 
     <g:form class="form-horizontal"
             onsubmit="if(this.submited == '_action_delete') return window.confirm('Are you sure you want to delete the user ${shiroUserInstance?.username}?'); return true;">
@@ -27,12 +27,12 @@
         <div class="control-group">
             <g:render template="/user/userName" model="[disabled: true]"/>
             <g:render template="/user/email" model="[disabled: true]"/>
-            <g:render template="/user/roles" model="[disabled: true, target: shiroUserInstance]"/>
+            <g:render template="/commonTemplates/roles" model="[disabled: true, target: shiroUserInstance]"/>
             <div class="controls">
-                <g:render template="/user/embeddedButton"
+                <g:render template="/commonTemplates/button"
                           model="[type: 'submit', action: '_action_edit', icon: 'icon-edit', content: 'Edit']"/>
                 <g:if test="${shiroUserInstance != null && shiroUserInstance.username != 'admin'}">
-                    <g:render template="/user/embeddedButton"
+                    <g:render template="/commonTemplates/button"
                               model="[type: 'submit',
                                       action: '_action_delete',
                                       icon: 'icon-trash',

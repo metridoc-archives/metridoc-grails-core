@@ -11,7 +11,8 @@
 <head>
 
 </head>
+
 <body>
-    <tmpl:plainLog></tmpl:plainLog>
+<tmpl:plainLog/>
 </body>
 </html>
