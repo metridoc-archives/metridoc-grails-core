@@ -14,8 +14,8 @@
             <g:render template="/user/userName"/>
             <g:render template="/user/passwords"/>
             <g:render template="/user/email"/>
-            <g:render template="/user/roles"/>
-            <g:render template="/user/button" model="['content': 'Create']" icon="icon-edit"/>
+            <g:render template="/commonTemplates/roles"/>
+            <g:render template="/commonTemplates/button" model="['content': 'Create']" icon="icon-edit"/>
         </g:form>
     </div>
     </div>
@@ -65,9 +65,9 @@
                         <g:if test="${shiroUserInstance.username != 'anonymous'}">
                             <span class="inCellActions">
 
-                                <a href="edit/${shiroUserInstance.id}">
-                                    <i class="icon-edit"></i>
-                                </a>
+                                <g:link controller="user" action="edit"
+                                        id="${shiroUserInstance.id}"><i class="icon-edit"></i>
+                                </g:link>
                                 <g:if test="${shiroUserInstance.username != currentUserName}">
                                     <a class="delete" href="#" onclick="deleteUser(${shiroUserInstance.id})">
                                         <i class="icon-trash"></i>

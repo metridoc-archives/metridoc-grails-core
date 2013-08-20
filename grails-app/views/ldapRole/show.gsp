@@ -19,25 +19,25 @@
 
 <md:report>
 
-    <g:render template="/user/tabs"/>
+    <g:render template="/commonTemplates/tabs"/>
 
     <g:form class="form-horizontal"
             onsubmit="if(this.submitted == '_action_delete') return window.confirm('Are you sure you want to delete the group ${ldapRoleMappingInstance?.name}?'); return true;">
         <g:hiddenField name="id" value="${ldapRoleMappingInstance?.id}"/>
         <div class="control-group">
-            <g:render template="groupName" model="[disabled: true]"/>
-            <g:render template="/user/roles" model="[disabled: true, target: ldapRoleMappingInstance]"/>
+            <g:render template="/commonTemplates/nameLabel"
+                      model="${[disabled: true, target: ldapRoleMappingInstance, category: 'Group Name']}"/>
+            <g:render template="/commonTemplates/roles" model="[disabled: true, target: ldapRoleMappingInstance]"/>
             <div class="controls">
-                <g:render template="/user/embeddedButton"
+                <g:render template="/commonTemplates/button"
                           model="[type: 'submit', action: '_action_edit', icon: 'icon-edit', content: 'Edit']"/>
                 <g:if test="${ldapRoleMappingInstance}">
-                    <g:render template="/user/embeddedButton"
-                              model="[type: 'submit',
-                                      action: '_action_delete',
-                                      icon: 'icon-trash',
-                                      content: 'Delete',
-                                      buttonClass: 'btn-danger',
-                                      onClick: 'return confirm(\'Are you sure you want to delete this group?\');']"/>
+                    <button class="btn btn-danger" type="submit" name="_action_delete"
+                            onclick="deleteMapping(${ldapRoleMappingInstance.id})" style="margin-left:180px">
+                        <i class="icon-trash"></i> Delete
+                    </button>
+                    <g:form name="mdForm_${ldapRoleMappingInstance.id}" method="delete" action="delete"
+                            id="${ldapRoleMappingInstance.id}"/>
                 </g:if>
             </div>
         </div>

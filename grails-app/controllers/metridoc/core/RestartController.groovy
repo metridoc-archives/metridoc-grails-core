@@ -38,11 +38,9 @@ class RestartController {
         workDirectoryFile.delete()
         workDirectoryFile << workDirectory
 
-        [
-                linkToCheck: createLink(controller: "state"),
+        [linkToCheck: createLink(controller: "state"),
                 homeLink: createLink(controller: "home"),
-                triggerRestartLink: createLink(action: "triggerCommand")
-        ]
+                triggerRestartLink: createLink(action: "triggerCommand")]
     }
 
     def triggerCommand() {

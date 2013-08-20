@@ -17,27 +17,11 @@
 <%@ page import="metridoc.core.ShiroRole; metridoc.core.LdapRoleMapping" %>
 
 <div class="fieldcontain ${hasErrors(bean: ldapRoleMappingInstance, field: 'name', 'error')} required">
-    <label for="name">
-        <g:message default="Group Name"/>
-        <span class="required-indicator">*</span>
-    </label>
-    <g:textField name="name" required="" value="${ldapRoleMappingInstance?.name}"/>
+    <g:render template="/commonTemplates/nameLabel"
+              model="${[disabled: false, target: ldapRoleMappingInstance, required: true, category: 'Group Name']}"/>
 </div>
 
-
 <div class="fieldcontain ${hasErrors(bean: ldapRoleMappingInstance, field: 'roles', 'error')} ">
-    <label for="roles">
-        <g:message default="Roles"/>
-    </label>
-    <select name="roles" multiple="multiple" size="5">
-        <g:each in="${ShiroRole.list()}" var="shiroRole">
-            <g:if test="${ldapRoleMappingInstance?.roles?.contains(shiroRole)}">
-                <option value="${shiroRole.name}" selected="selected">${shiroRole.name}</option>
-            </g:if>
-            <g:else>
-                <option value="${shiroRole.name}">${shiroRole.name}</option>
-            </g:else>
-        </g:each>
-    </select>
+    <g:render template="/commonTemplates/roles" model="${[disabled: false, target: ldapRoleMappingInstance]}"/>
 </div>
 

@@ -9,9 +9,7 @@ class LdapSettingsController {
     def encryptionService
 
     def index() {
-
         chain(controller: "ldapRole", action: "index")
-
     }
 
     def save() {

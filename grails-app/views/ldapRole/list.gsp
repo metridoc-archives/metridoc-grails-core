@@ -19,15 +19,15 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <md:report>
     <g:hiddenField name="previousExpanded" id="previousExpanded" value="${previousExpanded}"/>
-    <g:render template="/user/tabs"/>
+    <g:render template="/commonTemplates/tabs"/>
 
     <div style="border-bottom: 1px solid #ddd">
         <a href="#" onclick="changeIcon('groupList')">
-            <h1 style="font-size:14px; color:black">LDAP Groups&nbsp<i id="cGroupList"
-                                                                       data-toggle="collapse" data-target="#groupList"
-                                                                       class="icon-circle-arrow-up"></i></h1>
-
+            <h1 style="font-size:14px; color:black">LDAP Groups&nbsp
+                <i id="cGroupList" data-toggle="collapse" data-target="#groupList" class="icon-circle-arrow-up"></i>
+            </h1>
         </a>
+
         <span id="sGroupList" style="margin-left: 25px">Create and view LDAP groups</span>
 
         <div id="groupList" class="collapse in">
@@ -38,11 +38,11 @@
 
     <div style="border-bottom: 1px solid #ddd">
         <a href="#" onclick="changeIcon('ldapConfig')">
-            <h1 style="font-size:14px; color:black">LDAP Config&nbsp<i id="cLdapConfig"
-                                                                       data-toggle="collapse" data-target="#ldapConfig"
-                                                                       class="icon-circle-arrow-down"></i></h1>
-
+            <h1 style="font-size:14px; color:black">LDAP Config&nbsp
+                <i id="cLdapConfig" data-toggle="collapse" data-target="#ldapConfig" class="icon-circle-arrow-down"></i>
+            </h1>
         </a>
+
         <span id="sLdapConfig" style="margin-left: 25px">Change LDAP configuration</span>
 
         <div id="ldapConfig" class="collapse">

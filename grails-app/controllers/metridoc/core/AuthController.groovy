@@ -158,5 +158,4 @@ class AuthController {
         // For now, redirect back to the home page.
         redirect(controller: "home")
     }
-
 }

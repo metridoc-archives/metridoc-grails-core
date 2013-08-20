@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page import="metridoc.core.ShiroRole" %>
 <md:report>
-    <g:render template="/user/tabs"/>
+    <g:render template="/commonTemplates/tabs"/>
     <tmpl:manageReportHeaders/>
     <strong>Controller Specific Security:</strong>
     <br>
@@ -87,7 +87,7 @@
                         </div>
                     </div>
 
-                    <g:render template="/user/roles" model="[selectedRoles: controllerDetails.roles]"/>
+                    <g:render template="/commonTemplates/roles" model="[selectedRoles: controllerDetails.roles]"/>
                     <div class="controls">
                         <button class="btn" type="submit" onmouseover="getControllerNames()">
                             <i class="icon-edit"></i> Update

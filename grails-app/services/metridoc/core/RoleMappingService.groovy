@@ -95,7 +95,6 @@ class RoleMappingService {
         def env
         def ctx
 
-
         try {
             url = ldapSettings.server
             searchBase = ldapSettings.rootDN

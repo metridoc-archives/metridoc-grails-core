@@ -35,7 +35,6 @@ class RoleController {
         params.max = max
         def roleCount = ShiroRole.count()
         def showPagination = roleCount > max
-
         [
                 shiroRoleInstanceList: ShiroRole.list(params),
                 shiroRoleInstanceTotal: roleCount,
@@ -44,7 +43,6 @@ class RoleController {
     }
 
     def create() {
-
         [shiroRoleInstance: new ShiroRole(params)]
     }
 
@@ -82,7 +80,6 @@ class RoleController {
             chain(controller: "manageAccess", action: "list", previousExpanded: 'roleList')
             return
         }
-
         [shiroRoleInstance: shiroRoleInstance]
     }
 
@@ -94,7 +91,6 @@ class RoleController {
             chain(controller: "manageAccess", action: "list", previousExpanded: 'roleList')
             return
         }
-
         [shiroRoleInstance: shiroRoleInstance]
     }
 
@@ -136,6 +132,4 @@ class RoleController {
         session.setAttribute("previousExpanded", "roleList")
         chain(controller: "manageAccess", action: "index", id: shiroRoleInstance.id, previousExpanded: 'roleList')
     }
-
-
 }

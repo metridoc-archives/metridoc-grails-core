@@ -1,6 +1,6 @@
 <ul class="nav nav-tabs">
 
-    <g:render template="/user/tabLabel"
+    <g:render template="/commonTemplates/tabLabel"
               model="[controllerName: controllerName,
                       actionName: actionName,
                       linkController: 'manageAccess',
@@ -9,7 +9,7 @@
                       icon: 'icon-group']"/>
 
     <g:render
-            template="/user/tabLabel"
+            template="/commonTemplates/tabLabel"
             model="[controllerName: controllerName,
                     actionName: actionName,
                     linkController: 'manageConfig',
@@ -17,7 +17,7 @@
                     linkText: 'General Settings',
                     icon: 'icon-cog']"/>
     <g:render
-            template="/user/tabLabel"
+            template="/commonTemplates/tabLabel"
             model="[controllerName: controllerName,
                     actionName: actionName,
                     linkController: 'LdapSettings',

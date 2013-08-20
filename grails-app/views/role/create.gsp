@@ -17,7 +17,7 @@
 <%@ page import="metridoc.core.ShiroRole" %>
 <md:report>
 
-    <g:render template="/user/tabs"/>
+    <g:render template="/commonTemplates/tabs"/>
 
     <g:form class="form-horizontal" action="save">
         <div class="control-group">

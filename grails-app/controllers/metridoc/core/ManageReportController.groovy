@@ -1,7 +1,6 @@
 package metridoc.core
 
 import grails.web.RequestParameter
-import org.apache.shiro.SecurityUtils
 
 class ManageReportController {
 
@@ -15,11 +14,10 @@ class ManageReportController {
 
     def index() {
         def oldSearch = params.searchFilter
-        [
-                controllerDetails: manageReportService.controllerDetails,
+
+        [controllerDetails: manageReportService.controllerDetails,
                 shiroFilters: grailsApplication.config.security.shiro.filter.filterChainDefinitions,
-                searchFilter: oldSearch
-        ]
+                searchFilter: oldSearch]
     }
 
     def show(@RequestParameter('id') String controllerName) {

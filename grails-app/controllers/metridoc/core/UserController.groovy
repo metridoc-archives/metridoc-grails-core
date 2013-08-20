@@ -37,12 +37,11 @@ class UserController {
         params.max = max
         def userCount = ShiroUser.count()
         def showPagination = userCount > max
-        [
-                currentUserName: SecurityUtils.getSubject().getPrincipal(),
+
+        [currentUserName: SecurityUtils.getSubject().getPrincipal(),
                 shiroUserInstanceList: ShiroUser.list(params),
                 shiroUserInstanceTotal: userCount,
-                showPagination: showPagination
-        ]
+                showPagination: showPagination]
     }
 
     def create() {
@@ -86,10 +85,8 @@ class UserController {
             return
         }
 
-        [
-                currentUserName: SecurityUtils.getSubject().getPrincipal(),
-                shiroUserInstance: shiroUserInstance
-        ]
+        [currentUserName: SecurityUtils.getSubject().getPrincipal(),
+                shiroUserInstance: shiroUserInstance]
     }
 
     def edit() {
@@ -102,10 +99,8 @@ class UserController {
             return
         }
 
-        [
-                currentUserName: SecurityUtils.getSubject().getPrincipal(),
-                shiroUserInstance: shiroUserInstance
-        ]
+        [currentUserName: SecurityUtils.getSubject().getPrincipal(),
+                shiroUserInstance: shiroUserInstance]
     }
 
     def update() {
@@ -152,8 +147,6 @@ class UserController {
             params.roles.each { roleName ->
                 addRole(roleName)
             }
-
-
         }
 
         if (!shiroUserInstance.save(flush: true)) {

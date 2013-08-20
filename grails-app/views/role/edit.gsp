@@ -17,7 +17,7 @@
 <%@ page import="metridoc.core.ShiroRole" %>
 <md:report>
 
-    <g:render template="/user/tabs"/>
+    <g:render template="/commonTemplates/tabs"/>
 
 
     <div id="edit-shiroRole" class="content scaffold-edit" role="main">

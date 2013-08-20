@@ -24,9 +24,7 @@ class ProfileController {
             flash.message = params.flashMessage
         }
 
-        [
-                shiroUserInstance: shiroUserInstance
-        ]
+        [shiroUserInstance: shiroUserInstance]
     }
 
     def update() {
@@ -92,5 +90,4 @@ class ProfileController {
             user.setPasswordHash(new Sha256Hash(password).toHex())
         }
     }
-
 }

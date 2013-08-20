@@ -12,7 +12,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <md:report>
     <g:hiddenField name="previousExpanded" id="previousExpanded" value="${previousExpanded}"/>
-    <g:render template="/user/tabs"/>
+    <g:render template="/commonTemplates/tabs"/>
 
     <div style="border-bottom: 1px solid #ddd">
         <a href="#" onclick="collapseOthers('userList')">
@@ -34,7 +34,7 @@
                                                                         class="icon-circle-arrow-down"></i></h1>
 
         </a>
-        <span id="sRoleList" style="margin-left: 25px">Add or delete roles</span>
+        <span id="sRoleList" style="margin-left: 25px">Add roles</span>
 
         <div id="roleList" class="collapse">
             <g:render template="/role/roleList"/>
