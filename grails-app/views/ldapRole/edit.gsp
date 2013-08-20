@@ -17,20 +17,18 @@
 <%@ page import="metridoc.core.LdapRoleMapping" %>
 <md:report>
 
-    <g:render template="/user/tabs"/>
+    <g:render template="/commonTemplates/tabs"/>
 
     <g:form method="post" class="form-horizontal">
         <g:hiddenField name="id" value="${ldapRoleMappingInstance?.id}"/>
         <g:hiddenField name="version" value="${ldapRoleMappingInstance?.version}"/>
 
         <div class="control-group">
-            <tmpl:groupName/>
-            <tmpl:roles/>
-            <div class="controls">
-                <button class="btn" type="submit" name="_action_update">
-                    <i class="icon-edit"></i> Update
-                </button>
-            </div>
+            <g:render template="/commonTemplates/nameLabel"
+                      model="${[disabled: true, target: ldapRoleMappingInstance, required: true, category: 'Group Name']}"/>
+            <g:render template="/commonTemplates/roles" model="${[target: ldapRoleMappingInstance]}"/>
+            <g:render template="/commonTemplates/button"
+                      model="${[content: 'Update', icon: 'icon-edit', action: '_action_update']}"/>
         </div>
     </g:form>
 </md:report>

@@ -26,8 +26,7 @@ class ManageConfigController {
             workDirectory = workDirectoryFileExistsAndHasText ? generalSettingsService.workDirectoryFile.text : null
         }
 
-        [
-                command: command,
+        [command: command,
                 workDirectory: workDirectory,
                 javaCommand: generalSettingsService.javaCommand(),
                 javaVmArguments: generalSettingsService.javaVmArguments(),
@@ -35,12 +34,8 @@ class ManageConfigController {
                 dataSourceUrl: dataSource.connection.metaData.getURL(),
                 applicationName: grailsApplication.mergedConfig.metridoc.app.name,
                 shiroFilters: grailsApplication.config.security.shiro.filter.filterChainDefinitions,
-                metridocConfigExists: commonService.metridocConfig.exists()
-        ]
-
-
+                metridocConfigExists: commonService.metridocConfig.exists()]
     }
-
 
     def upload() {
         String fileContent = request.getFile("metridocConfig").inputStream.getText(CommonService.DEFAULT_ENCODING)
@@ -75,6 +70,4 @@ class ManageConfigController {
         flash.alerts << "${config} does not exist"
         redirect(action: "index")
     }
-
-
 }

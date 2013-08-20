@@ -7,7 +7,7 @@
 --%>
 
 <md:report module="codeMirrorShell">
-    <g:render template="/user/tabs"/>
+    <g:render template="/commonTemplates/tabs"/>
     <g:form action="run" class="form-horizontal">
         <div class="control-group">
 

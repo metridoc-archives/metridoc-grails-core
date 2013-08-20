@@ -37,5 +37,4 @@ class NotificationEmailsService {
             log.warn("Could not send the email with subject [$subject] since mail is not set up correctly")
         }
     }
-
 }

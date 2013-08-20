@@ -83,7 +83,7 @@
                         </div>
                     </div>
 
-                    <g:render template="/user/roles" model="[selectedRoles: controllerDetails.roles]"/>
+                    <g:render template="/commonTemplates/roles" model="[selectedRoles: controllerDetails.roles]"/>
                     <div class="controls">
                         <button class="btn" type="submit" onmouseover="getControllerNames()">
                             <i class="icon-edit"></i> Update
