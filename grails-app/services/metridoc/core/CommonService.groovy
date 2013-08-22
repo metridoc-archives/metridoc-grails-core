@@ -28,7 +28,7 @@ class CommonService {
     }
 
     String getMetridocHome() {
-        def metridocHome = grailsApplication.mergedConfig.metridoc.home
+        def metridocHome = grailsApplication.config.metridoc.home
         metridocHome ?: DEFAULT_METRIDOC_HOME
     }
 }

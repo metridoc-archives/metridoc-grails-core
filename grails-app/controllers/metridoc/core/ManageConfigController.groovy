@@ -16,6 +16,7 @@ class ManageConfigController {
         role(name: "ROLE_ADMIN")
     }
 
+    @SuppressWarnings("GroovyVariableNotAssigned")
     def index() {
         def startFileExistsAndHasText = generalSettingsService.fileExists(generalSettingsService.startFile)
         def workDirectoryFileExistsAndHasText = generalSettingsService.fileExists(generalSettingsService.workDirectoryFile)
@@ -32,7 +33,7 @@ class ManageConfigController {
                 javaVmArguments: generalSettingsService.javaVmArguments(),
                 mainCommand: generalSettingsService.mainCommand(),
                 dataSourceUrl: dataSource.connection.metaData.getURL(),
-                applicationName: grailsApplication.mergedConfig.metridoc.app.name,
+                applicationName: grailsApplication.config.metridoc.app.name,
                 shiroFilters: grailsApplication.config.security.shiro.filter.filterChainDefinitions,
                 metridocConfigExists: commonService.metridocConfig.exists()]
     }
