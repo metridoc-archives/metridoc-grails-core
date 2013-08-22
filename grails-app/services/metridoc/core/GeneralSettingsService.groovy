@@ -17,7 +17,7 @@ class GeneralSettingsService {
     }
 
     File getMetridocHomeFile(String fileName) {
-        def metridocHome = grailsApplication.mergedConfig.metridoc.home
+        def metridocHome = grailsApplication.config.metridoc.home
         return new File("$metridocHome${SystemUtils.FILE_SEPARATOR}${fileName}")
     }
 
