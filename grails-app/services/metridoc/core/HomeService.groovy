@@ -54,8 +54,7 @@ class HomeService {
             for (controller in categoryControllers) {
                 if (controller.validity.equals("INVALID")) {
                     badLinks.add(controller)
-                    break;
-                } else if (controller.validity..equals("UNSET")) {
+                } else if (controller.validity.equals("UNSET")) {
                     def controllerName = controller.controllerPath.replace("/index", "")
                     def url = grailsLinkGenerator.link(controller: controllerName, action: 'index', absolute: true)
                     if (!testIfControllerIsValid(url)) {
