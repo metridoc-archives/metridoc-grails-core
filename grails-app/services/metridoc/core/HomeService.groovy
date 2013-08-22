@@ -6,17 +6,42 @@ class HomeService {
 
     static final HOME_DATA_FIELD = "homePage"
     def grailsApplication
-
+    def grailsLinkGenerator
 
 
 
 
     def getControllersByCategory() {
         def categoryMap = [:]
-        def categoryList = AppCategory.list().sort() { it.adminOnly == true }
+        def categoryList = AppCategory.list().sort() { it.adminOnly }
         def categoryControllers
+        def badLinks = new ArrayList()
         for (cat in categoryList) {
             categoryControllers = ControllerData.where { category == cat }.list()
+            for (controller in categoryControllers) {
+                if (controller.validity == ControllerData.IsValid.INVALID) {
+                    badLinks.add(controller)
+                    break;
+                } else if (controller.validity == ControllerData.IsValid.UNSET) {
+                    def controllerName = controller.controllerPath.replace("/index", "")
+                    def url = grailsLinkGenerator.link(controller: controllerName, action: 'index', absolute: true)
+                    URL u = new URL(url)
+                    HttpURLConnection con = (HttpURLConnection) u.openConnection()
+                    con.setRequestMethod("GET");
+                    con.connect();
+                    if (con.getResponseCode() != 200) {
+                        badLinks.add(controller)
+                        controller.validity = ControllerData.IsValid.INVALID
+                        controller.save()
+                    } else {
+                        controller.validity = ControllerData.IsValid.VALID
+                        controller.save()
+                    }
+                }
+            }
+            for (controller in badLinks) {
+                categoryControllers.remove(controller)
+            }
             categoryMap.put(cat, categoryControllers)
         }
         return categoryMap
@@ -63,7 +88,8 @@ class HomeService {
                     } else {
                         category = "Available Applications"
                     }
-                    app = new ControllerData(appName: title, appDescription: description, controllerPath: path, category: AppCategory.findByName(category), homePage: true)
+                    app = new ControllerData(appName: title, appDescription: description, controllerPath: path, validity: ControllerData.IsValid.UNSET,
+                            category: AppCategory.findByName(category), homePage: true)
                     log.debug "Adding controller Data for ${controller.naturalName}, category ${category}"
                     app.save()
                 } else {
