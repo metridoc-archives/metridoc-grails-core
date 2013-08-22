@@ -3,60 +3,41 @@ package metridoc.core
 import javax.naming.Context
 import javax.naming.directory.InitialDirContext
 import javax.naming.directory.SearchControls
+import javax.naming.directory.SearchResult
 
 class RoleMappingService {
 
+    private InitialDirContext _ldapContext
 
-    def userGroupsAsList(String targetUser) {
-
-/**
- * Created with IntelliJ IDEA on 7/18/13
- * @author Tommy Barker
- */
-        def ldapSettings = LdapData.list()
-        if (ldapSettings) ldapSettings = ldapSettings.get(0)
-        else return null
-        def config = new ConfigSlurper().parse(new File("${System.getProperty("user.home")}/.metridoc/MetridocConfig.groovy").toURI().toURL())
-        def url
-        def searchBase
-        def username
-        def pass
-        def searchScope
-        def usernameAttribute
-        SearchControls searchControls
-        def env
-        def ctx
-
-        try {
-            url = ldapSettings.server
-            searchBase = ldapSettings.rootDN
-            username = ldapSettings.userSearchBase
-            pass = ldapSettings.unencryptedPassword
-            searchScope = 2
-            usernameAttribute = ldapSettings.userSearchFilter
-            searchControls = new SearchControls()
-            searchControls.setSearchScope(searchScope)
-
-            env = new Hashtable()
-            env[Context.INITIAL_CONTEXT_FACTORY] = "com.sun.jndi.ldap.LdapCtxFactory"
-// Non-anonymous access for the search.
-            env[Context.SECURITY_AUTHENTICATION] = "simple"
-            env[Context.SECURITY_PRINCIPAL] = username
-            env[Context.SECURITY_CREDENTIALS] = pass
-            env[Context.PROVIDER_URL] = url
-
-            ctx = new InitialDirContext(env)
-        } catch (Exception ex) {
-            return null
+    LdapData getLdapData() {
+        def ldapDataList = LdapData.list()
+        if (ldapDataList) {
+            if (ldapDataList.size() > 1) {
+                log.warn("There are multiple ldap settings stored, this should not happen.  Using ${ldapDataList.id}")
+            }
         }
+
+        ldapDataList ? ldapDataList.get(0) : null
+    }
+
+    List userGroupsAsList(String targetUser) {
+
+        if (!canConnectToLdap) return []
+
+        def searchBase = ldapData.rootDN
+        def usernameAttribute = ldapData.getUserSearchFilter()
+        def searchScope = 2
+        def searchControls = new SearchControls()
+        searchControls.setSearchScope(searchScope)
+
+        def ctx = ldapContext
         String filter = "($usernameAttribute=${targetUser})"
 
         def result = ctx.search(searchBase, filter, searchControls)
-//groups
         def groups = new ArrayList()
-        result.each {
-            it.getAttributes().get("memberOf").all.each {
-                def getCN = it.split(",")[0].split("CN=")[1]
+        result.each {SearchResult searchResult ->
+            searchResult.getAttributes().get("memberOf").all.each {String group ->
+                def getCN = group.split(",")[0].split("CN=")[1]
                 groups.add(getCN)
             }
         }
@@ -65,7 +46,6 @@ class RoleMappingService {
 
     def rolesByGroups(groups) {
         def roles = new ArrayList()
-        def roleName
         def query = LdapRoleMapping.where {
             groups.contains(name)
         }.list()
@@ -80,49 +60,18 @@ class RoleMappingService {
         return roles
     }
 
-    def allGroups() {
-        def ldapSettings = LdapData.list()
-        if (ldapSettings) ldapSettings = ldapSettings.get(0)
-        else return null
-        def config = new ConfigSlurper().parse(new File("${System.getProperty("user.home")}/.metridoc/MetridocConfig.groovy").toURI().toURL())
-        def url
-        def searchBase
-        def username
-        def pass
-        def searchScope
-        def usernameAttribute
-        SearchControls searchControls
-        def env
-        def ctx
+    Set allGroups() {
+        if (!canConnectToLdap) return []
 
-        try {
-            url = ldapSettings.server
-            searchBase = ldapSettings.rootDN
-            username = ldapSettings.userSearchBase
-            pass = ldapSettings.unencryptedPassword
-            searchScope = 2
-            usernameAttribute = ldapSettings.userSearchFilter
-            searchControls = new SearchControls()
-            searchControls.setSearchScope(searchScope)
+        def ldapSettings = ldapData
+        def searchBase = ldapSettings.rootDN
+        def searchScope = 2
+        def searchControls = new SearchControls()
+        searchControls.setSearchScope(searchScope)
 
-            env = new Hashtable()
-            env[Context.INITIAL_CONTEXT_FACTORY] = "com.sun.jndi.ldap.LdapCtxFactory"
-// Non-anonymous access for the search.
-            env[Context.SECURITY_AUTHENTICATION] = "simple"
-            env[Context.SECURITY_PRINCIPAL] = username
-            env[Context.SECURITY_CREDENTIALS] = pass
-            env[Context.PROVIDER_URL] = url
-
-
-            ctx = new InitialDirContext(env)
-        } catch (Exception ex) {
-            return null
-        }
-
-        String[] attrIDs = { "cn" };
-        def allGroups = new ArrayList()
+        def allGroups = [] as Set
         def filter = "(objectclass=group)"
-        def result = ctx.search(searchBase, filter, searchControls);
+        def result = ldapContext.search(searchBase, filter, searchControls);
         result.each {
             def attrs = it.getAttributes();
             allGroups.add(attrs.get("cn").toString().replace("cn: ", ""));
@@ -131,6 +80,38 @@ class RoleMappingService {
     }
 
     def isValidGroup(groupName) {
-        return allGroups()?.contains(groupName)
+        return allGroups().contains(groupName)
+    }
+
+    InitialDirContext getLdapContext() {
+
+        if (_ldapContext) {
+            return _ldapContext
+        }
+
+        def ldapSettings = ldapData
+        if (!ldapSettings) return null
+
+        def env = [] as Hashtable
+        env[Context.INITIAL_CONTEXT_FACTORY] = "com.sun.jndi.ldap.LdapCtxFactory"
+        env[Context.SECURITY_AUTHENTICATION] = "simple"
+        env[Context.SECURITY_PRINCIPAL] = ldapSettings.managerDN
+        env[Context.SECURITY_CREDENTIALS] = ldapSettings.unencryptedPassword
+        env[Context.PROVIDER_URL] = ldapSettings.server
+
+        return new InitialDirContext(env)
+    }
+
+    boolean isCanConnectToLdap() {
+        try {
+            if (ldapContext) {
+                return true
+            }
+        }
+        catch (Exception ignored) {
+            return false
+        }
+
+        return false
     }
 }

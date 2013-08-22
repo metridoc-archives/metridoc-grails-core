@@ -39,19 +39,19 @@ class LdapRoleController {
     }
 
     def list() {
-        def ldapData
-        if (LdapData.list().size() != 0) {
-            ldapData = LdapData.list().get(0)
-        } else {
-            ldapData = new LdapData()
+        if(!roleMappingService.canConnectToLdap) {
+            flash.alerts << "Cannot connect to the LDAP server, either it has not been configured or it has been" +
+                    " configured incorrectly"
         }
+
+        def ldapData = roleMappingService.ldapData ?: new LdapData()
 
         def max = Math.min(params.max ? params.int('max') : 10, 100)
         params.max = max
         def groupCount = LdapRoleMapping.count()
         def showPagination = groupCount > max
 
-        def previousExpanded = ""
+        def previousExpanded
         if (params.previousExpanded != 'clear') {
             previousExpanded = session.getAttribute("previousExpanded")
         } else {
@@ -64,7 +64,7 @@ class LdapRoleController {
                 ldapRoleMappingInstanceList: LdapRoleMapping.list(params),
                 ldapRoleMappingInstanceTotal: groupCount,
                 showPagination: showPagination,
-                userGroups: roleMappingService.userGroupsAsList(SecurityUtils.getSubject().getPrincipal()) ?: []
+                userGroups: roleMappingService.userGroupsAsList(SecurityUtils.getSubject().getPrincipal() as String) ?: []
         ]
     }
 
@@ -74,12 +74,18 @@ class LdapRoleController {
     }
 
     def save() {
+        if(!roleMappingService.canConnectToLdap) {
+            flash.alerts << "Mapping cannot be saved until a connection to an LDAP server can be established"
+            redirect(action: "list")
+            return
+        }
+
         def groupname = params.name
         if (groupname == null || groupname == EMPTY) {
             flash.alert = "groupname has to be provided"
             render(view: "/ldapRole/list")
         } else if (!roleMappingService.isValidGroup(groupname)) {
-            flash.alert = "Not a valid group name!"
+            flash.alert = "The group name ${groupname} does not exist in the configured LDAP instance"
             redirect(action: "list")
             return
         }
@@ -88,9 +94,9 @@ class LdapRoleController {
         ldapRoleMappingInstance.with {
             roles = []
 
-            def addRole = { roleName ->
+            def addRole = { String roleName ->
                 log.debug("adding role ${roleName} for user ${ldapRoleMappingInstance}")
-                def role = ShiroRole.findByName(roleName) {}
+                def role = ShiroRole.findByName(roleName)
                 roles.add(role as ShiroRole)
             }
 
@@ -123,7 +129,7 @@ class LdapRoleController {
         }
 
         [ldapRoleMappingInstance: ldapRoleMappingInstance,
-                userGroups: roleMappingService.userGroupsAsList(SecurityUtils.getSubject().getPrincipal())] ?: []
+                userGroups: roleMappingService.userGroupsAsList(SecurityUtils.getSubject().getPrincipal() as String)] ?: []
     }
 
     def edit() {
@@ -139,7 +145,6 @@ class LdapRoleController {
 
     def update() {
 
-        def id = params.id
         def ldapRoleMappingInstance = LdapRoleMapping.get(params.id)
         if (!ldapRoleMappingInstance) {
             redirect(action: "list")
@@ -161,7 +166,7 @@ class LdapRoleController {
             roles = []
             def addRole = { roleName ->
                 log.debug("adding role ${roleName} for user ${ldapRoleMappingInstance}")
-                def role = ShiroRole.findByName(roleName) {}
+                def role = ShiroRole.findByName(roleName as String)
                 roles.add(role as ShiroRole)
             }
             def isAString = params.roles instanceof String
@@ -195,12 +200,10 @@ class LdapRoleController {
             ldapRoleMappingInstance.delete(flush: true)
             flash.info = "Group ${ldapRoleMappingInstance.name} deleted"
             redirect(action: "list")
-            return
         }
         catch (DataIntegrityViolationException e) {
             log.error("error occurred trying to delete group ${ldapRoleMappingInstance}", e)
             redirect(action: "show", id: params.id)
-            return
         }
     }
 }

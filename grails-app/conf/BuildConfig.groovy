@@ -52,22 +52,12 @@ grails.project.dependency.resolution = {
 
     //standard jar maven dependencies
     dependencies {
-        //TEMPLATE_METRIDOC_JOB_CORE
-        compile("com.googlecode.metridoc:metridoc-job-core:0.5.RC5")
-        //TEMPLATE_METRIDOC_JOB_CORE
-        //used for testing camel routes
-        test("org.apache.camel:camel-test:2.11.0")
-        //by default metridoc is tested on mysql
         compile("mysql:mysql-connector-java:5.1.20")
         compile('org.jasypt:jasypt:1.9.0')
-
+        compile('com.google.guava:guava:13.0.1')
     }
 
     plugins {
-        compile ":database-session:1.2.1"
-        compile ":job-runner:0.4.1"
-        compile ":external-config-reload:1.2.2"
-        compile ":plugin-config:0.1.5"
         runtime ":twitter-bootstrap:2.3.2"
         runtime ":mail:1.0.1"
         runtime ":hibernate:$grailsVersion"
