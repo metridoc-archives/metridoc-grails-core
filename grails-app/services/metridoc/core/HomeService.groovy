@@ -36,9 +36,9 @@ class HomeService {
 
     def changeControllerValidity(ControllerData controller, boolean isValid) {
         if (!isValid) {
-            controller.validity = ControllerData.IsValid.INVALID
+            controller.validity = "INVALID"
         } else {
-            controller.validity = ControllerData.IsValid.VALID
+            controller.validity = "VALID"
         }
         controller.save()
     }
@@ -52,10 +52,10 @@ class HomeService {
         for (cat in categoryList) {
             categoryControllers = ControllerData.where { category == cat }.list()
             for (controller in categoryControllers) {
-                if (controller.validity.getValue().equals("INVALID")) {
+                if (controller.validity.equals("INVALID")) {
                     badLinks.add(controller)
                     break;
-                } else if (controller.validity.getValue().equals("UNSET")) {
+                } else if (controller.validity..equals("UNSET")) {
                     def controllerName = controller.controllerPath.replace("/index", "")
                     def url = grailsLinkGenerator.link(controller: controllerName, action: 'index', absolute: true)
                     if (!testIfControllerIsValid(url)) {
