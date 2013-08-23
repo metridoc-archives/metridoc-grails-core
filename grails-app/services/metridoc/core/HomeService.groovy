@@ -126,8 +126,5 @@ class HomeService {
         grailsApplication.controllerClasses.each { GrailsClass controller ->
             addControllerData(controller)
         }
-        def dummy = new ControllerData(appName: "Dummy", appDescription: "Dummy", controllerPath: "Dummy/index", validity: "UNSET",
-                category: AppCategory.findByName("Available Applications"), homePage: true)
-        dummy.save()
     }
 }
