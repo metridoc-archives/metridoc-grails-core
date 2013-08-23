@@ -106,7 +106,7 @@ class HomeService {
                 } else {
                     category = "Available Applications"
                 }
-                app = new ControllerData(appName: title, appDescription: description, controllerPath: path, validity: ControllerData.IsValid.UNSET,
+                app = new ControllerData(appName: title, appDescription: description, controllerPath: path, validity: "UNSET",
                         category: AppCategory.findByName(category), homePage: true)
                 log.debug "Adding controller Data for ${controller.naturalName}, category ${category}"
                 app.save()
@@ -126,7 +126,7 @@ class HomeService {
         grailsApplication.controllerClasses.each { GrailsClass controller ->
             addControllerData(controller)
         }
-        def dummy = new ControllerData(appName: "Dummy", appDescription: "Dummy", controllerPath: "Dummy/index", validity: ControllerData.IsValid.UNSET,
+        def dummy = new ControllerData(appName: "Dummy", appDescription: "Dummy", controllerPath: "Dummy/index", validity: "UNSET",
                 category: AppCategory.findByName("Available Applications"), homePage: true)
         dummy.save()
     }
