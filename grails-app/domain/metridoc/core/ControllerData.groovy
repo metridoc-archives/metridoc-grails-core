@@ -4,7 +4,14 @@ class ControllerData {
 
     static belongsTo = [category: AppCategory]
     enum IsValid {
-        UNSET, VALID, INVALID
+        UNSET("UNSET"), VALID("VALID"), INVALID("INVALID")
+        final String value
+
+        IsValid(String value) { this.value = value }
+
+        String toString() { value }
+
+        String getKey() { name() }
     }
     String controllerPath
     String appName
