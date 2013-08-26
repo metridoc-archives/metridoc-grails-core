@@ -7,9 +7,10 @@ class ControllerData {
     String appName
     String appDescription
     Boolean homePage = false
+    String validity
     static constraints = {
         controllerPath(nullable: false, blank: false, unique: true)
-        appName(nullable: false, blank: false)
+        appName(nullable: false, blank: false, unique: true)
         appDescription(nullable: false, blank: false)
         category(nullable: false)
     }
