@@ -7,7 +7,7 @@ class MetridocCoreBootStrap {
 
     def init = { servletContext ->
         initAuthService.init()
-        homeService.bootStrapApplications()
+        homeService.addApplicationsAndCategories()
 
         //Make dummy LdapRoleMappings for testing
         def adminGroup = new LdapRoleMapping(name: "Administration")
