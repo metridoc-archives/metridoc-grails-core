@@ -115,7 +115,7 @@ class HomeService {
         }
     }
 //Uses log.info to confirm what categories and applications are being added. feel free to comment out
-    def bootStrapApplications() {
+    def addApplicationsAndCategories() {
 
         //Must add categories by hand
         def adminOnly = new CategoryFeatures("Administration", "icon-cog", true)
