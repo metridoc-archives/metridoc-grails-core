@@ -9,7 +9,7 @@ class LdapData {
     String userSearchBase
     String userSearchFilter
     String managerDN
-    String groupSearch = "NOT USED YET"
+    String groupSearchBase = "NOT USED YET"
     Boolean encryptStrong = true
     String encryptedPassword
 
