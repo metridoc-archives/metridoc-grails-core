@@ -33,7 +33,7 @@ class HomeService {
             def info = new ControllerInfo()
             info.title = dataField.getAt("title") ?: "${controller.naturalName}"
             info.description = dataField.getAt("description") ?: """No Description"""
-            info.link = grailsLinkGenerator.link(controller: controller.name, action: "index")
+            info.link = grailsLinkGenerator.link(controller: controller.name, action: "index", absolute: false)
 
             def category
             if (dataField["adminOnly"] != null) {
