@@ -7,6 +7,10 @@ import org.codehaus.groovy.grails.web.mapping.LinkGenerator
 class HomeService {
 
     static final HOME_DATA_FIELD = "homePage"
+    def categories = [
+            admin: new CategoryFeatures(iconName: "icon-cog", appName: "Administration", adminOnly: true),
+            application: new CategoryFeatures(iconName: "icon-bar-chart", appName: "Available Applications", adminOnly: false)
+    ]
     def grailsApplication
     LinkGenerator grailsLinkGenerator
 
@@ -14,127 +18,44 @@ class HomeService {
         String appName
         String iconName
         boolean adminOnly
-
-
-        CategoryFeatures(String n, String i, boolean a) {
-            appName = n
-            iconName = i
-            adminOnly = a
-        }
+        List<ControllerInfo> controllerInfo = []
     }
 
-    def testIfControllerIsValid(String url) {
-        URL u = new URL(url)
-        HttpURLConnection con = (HttpURLConnection) u.openConnection()
-        //noinspection GroovyTrivialIf
-        if (con.getResponseCode() != 200) {
-            return false
-        } else {
-            return true
-        }
-    }
-
-    def changeControllerValidity(ControllerData controller, boolean isValid) {
-        if (!isValid) {
-            controller.validity = "INVALID"
-        } else {
-            controller.validity = "VALID"
-        }
-        controller.save()
-    }
-
-
-    def getControllersByCategory() {
-        def categoryMap = [:]
-        def categoryList = AppCategory.list().sort() { it.adminOnly }
-        def categoryControllers
-        def badLinks = new ArrayList()
-        for (cat in categoryList) {
-            categoryControllers = ControllerData.where { category == cat }.list()
-            for (controller in categoryControllers) {
-                if (controller.validity.equals("INVALID")) {
-                    badLinks.add(controller)
-                } else if (controller.validity.equals("UNSET")) {
-                    def controllerName = controller.controllerPath.replace("/index", "")
-                    def url = grailsLinkGenerator.link(controller: controllerName, action: 'index', absolute: true)
-                    if (!testIfControllerIsValid(url)) {
-                        badLinks.add(controller)
-                        changeControllerValidity(controller, false)
-                    } else {
-                        changeControllerValidity(controller, true)
-                    }
-                }
-            }
-            for (controller in badLinks) {
-                categoryControllers.remove(controller)
-            }
-            categoryMap.put(cat, categoryControllers)
-        }
-        return categoryMap
-
-    }
-
-    def addCategories(CategoryFeatures... descriptions) {
-        for (desc in descriptions) {
-            def newCategory = AppCategory.findByName(desc.appName)
-            if (!newCategory) {
-                newCategory = new AppCategory(name: desc.appName, iconName: desc.iconName, adminOnly: desc.adminOnly)
-                log.debug "Adding category ${newCategory.name}"
-                newCategory.save()
-            }
-        }
+    static class ControllerInfo {
+        String title
+        String description
+        String link
     }
 
     def addControllerData(GrailsClass controller) {
+        def dataField = GrailsClassUtils.getStaticFieldValue(controller.clazz, HOME_DATA_FIELD)
+        if (dataField != null) {
+            def info = new ControllerInfo()
+            info.title = dataField.getAt("title") ?: "${controller.naturalName}"
+            info.description = dataField.getAt("description") ?: """No Description"""
+            info.link = grailsLinkGenerator.link(controller: controller.name, action: "index")
 
-        def app = ControllerData.find {
-            appName == "${controller.naturalName}"
-        }
-        log.debug "Couldn't find data for ${controller.naturalName}"
-        if (!app) {
-            def dataField = GrailsClassUtils.getStaticFieldValue(controller.clazz, HOME_DATA_FIELD)
-            if (dataField != null) {
-                def title = dataField.getAt("title") ?: "${controller.naturalName}"
-                def description = dataField.getAt("description") ?: """No Description"""
-                def path = "${controller.name}/index"
-                def category;
-                //CHANGE IF YOU EVER MAKE MORE CATEGORIES
-                //Replace boolean adminOnly in dataField with a string with the category name
-                if (dataField["adminOnly"] != null) {
-                    category = "Administration"
-                } else {
-                    category = "Available Applications"
-                }
-                app = new ControllerData(appName: title, appDescription: description, controllerPath: path, validity: "UNSET",
-                        category: AppCategory.findByName(category), homePage: true)
-                log.debug "Adding controller Data for ${controller.naturalName}, category ${category}"
-                app.save()
-            } else {
-                log.debug "${controller.naturalName} doesn't have home page metadata"
+            def category
+            if (dataField["adminOnly"] != null) {
+                category = categories.admin
             }
+            else {
+                category = categories.application
+            }
+            log.debug "Adding controller Data for ${controller.naturalName}, category ${category}"
+            category.controllerInfo << info
+        }
+        else {
+            log.debug "${controller.naturalName} doesn't have home page metadata"
         }
     }
-//Uses log.info to confirm what categories and applications are being added. feel free to comment out
+
     def addApplicationsAndCategories() {
-
-        //Must add categories by hand
-        def adminOnly = new CategoryFeatures("Administration", "icon-cog", true)
-        def availableApps = new CategoryFeatures("Available Applications", "icon-bar-chart", false)
-
-        addCategories(adminOnly, availableApps)
         grailsApplication.controllerClasses.each { GrailsClass controller ->
             addControllerData(controller)
         }
 
-        def controllerNames = grailsApplication.controllerClasses.collect {it.name}
-        deleteBadLinks(controllerNames)
-    }
-
-    protected static void deleteBadLinks(controllerNames) {
-        ControllerData.list().each { data ->
-            if (!controllerNames.find { data.controllerPath.startsWith(it) }) {
-                data.delete()
-            }
-        }
+        categories.application.controllerInfo = categories.application.controllerInfo.sort {it.title}
+        categories.admin.controllerInfo = categories.admin.controllerInfo.sort {it.title}
     }
 }

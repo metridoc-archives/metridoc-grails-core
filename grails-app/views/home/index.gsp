@@ -25,16 +25,13 @@
             MetriDoc is an extendable platform to view and maintain library statistics and reports.  Please choose an
             application or report below.
         </p>
-        <g:each in="${categories}" var="category">
-            <g:if test="${!category.getKey().adminOnly}">
-                <g:render template="listControllers" model="${[category: category]}"/>
-            </g:if>
-            <g:else>
-                <shiro:hasRole name="ROLE_ADMIN">
-                    <g:render template="listControllers" model="${[category: category]}"/>
-                </shiro:hasRole>
-            </g:else>
-        </g:each>
+
+        <g:render template="listControllers" model="${[category: categories.application]}"/>
+
+        <shiro:hasRole name="ROLE_ADMIN">
+            <g:render template="listControllers" model="${[category: categories.admin]}"/>
+        </shiro:hasRole>
+
     </body>
     </html>
 </md:report>

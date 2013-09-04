@@ -9,6 +9,4 @@ class MetridocCoreBootStrap {
         initAuthService.init()
         homeService.addApplicationsAndCategories()
     }
-    def destroy = {
-    }
 }
