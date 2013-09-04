@@ -125,5 +125,16 @@ class HomeService {
         grailsApplication.controllerClasses.each { GrailsClass controller ->
             addControllerData(controller)
         }
+
+        def controllerNames = grailsApplication.controllerClasses.collect {it.name}
+        deleteBadLinks(controllerNames)
+    }
+
+    protected static void deleteBadLinks(controllerNames) {
+        ControllerData.list().each { data ->
+            if (!controllerNames.find { data.controllerPath.startsWith(it) }) {
+                data.delete()
+            }
+        }
     }
 }
