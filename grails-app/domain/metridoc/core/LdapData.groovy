@@ -26,7 +26,7 @@ class LdapData {
         userSearchFilter(blank: false)
         managerDN(nullable: true, blank: true)
         encryptedPassword(nullable: true, blank: true)
-
+        groupSearchBase(nullable: true)
     }
 
     @SuppressWarnings("UnnecessaryQualifiedReference")
