@@ -4,6 +4,7 @@ import org.apache.shiro.authc.AccountException
 import org.apache.shiro.authc.CredentialsException
 import org.apache.shiro.authc.IncorrectCredentialsException
 import org.apache.shiro.authc.UnknownAccountException
+import org.apache.shiro.authc.UsernamePasswordToken
 
 import javax.naming.AuthenticationException
 import javax.naming.Context
@@ -15,8 +16,9 @@ import javax.naming.directory.SearchControls
  * Simple realm that authenticates users against an LDAP server.
  */
 class ShiroLdapRealm {
-    static authTokenClass = org.apache.shiro.authc.UsernamePasswordToken
+    static authTokenClass = UsernamePasswordToken
     static LOCALHOST_LDAP = "ldap://localhost:389/"
+    public static final int RECURSIVE_SEARCH_SCOPE = 2
     def grailsApplication
     def roleMappingService
 
@@ -24,21 +26,10 @@ class ShiroLdapRealm {
         log.info "Attempting to authenticate ${authToken.username} in LDAP realm..."
         def username = authToken.username
         def password = new String(authToken.password)
-
-
         def appConfig = LdapData.list().get(0)
-        def ldapUrl = appConfig.server ?: [LOCALHOST_LDAP]
-        def searchBase = appConfig.rootDN
-        def searchUser = appConfig.userSearchBase
-        def searchPass = appConfig.unencryptedPassword
-        def searchScope = 2
-        def usernameAttribute = appConfig.userSearchFilter
-        def skipAuthc = appConfig.skipAuthentication
-        def skipCredChk = appConfig.skipCredentialsCheck
-        def allowEmptyPass = appConfig.allowEmptyPasswords
 
         // Skip authentication ?
-        if (skipAuthc) {
+        if (appConfig.skipAuthentication) {
             log.info "Skipping authentication in development mode."
             return username
         }
@@ -54,7 +45,7 @@ class ShiroLdapRealm {
         }
 
         // Allow empty passwords ?
-        if (!allowEmptyPass) {
+        if (!appConfig.allowEmptyPasswords) {
             // Null password is invalid
             if (password == null) {
                 throw new CredentialsException("Null password are not allowed by this realm.")
@@ -68,42 +59,33 @@ class ShiroLdapRealm {
 
         // Accept strings and GStrings for convenience, but convert to
         // a list.
-        if (ldapUrl && !(ldapUrl instanceof Collection)) {
-            ldapUrl = [ldapUrl]
-        }
+        def ldapUrl = appConfig.server
 
         // Set up the configuration for the LDAP search we are about
         // to do.
         def env = new Hashtable()
         env[Context.INITIAL_CONTEXT_FACTORY] = "com.sun.jndi.ldap.LdapCtxFactory"
-        if (searchUser) {
+        if (appConfig.managerDN) {
             // Non-anonymous access for the search.
             env[Context.SECURITY_AUTHENTICATION] = "simple"
-            env[Context.SECURITY_PRINCIPAL] = searchUser
-            env[Context.SECURITY_CREDENTIALS] = searchPass
+            env[Context.SECURITY_PRINCIPAL] = appConfig.managerDN
+            env[Context.SECURITY_CREDENTIALS] = appConfig.unencryptedPassword
         }
 
         // Find an LDAP server that we can connect to.
         def ctx
-        def urlUsed = ldapUrl.find { url ->
-            log.info "Trying LDAP server ${url} ..."
-            env[Context.PROVIDER_URL] = url
+        log.info "Trying to connect to LDAP server ${ldapUrl} ..."
+        env[Context.PROVIDER_URL] = ldapUrl
 
-            // If an exception occurs, log it.
-            try {
-                ctx = new InitialDirContext(env)
-                return true
-            }
-            catch (NamingException e) {
-                if (url != LOCALHOST_LDAP) {
-                    log.error "Could not connect to ${url}: ${e}"
-                }
-                return false
-            }
+        // If an exception occurs, log it.
+        try {
+            ctx = new InitialDirContext(env)
         }
-
-        if (!urlUsed) {
-            def msg = 'No LDAP server available.'
+        catch (NamingException e) {
+            if (ldapUrl != LOCALHOST_LDAP) {
+                log.error "Could not connect to ${ldapUrl}: ${e}"
+            }
+            def msg = 'Could not connect to LDAP server'
             log.warn msg
             throw new org.apache.shiro.authc.AuthenticationException(msg)
         }
@@ -111,16 +93,18 @@ class ShiroLdapRealm {
         // Look up the DN for the LDAP entry that has a 'uid' value
         // matching the given username.
         SearchControls searchControls = new SearchControls()
-        searchControls.setSearchScope(searchScope)
-        String filter = "($usernameAttribute=$username)"
 
-        def result = ctx.search(searchBase, filter, searchControls)
+        searchControls.setSearchScope(RECURSIVE_SEARCH_SCOPE)
+        String filter = "($appConfig.userSearchFilter=$username)"
+
+        def base = "$appConfig.userSearchBase,$appConfig.rootDN"
+        def result = ctx.search(base, filter, searchControls)
         if (!result.hasMore()) {
             throw new UnknownAccountException("No account found for user [${username}]")
         }
 
         // Skip credentials check ?
-        if (skipCredChk) {
+        if (appConfig.skipCredentialsCheck) {
             log.info "Skipping credentials check in development mode."
             return username
         }
@@ -137,10 +121,24 @@ class ShiroLdapRealm {
             new InitialDirContext(env)
             return username
         }
-        catch (AuthenticationException ex) {
+        catch (AuthenticationException ignored) {
             log.info "Invalid password"
             throw new IncorrectCredentialsException("Invalid password for user '${username}'")
         }
+    }
+
+    protected static List getParams(LdapData appConfig) {
+
+        def ldapUrl = appConfig.server ?: [LOCALHOST_LDAP]
+        def searchBase = appConfig.userSearchBase
+        def searchUser = appConfig.rootDN
+        def searchPass = appConfig.unencryptedPassword
+        def searchScope = 2
+        def usernameAttribute = appConfig.userSearchFilter
+        def skipAuthc = appConfig.skipAuthentication
+        def skipCredChk = appConfig.skipCredentialsCheck
+        def allowEmptyPass = appConfig.allowEmptyPasswords
+        [skipAuthc, allowEmptyPass, ldapUrl, searchUser, searchPass, searchScope, usernameAttribute, searchBase, skipCredChk]
     }
 
     def isAdmin(principal) {
@@ -166,7 +164,7 @@ class ShiroLdapRealm {
             return true
         }
 
-        def groups = roleMappingService.userGroupsAsList(principal)
+        def groups = roleMappingService.userGroupsAsList(principal as String)
         if (!groups) return false
         def roles = roleMappingService.rolesByGroups(groups)
         for (role in roleList) {

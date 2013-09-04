@@ -9,6 +9,7 @@ class LdapData {
     String userSearchBase
     String userSearchFilter
     String managerDN
+    String groupSearch = "NOT USED YET"
     Boolean encryptStrong = true
     String encryptedPassword
 
@@ -28,7 +29,11 @@ class LdapData {
 
     }
 
+    @SuppressWarnings("UnnecessaryQualifiedReference")
     String getUnencryptedPassword() {
+        //helps with testing
+        if(!encryptedPassword) return null
+
         if (encryptStrong) {
             StrongTextEncryptor textEncrypt = new StrongTextEncryptor()
             textEncrypt.setPassword(CryptKey.list().get(0).encryptKey)
