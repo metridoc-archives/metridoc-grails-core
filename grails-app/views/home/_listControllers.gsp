@@ -16,7 +16,7 @@
     <div class="categoryDiv">
         <g:each in="${category.controllerInfo}" var="controller" status="i">
             <ul class="undecorated">
-                <li><a href="${createLink(url: controller.link)}">${controller.title}</a><g:if
+                <li><a href="${createLink(controller: controller.link, action: "index")}">${controller.title}</a><g:if
                         test="${controller.description}"> - </g:if>${controller.description}</li>
             </ul>
         </g:each>
