@@ -44,7 +44,8 @@ class LogController {
     private Map createModel() {
 
         def files = logFiles
-        def initialValue = "${files.find { it.contains(grailsApplication.metadata.getApplicationName()) }}"
+
+        def initialValue = "${files.find { it.contains("metridoc") }}"
 
         [logFiles: files,
                 initialValue: initialValue,
