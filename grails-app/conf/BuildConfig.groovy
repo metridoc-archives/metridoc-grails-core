@@ -64,6 +64,7 @@ grails.project.dependency.resolution = {
         runtime ":resources:1.1.6"
         runtime ":jquery:1.10.0"
         runtime ":font-awesome-resources:3.2.1.1"
+        runtime ":jquery-validation:1.9"
         runtime(":shiro:1.1.4") {
             excludes(
                     [name: "shiro-quartz", group: "org.apache.shiro"]
