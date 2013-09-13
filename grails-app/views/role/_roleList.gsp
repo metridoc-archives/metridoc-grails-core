@@ -17,14 +17,7 @@
                     <input name="rolename" id="rolename" type="text" required placeholder="ROLE_FOO"/>
                 </div>
             </div>
-
-            <div class="control-group">
-                <div class="controls">
-                    <button class="btn" type="submit">
-                        <i class="icon-edit"></i> Create
-                    </button>
-                </div>
-            </div>
+            <md:cgButton icon="icon-edit">Create</md:cgButton>
         </g:form>
     </div>
 
