@@ -11,13 +11,20 @@
     <div id="createUserForm" hidden="true">
         <g:form controller="user" action="save" class="form-horizontal">
             <div class="control-group">
-            <g:render template="/user/userName"/>
+                <g:render template="/user/userName"/>
+            </div>
             <g:render template="/user/passwords"/>
-            <g:render template="/user/email"/>
-            <g:render template="/commonTemplates/roles"/>
-            <g:render template="/commonTemplates/button" model="['content': 'Create']" icon="icon-edit"/>
+            <div class="control-group">
+                <g:render template="/user/email"/>
+            </div>
+            <div class="control-group">
+                <g:render template="/commonTemplates/roles"/>
+            </div>
+
+            <div class="control-group">
+                <g:render template="/commonTemplates/button" model="['content': 'Create']" icon="icon-edit"/>
+            </div>
         </g:form>
-    </div>
     </div>
 
     <div id="list-shiroUser" class="content scaffold-list" role="main">

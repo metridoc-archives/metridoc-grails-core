@@ -118,11 +118,11 @@ body {
 
 .md-application-content div.description {
     padding: 30px;
-    padding-top: 0px;
+    padding-top: 0;
 }
 
 #page-body {
-    margin: 2em 1em 0em 7em;
+    margin: 2em 1em 0 7em;
 }
 
 .ie6 body {
@@ -340,7 +340,7 @@ fieldset.embedded legend {
 
 #homeMsg {
     z-index: 1;
-    margin: 0em 6em 0em 0em;
+    margin: 0 6em 0 0;
 }
 
 .errors {
@@ -532,8 +532,8 @@ p {
 }
 
 #dialog fieldset {
-    padding-left: 0em;
-    margin-left: 0em;
+    padding-left: 0;
+    margin-left: 0;
 }
 
 /*Style for all input boxes*/
@@ -571,14 +571,14 @@ ul {
 }
 
 table form {
-    margin: 0px;
+    margin: 0;
 }
 
 .navbar-inner {
-    padding-left: 0px;
-    -webkit-border-radius: 0px;
-    -moz-border-radius: 0px;
-    border-radius: 0px;
+    padding-left: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
 }
 
 .dropdown-menu a {
@@ -597,8 +597,8 @@ table form {
     filter: progid:dximagetransform.microsoft.gradient(startColorstr = '#ff25652a', endColorstr = '#ff235728', GradientType = 0);
 }
 
-.controls {
-    padding-bottom: 5px;
+.form-horizontal .control-group {
+    margin-bottom: 10px;
 }
 
 .nav > li > a:hover {
