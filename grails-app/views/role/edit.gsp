@@ -39,7 +39,7 @@
             <g:hiddenField name="version" value="${shiroRoleInstance?.version}"/>
 
             <fieldset class="form">
-                <g:render template="form"/>
+                <g:render template="roleForm"/>
             </fieldset>
 
             <fieldset class="buttons">

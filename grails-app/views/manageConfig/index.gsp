@@ -9,6 +9,6 @@
 <md:report module="codeMirrorShell">
     <g:render template="/commonTemplates/tabs"/>
     <g:render template="/manageConfig/config"/>
-    <g:render template="/status/status"/>
-    <g:render template="/restart/restart"/>
+    <g:render template="/manageConfig/status"/>
+    <g:render template="/manageConfig/restart"/>
 </md:report>

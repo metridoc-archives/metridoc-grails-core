@@ -28,7 +28,7 @@
             <div class="controls">
                 <input name="shiro-role" id="shiro-role" type="text" disabled="disabled"
                        value="${shiroRoleInstance?.name}"/>
-            </div>
+                </div>
         </div>
     </g:form>
 </md:report>
