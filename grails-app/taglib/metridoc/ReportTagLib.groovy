@@ -121,4 +121,28 @@ class ReportTagLib {
                 model: model
         )
     }
+
+    /**
+     * creates a bootstrap button surrounded by the control group tag
+     *
+     * @attr type type of button, submit by default
+     * @attr icon font awesome icon
+     *
+     * body is the name on the button
+     */
+    def cgButton = {attrs, body ->
+        assert body : "a body for the button must be specified"
+        def model = [:]
+        model.body = body()
+        if(attrs.icon) {
+            model.icon = "<i class=\"${attrs.icon}\"></i>"
+        }
+        model.type = attrs.type ?: "submit"
+
+        out << render(
+                template: "/reports/button",
+                plugin: "metridocCore",
+                model: model
+        )
+    }
 }
