@@ -14,38 +14,6 @@
  */
 modules = {
 
-    restartRunner {
-        resource id: 'js',
-                url: [dir: "restart", file: "restart.js", plugin: "metridocCore"]
-    }
-
-    codeMirror {
-        resource id: 'coreJs',
-                url: [dir: "components/codemirror/lib", file: "codemirror.js", plugin: "metridocCore"]
-        resource id: 'coreCss',
-                url: [dir: "components/codemirror/lib", file: "codemirror.css", plugin: "metridocCore"]
-        resource id: 'addOnMatchBrackets',
-                url: [dir: "components/codemirror/addon/edit", file: "matchbrackets.js", plugin: "metridocCore"]
-        resource id: 'codeWindowCss',
-                url: [dir: "codeMirror", file: "codeMirror.css", plugin: "metridocCore"]
-    }
-
-    codeMirrorShell {
-        dependsOn 'codeMirror'
-        resource id: 'shellMode',
-                url: [dir: "components/codemirror/mode/shell", file: "shell.js", plugin: "metridocCore"]
-        resource id: 'activateShell',
-                url: [dir: "shell", file: "shell.js", plugin: "metridocCore"]
-    }
-
-    codeMirrorGroovy {
-        dependsOn 'codeMirror'
-        resource id: 'groovyMode',
-                url: [dir: "components/codemirror/mode/groovy", file: "groovy.js", plugin: "metridocCore"]
-        resource id: 'activateShell',
-                url: [dir: "groovy", file: "groovy.js", plugin: "metridocCore"]
-    }
-
     home {
         dependsOn 'jquery'
         resource id: 'js',
@@ -54,10 +22,9 @@ modules = {
     }
 
     manageConfig {
-        dependsOn 'codeMirrorGroovy'
         resource id: 'js',
-                url: [dir: "manageConfig", file: "manageConfig.js", plugin: "metridocCore"],
-                attrs: [type: "js"]
+                url: [dir: "manageConfig", file: "manageConfig.css", plugin: "metridocCore"],
+                attrs: [type: "css"]
     }
 
     manageAccess {

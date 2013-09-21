@@ -29,20 +29,9 @@ class UserController {
 
     def index() {
         session.setAttribute("previousExpanded", "userList")
-        chain(action: "list")
+        chain(controller: "manageAccess", action: "list")
     }
 
-    def list() {
-        def max = Math.min(params.max ? params.int('max') : 10, 100)
-        params.max = max
-        def userCount = ShiroUser.count()
-        def showPagination = userCount > max
-
-        [currentUserName: SecurityUtils.getSubject().getPrincipal(),
-                shiroUserInstanceList: ShiroUser.list(params),
-                shiroUserInstanceTotal: userCount,
-                showPagination: showPagination]
-    }
 
     def create() {
         [shiroUserInstance: new ShiroUser(params)]
@@ -67,7 +56,7 @@ class UserController {
 
         if (!shiroUserInstance.save(flush: true)) {
             ShiroUser.addAlertForAllErrors(shiroUserInstance, flash)
-            render(view: "/user/create", model: [shiroUserInstance: shiroUserInstance])
+            chain(controller: "manageAccess", action: "index", id: shiroUserInstance.id, previousExpanded: 'userList')
             return
         }
 
