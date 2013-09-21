@@ -6,9 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<md:report module="codeMirrorShell">
+<md:report>
     <g:render template="/commonTemplates/tabs"/>
     <g:render template="/manageConfig/config"/>
     <g:render template="/manageConfig/status"/>
-    <g:render template="/manageConfig/restart"/>
 </md:report>
