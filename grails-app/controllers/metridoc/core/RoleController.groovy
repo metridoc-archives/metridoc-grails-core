@@ -30,17 +30,6 @@ class RoleController {
         chain(controller: "manageAccess", action: "list")
     }
 
-    def list() {
-        def max = Math.min(params.max ? params.int('max') : 10, 100)
-        params.max = max
-        def roleCount = ShiroRole.count()
-        def showPagination = roleCount > max
-        [
-                shiroRoleInstanceList: ShiroRole.list(params),
-                shiroRoleInstanceTotal: roleCount,
-                showPagination: showPagination
-        ]
-    }
 
     def create() {
         [shiroRoleInstance: new ShiroRole(params)]
@@ -50,7 +39,7 @@ class RoleController {
 
         if (rolename == null || rolename == EMPTY) {
             flash.alert = "rolename has to be provided"
-            render(view: "/role/create")
+            chain(controller: "manageAccess", action: "list")
         }
 
         def usedRoleName = rolename
@@ -63,7 +52,7 @@ class RoleController {
 
         if (!shiroRoleInstance.save(flush: true)) {
             flash.alert = "Could not save ${shiroRoleInstance}"
-            render(view: "/role/create", model: [shiroRoleInstance: shiroRoleInstance])
+            chain(controller: "manageAccess", action: "list")
             return
         }
 

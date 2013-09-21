@@ -37,7 +37,7 @@
         <span id="sRoleList" style="margin-left: 25px">Add roles</span>
 
         <div id="roleList" class="collapse">
-            <g:render template="/role/roleList"/>
+            <g:render template="/role/manageRole"/>
         </div>
     </div>
     <br>
