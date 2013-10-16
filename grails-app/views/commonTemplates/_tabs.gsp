@@ -20,8 +20,8 @@
             template="/commonTemplates/tabLabel"
             model="[controllerName: controllerName,
                     actionName: actionName,
-                    linkController: 'LdapSettings',
-                    linkAction: 'index',
+                    linkController: 'ldapRole',
+                    linkAction: 'list',
                     linkText: 'LDAP Config',
                     icon: 'icon-sitemap']"/>
 
