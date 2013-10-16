@@ -1,6 +1,8 @@
-<div class="controls">
-    <g:set var="type" value="${type ?: "submit"}"/>
-    <button class="btn ${buttonClass}" type="${type}" name="${action}">
-        <i class="${icon}"></i> ${content}
-    </button>
+<div class="control-group">
+    <div class="controls">
+        <g:set var="type" value="${type ?: "submit"}"/>
+        <button class="btn ${buttonClass}" type="${type}" name="${action}">
+            <i class="${icon}"></i> ${content}
+        </button>
+    </div>
 </div>
