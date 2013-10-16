@@ -13,9 +13,13 @@
  * permissions and limitations under the License.
  */
 
-class UrlMappings {
+class MetridocCoreUrlMappings {
 
     static mappings = {
+        boolean disable = getGrailsApplication().config.metridoc.urlMappings.disable
+
+        if(disable) return
+
         "/"(controller: "home", action: "index")
 
         "/rest/$controllerForward/$actionForward?/$id?"(controller: "rest", action: "index")
