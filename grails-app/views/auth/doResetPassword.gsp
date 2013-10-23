@@ -1,6 +1,6 @@
 <md:report>
     <div id="template">
-        <g:form method="post" action="doResetPassword">
+        <md:form method="post" action="doResetPassword">
             <div>
                 <label for="password">
                     <g:message code="shiroUser.newPassword.label" default="New Password"/>
@@ -22,6 +22,6 @@
             <span class="buttons">
                 <input type="submit" value="Update" id="upPasswordButton" name="submit"/>
             </span>
-        </g:form>
+        </md:form>
     </div>
 </md:report>

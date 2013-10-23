@@ -145,4 +145,32 @@ class ReportTagLib {
                 model: model
         )
     }
+
+    /**
+     * Works the same as g:form, but detects if the url has novalidate in it.  This will turn off client side
+     * validation, very helpful for testing.  The javadoc from g:form is copied below
+     *
+     * General linking to controllers, actions etc. Examples:<br/>
+     *
+     * &lt;g:form action="myaction"&gt;...&lt;/g:form&gt;<br/>
+     * &lt;g:form controller="myctrl" action="myaction"&gt;...&lt;/g:form&gt;<br/>
+     *
+     * @attr action the name of the action to use in the link, if not specified the default action will be linked
+     * @attr controller the name of the controller to use in the link, if not specified the current controller will be linked
+     * @attr id The id to use in the link
+     * @attr url A map containing the action,controller,id etc.
+     * @attr name A value to use for both the name and id attribute of the form tag
+     * @attr useToken Set whether to send a token in the request to handle duplicate form submissions. See Handling Duplicate Form Submissions
+     * @attr method the form method to use, either 'POST' or 'GET'; defaults to 'POST'
+     */
+    def form = {attrs, body ->
+        boolean novalidate = params.containsKey("novalidate") ? params.getBoolean("novalidate") : false
+
+        def rendered = g.form(attrs, body)
+        if(novalidate) {
+            rendered = rendered.toString().replaceFirst(">", " novalidate")
+        }
+
+        out << rendered
+    }
 }

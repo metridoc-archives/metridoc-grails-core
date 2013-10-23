@@ -2,7 +2,7 @@
 <md:report>
     <g:if test="${shiroUserInstance.username != 'anonymous'}">
 
-        <g:form method="post" action="update" class="form-horizontal">
+        <md:form method="post" action="update" class="form-horizontal">
             <g:hiddenField name="id" value="${shiroUserInstance?.id}"/>
             <g:hiddenField name="version" value="${shiroUserInstance?.version}"/>
             <g:render template="/user/userName" model="[disabled: true]"/>
@@ -23,6 +23,6 @@
                       model="[content: 'Update',
                               icon: 'icon-edit']"/>
 
-        </g:form>
+        </md:form>
     </g:if>
 </md:report>
